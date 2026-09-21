@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "homological-observability"
 version = "1.1.0.dev0"
-description = "Exact integer homology filtrations for finite Markov networks"
+description = "Exact integer homology and critical-limit analysis for finite-state Markov jump processes"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 license = "MIT"

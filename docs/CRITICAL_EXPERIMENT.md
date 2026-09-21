@@ -59,7 +59,7 @@ $$
 
 even though the dynamics is not reversible. The integer readout has
 coefficient $1$ on the oriented edge $v0\to v1$ and coefficient $0$ on the
-other public edge orientations.
+other edges in their reference orientations.
 
 The full input is
 [`biased_c4_critical.json`](../examples/biased_c4_critical.json). Rates and
@@ -115,7 +115,7 @@ intensity is zero.
 | Object | Meaning |
 | --- | --- |
 | `model` | Normalized graph, readouts, exact directed rates, layer, $\theta$, and limits |
-| `topology` | Baseline analysis contract and requested/natural completeness flags |
+| `topology` | Topology analysis and its requested/natural completeness flags |
 | `groups` | Smith presentations of $L_m/L_{m-1}$, the visible quotient, the hidden kernel, and the induced readout |
 | `stationary_law` | Exact rational generator and stationary probabilities |
 | `catalogue` | Reference geodesics and weights aggregated by ordered endpoint and graded mark |
@@ -131,7 +131,7 @@ under the declared convention are the stable scientific content.
 
 ## Python API
 
-The Python path consumes the same immutable model and result objects:
+The Python API uses the same model and result objects as the command-line tool:
 
 ```python
 from fractions import Fraction

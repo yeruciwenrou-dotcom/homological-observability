@@ -1,13 +1,13 @@
 # Model guide
 
-The package has two independent model contracts. `analyze` needs graph
+The package accepts two input formats. `analyze` needs graph
 topology and optional integer readouts; `critical` additionally needs every
 positive directed rate, a selected layer, and a critical intensity. Fields
-from one contract are never silently interpreted as fields from the other.
+are checked against the format required by the selected command.
 
 ## Topology analysis model
 
-The `analyze` command consumes a UTF-8 JSON document with
+The `analyze` command reads a UTF-8 JSON document with
 `schema_version: 1`. The bundled machine-readable schema is available through
 `homological_observability.load_model_schema()` and at
 [`src/homological_observability/schemas/model.schema.json`](../src/homological_observability/schemas/model.schema.json).
@@ -144,10 +144,10 @@ $ homological-observability analyze examples/wedge_c3_c5.json
 $ homological-observability analyze examples/wedge_c3_c5.json --format json
 ```
 
-The text view is intended for reading. JSON is the stable downstream contract;
-do not parse the spacing or columns of terminal text.
+Use JSON when processing results in another program. The terminal layout is
+intended for people and should not be parsed as a data format.
 
-The equivalent Python path is:
+The Python API equivalent is:
 
 ```python
 import homological_observability as ho
@@ -188,7 +188,7 @@ result.
 
 ## Critical experiment model
 
-The `critical` command consumes `schema_version: 1` under a separate schema:
+The `critical` command reads a JSON document with `schema_version: 1` under a separate schema:
 [`critical-model.schema.json`](../src/homological_observability/schemas/critical-model.schema.json).
 It is available in Python through `load_critical_model_schema()`.
 
@@ -263,7 +263,7 @@ $ homological-observability critical examples/biased_c4_critical.json
 $ homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
-The equivalent Python path is:
+The Python API equivalent is:
 
 ```python
 import homological_observability as ho

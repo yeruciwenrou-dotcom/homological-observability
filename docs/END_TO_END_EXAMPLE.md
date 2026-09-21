@@ -1,8 +1,9 @@
 # End-to-end example: a wedge of C3 and C5
 
 This example follows a complete analysis from graph input to phase
-interpretation. One cycle appears earlier than the other, the visible image changes by finite index without changing real
-rank, and a hidden free direction appears at the same layer.
+interpretation. One cycle appears earlier than the other, the visible image
+changes by finite index without changing real rank, and a hidden free
+direction appears at the same layer.
 
 ## Network and readout
 
@@ -53,7 +54,7 @@ $ homological-observability example wedge-c3-c5 --format json
 The first command gives a compact table. The second emits the exact versioned
 document stored as
 [`examples/wedge_c3_c5_result.json`](../examples/wedge_c3_c5_result.json).
-The same result rendered for durable reading is
+A human-readable summary of the same result is available in
 [`examples/wedge_c3_c5_result.md`](../examples/wedge_c3_c5_result.md).
 
 ## Layer two: triangle exposure

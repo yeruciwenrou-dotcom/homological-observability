@@ -1,8 +1,9 @@
 # Numerical methods and reference calibration
 
-The finite-cycle diagnostics use numerical probabilities alongside the exact
-integer and rational research kernel. This note explains their count-TV
-intervals, small-window bridge evaluation and reference-table correction.
+The finite-cycle diagnostics evaluate probabilities numerically, alongside
+the exact integer and rational calculations used for graph and critical-limit
+analysis. This note explains their count-TV intervals, small-window bridge
+evaluation, and reference-table correction.
 
 ## Count-TV intervals
 
