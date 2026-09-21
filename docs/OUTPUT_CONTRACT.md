@@ -1,10 +1,10 @@
 # Output contract
 
-The package publishes two independent immutable result types:
+The package returns two immutable result types:
 `TopologyAnalysis` for `analyze` and `CriticalExperimentResult` for `critical`.
 In each task, the Python API and CLI render the same structured result. JSON is
-the stable machine-readable surface; text and topology Markdown are
-reader-facing representations.
+the format for use by other programs. Terminal text and, for topology
+analyses, Markdown provide human-readable output.
 
 ## Analysis document identity
 
@@ -35,14 +35,14 @@ inferring compatibility from field presence.
 
 | Field | Meaning |
 | --- | --- |
-| `schema_name`, `schema_version` | Stable contract identity |
+| `schema_name`, `schema_version` | Schema name and version |
 | `software` | Package name and implementation version |
 | `artifact_role` | Provenance role of this analysis |
 | `status` | `COMPLETE`, `PARTIAL_HORIZON`, or `LIMIT_REACHED` |
 | `evidence_categories` | Evidence kinds present in the document |
 | `normalized_model_sha256` | Digest of the validated normalized model |
-| `model` | Complete normalized model contract |
-| `summary` | Small invariant task summary |
+| `model` | Validated, normalized input model |
+| `summary` | Summary of basis-independent results |
 | `homology` | Auditable basis, readout coordinates, and rank |
 | `filtration` | Exact cycles, lattices, and graded quotients, or `null` |
 | `phase` | Theorem-derived phase interpretation, or `null` |
@@ -202,7 +202,7 @@ label.
 
 Coordinate matrices use the deterministic basis described in
 [conventions](CONVENTIONS.md). Ranks and quotient invariants are the
-basis-independent scientific surface.
+basis-independent mathematical results.
 
 ## Phase object
 
@@ -300,7 +300,7 @@ the generally infinite total-mark probability table.
 Every complete critical document states its scientific boundary: the object
 is a theorem-derived critical-limit generative specification, not an exact
 posterior at finite $(T,\delta)$ or an unconditional critical MAP solver. See the
-[biased C4 reading](CRITICAL_EXPERIMENT.md) for a complete example.
+[biased C4 example](CRITICAL_EXPERIMENT.md) for a complete example.
 
 ## Renderers
 

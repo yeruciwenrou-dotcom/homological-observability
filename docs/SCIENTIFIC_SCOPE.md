@@ -41,7 +41,7 @@ The separate `critical` input adds:
   limits;
 - optional records for individual paths.
 
-For that input, the software computes:
+For topology analysis, the software computes:
 
 1. a deterministic integral coordinate system for $H_1(G;\mathbb Z)$;
 2. the exact exposure lattice $L_m$ at each requested layer;
@@ -51,7 +51,7 @@ For that input, the software computes:
    three filtrations;
 6. theorem-derived critical exponents, snapshot-budget exponents, optional
    regimes, and entropy coefficients;
-7. a versioned JSON document plus text and Markdown readings of the same
+7. a versioned JSON document plus text and Markdown reports of the same
    immutable result.
 
 For a valid critical input, the software additionally computes the exact
@@ -68,20 +68,19 @@ support in both directions. If one directed rate vanishes, the static graph
 filtration can include a path witness that the dynamics cannot realize, so
 this implementation must not be used unchanged.
 
-## Product roles
+## Uses
 
-The repository has three compatible roles:
+You can use the software to:
 
-- **Research kernel:** analyze a user's finite graph and integer readouts, and
+- **Analyze new networks:** compute the filtrations for a finite graph and integer readouts, and
   construct a critical-limit experiment when exact directed rates are known.
-- **Reference implementation:** make the integral filtration, coordinate, and
-  Smith/Hermite conventions executable and auditable.
-- **Paper companion:** reproduce the finite-cycle calculations and frozen
-  evidence associated with the manuscript.
+- **Inspect the methods:** examine a reference implementation of the integer
+  filtrations and the coordinate and Smith/Hermite conventions they use.
+- **Reproduce the paper's calculations:** run the finite-cycle examples and
+  compare their results with the reference data included in the repository.
 
-The research-kernel role is the broadest, while the other two constrain its
-scientific meaning: analysis of new inputs preserves exact integer semantics
-and does not silently rewrite the paper evidence.
+Analysis of new inputs uses the same exact integer methods. Its output is
+kept separate from the paper's reference results.
 
 ## Evidence classes
 

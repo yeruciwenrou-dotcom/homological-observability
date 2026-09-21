@@ -1,16 +1,16 @@
 # Mathematical and coordinate conventions
 
-This document fixes the mathematical conventions used by the input parser,
-exact kernel, and serialized output. They are part of the scientific contract.
+This guide describes the mathematical conventions used in model input,
+exact calculations, and serialized results.
 
 ## Graph model
 
-The model contract accepts a connected undirected simple graph
+The software accepts a connected undirected simple graph
 $G=(V,E)$. Vertex identifiers are nonempty strings. Self-loops, parallel
 edges, duplicate vertices, disconnected graphs, and edges with unknown
 endpoints are rejected.
 
-Every undirected edge has a public orientation: from the lexicographically
+Every undirected edge has a reference orientation: from the lexicographically
 smaller vertex identifier to the larger identifier. This is a coordinate
 convention, not a physical direction or transition-rate assignment. Under the
 paper's Markov-process interpretation, the undirected edge represents positive
@@ -52,7 +52,7 @@ $$
 $$
 
 The model represents each component of $\pi$ by an integer 1-cochain on
-oriented graph edges. If an input edge is written opposite to the public
+oriented graph edges. If an input edge is written opposite to the reference
 orientation, its coefficient is negated during normalization. Real or boolean
 coefficients are rejected; the implementation never rounds a readout to
 manufacture an integer map.
