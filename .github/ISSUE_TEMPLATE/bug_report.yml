@@ -1,0 +1,68 @@
+name: Bug report
+description: Report incorrect behavior, an unexpected error, or a contract mismatch.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a reproducible problem. Remove private data and use a minimal finite graph when possible.
+  - type: input
+    id: version
+    attributes:
+      label: Software version
+      description: Output of `homological-observability --version`.
+    validations:
+      required: true
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does the problem occur?
+      options:
+        - Python API
+        - analyze CLI
+        - critical CLI
+        - example CLI
+        - reproduce CLI or quickstart
+        - Packaging or installation
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: model
+    attributes:
+      label: Minimal model or command
+      description: Paste the smallest JSON model, Python call, or terminal command that reproduces the problem.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+      description: Include status, exit code, and relevant output.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: State the documented or mathematical expectation.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Python version, installation method, and dependency details.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I removed credentials, private paths, and sensitive data.
+          required: true
+        - label: I checked the scientific scope and output contract.
+          required: true

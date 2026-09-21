@@ -1,0 +1,36 @@
+name: Documentation improvement
+description: Report unclear instructions, incorrect descriptions, or examples that do not run.
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Document and section
+      placeholder: docs/MODEL_GUIDE.md — Readouts
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is unclear or incorrect?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Explain the reader task or misunderstanding the change should address.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      options:
+        - A command or code example does not run
+        - Scientific meaning or evidence boundary is unclear
+        - Input or output contract is unclear
+        - Navigation or wording can be improved
+    validations:
+      required: true
