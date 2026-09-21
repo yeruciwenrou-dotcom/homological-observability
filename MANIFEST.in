@@ -1,0 +1,14 @@
+include CITATION.cff
+include CHANGELOG.md
+include PAPER_MAP.md
+include critical_kernel_checks.py
+include explore_cycles.py
+include quickstart.py
+include reproduce_all.py
+include requirements.txt
+include selected_appendix_checks.py
+recursive-include docs *.md *.svg
+recursive-include examples *.json *.md
+recursive-include results *.csv *.md *.png *.svg
+recursive-include tests *.py
+recursive-include tools *.py
