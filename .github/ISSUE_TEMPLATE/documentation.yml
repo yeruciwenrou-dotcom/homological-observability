@@ -20,7 +20,7 @@ body:
     id: proposal
     attributes:
       label: Proposed improvement
-      description: Explain the reader task or misunderstanding the change should address.
+      description: Describe what you were trying to do and how the documentation could be clearer.
     validations:
       required: true
   - type: dropdown
