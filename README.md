@@ -6,6 +6,10 @@ implementation, and the computational companion to
 > *Stochastic Histories at Finite Temporal Resolution: Homological
 > Observability and Information Phase Diagrams in Markov Jump Processes*.
 
+**Paper status:** The manuscript is in preparation, with submission to arXiv
+planned. The preprint is not yet publicly available; its link will be added
+here when it is released.
+
 Given a connected finite network and optional integer-valued side readouts, the
 software determines which integral cycle directions are exposed at each
 path-length layer, which remain hidden from the readouts, and which asymptotic
@@ -311,7 +315,9 @@ For a new scientific model, first check the supported assumptions in the
 Cite the companion paper for the theoretical results and the software for
 computations performed with this package. Record the software version and,
 when using a source checkout, the exact Git commit. Citation metadata for both
-is provided in [`CITATION.cff`](CITATION.cff).
+is provided in [`CITATION.cff`](CITATION.cff); the paper entry currently
+describes an unpublished manuscript. Its arXiv identifier and public link will
+be added when available.
 
 The MIT License covers the software repository; see [`LICENSE`](LICENSE).
 It does not alter the copyright or licensing status of the manuscript itself.
