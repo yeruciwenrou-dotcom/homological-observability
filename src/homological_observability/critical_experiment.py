@@ -34,7 +34,7 @@ from ._integer_io import (
     integer_text_limit,
     parse_json_integer,
 )
-from .analysis import AnalysisStatus, analyze_model
+from .analysis import AnalysisStatus, _analyze_topology
 from .integer_lattice import QuotientInvariants
 from .model import GraphModel, parse_model
 from .version import __version__
@@ -632,20 +632,33 @@ def normalized_critical_model_sha256(model: CriticalModel) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
-def _directed_walk_count(graph: GraphModel, layer: int) -> int:
-    adjacency: dict[str, tuple[str, ...]] = {vertex: () for vertex in graph.vertices}
+def _directed_walk_count(
+    graph: GraphModel, layer: int, *, max_paths: int
+) -> int | None:
+    """Count exactly, or stop once the requested path budget is exceeded."""
+    if len(graph.vertices) <= 2:
+        return 2 * len(graph.edges)
     mutable = {vertex: [] for vertex in graph.vertices}
     for left, right in graph.edges:
         mutable[left].append(right)
         mutable[right].append(left)
     adjacency = {vertex: tuple(neighbors) for vertex, neighbors in mutable.items()}
     counts = {vertex: 1 for vertex in graph.vertices}
-    for _ in range(layer):
+    for step in range(layer):
         counts = {
             vertex: sum(counts[neighbor] for neighbor in adjacency[vertex])
             for vertex in graph.vertices
         }
-    return sum(counts.values())
+        total = sum(counts.values())
+        if total > max_paths and step + 1 < layer:
+            # Every walk extends on a connected bidirectional support. The
+            # final count exceeds the budget, but its exact value is uncomputed.
+            return None
+    try:
+        check_integer_text(total, label="directed path count")
+    except ValueError:
+        return None
+    return total
 
 
 def _integer_digits(value: Fraction | int) -> int:
@@ -656,18 +669,25 @@ def _integer_digits(value: Fraction | int) -> int:
     )
 
 
-def _estimated_integer_digits(model: CriticalModel) -> int:
+def _estimated_integer_digits(model: CriticalModel) -> int | None:
     input_digits = max(
         [_integer_digits(model.theta)]
         + [_integer_digits(rate) for _, rate in model.rates]
     )
     vertex_factor = max(1, len(model.graph.vertices))
-    return (
+    subtotal = (
         input_digits * max(model.layer, vertex_factor)
-        + decimal_digits(factorial(model.layer))
         + decimal_digits(max(1, len(model.graph.edges)))
         + 4
     )
+    try:
+        check_integer_text(subtotal, label="preflight estimate")
+    except ValueError:
+        return None
+    # This lower bound already suffices for refusal; do not expand m! first.
+    if subtotal > model.limits.max_estimated_integer_digits:
+        return subtotal
+    return subtotal + decimal_digits(factorial(model.layer))
 
 
 def _limit_result(
@@ -933,27 +953,34 @@ def analyze_critical_model(model: CriticalModel) -> CriticalExperimentResult:
             path_count=None,
             maximum_integer_digits=input_digits,
         )
-    path_count = _directed_walk_count(model.graph, model.layer)
-    if path_count > model.limits.max_paths:
+    path_count = _directed_walk_count(
+        model.graph, model.layer, max_paths=model.limits.max_paths
+    )
+    if path_count is None or path_count > model.limits.max_paths:
         return _limit_result(
             model,
             resource="directed_paths",
             limit=model.limits.max_paths,
             observed_or_estimated=path_count,
-            measurement="exact",
+            measurement="unavailable" if path_count is None else "exact",
             complete_components=("model-validation", "path-count-preflight"),
             incomplete_components=("topology", "catalogue", "limit-experiment"),
             path_count=path_count,
         )
 
     estimated_digits = _estimated_integer_digits(model)
-    if estimated_digits > model.limits.max_estimated_integer_digits:
+    if (
+        estimated_digits is None
+        or estimated_digits > model.limits.max_estimated_integer_digits
+    ):
         return _limit_result(
             model,
             resource="estimated_integer_digits",
             limit=model.limits.max_estimated_integer_digits,
             observed_or_estimated=estimated_digits,
-            measurement="preflight-estimate",
+            measurement=(
+                "unavailable" if estimated_digits is None else "preflight-estimate"
+            ),
             complete_components=("model-validation", "resource-preflight"),
             incomplete_components=("topology", "catalogue", "limit-experiment"),
             path_count=path_count,
@@ -961,7 +988,7 @@ def analyze_critical_model(model: CriticalModel) -> CriticalExperimentResult:
             maximum_integer_digits=None,
         )
 
-    topology = analyze_model(model.graph)
+    topology = _analyze_topology(model.graph)
     if topology.status is AnalysisStatus.LIMIT_REACHED:
         if topology.limit is None:
             raise AssertionError("a limited topology result must identify its resource")

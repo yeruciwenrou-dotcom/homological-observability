@@ -182,7 +182,7 @@ class CriticalExperimentContractTests(unittest.TestCase):
 
     def test_resource_limit_is_atomic_and_machine_readable(self) -> None:
         model = ho.parse_critical_model(
-            cycle_payload(3, layer=2, audit_paths=True, max_paths=1)
+            cycle_payload(3, layer=2, audit_paths=True, max_paths=6)
         )
         result = ho.analyze_critical_model(model)
         document = ho.critical_experiment_to_dict(result)

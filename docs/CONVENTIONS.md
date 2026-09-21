@@ -184,7 +184,7 @@ the scaling exponent $1-\alpha(m-1)$, and the regime `DENSE`, `CRITICAL`, or
 reported entropy coefficient is
 
 $$
-\frac{d_m}{2}\max\{1-\alpha(m-1),0\}.
+\frac{d_m}{2}\max\bigl(1-\alpha(m-1),0\bigr).
 $$
 
 With positive `observation_time` $T$ and `sampling_interval` $\delta$, the

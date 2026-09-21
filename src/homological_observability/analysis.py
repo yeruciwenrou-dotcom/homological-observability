@@ -67,6 +67,28 @@ def analyze_model(
     observation_time: float | None | object = _UNSET,
     sampling_interval: float | None | object = _UNSET,
 ) -> TopologyAnalysis:
+    """Compute an exact result within the public decimal representation bound."""
+    from .serialization import analysis_to_dict
+
+    result = _analyze_topology(
+        model,
+        reverse_tree_order=reverse_tree_order,
+        alpha=alpha,
+        observation_time=observation_time,
+        sampling_interval=sampling_interval,
+    )
+    analysis_to_dict(result)
+    return result
+
+
+def _analyze_topology(
+    model: GraphModel,
+    *,
+    reverse_tree_order: bool = False,
+    alpha: float | None | object = _UNSET,
+    observation_time: float | None | object = _UNSET,
+    sampling_interval: float | None | object = _UNSET,
+) -> TopologyAnalysis:
     """Compute one exact result object from one validated model."""
 
     override_sampling = any(

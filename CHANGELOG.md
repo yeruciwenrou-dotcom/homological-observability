@@ -51,6 +51,11 @@ separately inside their JSON documents.
 
 ### Fixed
 
+- Path preflight stops at a certified resource refusal without constructing
+  an oversized count. Uncomputed totals remain explicitly unavailable.
+- Generated topology integers share one representation boundary across the
+  Python API, JSON, text, and Markdown output.
+- Maximum-value parentheses display correctly in the GitHub-rendered guides.
 - Poisson-averaged MAP evaluation remains finite at large representable means.
 - Small-window endpoint probabilities retain representable subnormal mass;
   unresolved positive probabilities raise explicit range errors. Rare bridges

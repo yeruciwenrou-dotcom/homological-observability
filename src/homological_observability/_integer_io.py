@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Mapping
+from typing import Any
 
 
 def integer_text_limit() -> int:
@@ -22,6 +24,24 @@ def parse_json_integer(text: str) -> int:
     if len(text.lstrip("-")) > integer_text_limit():
         raise ValueError("JSON integer exceeds the decimal input/output limit")
     return int(text)
+
+
+def check_output_integers(document: Any) -> None:
+    """Apply the decimal boundary to every integer in a public document."""
+    bound = 10 ** integer_text_limit()
+
+    def visit(value: Any) -> None:
+        if isinstance(value, int):
+            if abs(value) >= bound:
+                check_integer_text(value, label="generated output integer")
+        elif isinstance(value, Mapping):
+            for item in value.values():
+                visit(item)
+        elif isinstance(value, (list, tuple)):
+            for item in value:
+                visit(item)
+
+    visit(document)
 
 
 def decimal_digits(value: int) -> int:
