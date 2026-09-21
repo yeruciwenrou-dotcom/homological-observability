@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:error:1",
+  "title": "Homological observability controlled error",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_name", "schema_version", "status", "message"],
+  "properties": {
+    "schema_name": { "const": "homological-observability.error" },
+    "schema_version": { "const": 1 },
+    "status": { "const": "ERROR" },
+    "message": { "type": "string", "minLength": 1 }
+  }
+}
