@@ -1,7 +1,9 @@
 # Homological Observability
 
-Homological Observability is an exact integer analysis kernel, a reference
-implementation, and the computational companion to
+Homological Observability is a Python package for exact integer homology
+calculations on finite graphs and critical-limit analysis of Markov jump
+processes. It implements the methods and reproduces the finite-cycle
+calculations developed in the accompanying paper:
 
 > *Stochastic Histories at Finite Temporal Resolution: Homological
 > Observability and Information Phase Diagrams in Markov Jump Processes*.
@@ -42,7 +44,7 @@ $\mathbb Z/2\mathbb Z$ records exactly the information that real rank discards.
 
 The input is a finite connected simple graph $G$, zero or more integer edge
 cochains defining a readout $\pi$, and optional resource and sampling
-parameters. The exact kernel produces the following chain of objects:
+parameters. The package computes the following objects:
 
 | Stage | Exact object | Scientific role |
 | --- | --- | --- |
@@ -164,7 +166,7 @@ A hidden free direction appears at the same layer. The
 separates integer-lattice information from ordinary rank and how the hidden
 direction enters the phase interpretation. Its frozen
 [JSON](examples/wedge_c3_c5_result.json) and
-[Markdown](examples/wedge_c3_c5_result.md) readings are generated from the
+[Markdown](examples/wedge_c3_c5_result.md) reports are generated from the
 same public API.
 
 ## Analyze your own network
