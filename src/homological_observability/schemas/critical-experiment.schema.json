@@ -1,0 +1,551 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:critical-experiment:1",
+  "title": "Homological observability critical experiment result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "software",
+    "artifact_role",
+    "status",
+    "evidence_categories",
+    "normalized_model_sha256",
+    "model",
+    "summary",
+    "topology",
+    "groups",
+    "stationary_law",
+    "catalogue",
+    "limit_experiment",
+    "resources",
+    "limit"
+  ],
+  "properties": {
+    "schema_name": { "const": "homological-observability.critical-experiment" },
+    "schema_version": { "const": 1 },
+    "software": { "$ref": "#/$defs/software" },
+    "artifact_role": { "const": "fresh-critical-experiment" },
+    "status": { "enum": ["COMPLETE", "LIMIT_REACHED"] },
+    "evidence_categories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "EXACT_INTEGER",
+          "EXACT_COMBINATORIAL",
+          "EXACT_RATIONAL",
+          "ASYMPTOTIC_THEOREM"
+        ]
+      }
+    },
+    "normalized_model_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "model": { "$ref": "#/$defs/model" },
+    "summary": { "$ref": "#/$defs/summary" },
+    "topology": { "$ref": "#/$defs/topology" },
+    "groups": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/groups" }]
+    },
+    "stationary_law": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/stationary_law" }]
+    },
+    "catalogue": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/catalogue" }]
+    },
+    "limit_experiment": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/limit_experiment" }]
+    },
+    "resources": { "$ref": "#/$defs/resources" },
+    "limit": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/limit" }]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "COMPLETE" } } },
+      "then": {
+        "properties": {
+          "groups": { "$ref": "#/$defs/groups" },
+          "evidence_categories": {
+            "prefixItems": [
+              { "const": "EXACT_INTEGER" },
+              { "const": "EXACT_COMBINATORIAL" },
+              { "const": "EXACT_RATIONAL" },
+              { "const": "ASYMPTOTIC_THEOREM" }
+            ],
+            "items": false,
+            "minItems": 4,
+            "maxItems": 4
+          },
+          "stationary_law": { "$ref": "#/$defs/stationary_law" },
+          "catalogue": { "$ref": "#/$defs/catalogue" },
+          "limit_experiment": { "$ref": "#/$defs/limit_experiment" },
+          "limit": { "type": "null" },
+          "topology": {
+            "properties": { "requested_layer_complete": { "const": true } }
+          },
+          "summary": {
+            "properties": {
+              "homology_rank": { "type": "integer", "minimum": 0 },
+              "natural_max_layer": { "type": "integer", "minimum": 1 },
+              "natural_filtration_complete": { "type": "boolean" },
+              "path_count": { "type": "integer", "minimum": 0 },
+              "aggregated_weight_count": { "type": "integer", "minimum": 0 },
+              "critical_catalogue_empty": { "type": "boolean" },
+              "common_total_intensity": { "$ref": "#/$defs/nonnegative_exact" },
+              "critical_total_intensity": { "$ref": "#/$defs/nonnegative_exact" }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "LIMIT_REACHED" } } },
+      "then": {
+        "properties": {
+          "evidence_categories": { "maxItems": 0 },
+          "groups": { "type": "null" },
+          "stationary_law": { "type": "null" },
+          "catalogue": { "type": "null" },
+          "limit_experiment": { "type": "null" },
+          "limit": { "$ref": "#/$defs/limit" },
+          "topology": {
+            "properties": { "requested_layer_complete": { "const": false } }
+          },
+          "summary": {
+            "properties": {
+              "aggregated_weight_count": { "type": "null" },
+              "critical_catalogue_empty": { "type": "null" },
+              "common_total_intensity": { "type": "null" },
+              "critical_total_intensity": { "type": "null" },
+              "audit_paths_included": { "const": false }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "exact": {
+      "type": "string",
+      "pattern": "^-?(0|[1-9][0-9]*)(/[1-9][0-9]*)?$"
+    },
+    "nonnegative_exact": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)(/[1-9][0-9]*)?$"
+    },
+    "positive_exact": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*(/[1-9][0-9]*)?$"
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "homological-observability" },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "model_edge": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "string", "minLength": 1 },
+        { "type": "string", "minLength": 1 }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "model_coefficient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edge", "coefficient"],
+      "properties": {
+        "edge": { "$ref": "#/$defs/model_edge" },
+        "coefficient": { "type": "integer" }
+      }
+    },
+    "model_readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "coefficients"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "coefficients": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/model_coefficient" }
+        }
+      }
+    },
+    "model_rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edge", "rate"],
+      "properties": {
+        "edge": { "$ref": "#/$defs/model_edge" },
+        "rate": { "$ref": "#/$defs/positive_exact" }
+      }
+    },
+    "model_critical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "theta", "limits", "audit_paths"],
+      "properties": {
+        "layer": { "type": "integer", "minimum": 2 },
+        "theta": { "$ref": "#/$defs/positive_exact" },
+        "limits": { "$ref": "#/$defs/limits" },
+        "audit_paths": { "type": "boolean" }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "name", "vertices", "edges", "readouts", "rates", "critical"],
+      "properties": {
+        "schema_version": { "const": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "vertices": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "edges": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/model_edge" } },
+        "readouts": { "type": "array", "items": { "$ref": "#/$defs/model_readout" } },
+        "rates": { "type": "array", "items": { "$ref": "#/$defs/model_rate" } },
+        "critical": { "$ref": "#/$defs/model_critical" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "layer",
+        "theta",
+        "vertex_count",
+        "edge_count",
+        "homology_rank",
+        "natural_max_layer",
+        "natural_filtration_complete",
+        "path_count",
+        "aggregated_weight_count",
+        "critical_catalogue_empty",
+        "common_total_intensity",
+        "critical_total_intensity",
+        "audit_paths_included"
+      ],
+      "properties": {
+        "layer": { "type": "integer", "minimum": 2 },
+        "theta": { "$ref": "#/$defs/positive_exact" },
+        "vertex_count": { "type": "integer", "minimum": 1 },
+        "edge_count": { "type": "integer", "minimum": 0 },
+        "homology_rank": { "type": ["integer", "null"], "minimum": 0 },
+        "natural_max_layer": { "type": ["integer", "null"], "minimum": 1 },
+        "natural_filtration_complete": { "type": ["boolean", "null"] },
+        "path_count": { "type": ["integer", "null"], "minimum": 0 },
+        "aggregated_weight_count": { "type": ["integer", "null"], "minimum": 0 },
+        "critical_catalogue_empty": { "type": ["boolean", "null"] },
+        "common_total_intensity": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/nonnegative_exact" }]
+        },
+        "critical_total_intensity": {
+          "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/nonnegative_exact" }]
+        },
+        "audit_paths_included": { "type": "boolean" }
+      }
+    },
+    "topology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_schema_name",
+        "baseline_schema_version",
+        "requested_layer_complete",
+        "natural_filtration_complete"
+      ],
+      "properties": {
+        "baseline_schema_name": { "const": "homological-observability.analysis" },
+        "baseline_schema_version": { "const": 2 },
+        "requested_layer_complete": { "type": "boolean" },
+        "natural_filtration_complete": { "type": ["boolean", "null"] }
+      }
+    },
+    "mark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["torsion", "free"],
+      "properties": {
+        "torsion": { "type": "array", "items": { "type": "integer", "minimum": 0 } },
+        "free": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "free_rank",
+        "torsion_factors",
+        "finite_order",
+        "coordinate_convention",
+        "representation_dependent_coordinates",
+        "evidence_category"
+      ],
+      "properties": {
+        "free_rank": { "type": "integer", "minimum": 0 },
+        "torsion_factors": { "type": "array", "items": { "type": "integer", "minimum": 2 } },
+        "finite_order": { "type": ["integer", "null"], "minimum": 1 },
+        "coordinate_convention": { "const": "constructive-smith-normal-form" },
+        "representation_dependent_coordinates": { "const": true },
+        "evidence_category": { "const": "EXACT_INTEGER" }
+      }
+    },
+    "induced_readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_torsion_generator_images",
+        "source_free_generator_images",
+        "kernel_identification",
+        "evidence_category"
+      ],
+      "properties": {
+        "source_torsion_generator_images": { "type": "array", "items": { "$ref": "#/$defs/mark" } },
+        "source_free_generator_images": { "type": "array", "items": { "$ref": "#/$defs/mark" } },
+        "kernel_identification": { "const": "K_m/K_(m-1)" },
+        "evidence_category": { "const": "EXACT_INTEGER" }
+      }
+    },
+    "groups": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["graded", "visible", "hidden_kernel", "induced_readout"],
+      "properties": {
+        "graded": { "$ref": "#/$defs/group" },
+        "visible": { "$ref": "#/$defs/group" },
+        "hidden_kernel": { "$ref": "#/$defs/group" },
+        "induced_readout": { "$ref": "#/$defs/induced_readout" }
+      }
+    },
+    "matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rows", "columns", "data"],
+      "properties": {
+        "rows": { "type": "integer", "minimum": 1 },
+        "columns": { "type": "integer", "minimum": 1 },
+        "data": {
+          "type": "array",
+          "items": { "type": "array", "items": { "$ref": "#/$defs/exact" } }
+        }
+      }
+    },
+    "stationary_law": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vertices", "generator", "probabilities", "evidence_category"],
+      "properties": {
+        "vertices": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "generator": { "$ref": "#/$defs/matrix" },
+        "probabilities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/positive_exact" } },
+        "evidence_category": { "const": "EXACT_RATIONAL" }
+      }
+    },
+    "geodesic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "walk", "representation_dependent"],
+      "properties": {
+        "start": { "type": "string", "minLength": 1 },
+        "end": { "type": "string", "minLength": 1 },
+        "walk": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "representation_dependent": { "const": true }
+      }
+    },
+    "weight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start",
+        "end",
+        "endpoint_distance",
+        "mechanism",
+        "label",
+        "visible_label",
+        "path_count",
+        "leading_weight"
+      ],
+      "properties": {
+        "start": { "type": "string", "minLength": 1 },
+        "end": { "type": "string", "minLength": 1 },
+        "endpoint_distance": { "type": "integer", "minimum": 0 },
+        "mechanism": { "enum": ["common-endpoint", "critical-endpoint"] },
+        "label": { "$ref": "#/$defs/mark" },
+        "visible_label": { "$ref": "#/$defs/mark" },
+        "path_count": { "type": "integer", "minimum": 1 },
+        "leading_weight": { "$ref": "#/$defs/positive_exact" }
+      }
+    },
+    "audit_path": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["walk", "endpoint_distance", "label", "visible_label", "rate_product", "leading_weight"],
+      "properties": {
+        "walk": { "type": "array", "minItems": 3, "items": { "type": "string", "minLength": 1 } },
+        "endpoint_distance": { "type": "integer", "minimum": 0 },
+        "label": { "$ref": "#/$defs/mark" },
+        "visible_label": { "$ref": "#/$defs/mark" },
+        "rate_product": { "$ref": "#/$defs/positive_exact" },
+        "leading_weight": { "$ref": "#/$defs/positive_exact" }
+      }
+    },
+    "catalogue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["aggregation", "geodesic_convention", "geodesics", "weights", "audit_paths", "evidence_categories"],
+      "properties": {
+        "aggregation": { "const": "ordered-endpoint-and-graded-mark" },
+        "geodesic_convention": { "type": "string", "minLength": 1 },
+        "geodesics": { "type": "array", "items": { "$ref": "#/$defs/geodesic" } },
+        "weights": { "type": "array", "items": { "$ref": "#/$defs/weight" } },
+        "audit_paths": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "array", "items": { "$ref": "#/$defs/audit_path" } }
+          ]
+        },
+        "evidence_categories": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "EXACT_COMBINATORIAL" },
+            { "const": "EXACT_RATIONAL" }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "levy_atom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "visible_label", "intensity"],
+      "properties": {
+        "label": { "$ref": "#/$defs/mark" },
+        "visible_label": { "$ref": "#/$defs/mark" },
+        "intensity": { "$ref": "#/$defs/positive_exact" }
+      }
+    },
+    "conditional_mark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "visible_label", "probability"],
+      "properties": {
+        "label": { "$ref": "#/$defs/mark" },
+        "visible_label": { "$ref": "#/$defs/mark" },
+        "probability": { "$ref": "#/$defs/positive_exact" }
+      }
+    },
+    "critical_endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "count_distribution", "poisson_intensity", "conditional_mark_law", "zero_marks_retained"],
+      "properties": {
+        "start": { "type": "string", "minLength": 1 },
+        "end": { "type": "string", "minLength": 1 },
+        "count_distribution": { "const": "poisson" },
+        "poisson_intensity": { "$ref": "#/$defs/positive_exact" },
+        "conditional_mark_law": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/conditional_mark" } },
+        "zero_marks_retained": { "const": true }
+      }
+    },
+    "limit_experiment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interpretation",
+        "scaling",
+        "common_endpoint_component",
+        "critical_endpoint_components",
+        "components_mutually_independent",
+        "observable_rule",
+        "posterior_kernel_rule",
+        "infinite_support_probability_table_expanded",
+        "evidence_category",
+        "boundary_note"
+      ],
+      "properties": {
+        "interpretation": { "const": "theorem-derived critical-limit generative specification" },
+        "scaling": { "const": "T * delta^(m-1) -> theta" },
+        "common_endpoint_component": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["distribution", "levy_measure", "total_intensity", "zero_marks_excluded"],
+          "properties": {
+            "distribution": { "const": "compound-poisson" },
+            "levy_measure": { "type": "array", "items": { "$ref": "#/$defs/levy_atom" } },
+            "total_intensity": { "$ref": "#/$defs/nonnegative_exact" },
+            "zero_marks_excluded": { "const": true }
+          }
+        },
+        "critical_endpoint_components": { "type": "array", "items": { "$ref": "#/$defs/critical_endpoint" } },
+        "components_mutually_independent": { "const": true },
+        "observable_rule": { "type": "string", "minLength": 1 },
+        "posterior_kernel_rule": { "type": "string", "minLength": 1 },
+        "infinite_support_probability_table_expanded": { "const": false },
+        "evidence_category": { "const": "ASYMPTOTIC_THEOREM" },
+        "boundary_note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_paths", "max_estimated_integer_digits", "max_integer_digits", "max_output_records", "max_cycles"],
+      "properties": {
+        "max_paths": { "type": "integer", "minimum": 1 },
+        "max_estimated_integer_digits": { "type": "integer", "minimum": 1 },
+        "max_integer_digits": { "type": "integer", "minimum": 1 },
+        "max_output_records": { "type": "integer", "minimum": 1 },
+        "max_cycles": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path_count", "output_records", "maximum_integer_digits"],
+      "properties": {
+        "path_count": { "type": ["integer", "null"], "minimum": 0 },
+        "output_records": { "type": ["integer", "null"], "minimum": 0 },
+        "maximum_integer_digits": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["limits", "usage"],
+      "properties": {
+        "limits": { "$ref": "#/$defs/limits" },
+        "usage": { "$ref": "#/$defs/usage" }
+      }
+    },
+    "limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource", "limit", "observed_or_estimated", "measurement", "complete_components", "incomplete_components"],
+      "properties": {
+        "resource": { "enum": ["directed_paths", "estimated_integer_digits", "integer_digits", "output_records", "simple_cycles"] },
+        "limit": { "type": "integer", "minimum": 1 },
+        "observed_or_estimated": { "type": ["integer", "null"], "minimum": 0 },
+        "measurement": { "enum": ["exact", "preflight-estimate", "unavailable"] },
+        "complete_components": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "incomplete_components": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "measurement": { "const": "unavailable" } } },
+          "then": { "properties": { "observed_or_estimated": { "type": "null" } } },
+          "else": { "properties": { "observed_or_estimated": { "type": "integer", "minimum": 0 } } }
+        }
+      ]
+    }
+  }
+}

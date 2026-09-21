@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:examples:1",
+  "title": "Homological observability example registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_name", "schema_version", "examples"],
+  "properties": {
+    "schema_name": { "const": "homological-observability.examples" },
+    "schema_version": { "const": 1 },
+    "examples": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/example" }
+    }
+  },
+  "$defs": {
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "title", "category", "description"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["DEMONSTRATION"] },
+        "description": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
