@@ -15,6 +15,11 @@ When every positive directed rate is known, a separate task constructs the
 exact path catalogue at a critical layer and its theorem-derived marked-Poisson
 limit.
 
+You can inspect the [reference report](results/REPORT.md) without installing
+anything. For a worked analysis, follow the
+[wedge C3–C5 example](#guided-example-a-wedge-of-c3-and-c5); for your own network,
+start with [the input example](#analyze-your-own-network).
+
 ## Why homological observability?
 
 Discrete observations record a Markov jump process only at selected times.
@@ -54,14 +59,24 @@ data.
 
 ## Install from a source checkout
 
-Clone or download this repository and open a terminal in its root directory.
-Python 3.11–3.13 is supported. On macOS or Linux, create and activate a virtual
-environment, then install the package:
+Clone this repository and enter its root directory:
 
-```console
-$ python3 -m venv .venv
-$ source .venv/bin/activate
-$ python -m pip install .
+```bash
+git clone https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
+```
+
+Alternatively, download and extract the repository ZIP, then open a terminal
+in the directory containing `quickstart.py`. Python 3.11–3.13 is supported.
+To run the tests and reproduce the paper evidence, go directly to
+[the verification quickstart](#verify-the-software-and-paper-evidence), which
+handles installation for you. To install the package for analysis on macOS or
+Linux, create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install .
 ```
 
 On Windows PowerShell, create the environment with `py -m venv .venv` and
@@ -74,8 +89,8 @@ Ubuntu and Windows.
 
 After completing the source installation above, run the built-in wedge example:
 
-```console
-$ homological-observability example wedge-c3-c5
+```bash
+homological-observability example wedge-c3-c5
 ```
 
 This is the fastest way to see a nontrivial exact analysis result.
@@ -84,8 +99,8 @@ This is the fastest way to see a nontrivial exact analysis result.
 
 From the repository root, run:
 
-```console
-$ python quickstart.py
+```bash
+python quickstart.py
 ```
 
 This path only requires Python 3.11–3.13 to be installed. The script creates
@@ -94,13 +109,35 @@ reader-side test suite, and reproduces the frozen paper evidence. It is the
 verification entry point. On macOS or Linux, use `python3 quickstart.py` if
 `python` is not available.
 
+A successful run reports that the generated tables agree with the committed
+reference results. Open `generated_results/REPORT.md` for the scientific
+summary and `generated_results/companion_summary.png` for the figure. These
+fresh outputs are separate from the [reference report](results/REPORT.md).
+
+The quickstart installs the command-line tool into its own `.venv`. Before
+using the commands below, activate that environment on macOS or Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+On Windows PowerShell, use `.venv\Scripts\Activate.ps1`. You can also run a
+command without activating the environment:
+
+```bash
+.venv/bin/python -m homological_observability.cli example wedge-c3-c5
+```
+
+On Windows, substitute `.venv\Scripts\python.exe` for `.venv/bin/python`.
+Use the same environment for the Python API examples.
+
 ## Guided example: a wedge of C3 and C5
 
 Run the built-in example:
 
-```console
-$ homological-observability example wedge-c3-c5
-$ homological-observability example wedge-c3-c5 --format json
+```bash
+homological-observability example wedge-c3-c5
+homological-observability example wedge-c3-c5 --format json
 ```
 
 The network has two independent cycle directions. The triangle is exposed at
@@ -142,9 +179,9 @@ edges:
 
 Save the document and run:
 
-```console
-$ homological-observability analyze triangle.json
-$ homological-observability analyze triangle.json --format json
+```bash
+homological-observability analyze triangle.json
+homological-observability analyze triangle.json --format json
 ```
 
 Readouts are integer 1-cochains on oriented edges. Optional analysis settings
@@ -170,9 +207,9 @@ When every positive directed edge rate is known, the independent `critical`
 task constructs the exact path catalogue at layer $m$, stationary law, graded
 marks, and theorem-derived marked-Poisson experiment:
 
-```console
-$ homological-observability critical examples/biased_c4_critical.json
-$ homological-observability critical examples/biased_c4_critical.json --format json
+```bash
+homological-observability critical examples/biased_c4_critical.json
+homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
 The [biased C4 guide](docs/CRITICAL_EXPERIMENT.md) follows a nonreversible
@@ -232,8 +269,8 @@ the general theorems, hypotheses, and proofs.
 Run the packaged reproduction task and compare generated tables with the
 frozen references:
 
-```console
-$ homological-observability reproduce --check --output-dir generated_results
+```bash
+homological-observability reproduce --check --output-dir generated_results
 ```
 
 The source-checkout shortcut `python quickstart.py` additionally runs the
@@ -271,7 +308,10 @@ For a new scientific model, first check the supported assumptions in the
 
 ## Citation and license
 
-Citation metadata for the software and companion paper is provided in
-[`CITATION.cff`](CITATION.cff). The MIT License covers the software repository;
-see [`LICENSE`](LICENSE). It does not alter the copyright or licensing status of
-the manuscript itself.
+Cite the companion paper for the theoretical results and the software for
+computations performed with this package. Record the software version and,
+when using a source checkout, the exact Git commit. Citation metadata for both
+is provided in [`CITATION.cff`](CITATION.cff).
+
+The MIT License covers the software repository; see [`LICENSE`](LICENSE).
+It does not alter the copyright or licensing status of the manuscript itself.
