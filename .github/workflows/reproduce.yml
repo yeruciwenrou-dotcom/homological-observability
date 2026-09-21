@@ -1,0 +1,123 @@
+name: Reproduce companion checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install --no-deps -e .
+      - name: Run independent tests
+        run: python -W error -m unittest discover -s tests -v
+      - name: Run checks
+        run: python -W error reproduce_all.py
+
+  quickstart:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Run the one-command verification path
+        run: python quickstart.py
+
+  distribution:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install locked dependencies and build tooling
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install "build>=1.3,<2" "jsonschema>=4.25,<5"
+          python -m pip install --no-deps -e .
+      - name: Validate the machine-readable result contract
+        run: python tests/validate_schema.py
+      - name: Build and test wheel and sdist outside the repository
+        run: python tests/validate_distribution.py
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install Ruff
+        run: python -m pip install "ruff>=0.12,<1"
+      - name: Check lint and formatting
+        run: |
+          ruff check .
+          ruff format --check .
+
+  atlas:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements.txt
+          python -m pip install --no-deps -e .
+      - name: Validate connected small graphs
+        run: python tests/validate_graph_atlas.py
+
+  required:
+    name: required
+    if: always()
+    needs: [reproduce, quickstart, distribution, lint, atlas]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm all verification jobs passed
+        env:
+          REPRODUCE_RESULT: ${{ needs.reproduce.result }}
+          QUICKSTART_RESULT: ${{ needs.quickstart.result }}
+          DISTRIBUTION_RESULT: ${{ needs.distribution.result }}
+          LINT_RESULT: ${{ needs.lint.result }}
+          ATLAS_RESULT: ${{ needs.atlas.result }}
+        run: |
+          test "$REPRODUCE_RESULT" = "success"
+          test "$QUICKSTART_RESULT" = "success"
+          test "$DISTRIBUTION_RESULT" = "success"
+          test "$LINT_RESULT" = "success"
+          test "$ATLAS_RESULT" = "success"

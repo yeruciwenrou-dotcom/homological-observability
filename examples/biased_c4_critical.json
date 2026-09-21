@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "name": "biased-c4-critical",
+  "vertices": ["v0", "v1", "v2", "v3"],
+  "edges": [
+    ["v0", "v1"],
+    ["v1", "v2"],
+    ["v2", "v3"],
+    ["v0", "v3"]
+  ],
+  "readouts": [
+    {
+      "name": "pi",
+      "coefficients": [
+        {"edge": ["v0", "v1"], "coefficient": 1}
+      ]
+    }
+  ],
+  "rates": [
+    {"edge": ["v0", "v1"], "rate": "2"},
+    {"edge": ["v1", "v0"], "rate": "1"},
+    {"edge": ["v1", "v2"], "rate": "2"},
+    {"edge": ["v2", "v1"], "rate": "1"},
+    {"edge": ["v2", "v3"], "rate": "2"},
+    {"edge": ["v3", "v2"], "rate": "1"},
+    {"edge": ["v3", "v0"], "rate": "2"},
+    {"edge": ["v0", "v3"], "rate": "1"}
+  ],
+  "critical": {
+    "layer": 2,
+    "theta": "1",
+    "limits": {
+      "max_paths": 1000,
+      "max_estimated_integer_digits": 256,
+      "max_integer_digits": 256,
+      "max_output_records": 1000,
+      "max_cycles": 1000
+    },
+    "audit_paths": false
+  }
+}

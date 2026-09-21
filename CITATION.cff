@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the software and companion paper."
+title: "Homological Observability: Research Kernel and Computational Companion"
+type: software
+authors:
+  - family-names: Liu
+    given-names: HongZheng
+  - family-names: Tian
+    given-names: YiNuo
+  - family-names: Wu
+    given-names: Zhiyue
+version: 1.1.0.dev0
+license: MIT
+repository-code: "https://github.com/yeruciwenrou-dotcom/homological-observability"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Liu
+      given-names: HongZheng
+    - family-names: Tian
+      given-names: YiNuo
+    - family-names: Wu
+      given-names: Zhiyue
+  title: "Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes"
+  year: 2026

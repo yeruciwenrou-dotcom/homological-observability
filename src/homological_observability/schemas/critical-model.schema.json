@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:critical-model:1",
+  "title": "Homological observability critical model",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "name",
+    "vertices",
+    "edges",
+    "readouts",
+    "rates",
+    "critical"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "vertices": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "edges": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "readouts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/readout" }
+    },
+    "rates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/rate" }
+    },
+    "critical": { "$ref": "#/$defs/critical" }
+  },
+  "$defs": {
+    "edge": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "string", "minLength": 1 },
+        { "type": "string", "minLength": 1 }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "positive_exact": {
+      "oneOf": [
+        { "type": "number", "exclusiveMinimum": 0 },
+        {
+          "type": "string",
+          "pattern": "^(?:[1-9][0-9]*(?:/[1-9][0-9]*|(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)?|0\\.[0-9]+(?:[eE][+-]?[0-9]+)?)$"
+        }
+      ]
+    },
+    "coefficient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edge", "coefficient"],
+      "properties": {
+        "edge": { "$ref": "#/$defs/edge" },
+        "coefficient": { "type": "integer" }
+      }
+    },
+    "readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "coefficients"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "coefficients": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/coefficient" }
+        }
+      }
+    },
+    "rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["edge", "rate"],
+      "properties": {
+        "edge": { "$ref": "#/$defs/edge" },
+        "rate": { "$ref": "#/$defs/positive_exact" }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_paths",
+        "max_estimated_integer_digits",
+        "max_integer_digits",
+        "max_output_records",
+        "max_cycles"
+      ],
+      "properties": {
+        "max_paths": { "type": "integer", "minimum": 1 },
+        "max_estimated_integer_digits": { "type": "integer", "minimum": 1 },
+        "max_integer_digits": { "type": "integer", "minimum": 1 },
+        "max_output_records": { "type": "integer", "minimum": 1 },
+        "max_cycles": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "critical": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["layer", "theta", "limits", "audit_paths"],
+      "properties": {
+        "layer": { "type": "integer", "minimum": 2 },
+        "theta": { "$ref": "#/$defs/positive_exact" },
+        "limits": { "$ref": "#/$defs/limits" },
+        "audit_paths": { "type": "boolean" }
+      }
+    }
+  }
+}

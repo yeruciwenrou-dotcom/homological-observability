@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:reproduction:1",
+  "title": "Homological observability reproduction result",
+  "oneOf": [
+    { "$ref": "#/$defs/pass" },
+    { "$ref": "#/$defs/fail" }
+  ],
+  "$defs": {
+    "identity": {
+      "type": "object",
+      "required": [
+        "schema_name",
+        "schema_version",
+        "artifact_role",
+        "status"
+      ],
+      "properties": {
+        "schema_name": {
+          "const": "homological-observability.reproduction"
+        },
+        "schema_version": { "const": 1 },
+        "artifact_role": { "const": "canonical-paper-evidence" },
+        "status": { "enum": ["PASS", "FAIL"] }
+      }
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "sha256"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "pass": {
+      "allOf": [
+        { "$ref": "#/$defs/identity" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_name",
+            "schema_version",
+            "artifact_role",
+            "status",
+            "checked_against_frozen_reference",
+            "output_directory",
+            "files"
+          ],
+          "properties": {
+            "schema_name": {
+              "const": "homological-observability.reproduction"
+            },
+            "schema_version": { "const": 1 },
+            "artifact_role": { "const": "canonical-paper-evidence" },
+            "status": { "const": "PASS" },
+            "checked_against_frozen_reference": { "type": "boolean" },
+            "output_directory": { "type": "string", "minLength": 1 },
+            "files": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/file" }
+            }
+          }
+        }
+      ]
+    },
+    "fail": {
+      "allOf": [
+        { "$ref": "#/$defs/identity" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_name",
+            "schema_version",
+            "artifact_role",
+            "status",
+            "message"
+          ],
+          "properties": {
+            "schema_name": {
+              "const": "homological-observability.reproduction"
+            },
+            "schema_version": { "const": 1 },
+            "artifact_role": { "const": "canonical-paper-evidence" },
+            "status": { "const": "FAIL" },
+            "message": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    }
+  }
+}

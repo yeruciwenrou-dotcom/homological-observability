@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "name": "wedge-c3-c5-visible-index-two",
+  "vertices": ["o", "a1", "a2", "b1", "b2", "b3", "b4"],
+  "edges": [
+    ["o", "a1"],
+    ["a1", "a2"],
+    ["a2", "o"],
+    ["o", "b1"],
+    ["b1", "b2"],
+    ["b2", "b3"],
+    ["b3", "b4"],
+    ["b4", "o"]
+  ],
+  "readouts": [
+    {
+      "name": "pi",
+      "coefficients": [
+        {"edge": ["a1", "a2"], "coefficient": 2},
+        {"edge": ["b1", "b2"], "coefficient": 1}
+      ]
+    }
+  ],
+  "analysis": {
+    "max_layer": 3,
+    "max_cycles": 100000,
+    "alpha": 0.5
+  }
+}

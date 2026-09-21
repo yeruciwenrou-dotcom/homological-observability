@@ -1,0 +1,748 @@
+{
+  "artifact_role": "fresh-critical-experiment",
+  "catalogue": {
+    "aggregation": "ordered-endpoint-and-graded-mark",
+    "audit_paths": null,
+    "evidence_categories": [
+      "EXACT_COMBINATORIAL",
+      "EXACT_RATIONAL"
+    ],
+    "geodesic_convention": "lexicographically-first shortest path under normalized vertex order",
+    "geodesics": [
+      {
+        "end": "v0",
+        "representation_dependent": true,
+        "start": "v0",
+        "walk": [
+          "v0"
+        ]
+      },
+      {
+        "end": "v2",
+        "representation_dependent": true,
+        "start": "v0",
+        "walk": [
+          "v0",
+          "v1",
+          "v2"
+        ]
+      },
+      {
+        "end": "v1",
+        "representation_dependent": true,
+        "start": "v1",
+        "walk": [
+          "v1"
+        ]
+      },
+      {
+        "end": "v3",
+        "representation_dependent": true,
+        "start": "v1",
+        "walk": [
+          "v1",
+          "v0",
+          "v3"
+        ]
+      },
+      {
+        "end": "v0",
+        "representation_dependent": true,
+        "start": "v2",
+        "walk": [
+          "v2",
+          "v1",
+          "v0"
+        ]
+      },
+      {
+        "end": "v2",
+        "representation_dependent": true,
+        "start": "v2",
+        "walk": [
+          "v2"
+        ]
+      },
+      {
+        "end": "v1",
+        "representation_dependent": true,
+        "start": "v3",
+        "walk": [
+          "v3",
+          "v0",
+          "v1"
+        ]
+      },
+      {
+        "end": "v3",
+        "representation_dependent": true,
+        "start": "v3",
+        "walk": [
+          "v3"
+        ]
+      }
+    ],
+    "weights": [
+      {
+        "end": "v0",
+        "endpoint_distance": 0,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "common-endpoint",
+        "path_count": 2,
+        "start": "v0",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v2",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            -1
+          ],
+          "torsion": []
+        },
+        "leading_weight": "1/2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v0",
+        "visible_label": {
+          "free": [
+            -1
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v2",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v0",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v1",
+        "endpoint_distance": 0,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "common-endpoint",
+        "path_count": 2,
+        "start": "v1",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v3",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "1/2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v1",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v3",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            1
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v1",
+        "visible_label": {
+          "free": [
+            1
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v0",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "1/2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v2",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v0",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            1
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v2",
+        "visible_label": {
+          "free": [
+            1
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v2",
+        "endpoint_distance": 0,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "common-endpoint",
+        "path_count": 2,
+        "start": "v2",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v1",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            -1
+          ],
+          "torsion": []
+        },
+        "leading_weight": "1/2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v3",
+        "visible_label": {
+          "free": [
+            -1
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v1",
+        "endpoint_distance": 2,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "critical-endpoint",
+        "path_count": 1,
+        "start": "v3",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      },
+      {
+        "end": "v3",
+        "endpoint_distance": 0,
+        "label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        },
+        "leading_weight": "2",
+        "mechanism": "common-endpoint",
+        "path_count": 2,
+        "start": "v3",
+        "visible_label": {
+          "free": [
+            0
+          ],
+          "torsion": []
+        }
+      }
+    ]
+  },
+  "evidence_categories": [
+    "EXACT_INTEGER",
+    "EXACT_COMBINATORIAL",
+    "EXACT_RATIONAL",
+    "ASYMPTOTIC_THEOREM"
+  ],
+  "groups": {
+    "graded": {
+      "coordinate_convention": "constructive-smith-normal-form",
+      "evidence_category": "EXACT_INTEGER",
+      "finite_order": null,
+      "free_rank": 1,
+      "representation_dependent_coordinates": true,
+      "torsion_factors": []
+    },
+    "hidden_kernel": {
+      "coordinate_convention": "constructive-smith-normal-form",
+      "evidence_category": "EXACT_INTEGER",
+      "finite_order": 1,
+      "free_rank": 0,
+      "representation_dependent_coordinates": true,
+      "torsion_factors": []
+    },
+    "induced_readout": {
+      "evidence_category": "EXACT_INTEGER",
+      "kernel_identification": "K_m/K_(m-1)",
+      "source_free_generator_images": [
+        {
+          "free": [
+            1
+          ],
+          "torsion": []
+        }
+      ],
+      "source_torsion_generator_images": []
+    },
+    "visible": {
+      "coordinate_convention": "constructive-smith-normal-form",
+      "evidence_category": "EXACT_INTEGER",
+      "finite_order": null,
+      "free_rank": 1,
+      "representation_dependent_coordinates": true,
+      "torsion_factors": []
+    }
+  },
+  "limit": null,
+  "limit_experiment": {
+    "boundary_note": "This is a critical-limit generative specification, not an exact finite-(T, delta) posterior or an unconditional critical MAP solver.",
+    "common_endpoint_component": {
+      "distribution": "compound-poisson",
+      "levy_measure": [],
+      "total_intensity": "0",
+      "zero_marks_excluded": true
+    },
+    "components_mutually_independent": true,
+    "critical_endpoint_components": [
+      {
+        "conditional_mark_law": [
+          {
+            "label": {
+              "free": [
+                -1
+              ],
+              "torsion": []
+            },
+            "probability": "1/5",
+            "visible_label": {
+              "free": [
+                -1
+              ],
+              "torsion": []
+            }
+          },
+          {
+            "label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            },
+            "probability": "4/5",
+            "visible_label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            }
+          }
+        ],
+        "count_distribution": "poisson",
+        "end": "v2",
+        "poisson_intensity": "5/8",
+        "start": "v0",
+        "zero_marks_retained": true
+      },
+      {
+        "conditional_mark_law": [
+          {
+            "label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            },
+            "probability": "1/5",
+            "visible_label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            }
+          },
+          {
+            "label": {
+              "free": [
+                1
+              ],
+              "torsion": []
+            },
+            "probability": "4/5",
+            "visible_label": {
+              "free": [
+                1
+              ],
+              "torsion": []
+            }
+          }
+        ],
+        "count_distribution": "poisson",
+        "end": "v3",
+        "poisson_intensity": "5/8",
+        "start": "v1",
+        "zero_marks_retained": true
+      },
+      {
+        "conditional_mark_law": [
+          {
+            "label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            },
+            "probability": "1/5",
+            "visible_label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            }
+          },
+          {
+            "label": {
+              "free": [
+                1
+              ],
+              "torsion": []
+            },
+            "probability": "4/5",
+            "visible_label": {
+              "free": [
+                1
+              ],
+              "torsion": []
+            }
+          }
+        ],
+        "count_distribution": "poisson",
+        "end": "v0",
+        "poisson_intensity": "5/8",
+        "start": "v2",
+        "zero_marks_retained": true
+      },
+      {
+        "conditional_mark_law": [
+          {
+            "label": {
+              "free": [
+                -1
+              ],
+              "torsion": []
+            },
+            "probability": "1/5",
+            "visible_label": {
+              "free": [
+                -1
+              ],
+              "torsion": []
+            }
+          },
+          {
+            "label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            },
+            "probability": "4/5",
+            "visible_label": {
+              "free": [
+                0
+              ],
+              "torsion": []
+            }
+          }
+        ],
+        "count_distribution": "poisson",
+        "end": "v1",
+        "poisson_intensity": "5/8",
+        "start": "v3",
+        "zero_marks_retained": true
+      }
+    ],
+    "evidence_category": "ASYMPTOTIC_THEOREM",
+    "infinite_support_probability_table_expanded": false,
+    "interpretation": "theorem-derived critical-limit generative specification",
+    "observable_rule": "apply the induced graded readout to the total mark",
+    "posterior_kernel_rule": "restrict the total-mark law to the observed visible residue and renormalize",
+    "scaling": "T * delta^(m-1) -> theta"
+  },
+  "model": {
+    "critical": {
+      "audit_paths": false,
+      "layer": 2,
+      "limits": {
+        "max_cycles": 1000,
+        "max_estimated_integer_digits": 256,
+        "max_integer_digits": 256,
+        "max_output_records": 1000,
+        "max_paths": 1000
+      },
+      "theta": "1"
+    },
+    "edges": [
+      [
+        "v0",
+        "v1"
+      ],
+      [
+        "v0",
+        "v3"
+      ],
+      [
+        "v1",
+        "v2"
+      ],
+      [
+        "v2",
+        "v3"
+      ]
+    ],
+    "name": "biased-c4-critical",
+    "rates": [
+      {
+        "edge": [
+          "v0",
+          "v1"
+        ],
+        "rate": "2"
+      },
+      {
+        "edge": [
+          "v0",
+          "v3"
+        ],
+        "rate": "1"
+      },
+      {
+        "edge": [
+          "v1",
+          "v0"
+        ],
+        "rate": "1"
+      },
+      {
+        "edge": [
+          "v1",
+          "v2"
+        ],
+        "rate": "2"
+      },
+      {
+        "edge": [
+          "v2",
+          "v1"
+        ],
+        "rate": "1"
+      },
+      {
+        "edge": [
+          "v2",
+          "v3"
+        ],
+        "rate": "2"
+      },
+      {
+        "edge": [
+          "v3",
+          "v0"
+        ],
+        "rate": "2"
+      },
+      {
+        "edge": [
+          "v3",
+          "v2"
+        ],
+        "rate": "1"
+      }
+    ],
+    "readouts": [
+      {
+        "coefficients": [
+          {
+            "coefficient": 1,
+            "edge": [
+              "v0",
+              "v1"
+            ]
+          }
+        ],
+        "name": "pi"
+      }
+    ],
+    "schema_version": 1,
+    "vertices": [
+      "v0",
+      "v1",
+      "v2",
+      "v3"
+    ]
+  },
+  "normalized_model_sha256": "c199a1628a762143502392826f9ff8d054899b7b65bf8401a4141d0341905eff",
+  "resources": {
+    "limits": {
+      "max_cycles": 1000,
+      "max_estimated_integer_digits": 256,
+      "max_integer_digits": 256,
+      "max_output_records": 1000,
+      "max_paths": 1000
+    },
+    "usage": {
+      "maximum_integer_digits": 2,
+      "output_records": 32,
+      "path_count": 16
+    }
+  },
+  "schema_name": "homological-observability.critical-experiment",
+  "schema_version": 1,
+  "software": {
+    "name": "homological-observability",
+    "version": "1.1.0.dev0"
+  },
+  "stationary_law": {
+    "evidence_category": "EXACT_RATIONAL",
+    "generator": {
+      "columns": 4,
+      "data": [
+        [
+          "-3",
+          "2",
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "-3",
+          "2",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "-3",
+          "2"
+        ],
+        [
+          "2",
+          "0",
+          "1",
+          "-3"
+        ]
+      ],
+      "rows": 4
+    },
+    "probabilities": [
+      "1/4",
+      "1/4",
+      "1/4",
+      "1/4"
+    ],
+    "vertices": [
+      "v0",
+      "v1",
+      "v2",
+      "v3"
+    ]
+  },
+  "status": "COMPLETE",
+  "summary": {
+    "aggregated_weight_count": 12,
+    "audit_paths_included": false,
+    "common_total_intensity": "0",
+    "critical_catalogue_empty": false,
+    "critical_total_intensity": "5/2",
+    "edge_count": 4,
+    "homology_rank": 1,
+    "layer": 2,
+    "natural_filtration_complete": true,
+    "natural_max_layer": 2,
+    "path_count": 16,
+    "theta": "1",
+    "vertex_count": 4
+  },
+  "topology": {
+    "baseline_schema_name": "homological-observability.analysis",
+    "baseline_schema_version": 2,
+    "natural_filtration_complete": true,
+    "requested_layer_complete": true
+  }
+}
