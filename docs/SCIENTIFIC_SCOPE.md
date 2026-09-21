@@ -19,6 +19,13 @@ matters because two visible lattices can have the same real rank while
 differing by finite index. Such a difference appears as torsion in a graded
 quotient and is lost if the analysis keeps only real vector-space dimensions.
 
+These computations make the paper's observability framework usable on new
+supported networks: users can compare side-readout choices, identify the
+hidden layers governing entropy growth, and obtain the associated asymptotic
+sampling exponents. The package implements the integer filtrations and
+critical-limit construction, alongside reproducible calculations for selected
+finite-cycle models. General theorems and proofs remain in the paper.
+
 ## Supported problem
 
 The supported input is:
