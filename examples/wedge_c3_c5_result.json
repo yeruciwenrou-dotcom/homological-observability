@@ -1,0 +1,496 @@
+{
+  "artifact_role": "builtin-example",
+  "evidence_categories": [
+    "EXACT_INTEGER",
+    "EXACT_COMBINATORIAL",
+    "ASYMPTOTIC_THEOREM"
+  ],
+  "filtration": {
+    "cycles": [
+      {
+        "length": 3,
+        "vertices": [
+          "a1",
+          "a2",
+          "o"
+        ]
+      },
+      {
+        "length": 5,
+        "vertices": [
+          "b1",
+          "b2",
+          "b3",
+          "b4",
+          "o"
+        ]
+      }
+    ],
+    "evidence_categories": [
+      "EXACT_COMBINATORIAL",
+      "EXACT_INTEGER"
+    ],
+    "layers": [
+      {
+        "exposure": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              [],
+              []
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": null,
+          "rank": 0
+        },
+        "hidden": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              [],
+              []
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": null,
+          "rank": 0
+        },
+        "layer": 0,
+        "maximum_cycle_length": 0,
+        "visible": {
+          "ambient_rank": 1,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              []
+            ],
+            "rows": 1
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": null,
+          "rank": 0
+        }
+      },
+      {
+        "exposure": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              [],
+              []
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": null,
+          "rank": 0
+        },
+        "hidden": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              [],
+              []
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": null,
+          "rank": 0
+        },
+        "layer": 1,
+        "maximum_cycle_length": 2,
+        "visible": {
+          "ambient_rank": 1,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              []
+            ],
+            "rows": 1
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": null,
+          "rank": 0
+        }
+      },
+      {
+        "exposure": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 1,
+            "data": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": {
+            "evidence_category": "EXACT_INTEGER",
+            "finite_order": null,
+            "free_rank": 1,
+            "torsion_factors": []
+          },
+          "rank": 1
+        },
+        "hidden": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 0,
+            "data": [
+              [],
+              []
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": {
+            "evidence_category": "EXACT_INTEGER",
+            "finite_order": 1,
+            "free_rank": 0,
+            "torsion_factors": []
+          },
+          "rank": 0
+        },
+        "layer": 2,
+        "maximum_cycle_length": 4,
+        "visible": {
+          "ambient_rank": 1,
+          "basis_columns": {
+            "columns": 1,
+            "data": [
+              [
+                2
+              ]
+            ],
+            "rows": 1
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": {
+            "evidence_category": "EXACT_INTEGER",
+            "finite_order": null,
+            "free_rank": 1,
+            "torsion_factors": []
+          },
+          "rank": 1
+        }
+      },
+      {
+        "exposure": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 2,
+            "data": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": {
+            "evidence_category": "EXACT_INTEGER",
+            "finite_order": null,
+            "free_rank": 1,
+            "torsion_factors": []
+          },
+          "rank": 2
+        },
+        "hidden": {
+          "ambient_rank": 2,
+          "basis_columns": {
+            "columns": 1,
+            "data": [
+              [
+                -1
+              ],
+              [
+                2
+              ]
+            ],
+            "rows": 2
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": {
+            "evidence_category": "EXACT_INTEGER",
+            "finite_order": null,
+            "free_rank": 1,
+            "torsion_factors": []
+          },
+          "rank": 1
+        },
+        "layer": 3,
+        "maximum_cycle_length": 6,
+        "visible": {
+          "ambient_rank": 1,
+          "basis_columns": {
+            "columns": 1,
+            "data": [
+              [
+                1
+              ]
+            ],
+            "rows": 1
+          },
+          "evidence_category": "EXACT_INTEGER",
+          "graded_quotient": {
+            "evidence_category": "EXACT_INTEGER",
+            "finite_order": 2,
+            "free_rank": 0,
+            "torsion_factors": [
+              2
+            ]
+          },
+          "rank": 1
+        }
+      }
+    ]
+  },
+  "homology": {
+    "chord_edges": [
+      [
+        "a2",
+        "o"
+      ],
+      [
+        "b4",
+        "o"
+      ]
+    ],
+    "coordinate_warning": "Basis matrices depend on the deterministic spanning-tree convention; ranks and quotient invariants are the basis-independent public results.",
+    "edge_orientation": "lexicographically-smaller vertex to larger vertex",
+    "evidence_category": "EXACT_INTEGER",
+    "fundamental_cycle_matrix": {
+      "columns": 2,
+      "data": [
+        [
+          1,
+          0
+        ],
+        [
+          -1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "rows": 8
+    },
+    "rank": 2,
+    "readout_matrix": {
+      "columns": 2,
+      "data": [
+        [
+          2,
+          1
+        ]
+      ],
+      "rows": 1
+    },
+    "readout_names": [
+      "pi"
+    ],
+    "tree_edges": [
+      [
+        "a1",
+        "a2"
+      ],
+      [
+        "a1",
+        "o"
+      ],
+      [
+        "b1",
+        "b2"
+      ],
+      [
+        "b1",
+        "o"
+      ],
+      [
+        "b2",
+        "b3"
+      ],
+      [
+        "b3",
+        "b4"
+      ]
+    ]
+  },
+  "limit": null,
+  "model": {
+    "analysis": {
+      "alpha": 0.5,
+      "max_cycles": 100000,
+      "max_layer": 3
+    },
+    "edges": [
+      [
+        "a1",
+        "a2"
+      ],
+      [
+        "a1",
+        "o"
+      ],
+      [
+        "a2",
+        "o"
+      ],
+      [
+        "b1",
+        "b2"
+      ],
+      [
+        "b1",
+        "o"
+      ],
+      [
+        "b2",
+        "b3"
+      ],
+      [
+        "b3",
+        "b4"
+      ],
+      [
+        "b4",
+        "o"
+      ]
+    ],
+    "name": "wedge-c3-c5-visible-index-two",
+    "readouts": [
+      {
+        "coefficients": [
+          {
+            "coefficient": 2,
+            "edge": [
+              "a1",
+              "a2"
+            ]
+          },
+          {
+            "coefficient": 1,
+            "edge": [
+              "b1",
+              "b2"
+            ]
+          }
+        ],
+        "name": "pi"
+      }
+    ],
+    "schema_version": 1,
+    "vertices": [
+      "a1",
+      "a2",
+      "b1",
+      "b2",
+      "b3",
+      "b4",
+      "o"
+    ]
+  },
+  "normalized_model_sha256": "7bee52db7a25658c080cd4c0314be7b07a3526d72241cd1c679033799cc0ddf9",
+  "phase": {
+    "alpha": 0.5,
+    "boundary_note": "These values apply the paper's asymptotic law; they are not finite-sample error bars or confidence guarantees.",
+    "entropy_log_t_coefficient": 0.0,
+    "evidence_category": "ASYMPTOTIC_THEOREM",
+    "interpretation": "paper-derived asymptotic prediction",
+    "layers": [
+      {
+        "critical_alpha": {
+          "denominator": 1,
+          "numerator": 1
+        },
+        "entropy_log_t_coefficient": 0.0,
+        "hidden_free_rank": 0,
+        "lambda": null,
+        "layer": 2,
+        "regime": "DENSE",
+        "scaling_exponent": 0.5,
+        "snapshot_budget_exponent": {
+          "denominator": 1,
+          "numerator": 2
+        }
+      },
+      {
+        "critical_alpha": {
+          "denominator": 2,
+          "numerator": 1
+        },
+        "entropy_log_t_coefficient": 0.0,
+        "hidden_free_rank": 1,
+        "lambda": null,
+        "layer": 3,
+        "regime": "CRITICAL",
+        "scaling_exponent": 0.0,
+        "snapshot_budget_exponent": {
+          "denominator": 2,
+          "numerator": 3
+        }
+      }
+    ],
+    "observation_time": null,
+    "sampling_interval": null
+  },
+  "schema_name": "homological-observability.analysis",
+  "schema_version": 2,
+  "software": {
+    "name": "homological-observability",
+    "version": "1.1.0.dev0"
+  },
+  "status": "COMPLETE",
+  "summary": {
+    "computed_max_layer": 3,
+    "cycle_count": 2,
+    "first_nonzero_exposure_layer": 2,
+    "first_nonzero_hidden_layer": 3,
+    "first_nonzero_visible_layer": 2,
+    "homology_rank": 2,
+    "natural_filtration_complete": true,
+    "natural_max_layer": 4,
+    "requested_horizon_complete": true,
+    "requested_max_layer": 3
+  }
+}
