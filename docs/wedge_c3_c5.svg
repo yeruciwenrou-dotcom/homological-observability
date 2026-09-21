@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" role="img" aria-labelledby="title desc">
+  <title id="title">Wedge of a triangle and a five-cycle with an integer side readout</title>
+  <desc id="desc">A triangle and a five-cycle share vertex o. The oriented edge from a1 to a2 has readout coefficient two, and the oriented edge from b1 to b2 has coefficient one.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+    <style>
+      .edge { stroke: #315b7d; stroke-width: 3; fill: none; }
+      .readout { stroke: #b45309; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .node { fill: #ffffff; stroke: #173b57; stroke-width: 3; }
+      .label { fill: #14212b; font: 18px system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; }
+      .cycle { fill: #315b7d; font: 600 19px system-ui, sans-serif; text-anchor: middle; }
+      .coefficient { fill: #8b3f08; font: 600 18px system-ui, sans-serif; text-anchor: middle; }
+      .caption { fill: #45545f; font: 16px system-ui, sans-serif; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <path class="edge" d="M 360 180 L 155 70"/>
+  <path class="readout" d="M 155 96 L 155 261"/>
+  <path class="edge" d="M 155 290 L 360 180"/>
+
+  <path class="edge" d="M 360 180 L 490 55"/>
+  <path class="readout" d="M 515 64 L 639 106"/>
+  <path class="edge" d="M 665 115 L 665 245"/>
+  <path class="edge" d="M 665 245 L 490 305"/>
+  <path class="edge" d="M 490 305 L 360 180"/>
+
+  <text class="cycle" x="180" y="32">C3</text>
+  <text class="cycle" x="570" y="32">C5</text>
+  <text class="coefficient" x="130" y="180">+2</text>
+  <text class="coefficient" x="585" y="72">+1</text>
+
+  <circle class="node" cx="360" cy="180" r="24"/>
+  <circle class="node" cx="155" cy="70" r="24"/>
+  <circle class="node" cx="155" cy="290" r="24"/>
+  <circle class="node" cx="490" cy="55" r="24"/>
+  <circle class="node" cx="665" cy="115" r="24"/>
+  <circle class="node" cx="665" cy="245" r="24"/>
+  <circle class="node" cx="490" cy="305" r="24"/>
+
+  <text class="label" x="360" y="180">o</text>
+  <text class="label" x="155" y="70">a1</text>
+  <text class="label" x="155" y="290">a2</text>
+  <text class="label" x="490" y="55">b1</text>
+  <text class="label" x="665" y="115">b2</text>
+  <text class="label" x="665" y="245">b3</text>
+  <text class="label" x="490" y="305">b4</text>
+
+  <text class="caption" x="380" y="345">Orange arrows mark the nonzero edge-cochain coefficients of the readout.</text>
+</svg>
