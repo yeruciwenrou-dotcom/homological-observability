@@ -1,9 +1,13 @@
 # End-to-end example: a wedge of C3 and C5
 
-This example follows a complete analysis from graph input to phase
-interpretation. One cycle appears earlier than the other, the visible image
-changes by finite index without changing real rank, and a hidden free
-direction appears at the same layer.
+Suppose a system can circulate around two loops, but its extra counter reports
+only a weighted sum of the two cycle counts. Which histories remain
+indistinguishable, and does that counter reduce the sampling requirements?
+
+This example follows the calculation from graph input to an answer. A single
+counter removes the earliest hidden direction while retaining a parity signal
+at the next layer. Comparing it with no counter and with two separate counters
+shows what each observation adds.
 
 ## Network and readout
 
@@ -20,6 +24,12 @@ $$
 \qquad
 \pi(e_5)=1.
 $$
+
+Writing the history coordinates as $(n_3,n_5)$, the extra readout is
+$y=2n_3+n_5$. Thus $y$ reveals the parity of $n_5$, but the two histories
+$(n_3,n_5)$ and $(n_3-1,n_5+2)$ give the same value. Here the coordinates use
+fixed endpoint references; for an open path the corresponding edge counter
+differs only by a known endpoint correction.
 
 In the deterministic homology basis, these values are represented by the
 matrix $P=[\pi]_{\mathcal B}$. The abstract object reported in scientific
@@ -140,8 +150,10 @@ With the requested $\alpha=1/2$:
 | 2 | 0 | $1/2$ | `DENSE` |
 | 3 | 1 | $0$ | `CRITICAL` |
 
-The new hidden free direction appears exactly at its asymptotic activation
-threshold. Its leading logarithmic entropy coefficient is
+The triangle layer is dense, but its hidden rank is zero: the counter resolves
+that direction. The surviving combination $-e_3+2e_5$ enters at layer three,
+where $\lambda_3=T\delta^2$ stays of order one for this sampling request.
+Its leading logarithmic entropy coefficient is
 
 $$
 \frac{d_3}{2}\max\bigl(1-\alpha(3-1),0\bigr)=0.
@@ -153,6 +165,51 @@ leading growth proportional to $\log T$.
 
 These phase labels apply the paper's asymptotic theorem. They do not estimate a
 finite-sample error probability for this graph.
+
+## Compare observation choices
+
+Keeping the graph fixed isolates what the counters contribute:
+
+| Extra readout | Earliest hidden layer | Hidden history difference | Consequence for sampling |
+| --- | --- | --- | --- |
+| None | 2 | Triangle winding already remains hidden | $T\delta\to0$ suffices for full cycle-history recovery |
+| $2n_3+n_5$ | 3 | $(-1,2)$ in the two cycle coordinates | The weaker condition $T\delta^2\to0$ suffices |
+| $n_3$ and $n_5$ separately | None | No hidden cycle direction | The exact counters already determine the target |
+
+In normalized units, the first two sufficient window budgets are respectively
+$N_T\gg T^2$ and $N_T\gg T^{3/2}$. For example, under $\delta=T^{-3/4}$ the
+uninstrumented triangle direction is supercritical, whereas the weighted
+counter's first hidden layer is subcritical. This comparison concerns the
+growth of snapshot requirements; it does not assign a cost to the counters.
+
+Run all three choices through the same public API:
+
+```python
+import homological_observability as ho
+
+base = ho.load_example("wedge-c3-c5")
+choices = {
+    "snapshots only": (),
+    "weighted counter": tuple((r.name, r.as_mapping()) for r in base.readouts),
+    "separate counters": (
+        ("triangle", {("a1", "a2"): 1}),
+        ("five-cycle", {("b1", "b2"): 1}),
+    ),
+}
+for label, readouts in choices.items():
+    model = ho.GraphModel.create(
+        name=label,
+        vertices=base.vertices,
+        edges=base.edges,
+        readouts=readouts,
+        max_layer=3,
+    )
+    document = ho.analysis_to_dict(ho.analyze_model(model, alpha=0.75))
+    print(label, document["summary"]["first_nonzero_hidden_layer"])
+```
+
+The printed layers are `2`, `3`, and `None`, respectively. Inspect `filtration`
+for its integer generators and `phase` for the sampling interpretation.
 
 ## Read it through the Python API
 

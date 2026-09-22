@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="290" viewBox="0 0 820 290" role="img" aria-labelledby="title desc">
+  <title id="title">The same snapshots can hide different cycle histories</title>
+  <desc id="desc">Two copies of a three-state ring show a direct path from A to B and a path from A through C to B. Both records contain A followed by B. The two paths differ by one complete cycle.</desc>
+  <defs>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1f4e79"/></marker>
+    <marker id="orange-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/></marker>
+  </defs>
+  <rect width="820" height="290" rx="12" fill="#ffffff"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" fill="#172b3a">
+    <text x="205" y="34" font-size="23" font-weight="600">One jump</text>
+    <text x="615" y="34" font-size="23" font-weight="600">Two jumps</text>
+    <g fill="none" stroke="#d6dee4" stroke-width="3">
+      <path d="M 95 188 L 205 82 L 315 188 Z"/>
+      <path d="M 505 188 L 615 82 L 725 188 Z"/>
+    </g>
+    <path d="M 121 188 L 285 188" fill="none" stroke="#1f4e79" stroke-width="4" marker-end="url(#blue-arrow)"/>
+    <path d="M 523 170 L 594 102" fill="none" stroke="#b45309" stroke-width="4" marker-end="url(#orange-arrow)"/>
+    <path d="M 633 100 L 704 168" fill="none" stroke="#b45309" stroke-width="4" marker-end="url(#orange-arrow)"/>
+    <g fill="#ffffff" stroke="#738594" stroke-width="2">
+      <circle cx="95" cy="188" r="24"/><circle cx="315" cy="188" r="24"/><circle cx="205" cy="82" r="24"/>
+      <circle cx="505" cy="188" r="24"/><circle cx="725" cy="188" r="24"/><circle cx="615" cy="82" r="24"/>
+    </g>
+    <g font-size="24" dominant-baseline="central">
+      <text x="95" y="188">A</text><text x="315" y="188">B</text><text x="205" y="82">C</text>
+      <text x="505" y="188">A</text><text x="725" y="188">B</text><text x="615" y="82">C</text>
+    </g>
+    <text x="205" y="236" font-size="19">Recorded: A, then B</text>
+    <text x="615" y="236" font-size="19">Recorded: A, then B</text>
+    <text x="410" y="276" font-size="21" font-weight="600">Same snapshots. Cycle counts differ by one.</text>
+  </g>
+</svg>

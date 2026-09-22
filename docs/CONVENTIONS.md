@@ -162,6 +162,11 @@ columns.
 
 ## Sampling and phase conventions
 
+The paper fixes a reference transition rate $q_0$ and measures time in units
+of $q_0^{-1}$. All sampling inputs here use those normalized units. With
+dimensional times, the exposure scale is $(q_0T)(q_0\delta)^{m-1}$; the rate
+weights in the critical task supply the remaining dynamical factors.
+
 The topology result can be interpreted in either of two mutually exclusive
 ways.
 
@@ -186,6 +191,13 @@ reported entropy coefficient is
 $$
 \frac{d_m}{2}\max\bigl(1-\alpha(m-1),0\bigr).
 $$
+
+`DENSE` means that path alternatives at this layer accumulate in the specified
+limit; it does not describe graph density. `SPARSE` means that their exposure
+vanishes. Recovery of the natural quotient is assured in the sparse limit;
+the dense-limit strong converse requires $d_m>0$. At criticality, the
+conditional experiment carries information beyond this logarithmic entropy
+coefficient. See the [physical interpretation](SCIENTIFIC_SCOPE.md).
 
 With positive `observation_time` $T$ and `sampling_interval` $\delta$, the
 software instead reports the finite-scale control parameter
