@@ -1,10 +1,20 @@
 # Homological Observability
 
-Homological Observability is a Python toolkit for studying which accumulated
-cycle histories can be recovered from discrete observations of a known Markov
-jump network. Use it to compare network structures, additional integer
-readouts, and asymptotic sampling requirements, or to construct the critical
-limit experiment for a model with known transition rates.
+Homological Observability is a Python toolkit for studying the recovery of
+accumulated cycle history from discrete observations of a known finite-state
+Markov jump network. It computes exact integer structures that identify
+hidden cycle directions, helping you compare networks, additional counters,
+and their asymptotic sampling requirements. With known transition rates, it
+also constructs the corresponding critical limit experiment. The package
+provides reproducible implementations of the accompanying paper's selected
+constructions and finite-cycle calculations, with command-line and Python
+interfaces for analyzing your own supported networks.
+
+[One-command quickstart](#verify-the-software-and-paper-evidence) ·
+[Worked examples](#guided-example-a-wedge-of-c3-and-c5) ·
+[Your own network](#analyze-your-own-network) ·
+[Python API](#python-api) ·
+[Paper and evidence](PAPER_MAP.md)
 
 ## Why homological observability?
 
@@ -30,7 +40,7 @@ giving the scales $T\delta^{m-1}$. Times here are measured in a fixed reference
 rate's inverse units. The software computes the integer structure that tells
 these layers apart and identifies what additional readouts can distinguish.
 
-## What you can learn with it
+## Research questions you can explore
 
 | Research question | Analysis | What the result lets you compare |
 | --- | --- | --- |
@@ -43,13 +53,9 @@ and path calculations that would otherwise have to be repeated for each model.
 Sampling exponents provide asymptotic comparisons; a finite-data error
 probability requires further analysis of the corresponding observation model.
 
-For automatic installation, checks, and reproduction, use the
-[one-command quickstart](#verify-the-software-and-paper-evidence).
-To read before installing, start with the
-[physical interpretation and scope](docs/SCIENTIFIC_SCOPE.md) or the
-[computational report](results/REPORT.md). To try an analysis, follow the
-[wedge example](#guided-example-a-wedge-of-c3-and-c5), then
-[supply your own network](#analyze-your-own-network).
+The [physical interpretation and scope](docs/SCIENTIFIC_SCOPE.md) develops
+these ideas and their assumptions; the [computational report](results/REPORT.md)
+explains the mechanisms illustrated by the finite-cycle calculations.
 
 ## What the software computes
 
@@ -127,7 +133,8 @@ single-window calculation for this model.
 
 ### Verify the software and paper evidence
 
-From the repository root, run:
+After [cloning or downloading the source](#install-from-a-source-checkout),
+run this command from the repository root:
 
 ```bash
 python quickstart.py
