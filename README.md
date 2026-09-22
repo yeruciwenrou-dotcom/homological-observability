@@ -43,6 +43,8 @@ and path calculations that would otherwise have to be repeated for each model.
 Sampling exponents provide asymptotic comparisons; a finite-data error
 probability requires further analysis of the corresponding observation model.
 
+For automatic installation, checks, and reproduction, use the
+[one-command quickstart](#verify-the-software-and-paper-evidence).
 To read before installing, start with the
 [physical interpretation and scope](docs/SCIENTIFIC_SCOPE.md) or the
 [computational report](results/REPORT.md). To try an analysis, follow the
