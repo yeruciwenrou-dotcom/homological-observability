@@ -5,6 +5,32 @@ topology and optional integer readouts; `critical` additionally needs every
 positive directed rate, a selected layer, and a critical intensity. Fields
 are checked against the format required by the selected command.
 
+## From a physical model to an input
+
+Choose vertices for the states resolved by the snapshot detector and edges
+for the allowed bidirectional transitions. A cyclic state sequence represents
+a possible circulation of the system. The graph should describe the effective
+Markov jump model on the timescale of interest.
+
+An extra counter is represented by its signed increment on each oriented edge:
+coefficient `1` adds one on a forward crossing and subtracts one on the reverse
+crossing; coefficient `0` leaves the counter unchanged. Integer weights allow
+several transitions to contribute to one cumulative reading. For open paths,
+a known endpoint correction relates this edge reading to the cycle readout.
+The `readouts` field specifies what a counter measures, not a measured value
+or a time series. An empty list means that only the vertex snapshots are used.
+
+For finite-scale interpretation, choose a fixed rate unit $q_0$ and enter
+$q_0T$ as `observation_time` and $q_0\delta$ as `sampling_interval`.
+For a critical model, express each rate as $q_{xy}/q_0$ and use the same
+normalization for $\theta$. The program has no units field and performs no
+automatic unit conversion. The graph-only filtration needs rate support,
+whereas the critical path weights also need the rate magnitudes.
+
+The [wedge example](END_TO_END_EXAMPLE.md#compare-observation-choices) shows
+how to compare counters; the [critical example](CRITICAL_EXPERIMENT.md)
+shows how to add exact rates.
+
 ## Topology analysis model
 
 The `analyze` command reads a UTF-8 JSON document with
@@ -116,6 +142,10 @@ readout in the listed order.
 `observation_time` and `sampling_interval` must appear together. The pair is
 mutually exclusive with `alpha` because the two requests have different
 interpretations.
+
+`max_layer` bounds the path-exposure calculation; it does not set the
+detector's time resolution. Sampling information is supplied separately by
+`alpha` or the time/interval pair.
 
 Sampling parameters are converted to binary `float`. Phase classification uses
 the exact value of that float in $1-(m-1)\alpha$, with equality reserved for

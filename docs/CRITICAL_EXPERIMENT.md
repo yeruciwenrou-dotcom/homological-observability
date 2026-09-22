@@ -1,17 +1,23 @@
 # Rate-dependent critical experiment
 
-The `critical` task answers a different question from the topology-only
-`analyze` task. Given a known finite support graph, every strictly positive
-directed edge rate, a layer $m$, and a critical intensity $\theta$, it constructs
-the exact finite path catalogue and the theorem-derived marked-Poisson
+On a four-state ring, a pair of snapshots at opposite vertices reveals that
+a crossing occurred, but two equally short routes connect those vertices.
+Faster clockwise motion favors one route. An extra cycle counter may resolve
+the remaining history ambiguity even though the snapshots alone cannot.
+
+The `critical` task makes these two effects explicit. With a known graph,
+strictly positive directed rates, layer $m$, and intensity $\theta$, it
+constructs the exact path catalogue and the theorem-derived marked-Poisson
 experiment for
 
 $$
 T\delta^{m-1}\longrightarrow\theta.
 $$
 
-It does not estimate rates from observations and does not compute an exact
-posterior at finite $(T,\delta)$.
+The topology-only `analyze` task locates the exposure layers; `critical` adds
+the path weights and the rule for conditioning on the available readout.
+The result specifies a limit experiment. An exact posterior at finite $(T,\delta)$
+requires a separate calculation.
 
 ## Run the example
 
@@ -90,13 +96,19 @@ $$
 \frac{1\cdot1}{2!}=\frac12.
 $$
 
-Conditioning on this ordered endpoint therefore gives the exact mark law
+In the critical limit, conditioning on this ordered endpoint gives the exact
+mark law
 
 $$
 \Pr(0\mid v0,v2)=\frac45,
 \qquad
 \Pr(-1\mid v0,v2)=\frac15.
 $$
+
+The factor of four comes from two clockwise rate factors, each twice its
+counterclockwise counterpart. Equal rates would instead give equal route
+weights. These are conditional path-mark probabilities before applying the
+extra readout, not the final history-recovery probabilities.
 
 The associated Poisson intensity is
 
@@ -109,6 +121,44 @@ $4(5/8)=5/2$. The zero mark remains part of each conditional critical-endpoint
 law. By contrast, zero marks are excluded from the common-endpoint Lévy
 measure; in this example no nonzero common-endpoint mark remains, so its total
 intensity is zero.
+
+## What the counter changes
+
+The supplied readout counts signed crossings of $v0\to v1$. After the known
+endpoint correction, it measures the ring's sole integer cycle coordinate.
+The induced readout is injective and the reported `hidden_kernel` is the
+trivial group. Consequently the two route weights above do not imply a
+residual 20% error after using all the observations: the exact side readout
+already determines the accumulated cycle target.
+
+Remove the counter to study the ambiguity left by snapshots alone:
+
+```python
+import json
+from pathlib import Path
+
+import homological_observability as ho
+
+payload = json.loads(Path("examples/biased_c4_critical.json").read_text())
+for label, readouts in (
+    ("with cycle counter", payload["readouts"]),
+    ("snapshots only", []),
+):
+    request = {**payload, "readouts": readouts}
+    result = ho.analyze_critical_model(ho.parse_critical_model(request))
+    document = ho.critical_experiment_to_dict(result)
+    print(label, document["groups"]["hidden_kernel"])
+```
+
+The hidden free rank changes from zero to one. The physical rates, stationary
+law, and total critical endpoint intensity $5/2$ stay the same; what changes
+is how much of the accumulated mark the observations reveal. Each antipodal
+endpoint count is visible in the snapshot record. Conditional on those counts,
+the unresolved routes supply the random marks. Averaging out the counts would
+discard information the observer actually has.
+
+Together, the rate comparison and counter comparison separate two questions:
+how likely competing histories are, and which of them the records distinguish.
 
 ## Read the JSON result
 

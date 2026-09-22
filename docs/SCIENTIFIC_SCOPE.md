@@ -1,30 +1,91 @@
-# Scientific scope
+# Physical interpretation and scientific scope
 
 ## The question this software answers
 
-Homological Observability analyzes a known finite support graph for a Markov
-jump process observed only at discrete times. Paths between two observations
-can share the same endpoints while carrying different integral first-homology
-classes. The software asks which of those differences can first occur at each
-path-length layer and which remain invisible after integer-valued side
-measurements.
+A Markov jump network specifies the states a system can occupy and the rates
+at which it moves between them. A snapshot records its state at one instant.
+Between snapshots, several routes may be possible, including routes whose
+integer cycle counts differ. Knowing the network and its rates determines
+the probabilities of those routes, but leaves the history of a particular run
+to be inferred from its records.
 
-When the positive directed rates are also known, the independent critical task
-asks how path differences of length $m$ are weighted in the scaling
-$T\delta^{m-1}\to\theta$, and constructs the corresponding theorem-derived
-marked-Poisson experiment.
+The target here is accumulated cycle history. On a ring it is a net winding
+count; on a network with several independent cycles it is an integer vector.
+For an open trajectory, fixed endpoint reference paths define these
+coordinates. Histories with the same endpoints have an unambiguous cycle
+difference, and a change of reference does not change their distinguishability.
 
-The output is exact, inspectable integer and rational data. The integer layer
-matters because two visible lattices can have the same real rank while
-differing by finite index. Such a difference appears as torsion in a graded
-quotient and is lost if the analysis keeps only real vector-space dimensions.
+This target lies between instantaneous state and a complete trajectory. It
+retains cumulative circulation while omitting individual jump times. An
+accurate estimate of a long-time average current need not identify the exact
+integer count in a single run. Likewise, zero mean current at equilibrium
+does not remove the alternative cycle histories compatible with snapshots.
 
-These computations make the paper's observability framework usable on new
-supported networks: users can compare side-readout choices, identify the
-hidden layers governing entropy growth, and obtain the associated asymptotic
-sampling exponents. The package implements the integer filtrations and
-critical-limit construction, alongside reproducible calculations for selected
-finite-cycle models. General theorems and proofs remain in the paper.
+## How local ambiguity accumulates
+
+On a triangle, a direct A → B jump and the route A → C → B differ by one
+cycle. The two-jump alternative has probability of order $\delta^2$ in a short
+window. A record of duration $T$ contains about $T/\delta$ windows, so these
+opportunities accumulate on the scale $T\delta$. Observing for longer gives
+more data while also lengthening the history to recover.
+
+The general exposure filtration $L_m$ organizes such path differences by
+their short-time order. After weighting by the probability of the visible
+endpoints, order $m$ contributes a single-window scale $\delta^m$ and an
+accumulated scale
+
+$$
+\lambda_m=T\delta^{m-1}.
+$$
+
+Times are expressed in units set by a fixed reference rate $q_0$. With physical
+times, the dimensionless scale is $(q_0T)(q_0\delta)^{m-1}$; the exact path
+intensities additionally depend on the transition rates. The filtration
+describes an asymptotic ordering of ambiguities, not a hard cutoff on how many
+jumps can occur in a finite window.
+
+An integer side readout $\pi$ represents an additional exact counter, such as
+a signed count across a selected edge or a weighted combination of cycle
+counts. The kernel intersection $K_m=L_m\cap\ker\pi$ identifies exposed
+history differences that leave this counter unchanged. The program computes
+these integer relations for a supplied network and readout specification.
+
+For the natural history class modulo $K_{m-1}$, the paper proves recovery
+when $\lambda_m\to0$, a conditional limit experiment when
+$\lambda_m\to\theta\in(0,\infty)$, and optimal mean recovery probability
+tending to zero when $\lambda_m\to\infty$ **and the layer adds a hidden free
+direction**. A finite torsion ambiguity need not obey that last conclusion.
+The hidden free ranks control leading entropy growth; integer quotients retain
+additional finite information such as parity.
+
+## Research uses
+
+The two analysis commands support different comparisons:
+
+| Task | Inputs to vary | Read from the result |
+| --- | --- | --- |
+| Compare network structures | Graph edges, with the observation protocol fixed | Exposure layers and hidden directions; adding an edge can change more than the cycle count |
+| Compare counters | Integer readouts on the same graph | Hidden kernels, finite visible information, and the layers governing the remaining sampling requirements |
+| Compare sampling scalings | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Which hidden layers are sparse, critical, or dense, and their leading entropy coefficients |
+| Compare dynamics at a threshold | Exact positive directed rates for `critical` | Path weights, visible opportunity counts, and the limiting conditional mark laws |
+
+The [wedge tutorial](END_TO_END_EXAMPLE.md) compares an uninstrumented network
+with one weighted counter and with separate counters. The
+[critical tutorial](CRITICAL_EXPERIMENT.md) keeps the graph fixed while
+separating the effects of rates and additional observations. These are
+model-analysis tasks: the program consumes a graph, readouts, and optional
+rates rather than fitting a measured trajectory.
+
+The resulting exponents give asymptotic sampling guidance. For example,
+$N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
+$N_T/T^{m/(m-1)}\to\infty$ in the stated units. This helps compare how recording
+requirements grow with observation time. Choosing a sampling interval for a
+specified finite-run error tolerance requires additional risk analysis;
+counter cost and recording energy are separate inputs to an instrument model.
+
+The package also supplies a reference implementation of the paper's integer
+and path constructions and reproducible finite-cycle calculations. General
+theorems and proofs remain in the paper.
 
 ## Supported problem
 
@@ -39,6 +100,11 @@ The supported input is:
 - an optional maximum filtration layer and simple-cycle budget;
 - optionally, either an asymptotic sampling exponent `alpha` or a positive
   observation-time/sampling-interval pair.
+
+The paper's statistical interpretation fixes the graph, generator, and
+readout, starts the process in its stationary law, and uses noiseless regular
+vertex snapshots. The exact graph and lattice calculations themselves do not
+require a sampled trajectory.
 
 The separate `critical` input adds:
 
@@ -74,20 +140,6 @@ constructing that topology at the requested layer. Both tasks require positive
 support in both directions. If one directed rate vanishes, the static graph
 filtration can include a path witness that the dynamics cannot realize, so
 this implementation must not be used unchanged.
-
-## Uses
-
-You can use the software to:
-
-- **Analyze new networks:** compute the filtrations for a finite graph and integer readouts, and
-  construct a critical-limit experiment when exact directed rates are known.
-- **Inspect the methods:** examine a reference implementation of the integer
-  filtrations and the coordinate and Smith/Hermite conventions they use.
-- **Reproduce the paper's calculations:** run the finite-cycle examples and
-  compare their results with the reference data included in the repository.
-
-Analysis of new inputs uses the same exact integer methods. Its output is
-kept separate from the paper's reference results.
 
 ## Evidence classes
 
@@ -128,14 +180,19 @@ The scientific contract does not cover:
   cell complexes;
 - real-valued readouts rounded or coerced to integers;
 - zero directed rates or support that is not bidirectional;
-- trajectory simulation, an exact posterior at finite $(T,\delta)$, or
-  unconditional critical MAP solving;
+- a general finite-$(T,\delta)$ posterior solver or unconditional critical
+  MAP solving;
 - automatic expansion of the generally infinite total-mark probability table;
 - a graphical user interface or plugin framework.
 
 These questions require different scientific inputs, algorithms, or evidence
 contracts. They are outside the meaning of a successful result from the
 package.
+
+The source checkout does include specialized finite-cycle bridge calculations
+and critical MAP identities for the paper's examples. See the
+[computational report](../results/REPORT.md) and
+[finite-ring exploration command](../README.md#explore-the-software).
 
 ## Interpretation limits
 

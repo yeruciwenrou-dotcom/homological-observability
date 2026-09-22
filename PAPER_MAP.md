@@ -4,6 +4,14 @@ This guide connects the paper's mathematical objects to their implementation
 and reproducible evidence. It uses object names rather than equation numbers
 so that the links remain useful after typesetting.
 
+The physical target is the accumulated integer cycle history of a particular
+run observed through vertex snapshots and optional counters. The filtration
+determines which history differences can appear at each short-time order;
+the critical experiment determines their limiting weights and what remains
+after the available observations. For a reader's introduction, start with
+[physical interpretation and scope](docs/SCIENTIFIC_SCOPE.md). This page
+provides the implementation and evidence trail behind those interpretations.
+
 ## Integer homology and filtrations
 
 | Paper object | Computation | Implementation |

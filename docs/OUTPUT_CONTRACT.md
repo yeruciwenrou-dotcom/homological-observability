@@ -8,6 +8,13 @@ analyses, Markdown provide human-readable output.
 
 ## Analysis document identity
 
+For a first reading, check `status` and the completeness fields before using
+`summary.first_nonzero_hidden_layer` to locate the earliest unresolved cycle
+direction. Then inspect `filtration` for the integer relations and `phase`
+for their sampling interpretation. `COMPLETE` certifies the calculation, not
+perfect observability. A zero leading entropy coefficient can coexist with
+finite critical ambiguity, as the [wedge example](END_TO_END_EXAMPLE.md) shows.
+
 Every analysis JSON document begins with:
 
 ```json
