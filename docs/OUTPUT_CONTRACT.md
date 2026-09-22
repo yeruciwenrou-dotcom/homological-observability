@@ -126,6 +126,14 @@ state:
 Invalid input is not an analysis state. It produces a controlled error rather
 than a result document.
 
+Computed integers must also fit the decimal representation boundary: at most
+4,300 digits, or the interpreter's smaller active limit. This covers readout
+matrices, lattice bases, quotient invariants, finite group orders, and all other
+integer fields in the output document. If any field exceeds that boundary,
+`analyze_model` raises `ValueError` before returning a result. The renderers
+apply the same check to supplied results and documents. The CLI reports
+`ERROR` with exit code `2` in either format; no integer is rounded or truncated.
+
 The `summary` object distinguishes the two notions of completeness:
 
 | Field | Meaning |
@@ -280,8 +288,17 @@ complete and incomplete components. The document does not expose a truncated
 catalogue as a completed experiment.
 
 The resource contract separates admission estimates from exact result limits.
+The directed-path preflight stops once it can certify that `max_paths` is
+exceeded. If it stops before obtaining the final count, `path_count` and
+`limit.observed_or_estimated` are `null`, with `measurement: unavailable`.
+This means the exact total was not computed; the resource refusal is certain.
+If the final count is obtained and representable, it is reported as `exact`.
+
 `max_estimated_integer_digits` applies only to the deterministic preflight
 estimate and is reported with `measurement: preflight-estimate`.
+The estimate may stop at a lower bound that already exceeds the budget,
+without expanding the layer's factorial. An unrepresentable estimate is
+omitted with `measurement: unavailable`.
 `max_integer_digits` and `max_output_records` are checked against observed exact
 values and records and are reported with `measurement: exact` when exceeded.
 `maximum_integer_digits` covers the scientific integers and rationals listed

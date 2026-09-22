@@ -11,6 +11,7 @@ from typing import Any
 
 from sympy.matrices.matrixbase import MatrixBase
 
+from ._integer_io import check_output_integers
 from .analysis import AnalysisStatus, TopologyAnalysis
 from .integer_lattice import QuotientInvariants
 from .model import GraphModel
@@ -249,7 +250,7 @@ def analysis_to_dict(
         if result.limit is not None
         else None
     )
-    return {
+    document = {
         "schema_name": SCHEMA_NAME,
         "schema_version": SCHEMA_VERSION,
         "software": {
@@ -267,6 +268,8 @@ def analysis_to_dict(
         "phase": phase_document,
         "limit": limit,
     }
+    check_output_integers(document)
+    return document
 
 
 def _as_document(
@@ -276,7 +279,9 @@ def _as_document(
 ) -> dict[str, Any]:
     if isinstance(value, TopologyAnalysis):
         return analysis_to_dict(value, artifact_role=artifact_role)
-    return dict(value)
+    document = dict(value)
+    check_output_integers(document)
+    return document
 
 
 def render_json(

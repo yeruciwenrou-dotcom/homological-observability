@@ -144,7 +144,7 @@ The new hidden free direction appears exactly at its asymptotic activation
 threshold. Its leading logarithmic entropy coefficient is
 
 $$
-\frac{d_3}{2}\max\{1-\alpha(3-1),0\}=0.
+\frac{d_3}{2}\max\bigl(1-\alpha(3-1),0\bigr)=0.
 $$
 
 This zero does not mean that the ambiguity vanishes. At criticality the limit
