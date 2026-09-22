@@ -180,8 +180,8 @@ The scientific contract does not cover:
   cell complexes;
 - real-valued readouts rounded or coerced to integers;
 - zero directed rates or support that is not bidirectional;
-- a general finite-$(T,\delta)$ posterior solver or unconditional critical
-  MAP solving;
+- a general solver for the posterior at finite $(T,\delta)$, or unconditional
+  critical MAP solving;
 - automatic expansion of the generally infinite total-mark probability table;
 - a graphical user interface or plugin framework.
 
