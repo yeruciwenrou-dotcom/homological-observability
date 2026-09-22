@@ -51,6 +51,9 @@ separately inside their JSON documents.
 
 ### Fixed
 
+- The shared pinned verification dependencies include JSON Schema validation
+  and its dependencies, so fresh quickstart environments and CI can run the
+  reader-side tests. Existing quickstart environments refresh automatically.
 - Path preflight stops at a certified resource refusal without constructing
   an oversized count. Uncomputed totals remain explicitly unavailable.
 - Generated topology integers share one representation boundary across the
