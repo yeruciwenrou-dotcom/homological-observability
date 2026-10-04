@@ -1,5 +1,11 @@
 # Paper map and evidence
 
+This repository is the companion codebase for the manuscript *Stochastic
+Histories at Finite Temporal Resolution: Homological Observability and
+Information Phase Diagrams in Markov Jump Processes*. The manuscript is
+currently being prepared for submission to arXiv; its arXiv identifier and
+public link will be added here once the preprint is submitted.
+
 This guide connects the paper's mathematical objects to their implementation
 and reproducible evidence. It uses object names rather than equation numbers
 so that the links remain useful after typesetting.

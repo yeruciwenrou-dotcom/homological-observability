@@ -1,5 +1,11 @@
 # Homological Observability
 
+> **Companion codebase for the paper:** *Stochastic Histories at Finite
+> Temporal Resolution: Homological Observability and Information Phase
+> Diagrams in Markov Jump Processes.* The manuscript is currently being
+> prepared for submission to arXiv. Its arXiv identifier and public link will
+> be added here once the preprint is submitted.
+
 Homological Observability is a Python toolkit for studying the recovery of
 accumulated cycle history from discrete observations of a known finite-state
 Markov jump network. It computes exact integer structures that identify
@@ -364,15 +370,16 @@ The toolkit implements selected constructions from the accompanying paper:
 > *Stochastic Histories at Finite Temporal Resolution: Homological
 > Observability and Information Phase Diagrams in Markov Jump Processes*.
 
-**Paper status:** The manuscript is in preparation, with submission to arXiv
-planned. Its public link will be added when it is released.
+**Paper status:** The companion manuscript is currently being prepared for
+submission to arXiv. Its arXiv identifier and public link will be added here
+once the preprint is submitted.
 
 Cite the companion paper for the theoretical results and the software for
 computations performed with this package. Record the software version and,
 when using a source checkout, the exact Git commit. Citation metadata for both
 is provided in [`CITATION.cff`](CITATION.cff); the paper entry currently
-describes an unpublished manuscript. Its arXiv identifier and public link will
-be added when available.
+describes a manuscript in preparation. Its arXiv identifier and public link
+will be added when available.
 
 The MIT License covers the software repository; see [`LICENSE`](LICENSE).
 It does not alter the copyright or licensing status of the manuscript itself.
