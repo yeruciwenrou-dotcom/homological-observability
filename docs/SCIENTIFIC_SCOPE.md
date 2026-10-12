@@ -192,7 +192,7 @@ package.
 The source checkout does include specialized finite-cycle bridge calculations
 and critical MAP identities for the paper's examples. See the
 [computational report](../results/REPORT.md) and
-[finite-ring exploration command](../README.md#explore-the-software).
+[finite-ring exploration command](../README.md#finite-ring-bridges).
 
 ## Interpretation limits
 

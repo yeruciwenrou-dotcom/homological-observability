@@ -62,6 +62,12 @@ jobs:
           python-version: "3.12"
       - name: Run the one-command verification path
         run: python quickstart.py
+      - name: Run the documented Linux entry point
+        if: runner.os == 'Linux'
+        run: .venv/bin/homological-observability example wedge-c3-c5
+      - name: Run the documented Windows entry point
+        if: runner.os == 'Windows'
+        run: .venv\Scripts\homological-observability.exe example wedge-c3-c5
 
   distribution:
     runs-on: ubuntu-24.04
@@ -78,7 +84,10 @@ jobs:
         run: |
           python -m pip install -r requirements.txt
           python -m pip install "build>=1.3,<2" "jsonschema>=4.25,<5" "setuptools==77.0.3" wheel twine
-          python -m pip install --no-deps -e .
+          python -m pip install -c requirements.txt -e ".[test]"
+      - name: Verify the editable development installation
+        run: |
+          python -c "from pathlib import Path; import homological_observability as h; assert Path(h.__file__).resolve().is_relative_to(Path('src').resolve())"
       - name: Validate the machine-readable result contract
         run: python tests/validate_schema.py
       - name: Validate the minimum supported build backend

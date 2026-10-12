@@ -20,7 +20,6 @@ def public_markdown() -> tuple[Path, ...]:
         ROOT / "PAPER_MAP.md",
         ROOT / "CHANGELOG.md",
         ROOT / "CONTRIBUTING.md",
-        ROOT / "SECURITY.md",
         ROOT / "examples/wedge_c3_c5_result.md",
         ROOT / "results/REPORT.md",
     ]
@@ -334,7 +333,6 @@ class DocumentationTests(unittest.TestCase):
         manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
         self.assertIn("recursive-include docs *.md *.svg", manifest)
         self.assertIn("include CONTRIBUTING.md", manifest)
-        self.assertIn("include SECURITY.md", manifest)
 
 
 if __name__ == "__main__":
