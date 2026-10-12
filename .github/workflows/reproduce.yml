@@ -2,15 +2,21 @@ name: Reproduce companion checks
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   reproduce:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -31,13 +37,22 @@ jobs:
         run: python -W error -m unittest discover -s tests -v
       - name: Run checks
         run: python -W error reproduce_all.py
+      - name: Save reproduced evidence
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: reproduced-evidence
+          path: generated_results/
+          if-no-files-found: error
+          retention-days: 30
 
   quickstart:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-24.04, windows-2025]
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -49,7 +64,8 @@ jobs:
         run: python quickstart.py
 
   distribution:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -61,15 +77,20 @@ jobs:
       - name: Install locked dependencies and build tooling
         run: |
           python -m pip install -r requirements.txt
-          python -m pip install "build>=1.3,<2" "jsonschema>=4.25,<5"
+          python -m pip install "build>=1.3,<2" "jsonschema>=4.25,<5" "setuptools==77.0.3" wheel twine
           python -m pip install --no-deps -e .
       - name: Validate the machine-readable result contract
         run: python tests/validate_schema.py
+      - name: Validate the minimum supported build backend
+        run: |
+          python -m build --no-isolation --outdir "$RUNNER_TEMP/minimum-dist"
+          python -m twine check --strict "$RUNNER_TEMP"/minimum-dist/*
       - name: Build and test wheel and sdist outside the repository
         run: python tests/validate_distribution.py
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -86,7 +107,8 @@ jobs:
           ruff format --check .
 
   atlas:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -106,7 +128,8 @@ jobs:
     name: required
     if: always()
     needs: [reproduce, quickstart, distribution, lint, atlas]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
       - name: Confirm all verification jobs passed
         env:

@@ -199,6 +199,10 @@ the dense-limit strong converse requires $d_m>0$. At criticality, the
 conditional experiment carries information beyond this logarithmic entropy
 coefficient. See the [physical interpretation](SCIENTIFIC_SCOPE.md).
 
+At `alpha = 0`, the grid is fixed. Once the natural filtration is complete,
+the summed coefficient is $\mathrm{rank}(\ker\pi)/2$, consistent with the
+paper's fixed-grid entropy law. Positive `alpha` describes a shrinking grid.
+
 With positive `observation_time` $T$ and `sampling_interval` $\delta$, the
 software instead reports the finite-scale control parameter
 

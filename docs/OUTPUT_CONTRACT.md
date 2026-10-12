@@ -77,9 +77,17 @@ The reproduction command emits a separate lightweight document with
 files and whether the two tables were checked against frozen references; it is
 not an analysis result and does not claim the analysis schema name.
 
-Each `files[].sha256` value identifies the exact bytes produced by that run. A
-reproduction `PASS` is determined by comparing the generated CSV values with
-the frozen references using `rtol=1e-12` and `atol=1e-14`. Platform-dependent
+`status: PASS` means that the calculation checks completed. Read it together
+with `checked_against_frozen_reference`: `true` additionally confirms that
+both generated CSV tables match the frozen references at `rtol=1e-12` and
+`atol=1e-14`; `false` means that comparison was not requested. Use `--check`
+for paper reproduction. A mismatch emits `status: FAIL` and exits with code 1.
+The Markdown report displays calculation and reference-comparison status
+separately. A new run invalidates any previous success report before computing;
+a failed or interrupted run leaves a `FAIL` or `INCOMPLETE` report.
+
+Each `files[].sha256` value identifies the exact bytes produced by that run.
+Platform-dependent
 floating-point serialization can change trailing digits and therefore file
 hashes without changing the accepted numerical result. These digests are
 provenance identifiers, not cross-platform acceptance criteria.
@@ -155,7 +163,7 @@ The `summary` object distinguishes the two notions of completeness:
 
 | Code | Meaning |
 | ---: | --- |
-| `0` | Requested topology or critical task completed, or reproduction check passed |
+| `0` | Requested topology or critical task completed, or reproduction calculation checks passed (reference comparison is reported separately) |
 | `1` | A valid topology or critical task hit a resource limit, or reproduction evidence mismatched |
 | `2` | CLI usage, file, JSON, model-validation, or controlled execution error |
 

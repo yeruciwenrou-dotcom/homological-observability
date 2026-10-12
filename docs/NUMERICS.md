@@ -89,6 +89,21 @@ The winding sum retains the supplied cutoff (expanded by the existing
 scale heuristic); these floating evaluations are not certified intervals for
 all truncation and rounding errors.
 
+Endpoint representatives are reduced modulo `n`. For bridge probabilities,
+the winding coordinate is adjusted at the same time to preserve the lifted
+displacement `residue + n*winding`. Equivalent representations therefore use
+the same calculation, including very large positive or negative representatives.
+
+The generic floating cycle APIs support `3 <= n <= 1000000` and at most
+100001 winding terms (an effective cutoff of 50000). The effective cutoff
+includes the scale heuristic, so requesting a smaller cutoff cannot bypass
+the budget. An oversized request or an unrepresentable Bessel argument or
+order raises `ValueError` before a long summation. These limits apply to
+`residue_probability` and `ring_bridge_probability`; exact graph and critical
+analysis use their own documented resource controls. The closed-form C4
+endpoint evaluator remains available at every positive finite window whose
+probability is representable.
+
 ## Poisson-averaged MAP
 
 `poisson_averaged_binomial_map_bessel` uses the specialized scaled functions

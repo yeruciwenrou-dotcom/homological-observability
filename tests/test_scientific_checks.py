@@ -86,7 +86,7 @@ class ScientificCheckTests(unittest.TestCase):
             reproduce_all.validate_output_directory(ROOT / "results/generated")
 
     def test_reproduction_rejects_reference_file_alias(self) -> None:
-        with tempfile.TemporaryDirectory() as directory:
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
             output_dir = Path(directory)
             output = output_dir / "critical_kernel_results.csv"
             try:
@@ -113,7 +113,9 @@ class ScientificCheckTests(unittest.TestCase):
         ):
             for link_type in ("hard", "symbolic"):
                 with self.subTest(source=source, link_type=link_type):
-                    with tempfile.TemporaryDirectory() as directory:
+                    with tempfile.TemporaryDirectory(
+                        dir=source.parent.parent
+                    ) as directory:
                         output_dir = Path(directory)
                         output = output_dir / "REPORT.md"
                         try:

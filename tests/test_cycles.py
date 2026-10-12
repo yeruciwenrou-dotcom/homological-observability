@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import sys
 import unittest
 
 import numpy as np
@@ -77,6 +78,41 @@ class CycleFormulaTests(unittest.TestCase):
         self.assertAlmostEqual(endpoint, 0.25, places=13)
         self.assertGreaterEqual(posterior, 0.0)
         self.assertLessEqual(posterior, 1.0)
+
+    def test_equivalent_lifted_displacements_have_identical_probabilities(self) -> None:
+        for delta in (1e-160, 0.2, 2.0, 10000.0):
+            expected = ring_bridge_probability(4, 2, 0, delta)
+            endpoint = residue_probability(4, 2, delta)
+            for shift in (-(10**1000), -(10**9), 10**9, 10**1000):
+                with self.subTest(delta=delta, shift_sign=shift > 0):
+                    self.assertEqual(
+                        ring_bridge_probability(4, 2 + 4 * shift, -shift, delta),
+                        expected,
+                    )
+                    self.assertEqual(
+                        residue_probability(4, 2 + 4 * shift, delta), endpoint
+                    )
+
+    def test_oversized_cycle_requests_fail_before_bessel_evaluation(self) -> None:
+        from unittest import mock
+
+        for delta, cutoff, message in (
+            (sys.float_info.max, 60, "float range"),
+            (1e20, 60, "winding budget"),
+            (0.2, 50001, "winding budget"),
+        ):
+            with self.subTest(delta=delta, cutoff=cutoff):
+                with mock.patch("homological_observability.cycles.ive") as bessel:
+                    with self.assertRaisesRegex(ValueError, message):
+                        residue_probability(4, 2, delta, cutoff)
+                    with self.assertRaisesRegex(ValueError, message):
+                        ring_bridge_probability(4, 2, 0, delta, cutoff)
+                    bessel.assert_not_called()
+        with self.assertRaisesRegex(ValueError, "n <= 1000000"):
+            residue_probability(10**1000, 2, 0.2)
+        with self.assertRaisesRegex(ValueError, "float range"):
+            ring_bridge_probability(4, 2, 10**1000, 2.0)
+        self.assertEqual(c4_diametric_endpoint_probability(sys.float_info.max), 0.25)
 
     def test_c4_closed_form_retains_small_window_precision(self) -> None:
         delta = 1.0e-12

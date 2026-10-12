@@ -1,0 +1,23 @@
+name: Request a private security channel
+description: Ask a maintainer how to send a sensitive report privately.
+title: "Security contact request"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This request is public. Do not include exploit details, credentials,
+        personal data, or other sensitive information. A maintainer will arrange
+        a private channel before you share the report.
+  - type: input
+    id: version
+    attributes:
+      label: Affected version or commit
+    validations:
+      required: true
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: Give only the general area, such as installation or file output.
+    validations:
+      required: true

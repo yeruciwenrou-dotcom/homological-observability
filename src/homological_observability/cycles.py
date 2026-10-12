@@ -7,24 +7,37 @@ from numbers import Integral
 
 from scipy.special import ive
 
+_MAX_CYCLE_SIZE = 1_000_000
+_MAX_WINDING_CUTOFF = 50_000
+
 
 def _check_cycle_inputs(n: int, delta: float, cutoff: int) -> None:
     if isinstance(n, bool) or not isinstance(n, Integral) or n < 3:
         raise ValueError("n must be an integer of at least 3")
+    if n > _MAX_CYCLE_SIZE:
+        raise ValueError("floating cycle probabilities require n <= 1000000")
     if not math.isfinite(delta) or delta <= 0.0:
         raise ValueError("delta must be positive and finite")
     if isinstance(cutoff, bool) or not isinstance(cutoff, Integral) or cutoff < 1:
         raise ValueError("cutoff must be a positive integer")
+    if cutoff > _MAX_WINDING_CUTOFF:
+        raise ValueError("cycle probability exceeds the 100001-term winding budget")
 
 
 def _congruence_bessel_sum(n: int, residue: int, delta: float, cutoff: int) -> float:
     _check_cycle_inputs(n, delta, cutoff)
     if isinstance(residue, bool) or not isinstance(residue, Integral):
         raise ValueError("residue must be an integer")
-    tail_cutoff = math.ceil((abs(residue) + 12.0 * math.sqrt(2.0 * delta)) / n)
+    argument = 2.0 * delta
+    if not math.isfinite(argument):
+        raise ValueError("Bessel argument is outside the finite float range")
+    residue = int(residue) % int(n)
+    tail_cutoff = math.ceil((residue + 12.0 * math.sqrt(argument)) / n)
     effective_cutoff = max(cutoff, tail_cutoff)
+    if effective_cutoff > _MAX_WINDING_CUTOFF:
+        raise ValueError("cycle probability exceeds the 100001-term winding budget")
     return math.fsum(
-        ive(abs(residue + n * winding), 2.0 * delta)
+        ive(abs(residue + n * winding), argument)
         for winding in range(-effective_cutoff, effective_cutoff + 1)
     )
 
@@ -108,11 +121,20 @@ def ring_bridge_probability(
     _check_cycle_inputs(n, delta, cutoff)
     if isinstance(residue, bool) or not isinstance(residue, Integral):
         raise ValueError("residue must be an integer")
+    n, cutoff = int(n), int(cutoff)
+    quotient, residue = divmod(int(residue), n)
+    winding = int(winding) + quotient
     if delta <= 1.0:
         probability = _small_window_bridge(n, residue, winding, delta, cutoff)
     else:
         denominator = _congruence_bessel_sum(n, residue, delta, cutoff)
-        numerator = float(ive(abs(residue + n * winding), 2.0 * delta))
+        try:
+            order = float(abs(residue + n * winding))
+        except OverflowError as error:
+            raise ValueError(
+                "Bessel order is outside the finite float range"
+            ) from error
+        numerator = float(ive(order, 2.0 * delta))
         if not math.isfinite(denominator) or denominator <= 0.0:
             raise ValueError("bridge endpoint probability could not be resolved")
         probability = numerator / denominator
@@ -124,6 +146,8 @@ def residue_probability(n: int, residue: int, delta: float, cutoff: int = 60) ->
     _check_cycle_inputs(n, delta, cutoff)
     if isinstance(residue, bool) or not isinstance(residue, Integral):
         raise ValueError("residue must be an integer")
+    n, cutoff = int(n), int(cutoff)
+    residue = int(residue) % n
     if delta <= 1.0:
         probability = _small_window_endpoint(n, residue, delta, cutoff)
     else:

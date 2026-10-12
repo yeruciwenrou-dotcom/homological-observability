@@ -51,6 +51,13 @@ separately inside their JSON documents.
 
 ### Fixed
 
+- Reproduction reports distinguish calculation checks from frozen-reference
+  comparison, and failed or interrupted runs invalidate earlier success reports.
+- Equivalent finite-ring endpoint and winding coordinates use the same bounded
+  calculation. Oversized floating-point requests raise explicit range or budget
+  errors before summation.
+- Source builds require setuptools 77.0.3 or later, matching the SPDX license
+  metadata used by the package.
 - Software and companion paper metadata include the complete four-author list.
 - The shared pinned verification dependencies include JSON Schema validation
   and its dependencies, so fresh quickstart environments and CI can run the

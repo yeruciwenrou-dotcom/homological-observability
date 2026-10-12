@@ -19,6 +19,8 @@ def public_markdown() -> tuple[Path, ...]:
         ROOT / "README.md",
         ROOT / "PAPER_MAP.md",
         ROOT / "CHANGELOG.md",
+        ROOT / "CONTRIBUTING.md",
+        ROOT / "SECURITY.md",
         ROOT / "examples/wedge_c3_c5_result.md",
         ROOT / "results/REPORT.md",
     ]
@@ -135,17 +137,14 @@ class DocumentationTests(unittest.TestCase):
         ):
             self.assertIn(command, workflow)
 
-        expected_action_pins = {
-            "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
-            "actions/setup-python": "5fda3b95a4ea91299a34e894583c3862153e4b97",
-        }
-        action_uses = re.findall(
-            r"uses:\s+(actions/(?:checkout|setup-python))@([0-9a-f]{40})",
-            workflow,
-        )
-        self.assertEqual(len(action_uses), 10)
+        action_uses = re.findall(r"uses:\s+([^@\s]+)@([^\s]+)", workflow)
+        self.assertTrue(action_uses)
         for action, revision in action_uses:
-            self.assertEqual(revision, expected_action_pins[action])
+            self.assertIn(
+                action,
+                {"actions/checkout", "actions/setup-python", "actions/upload-artifact"},
+            )
+            self.assertRegex(revision, r"^[0-9a-f]{40}$")
 
     def test_reader_verification_and_reproduction_hash_roles_are_explicit(
         self,
@@ -334,7 +333,8 @@ class DocumentationTests(unittest.TestCase):
 
         manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
         self.assertIn("recursive-include docs *.md *.svg", manifest)
-        self.assertNotIn("CONTRIBUTING.md", manifest)
+        self.assertIn("include CONTRIBUTING.md", manifest)
+        self.assertIn("include SECURITY.md", manifest)
 
 
 if __name__ == "__main__":

@@ -154,6 +154,12 @@ def run_reproduction(
     figure_png = validated_output_path(resolved_output, "companion_summary.png")
     figure_svg = validated_output_path(resolved_output, "companion_summary.svg")
     resolved_output.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(
+        "# Computational companion report\n\n"
+        "**Run status: INCOMPLETE**\n\n"
+        "The current run has not completed.\n",
+        encoding="utf-8",
+    )
 
     critical = reference_critical.build_results(theta=1.0)
     reference_critical.validate_results(critical, theta=1.0)
@@ -163,13 +169,22 @@ def run_reproduction(
     reference_appendix.validate_results(selected)
     reference_appendix.write_results(selected, selected_path)
 
-    write_report(critical, selected, report_path)
-    write_summary_figure(critical, selected, figure_png, figure_svg)
-
     generated_paths = (critical_path, selected_path)
     if check:
-        for generated_path in generated_paths:
-            compare_with_reference(generated_path)
+        try:
+            for generated_path in generated_paths:
+                compare_with_reference(generated_path)
+        except ReproductionMismatch:
+            report_path.write_text(
+                "# Computational companion report\n\n"
+                "**Run status: FAIL**\n\n"
+                "Generated tables differ from the frozen references.\n",
+                encoding="utf-8",
+            )
+            raise
+
+    write_summary_figure(critical, selected, figure_png, figure_svg)
+    write_report(critical, selected, report_path, checked=check)
 
     all_paths = (
         critical_path,
@@ -213,6 +228,8 @@ def main(argv: list[str] | None = None) -> int:
         )
     except ValueError as error:
         parser.error(str(error))
+    except ReproductionMismatch as error:
+        parser.exit(1, f"FAIL: {error}\n")
     print("PASS: all calculation checks completed")
     if result.checked:
         print("PASS: generated tables agree with committed reference results")
