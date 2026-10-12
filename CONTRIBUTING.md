@@ -1,22 +1,34 @@
 # Contributing
 
+Corrections, reproducible examples, and documentation improvements are welcome.
 Use the [issue forms](https://github.com/yeruciwenrou-dotcom/homological-observability/issues/new/choose)
-for incorrect results, installation problems, and documentation improvements.
-Include the software version or source commit, a minimal input, the command
-you ran, and the expected and observed results. For a proposed scientific
-extension, describe the model and observation assumptions in the issue.
+to report a problem, including the version or commit, a minimal input, and
+the expected and observed results. For a research question or proposed
+extension, open a regular issue describing the model and observation assumptions.
 
 ## Development environment
 
 From a source checkout with Python 3.11–3.13, create a virtual environment
-using the [installation guide](README.md#install-from-a-source-checkout), then
-install the pinned scientific dependencies plus the development tools:
+and install the pinned dependencies and development tools. On macOS or Linux:
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 python -m pip install -r requirements.txt
-python -m pip install --no-deps -e .
-python -m pip install '.[test]'
+python -m pip install -c requirements.txt -e '.[test]'
 ```
+
+On Windows PowerShell:
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements.txt
+.venv\Scripts\python.exe -m pip install -c requirements.txt -e '.[test]'
+```
+
+This editable installation uses your working source files. In the checks
+below, Windows users can replace `python` with `.venv\Scripts\python.exe`
+and `ruff` with `.venv\Scripts\ruff.exe`; activation is optional.
 
 Run the checks relevant to the change:
 
@@ -37,8 +49,8 @@ each pull request.
 
 ## Scientific changes
 
-Explain the mathematical or numerical reason for a change and add a regression
-that distinguishes the corrected result from the error. Closed forms,
+For a calculation fix, explain the mathematical or numerical reason and add
+a regression that distinguishes the corrected result from the error. Closed forms,
 independent calculations, and structural invariants are useful comparisons.
 Update the input/output guides when a public contract changes.
 
