@@ -13,6 +13,9 @@ and Information Phase Diagrams in Markov Jump Processes*. You can reproduce
 the paper's calculations or apply the methods to your own networks through
 the command line and Python API.
 
+The companion manuscript is not yet publicly available. An arXiv link will
+be added here when the preprint is posted.
+
 [Get started](#install-from-a-source-checkout) ·
 [Worked example](#guided-example-a-wedge-of-c3-and-c5) ·
 [Your own network](#analyze-your-own-network) ·
@@ -332,8 +335,8 @@ computations performed with this package. Record the software version and,
 for a source checkout, the exact Git commit. [`CITATION.cff`](CITATION.cff)
 contains both entries; GitHub's citation menu displays the paper. The paper,
 *Stochastic Histories at Finite Temporal Resolution: Homological Observability
-and Information Phase Diagrams in Markov Jump Processes*, is currently an
-unpublished manuscript.
+and Information Phase Diagrams in Markov Jump Processes*, is not yet publicly
+available. Public release on arXiv is planned.
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
