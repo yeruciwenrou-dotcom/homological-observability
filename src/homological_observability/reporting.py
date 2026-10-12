@@ -15,7 +15,9 @@ MARKERS = ("o", "s", "^", "D")
 LINESTYLES = ("-", "--", "-.", ":")
 
 
-def write_report(critical: pd.DataFrame, selected: pd.DataFrame, output: Path) -> None:
+def write_report(
+    critical: pd.DataFrame, selected: pd.DataFrame, output: Path, *, checked: bool
+) -> None:
     """Write a compact scientific reading of the generated tables."""
     first = critical.iloc[0]
     last = critical.iloc[-1]
@@ -40,7 +42,9 @@ def write_report(critical: pd.DataFrame, selected: pd.DataFrame, output: Path) -
 
     report = rf"""# Computational companion report
 
-**Run status: PASS**
+**Calculation checks: PASS**
+
+**Frozen-reference comparison: {"PASS" if checked else "NOT REQUESTED"}**
 
 The calculation reproduces the finite-cycle bridge posteriors, critical count
 limits, the Poisson-averaged binomial MAP identity, and the reciprocal-lattice
@@ -212,11 +216,11 @@ def write_summary_figure(
             png_output,
             dpi=180,
             bbox_inches="tight",
-            metadata={"Software": "homological-observability-companion"},
+            metadata={"Software": "homological-observability"},
         )
         figure.savefig(
             svg_output,
             bbox_inches="tight",
-            metadata={"Creator": "homological-observability-companion", "Date": None},
+            metadata={"Creator": "homological-observability", "Date": None},
         )
         plt.close(figure)

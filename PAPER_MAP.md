@@ -2,13 +2,12 @@
 
 This repository is the companion codebase for the manuscript *Stochastic
 Histories at Finite Temporal Resolution: Homological Observability and
-Information Phase Diagrams in Markov Jump Processes*. The manuscript is
-currently being prepared for submission to arXiv; its arXiv identifier and
-public link will be added here once the preprint is submitted.
+Information Phase Diagrams in Markov Jump Processes*. See the
+[citation information](README.md#citation-and-license) for the paper and
+software records.
 
 This guide connects the paper's mathematical objects to their implementation
-and reproducible evidence. It uses object names rather than equation numbers
-so that the links remain useful after typesetting.
+and reproducible evidence. Entries are organized by scientific object.
 
 The physical target is the accumulated integer cycle history of a particular
 run observed through vertex snapshots and optional counters. The filtration

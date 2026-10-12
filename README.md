@@ -1,11 +1,5 @@
 # Homological Observability
 
-> **Companion codebase for the paper:** *Stochastic Histories at Finite
-> Temporal Resolution: Homological Observability and Information Phase
-> Diagrams in Markov Jump Processes.* The manuscript is currently being
-> prepared for submission to arXiv. Its arXiv identifier and public link will
-> be added here once the preprint is submitted.
-
 Homological Observability is a Python toolkit for studying the recovery of
 accumulated cycle history from discrete observations of a known finite-state
 Markov jump network. It computes exact integer structures that identify
@@ -15,6 +9,9 @@ also constructs the corresponding critical limit experiment. The package
 provides reproducible implementations of the accompanying paper's selected
 constructions and finite-cycle calculations, with command-line and Python
 interfaces for analyzing your own supported networks.
+
+Companion to *Stochastic Histories at Finite Temporal Resolution: Homological
+Observability and Information Phase Diagrams in Markov Jump Processes*.
 
 [One-command quickstart](#verify-the-software-and-paper-evidence) ·
 [Worked examples](#guided-example-a-wedge-of-c3-and-c5) ·
@@ -109,9 +106,17 @@ source .venv/bin/activate
 python -m pip install .
 ```
 
-On Windows PowerShell, create the environment with `py -m venv .venv` and
-activate it with `.venv\Scripts\Activate.ps1`. The CI configuration covers
-Ubuntu and Windows.
+On Windows PowerShell:
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install .
+.venv\Scripts\python.exe -m homological_observability.cli example wedge-c3-c5
+```
+
+Python 3.11 or 3.13 can be selected in place of 3.12. The explicit executable
+path works without changing PowerShell's script-execution policy. CI covers
+Ubuntu and Windows; macOS is also supported by the source-installation path.
 
 ## Two ways to start
 
@@ -146,11 +151,13 @@ run this command from the repository root:
 python quickstart.py
 ```
 
-This path only requires Python 3.11–3.13 to be installed. The script creates
+This path requires Python 3.11–3.13 and internet access for the first dependency
+installation. The script creates
 and manages its own `.venv`, installs the pinned dependencies, runs the
 reader-side test suite, and reproduces the frozen paper evidence. It is the
 verification entry point. On macOS or Linux, use `python3 quickstart.py` if
 `python` is not available.
+On Windows, use `py -3.12 quickstart.py` to select a supported interpreter.
 
 A successful run reports that the generated tables agree with the committed
 reference results. Open `generated_results/REPORT.md` for the scientific
@@ -361,7 +368,9 @@ show approximation errors, rather than history-recovery probabilities.
 
 Use the repository's issue forms to report bugs or documentation problems.
 For a new scientific model, first check the supported assumptions in the
-[scientific scope](docs/SCIENTIFIC_SCOPE.md).
+[scientific scope](docs/SCIENTIFIC_SCOPE.md). See [Contributing](CONTRIBUTING.md)
+for development and verification, and [Security](SECURITY.md) for sensitive
+reports.
 
 ## Citation and license
 
@@ -370,16 +379,14 @@ The toolkit implements selected constructions from the accompanying paper:
 > *Stochastic Histories at Finite Temporal Resolution: Homological
 > Observability and Information Phase Diagrams in Markov Jump Processes*.
 
-**Paper status:** The companion manuscript is currently being prepared for
-submission to arXiv. Its arXiv identifier and public link will be added here
-once the preprint is submitted.
-
 Cite the companion paper for the theoretical results and the software for
 computations performed with this package. Record the software version and,
 when using a source checkout, the exact Git commit. Citation metadata for both
-is provided in [`CITATION.cff`](CITATION.cff); the paper entry currently
-describes a manuscript in preparation. Its arXiv identifier and public link
-will be added when available.
+is provided in [`CITATION.cff`](CITATION.cff). The companion paper is currently
+an unpublished manuscript. GitHub's citation menu displays the paper entry;
+the top-level CFF record identifies the software and its version.
+
+Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
 The MIT License covers the software repository; see [`LICENSE`](LICENSE).
 It does not alter the copyright or licensing status of the manuscript itself.

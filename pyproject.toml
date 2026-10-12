@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=75", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -20,10 +20,13 @@ keywords = [
   "algebraic topology",
   "integer lattices",
   "Markov jump processes",
+  "homological observability",
+  "information theory",
+  "reproducible research",
   "scientific software",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Science/Research",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
@@ -53,6 +56,9 @@ homological-observability = "homological_observability.cli:main"
 
 [project.urls]
 Repository = "https://github.com/yeruciwenrou-dotcom/homological-observability"
+Documentation = "https://github.com/yeruciwenrou-dotcom/homological-observability#readme"
+Issues = "https://github.com/yeruciwenrou-dotcom/homological-observability/issues"
+Changelog = "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

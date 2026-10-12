@@ -153,6 +153,11 @@ zero. For example, Python's `1/3` is slightly below the exact layer-four
 threshold; its phase is `DENSE`, while the next larger float is `SPARSE`.
 The result also reports the exact rational threshold for reference.
 
+For `alpha=0`, the sampling grid is fixed in the chosen rate units. With a
+complete filtration, the summed leading entropy coefficient is
+$\mathrm{rank}(\ker\pi)/2$, as in the paper's fixed-grid result
+(Proposition 5.3). Positive `alpha` describes the shrinking-grid phase law.
+
 Finite-scale exposure is evaluated from the binary inputs before rounding the
 result to float, so intermediate overflow or underflow does not lose an
 otherwise representable value. A nonzero result outside the float range raises

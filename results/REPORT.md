@@ -1,6 +1,8 @@
 # Computational companion report
 
-**Run status: PASS**
+**Calculation checks: PASS**
+
+**Frozen-reference comparison: PASS**
 
 The calculation reproduces the finite-cycle bridge posteriors, critical count
 limits, the Poisson-averaged binomial MAP identity, and the reciprocal-lattice

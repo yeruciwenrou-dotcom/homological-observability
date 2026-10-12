@@ -19,10 +19,10 @@ body:
   - type: textarea
     id: proposal
     attributes:
-      label: Proposed improvement
+      label: Proposed improvement (optional)
       description: Describe what you were trying to do and how the documentation could be clearer.
     validations:
-      required: true
+      required: false
   - type: dropdown
     id: impact
     attributes:

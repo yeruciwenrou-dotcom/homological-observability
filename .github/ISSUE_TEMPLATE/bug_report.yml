@@ -11,7 +11,7 @@ body:
     id: version
     attributes:
       label: Software version
-      description: Output of `homological-observability --version`.
+      description: Output of `homological-observability --version`, or the source commit/tag if installation failed.
     validations:
       required: true
   - type: dropdown
@@ -65,4 +65,4 @@ body:
         - label: I removed credentials, private paths, and sensitive data.
           required: true
         - label: I checked the scientific scope and output contract.
-          required: true
+          required: false
