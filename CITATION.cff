@@ -9,6 +9,8 @@ authors:
     given-names: YiNuo
   - family-names: Wu
     given-names: Zhiyue
+  - family-names: Cheng
+    given-names: Jianqun
 version: 1.1.0.dev0
 license: MIT
 repository-code: "https://github.com/yeruciwenrou-dotcom/homological-observability"
