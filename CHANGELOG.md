@@ -51,6 +51,7 @@ separately inside their JSON documents.
 
 ### Fixed
 
+- The companion paper citation includes the complete four-author list.
 - The shared pinned verification dependencies include JSON Schema validation
   and its dependencies, so fresh quickstart environments and CI can run the
   reader-side tests. Existing quickstart environments refresh automatically.
