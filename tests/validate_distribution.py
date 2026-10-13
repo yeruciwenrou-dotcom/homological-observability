@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import subprocess
@@ -197,18 +198,28 @@ def smoke_artifact(artifact: Path, workspace: Path) -> None:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--dist-dir",
+        type=Path,
+        help="test existing wheel and sdist files without rebuilding",
+    )
+    arguments = parser.parse_args()
     with tempfile.TemporaryDirectory() as directory:
         workspace = Path(directory)
-        distribution = workspace / "dist"
-        subprocess.run(
-            [sys.executable, "-m", "build", "--outdir", str(distribution)],
-            check=True,
-            cwd=ROOT,
+        distribution = (
+            arguments.dist_dir.resolve() if arguments.dist_dir else workspace / "dist"
         )
+        if arguments.dist_dir is None:
+            subprocess.run(
+                [sys.executable, "-m", "build", "--outdir", str(distribution)],
+                check=True,
+                cwd=ROOT,
+            )
         artifacts = sorted(distribution.iterdir())
         wheels = [path for path in artifacts if path.suffix == ".whl"]
         sdists = [path for path in artifacts if path.name.endswith(".tar.gz")]
-        if len(wheels) != 1 or len(sdists) != 1:
+        if len(artifacts) != 2 or len(wheels) != 1 or len(sdists) != 1:
             raise AssertionError(f"unexpected distribution artifacts: {artifacts!r}")
         smoke_artifact(wheels[0], workspace)
         smoke_artifact(sdists[0], workspace)

@@ -1,0 +1,81 @@
+# Homological Observability
+
+A Python toolkit for studying which accumulated cycle histories can be
+recovered from discrete observations of a known finite-state Markov jump
+network. Given a network and optional integer counters, it computes hidden
+cycle directions and their asymptotic sampling requirements. With transition
+rates, it also constructs the critical-limit experiment.
+
+The toolkit provides exact integer-lattice calculations, a command-line
+interface, a Python API, and reproducible finite-cycle examples.
+
+## Installation
+
+Use Python 3.11–3.13. In an activated virtual environment, run:
+
+```bash
+python -m pip install homological-observability
+homological-observability example wedge-c3-c5
+```
+
+The example joins a triangle and a five-cycle at one state and compares the
+cycle information retained by a weighted counter. Models and reference data
+are included in the installed package; no source checkout is needed.
+
+## Python API
+
+```python
+import homological_observability as ho
+
+model = ho.load_example("wedge-c3-c5")
+result = ho.analyze_model(model)
+print(ho.render_text(result))
+```
+
+Use `ho.load_model("triangle.json")` to read your own model and
+`ho.analysis_to_dict(result)` to obtain a structured result. The
+[model guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/docs/MODEL_GUIDE.md)
+describes inputs and resource limits.
+
+## Reproduce the reference calculations
+
+```bash
+homological-observability reproduce --check --output-dir generated_results
+```
+
+This command compares fresh calculations with the packaged reference data
+and writes a report and figure to `generated_results`. For a source checkout
+with pinned dependencies and the reader-side test suite, follow the
+[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability#reproduce-the-paper-evidence).
+
+## Scope and documentation
+
+The graph must be finite, connected, undirected, and simple. Critical
+experiments require known positive transition rates in both directions on
+each edge. Lattice operations and finite catalogues are exact when the
+calculation completes; sampling requirements and phase labels describe
+long-time asymptotic limits. They do not supply a finite-run error guarantee.
+
+- [Overview and worked examples](https://github.com/yeruciwenrou-dotcom/homological-observability#readme)
+- [Scientific assumptions](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/docs/SCIENTIFIC_SCOPE.md)
+- [Results and exit codes](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/docs/OUTPUT_CONTRACT.md)
+- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/CHANGELOG.md)
+- [Report an issue](https://github.com/yeruciwenrou-dotcom/homological-observability/issues)
+
+## Companion paper and citation
+
+The software accompanies *Stochastic Histories at Finite Temporal Resolution:
+Homological Observability and Information Phase Diagrams in Markov Jump
+Processes*.
+
+> **Companion paper:** The manuscript is not yet publicly available. An arXiv
+> link will be added when the preprint is posted.
+
+Cite the paper for theoretical results and the software for computations,
+including the software version. Citation metadata is available in
+[CITATION.cff](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/CITATION.cff).
+
+Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
+
+The software is distributed under the MIT License. The manuscript has its
+own copyright and licensing status.

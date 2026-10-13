@@ -4,7 +4,7 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
-## Unreleased — 1.1.0.dev0
+## 1.1.0 — 2026-10-13
 
 ### Added
 
