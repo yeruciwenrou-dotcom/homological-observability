@@ -1,5 +1,10 @@
 # Homological Observability
 
+[![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
+[![Python](https://img.shields.io/pypi/pyversions/homological-observability)](https://pypi.org/project/homological-observability/)
+[![CI](https://github.com/yeruciwenrou-dotcom/homological-observability/actions/workflows/reproduce.yml/badge.svg?branch=main)](https://github.com/yeruciwenrou-dotcom/homological-observability/actions/workflows/reproduce.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Homological Observability is a Python toolkit for studying which accumulated
 cycle histories can be recovered from discrete observations of a known
 finite-state Markov jump network. Given a network and optional integer
@@ -53,12 +58,13 @@ problem and its research uses.
 
 ## Install
 
-Use Python 3.11–3.13. For the command-line tools and Python API, install from
-PyPI in a virtual environment. On macOS or Linux:
+Use Python 3.11–3.13. The current release is
+[1.1.0 on PyPI](https://pypi.org/project/homological-observability/1.1.0/).
+Install it in a virtual environment. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability
+.venv/bin/python -m pip install homological-observability==1.1.0
 .venv/bin/homological-observability example wedge-c3-c5
 ```
 
@@ -66,7 +72,7 @@ On Windows PowerShell:
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability
+.venv\Scripts\python.exe -m pip install homological-observability==1.1.0
 .venv\Scripts\homological-observability.exe example wedge-c3-c5
 ```
 
@@ -148,7 +154,7 @@ information. See [conventions](docs/CONVENTIONS.md) for the definitions.
 
 ## Analyze your own network
 
-Save this model as `triangle.json` in the repository root:
+Save this model as `triangle.json` in your working directory:
 
 ```json
 {
@@ -198,7 +204,8 @@ exact. The wedge example is already complete at layer three.
 
 The `critical` command adds known positive directed rates and constructs the
 exact path catalogue, stationary law, graded marks, and marked-Poisson
-experiment at a selected layer. Run the supplied nonreversible four-cycle:
+experiment at a selected layer. From a source checkout, run the supplied
+nonreversible four-cycle:
 
 ```bash
 .venv/bin/homological-observability critical examples/biased_c4_critical.json
@@ -262,7 +269,28 @@ objects to the manuscript.
 
 ## Reproduce the paper evidence
 
-From the source directory, run:
+With the PyPI package installed, reproduce the calculations and compare them
+with the packaged references:
+
+```bash
+.venv/bin/homological-observability reproduce --check --output-dir generated_results
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
+```
+
+</details>
+
+The output directory contains `REPORT.md` and `companion_summary.png`.
+
+### Full verification from source
+
+For pinned dependencies and the reader-side test suite, run from the source
+directory:
 
 ```bash
 python3 quickstart.py
@@ -284,21 +312,6 @@ A successful run confirms that the generated tables agree with the committed
 references. Open `generated_results/REPORT.md` for the scientific summary and
 `generated_results/companion_summary.png` for the figure. Fresh outputs are
 kept separate from the reference files in `results/`.
-
-To repeat only the calculations in an installed environment, run:
-
-```bash
-.venv/bin/homological-observability reproduce --check --output-dir generated_results
-```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
-```
-
-</details>
 
 Reference acceptance uses the documented numerical tolerances. File hashes
 identify a particular run's outputs; see the
