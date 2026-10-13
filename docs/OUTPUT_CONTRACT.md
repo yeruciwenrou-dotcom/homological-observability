@@ -23,7 +23,7 @@ Every analysis JSON document begins with:
   "schema_version": 2,
   "software": {
     "name": "homological-observability",
-    "version": "1.1.0.dev0"
+    "version": "1.1.0"
   },
   "artifact_role": "fresh-analysis",
   "status": "COMPLETE"
@@ -264,7 +264,7 @@ Every critical result begins with:
   "schema_version": 1,
   "software": {
     "name": "homological-observability",
-    "version": "1.1.0.dev0"
+    "version": "1.1.0"
   },
   "artifact_role": "fresh-critical-experiment",
   "status": "COMPLETE"

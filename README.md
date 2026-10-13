@@ -13,10 +13,11 @@ and Information Phase Diagrams in Markov Jump Processes*. You can reproduce
 the paper's calculations or apply the methods to your own networks through
 the command line and Python API.
 
-The companion manuscript is not yet publicly available. An arXiv link will
-be added here when the preprint is posted.
+> [!NOTE]
+> **Companion paper.** The manuscript is not yet publicly available. An arXiv
+> link will be added here when the preprint is posted.
 
-[Get started](#install-from-a-source-checkout) ·
+[Get started](#install) ·
 [Worked example](#guided-example-a-wedge-of-c3-and-c5) ·
 [Your own network](#analyze-your-own-network) ·
 [Python API](#python-api) ·
@@ -50,7 +51,30 @@ change the hidden history and its sampling requirements. The
 [physical interpretation](docs/SCIENTIFIC_SCOPE.md) develops the observation
 problem and its research uses.
 
-## Install from a source checkout
+## Install
+
+Use Python 3.11–3.13. For the command-line tools and Python API, install from
+PyPI in a virtual environment. On macOS or Linux:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install homological-observability
+.venv/bin/homological-observability example wedge-c3-c5
+```
+
+On Windows PowerShell:
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install homological-observability
+.venv\Scripts\homological-observability.exe example wedge-c3-c5
+```
+
+The built-in examples and reference data are included in the package.
+For the source scripts, editable model files, and pinned reproduction
+environment, use a source checkout as described below.
+
+### Install from a source checkout
 
 Use Python 3.11–3.13. Clone the repository and enter its root directory:
 
