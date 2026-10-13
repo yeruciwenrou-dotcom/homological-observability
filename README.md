@@ -378,7 +378,7 @@ to report a problem or discuss a research use. The
 Cite the software for computations performed with this package:
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Research Kernel and Computational Companion* (Version 1.1.0) [Computer
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.1.0) [Computer
 > software]. Zenodo. https://doi.org/10.5281/zenodo.23329444
 
 This DOI identifies the archived 1.1.0 release. Record the version used and,
