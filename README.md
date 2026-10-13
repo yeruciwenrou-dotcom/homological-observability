@@ -12,6 +12,9 @@ Given a network and optional integer counters, the code computes hidden cycle
 directions and their asymptotic sampling requirements. With transition rates,
 it also constructs the critical-limit experiment.
 
+You can reproduce the paper's calculations or apply the methods to your own
+networks through the command line and Python API.
+
 ## Quick start
 
 Use Python 3.11–3.13. In an activated virtual environment:
