@@ -1,9 +1,6 @@
 # Homological Observability
 
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
-[![Python](https://img.shields.io/pypi/pyversions/homological-observability)](https://pypi.org/project/homological-observability/)
-[![CI](https://github.com/yeruciwenrou-dotcom/homological-observability/actions/workflows/reproduce.yml/badge.svg?branch=main)](https://github.com/yeruciwenrou-dotcom/homological-observability/actions/workflows/reproduce.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Homological Observability is a Python toolkit for studying which accumulated
 cycle histories can be recovered from discrete observations of a known
@@ -12,21 +9,29 @@ counters, it computes the hidden cycle directions and their asymptotic
 sampling requirements. With transition rates, it also constructs the
 critical-limit experiment.
 
-The toolkit implements methods and finite-cycle calculations from
-*Stochastic Histories at Finite Temporal Resolution: Homological Observability
-and Information Phase Diagrams in Markov Jump Processes*. You can reproduce
-the paper's calculations or apply the methods to your own networks through
-the command line and Python API.
+The command line and Python API implement the methods and finite-cycle
+calculations of the [companion paper](#citation-and-license).
 
-> [!NOTE]
-> **Companion paper.** The manuscript is not yet publicly available. An arXiv
-> link will be added here when the preprint is posted.
+## Quick start
 
-[Get started](#install) ·
+Use Python 3.11–3.13. In an activated virtual environment:
+
+```bash
+python -m pip install homological-observability==1.1.0
+homological-observability example wedge-c3-c5
+```
+
+See [installation](#install) for virtual environment setup, Windows commands,
+and source installation.
+
 [Worked example](#guided-example-a-wedge-of-c3-and-c5) ·
 [Your own network](#analyze-your-own-network) ·
 [Python API](#python-api) ·
 [Reproduce the paper](#reproduce-the-paper-evidence)
+
+> [!NOTE]
+> **Companion paper.** The manuscript is not yet publicly available. An arXiv
+> link will be added here when the preprint is posted.
 
 ## Why homological observability?
 
