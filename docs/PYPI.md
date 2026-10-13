@@ -1,14 +1,13 @@
 # Homological Observability
 
-This software provides computational tools for studying homological
-observability in finite-state Markov jump processes: the recovery of
-accumulated cycle histories from discrete observations of a known network.
-Given a network and optional integer counters, it computes the hidden cycle
+This project provides companion code and reproducible calculations for
+research on homological observability in finite-state Markov jump processes.
+The research asks which accumulated cycle histories can be recovered from
+discrete observations of a known network.
+
+Given a network and optional integer counters, the code computes hidden cycle
 directions and their asymptotic sampling requirements. With transition rates,
 it also constructs the critical-limit experiment.
-
-The toolkit provides exact integer-lattice calculations, a command-line
-interface, a Python API, and reproducible finite-cycle examples.
 
 ## Installation
 

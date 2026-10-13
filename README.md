@@ -3,15 +3,14 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23329442.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-This software provides computational tools for studying homological
-observability in finite-state Markov jump processes: the recovery of
-accumulated cycle histories from discrete observations of a known network.
-Given a network and optional integer counters, it computes the hidden cycle
+This repository provides the companion code and reproducible calculations
+for the [study of homological observability](#citation-and-license) in
+finite-state Markov jump processes. The research asks which accumulated cycle
+histories can be recovered from discrete observations of a known network.
+
+Given a network and optional integer counters, the code computes hidden cycle
 directions and their asymptotic sampling requirements. With transition rates,
 it also constructs the critical-limit experiment.
-
-The command line and Python API implement the methods and finite-cycle
-calculations of the [companion paper](#citation-and-license).
 
 ## Quick start
 
