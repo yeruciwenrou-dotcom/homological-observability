@@ -1,6 +1,7 @@
 # Homological Observability
 
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23329442.svg)](https://doi.org/10.5281/zenodo.23329442)
 
 Homological Observability is a Python toolkit for studying which accumulated
 cycle histories can be recovered from discrete observations of a known
@@ -372,13 +373,21 @@ to report a problem or discuss a research use. The
 
 ## Citation and license
 
-Cite the companion paper for theoretical results and the software for
-computations performed with this package. Record the software version and,
-for a source checkout, the exact Git commit. [`CITATION.cff`](CITATION.cff)
-contains both entries; GitHub's citation menu displays the paper. The paper,
-*Stochastic Histories at Finite Temporal Resolution: Homological Observability
-and Information Phase Diagrams in Markov Jump Processes*, is not yet publicly
-available. Public release on arXiv is planned.
+Cite the software for computations performed with this package:
+
+> Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
+> Research Kernel and Computational Companion* (Version 1.1.0) [Computer
+> software]. Zenodo. https://doi.org/10.5281/zenodo.23329444
+
+This DOI identifies the archived 1.1.0 release. Record the version used and,
+for a source checkout, the exact Git commit. GitHub's citation menu and
+[`CITATION.cff`](CITATION.cff) provide the software citation.
+
+The companion paper, *Stochastic Histories at Finite Temporal Resolution:
+Homological Observability and Information Phase Diagrams in Markov Jump
+Processes*, presents the theoretical results. The manuscript is not yet
+publicly available; its arXiv link and citation will be added when the
+preprint is posted.
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
