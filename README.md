@@ -3,12 +3,12 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23329442.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-Homological Observability is a Python toolkit for studying which accumulated
-cycle histories can be recovered from discrete observations of a known
-finite-state Markov jump network. Given a network and optional integer
-counters, it computes the hidden cycle directions and their asymptotic
-sampling requirements. With transition rates, it also constructs the
-critical-limit experiment.
+This software provides computational tools for studying homological
+observability in finite-state Markov jump processes: the recovery of
+accumulated cycle histories from discrete observations of a known network.
+Given a network and optional integer counters, it computes the hidden cycle
+directions and their asymptotic sampling requirements. With transition rates,
+it also constructs the critical-limit experiment.
 
 The command line and Python API implement the methods and finite-cycle
 calculations of the [companion paper](#citation-and-license).
@@ -97,8 +97,8 @@ cd homological-observability
 
 You can also download and extract the repository ZIP, then open a terminal
 in the directory containing `quickstart.py`. To verify the paper calculations,
-go directly to [reproduction](#reproduce-the-paper-evidence); that command
-handles installation as well.
+go directly to [full verification from source](#full-verification-from-source);
+the script handles installation as well.
 
 For a first analysis, install the package and run the built-in example.
 On macOS or Linux:

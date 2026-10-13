@@ -1,10 +1,11 @@
 # Homological Observability
 
-A Python toolkit for studying which accumulated cycle histories can be
-recovered from discrete observations of a known finite-state Markov jump
-network. Given a network and optional integer counters, it computes hidden
-cycle directions and their asymptotic sampling requirements. With transition
-rates, it also constructs the critical-limit experiment.
+This software provides computational tools for studying homological
+observability in finite-state Markov jump processes: the recovery of
+accumulated cycle histories from discrete observations of a known network.
+Given a network and optional integer counters, it computes the hidden cycle
+directions and their asymptotic sampling requirements. With transition rates,
+it also constructs the critical-limit experiment.
 
 The toolkit provides exact integer-lattice calculations, a command-line
 interface, a Python API, and reproducible finite-cycle examples.
@@ -46,7 +47,7 @@ homological-observability reproduce --check --output-dir generated_results
 This command compares fresh calculations with the packaged reference data
 and writes a report and figure to `generated_results`. For a source checkout
 with pinned dependencies and the reader-side test suite, follow the
-[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability#reproduce-the-paper-evidence).
+[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability#full-verification-from-source).
 
 ## Scope and documentation
 
