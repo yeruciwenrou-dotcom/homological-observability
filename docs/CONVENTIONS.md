@@ -163,9 +163,19 @@ columns.
 ## Sampling and phase conventions
 
 The paper fixes a reference transition rate $q_0$ and measures time in units
-of $q_0^{-1}$. All sampling inputs here use those normalized units. With
-dimensional times, the exposure scale is $(q_0T)(q_0\delta)^{m-1}$; the rate
-weights in the critical task supply the remaining dynamical factors.
+of $q_0^{-1}$. For physical observation time $T_{\mathrm{phys}}$ and sampling
+interval $\Delta_{\mathrm{phys}}$, the dimensionless inputs are
+$T=q_0T_{\mathrm{phys}}$ and $\delta=q_0\Delta_{\mathrm{phys}}$. All sampling
+inputs here use these normalized units; do not apply the conversion again
+to values already normalized. The exposure scale is
+
+$$
+T\delta^{m-1}=(q_0T_{\mathrm{phys}})(q_0\Delta_{\mathrm{phys}})^{m-1}.
+$$
+
+The critical task uses transition rates divided by the same $q_0$ and
+$\theta=\lim T\delta^{m-1}$ in these units. Its rate weights supply the
+remaining dynamical factors.
 
 The topology result can be interpreted in either of two mutually exclusive
 ways.

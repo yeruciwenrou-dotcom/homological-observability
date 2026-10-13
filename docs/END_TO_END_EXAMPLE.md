@@ -56,6 +56,10 @@ certified `COMPLETE`.
 
 ## Run the example
 
+Run these commands from the repository root with the virtual environment
+activated. Without activation, use the platform-specific executable paths in
+the [installation instructions](../README.md#install-from-a-source-checkout).
+
 ```console
 $ homological-observability example wedge-c3-c5
 $ homological-observability example wedge-c3-c5 --format json

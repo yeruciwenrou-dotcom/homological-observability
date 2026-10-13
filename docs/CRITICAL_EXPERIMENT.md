@@ -21,7 +21,9 @@ requires a separate calculation.
 
 ## Run the example
 
-From the repository root after installation, run:
+Run these commands from the repository root with the virtual environment
+activated. Without activation, use the platform-specific executable paths in
+the [installation instructions](../README.md#install-from-a-source-checkout).
 
 ```console
 $ homological-observability critical examples/biased_c4_critical.json
