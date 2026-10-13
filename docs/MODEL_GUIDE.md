@@ -20,12 +20,18 @@ a known endpoint correction relates this edge reading to the cycle readout.
 The `readouts` field specifies what a counter measures, not a measured value
 or a time series. An empty list means that only the vertex snapshots are used.
 
-For finite-scale interpretation, choose a fixed rate unit $q_0$ and enter
-$q_0T$ as `observation_time` and $q_0\delta$ as `sampling_interval`.
-For a critical model, express each rate as $q_{xy}/q_0$ and use the same
-normalization for $\theta$. The program has no units field and performs no
-automatic unit conversion. The graph-only filtration needs rate support,
-whereas the critical path weights also need the rate magnitudes.
+For finite-scale interpretation, choose a fixed reference rate $q_0$.
+If the physical observation time is $T_{\mathrm{phys}}$ and the physical
+sampling interval is $\Delta_{\mathrm{phys}}$, enter the dimensionless values
+$T=q_0T_{\mathrm{phys}}$ as `observation_time` and
+$\delta=q_0\Delta_{\mathrm{phys}}$ as `sampling_interval`. Inputs already in
+these normalized units need no further conversion.
+
+For a critical model, divide each physical transition rate by the same $q_0$
+and specify $\theta$ as the limit of $T\delta^{m-1}$ in these normalized units.
+The program has no units field and performs no automatic unit conversion.
+The graph-only filtration needs rate support, whereas the critical path
+weights also need the rate magnitudes.
 
 The [wedge example](END_TO_END_EXAMPLE.md#compare-observation-choices) shows
 how to compare counters; the [critical example](CRITICAL_EXPERIMENT.md)
@@ -173,6 +179,11 @@ $H_1(G;\mathbb Z)$. In that state the requested layers are exact, but higher
 layers may still expose additional directions.
 
 ## Run and inspect a model
+
+The command-line examples in this guide assume the repository root and an
+activated virtual environment. Without activation, use the platform-specific
+executable paths in the
+[installation instructions](../README.md#install-from-a-source-checkout).
 
 ```console
 $ homological-observability analyze examples/wedge_c3_c5.json
