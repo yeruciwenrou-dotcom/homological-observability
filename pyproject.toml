@@ -38,7 +38,7 @@ dependencies = [
   "matplotlib>=3.10,<4",
   "networkx>=3.6,<4",
   "numpy>=2.3,<3",
-  "pandas>=2.2,<3",
+  "pandas>=2.2,<4",
   "scipy>=1.17,<2",
   "sympy>=1.14,<2",
 ]
