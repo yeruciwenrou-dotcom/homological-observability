@@ -29,5 +29,6 @@ references:
         given-names: Jianqun
     title: "Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes"
     year: 2026
+    doi: 10.5281/zenodo.23424849
     url: "https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes"
-    notes: "Preprint available on alphaXiv."
+    notes: "Preprint version 1 archived on Zenodo under CC BY 4.0; also available on alphaXiv."
