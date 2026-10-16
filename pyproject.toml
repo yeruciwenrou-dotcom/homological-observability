@@ -55,6 +55,7 @@ test = [
 homological-observability = "homological_observability.cli:main"
 
 [project.urls]
+Paper = "https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes"
 Repository = "https://github.com/yeruciwenrou-dotcom/homological-observability"
 Documentation = "https://github.com/yeruciwenrou-dotcom/homological-observability#readme"
 Issues = "https://github.com/yeruciwenrou-dotcom/homological-observability/issues"

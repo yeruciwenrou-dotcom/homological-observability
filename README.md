@@ -4,7 +4,7 @@
 [![DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
 This repository provides the companion code and reproducible calculations
-for the [study of homological observability](#citation-and-license) in
+for the [study of homological observability](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) in
 finite-state Markov jump processes. The research asks which accumulated cycle
 histories can be recovered from discrete observations of a known network.
 
@@ -33,8 +33,7 @@ and source installation.
 [Reproduce the paper](#reproduce-the-paper-evidence)
 
 > [!NOTE]
-> **Companion paper.** The manuscript is not yet publicly available. An arXiv
-> link will be added here when the preprint is posted.
+> **Companion paper.** Read the [preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes).
 
 ## Why homological observability?
 
@@ -387,9 +386,8 @@ for a source checkout, the exact Git commit. GitHub's citation menu and
 
 The companion paper, *Stochastic Histories at Finite Temporal Resolution:
 Homological Observability and Information Phase Diagrams in Markov Jump
-Processes*, presents the theoretical results. The manuscript is not yet
-publicly available; its arXiv link and citation will be added when the
-preprint is posted.
+Processes*, presents the theoretical results and is available as a
+[preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes).
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
