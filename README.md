@@ -3,17 +3,22 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-This repository provides the companion code and reproducible calculations
-for the [study of homological observability](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) in
-finite-state Markov jump processes. The research asks which accumulated cycle
-histories can be recovered from discrete observations of a known network.
+Companion code and reproducible calculations for
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
 
-Given a network and optional integer counters, the code computes hidden cycle
-directions and their asymptotic sampling requirements. With transition rates,
-it also constructs the critical-limit experiment.
+At finite sampling intervals, different paths through a known Markov network
+can produce the same snapshots. The paper asks which accumulated integer cycle
+histories remain recoverable as the observation time grows, and how sampling
+resolution and additional counters change that answer.
 
-You can reproduce the paper's calculations or apply the methods to your own
-networks through the command line and Python API.
+Use the command line or Python API to:
+
+- **Analyze a network and its counters:** compute exact integer cycle
+  filtrations, hidden directions, and asymptotic entropy and sampling requirements.
+- **Construct a critical experiment:** use known transition rates to build
+  exact path catalogues and the corresponding marked-Poisson limit.
+- **Reproduce the paper's calculations:** regenerate finite-cycle results and
+  compare them with the packaged references.
 
 ## Quick start
 
@@ -31,9 +36,6 @@ and source installation.
 [Your own network](#analyze-your-own-network) ·
 [Python API](#python-api) ·
 [Reproduce the paper](#reproduce-the-paper-evidence)
-
-> [!NOTE]
-> **Companion paper.** Read the [preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes).
 
 ## Why homological observability?
 
