@@ -71,8 +71,7 @@ The software accompanies *Stochastic Histories at Finite Temporal Resolution:
 Homological Observability and Information Phase Diagrams in Markov Jump
 Processes*.
 
-> **Companion paper:** The manuscript is not yet publicly available. An arXiv
-> link will be added when the preprint is posted.
+> **Companion paper:** Read the [preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes).
 
 Cite the paper for theoretical results and the software for computations,
 including the software version. Citation metadata is available in
