@@ -71,7 +71,8 @@ The software accompanies *Stochastic Histories at Finite Temporal Resolution:
 Homological Observability and Information Phase Diagrams in Markov Jump
 Processes*.
 
-> **Companion paper:** Read the [preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes).
+> **Companion paper:** Read the [preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
+> or access the [archived PDF and paper DOI](https://doi.org/10.5281/zenodo.23424849).
 
 Cite the paper for theoretical results and the software for computations,
 including the software version. Citation metadata is available in
@@ -79,5 +80,5 @@ including the software version. Citation metadata is available in
 
 Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
-The software is distributed under the MIT License. The manuscript has its
-own copyright and licensing status.
+The software is distributed under the MIT License. The archived paper is
+licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

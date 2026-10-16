@@ -1,9 +1,10 @@
 # Paper map and evidence
 
 This repository provides the companion code for
-*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*, available on alphaXiv.
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*, available on alphaXiv and
+[archived on Zenodo](https://doi.org/10.5281/zenodo.23424849).
 See the [citation information](README.md#citation-and-license) for the
-archived software release and its DOI.
+paper and archived software release.
 
 This guide connects the paper's mathematical objects to their implementation
 and reproducible evidence. Entries are organized by scientific object.

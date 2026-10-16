@@ -5,6 +5,7 @@
 
 Companion code and reproducible calculations for
 *[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
+[Paper DOI and archived PDF](https://doi.org/10.5281/zenodo.23424849).
 
 At finite sampling intervals, different paths through a known Markov network
 can produce the same snapshots. The paper asks which accumulated integer cycle
@@ -389,9 +390,11 @@ for a source checkout, the exact Git commit. GitHub's citation menu and
 The companion paper, *Stochastic Histories at Finite Temporal Resolution:
 Homological Observability and Information Phase Diagrams in Markov Jump
 Processes*, presents the theoretical results and is available as a
-[preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes).
+[preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes),
+with version 1 archived on Zenodo:
+[10.5281/zenodo.23424849](https://doi.org/10.5281/zenodo.23424849).
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
-The software is available under the [MIT License](LICENSE). The manuscript
-has its own copyright and licensing status.
+The software is available under the [MIT License](LICENSE). The archived
+paper is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
