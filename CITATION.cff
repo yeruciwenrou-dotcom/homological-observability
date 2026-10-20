@@ -11,9 +11,7 @@ authors:
     given-names: Zhiyue
   - family-names: Cheng
     given-names: Jianqun
-version: 1.1.0
-date-released: 2026-10-13
-doi: 10.5281/zenodo.23329444
+version: 1.1.1
 license: MIT
 repository-code: "https://github.com/yeruciwenrou-dotcom/homological-observability"
 references:
@@ -32,3 +30,18 @@ references:
     doi: 10.5281/zenodo.23424849
     url: "https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes"
     notes: "Preprint version 1 archived on Zenodo under CC BY 4.0; also available on alphaXiv."
+  - type: software
+    authors:
+      - family-names: Liu
+        given-names: HongZheng
+      - family-names: Tian
+        given-names: YiNuo
+      - family-names: Wu
+        given-names: Zhiyue
+      - family-names: Cheng
+        given-names: Jianqun
+    title: "Homological Observability: Cycle Histories and Sampling Thresholds in Markov Jump Processes"
+    version: 1.1.0
+    date-released: 2026-10-13
+    doi: 10.5281/zenodo.23329444
+    notes: "Frozen software release cited by the companion paper."

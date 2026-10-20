@@ -4,6 +4,17 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## 1.1.1 — Unreleased
+
+### Documentation and metadata
+
+- The package description links to the public alphaXiv preprint and its
+  independent paper DOI, replacing the earlier publication-status notice.
+- Citation guidance distinguishes the paper, the frozen software 1.1.0 DOI,
+  and software version 1.1.1.
+- Scientific code, dependencies, schemas, examples, and reference data are
+  unchanged from 1.1.0. Generated provenance reports version 1.1.1.
+
 ## 1.1.0 — 2026-10-13
 
 ### Added

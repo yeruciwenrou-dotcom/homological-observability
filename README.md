@@ -26,7 +26,7 @@ Use the command line or Python API to:
 Use Python 3.11–3.13. In an activated virtual environment:
 
 ```bash
-python -m pip install homological-observability==1.1.0
+python -m pip install homological-observability==1.1.1
 homological-observability example wedge-c3-c5
 ```
 
@@ -69,12 +69,12 @@ problem and its research uses.
 ## Install
 
 Use Python 3.11–3.13. The current release is
-[1.1.0 on PyPI](https://pypi.org/project/homological-observability/1.1.0/).
+[1.1.1 on PyPI](https://pypi.org/project/homological-observability/1.1.1/).
 Install it in a virtual environment. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability==1.1.0
+.venv/bin/python -m pip install homological-observability==1.1.1
 .venv/bin/homological-observability example wedge-c3-c5
 ```
 
@@ -82,7 +82,7 @@ On Windows PowerShell:
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability==1.1.0
+.venv\Scripts\python.exe -m pip install homological-observability==1.1.1
 .venv\Scripts\homological-observability.exe example wedge-c3-c5
 ```
 
@@ -377,15 +377,19 @@ to report a problem or discuss a research use. The
 
 ## Citation and license
 
-Cite the software for computations performed with this package:
+Cite the version used for computations. Version 1.1.1 updates documentation
+and paper links; its scientific code and reference data are unchanged from
+1.1.0. GitHub's citation menu and [`CITATION.cff`](CITATION.cff) provide
+metadata for 1.1.1, cited with the repository URL.
+
+The companion paper cites the frozen software version 1.1.0:
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.1.0) [Computer
 > software]. Zenodo. https://doi.org/10.5281/zenodo.23329444
 
-This DOI identifies the archived 1.1.0 release. Record the version used and,
-for a source checkout, the exact Git commit. GitHub's citation menu and
-[`CITATION.cff`](CITATION.cff) provide the software citation.
+This DOI identifies the archived 1.1.0 release. Record the installed version
+and, for a source checkout, the exact Git commit.
 
 The companion paper, *Stochastic Histories at Finite Temporal Resolution:
 Homological Observability and Information Phase Diagrams in Markov Jump

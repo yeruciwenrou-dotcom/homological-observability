@@ -75,8 +75,16 @@ Processes*.
 > or access the [archived PDF and paper DOI](https://doi.org/10.5281/zenodo.23424849).
 
 Cite the paper for theoretical results and the software for computations,
-including the software version. Citation metadata is available in
-[CITATION.cff](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/CITATION.cff).
+including the software version. Version 1.1.1 updates documentation and paper
+links; its scientific code and reference data are unchanged from 1.1.0.
+
+The paper cites the archived software version 1.1.0:
+[10.5281/zenodo.23329444](https://doi.org/10.5281/zenodo.23329444).
+This software DOI identifies the frozen 1.1.0 archive. For computations with
+1.1.1, cite version 1.1.1 and the
+[repository](https://github.com/yeruciwenrou-dotcom/homological-observability).
+[CITATION.cff](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/CITATION.cff)
+provides software citation metadata and a separate reference to the paper.
 
 Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 

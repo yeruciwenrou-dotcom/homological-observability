@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homological-observability"
-version = "1.1.0"
+version = "1.1.1"
 description = "Homological observability and asymptotic sampling requirements for finite-state Markov jump processes"
 readme = "docs/PYPI.md"
 requires-python = ">=3.11,<3.14"
@@ -57,6 +57,7 @@ homological-observability = "homological_observability.cli:main"
 [project.urls]
 Paper = "https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes"
 "Paper DOI" = "https://doi.org/10.5281/zenodo.23424849"
+"Archived software 1.1.0" = "https://doi.org/10.5281/zenodo.23329444"
 Repository = "https://github.com/yeruciwenrou-dotcom/homological-observability"
 Documentation = "https://github.com/yeruciwenrou-dotcom/homological-observability#readme"
 Issues = "https://github.com/yeruciwenrou-dotcom/homological-observability/issues"
