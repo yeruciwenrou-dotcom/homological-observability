@@ -4,10 +4,11 @@ Suppose a system can circulate around two loops, but its extra counter reports
 only a weighted sum of the two cycle counts. Which histories remain
 indistinguishable, and does that counter reduce the sampling requirements?
 
-This example follows the calculation from graph input to an answer. A single
-counter removes the earliest hidden direction while retaining a parity signal
-at the next layer. Comparing it with no counter and with two separate counters
-shows what each observation adds.
+Follow one counter from graph input through the integer filtration and its
+sampling interpretation, then compare three observation choices in one study.
+The weighted counter removes the earliest hidden direction while retaining a
+parity signal at the next layer. Snapshots alone and separate counters for the
+two loops provide the comparison.
 
 ## Network and readout
 
@@ -56,20 +57,23 @@ certified `COMPLETE`.
 
 ## Run the example
 
-Run these commands from the repository root with the virtual environment
-activated. Without activation, use the platform-specific executable paths in
-the [installation instructions](../README.md#install-from-a-source-checkout).
+Follow the [installation instructions](../README.md#install), then run the
+commands below. If the environment is not activated, replace
+`homological-observability` with `.venv/bin/homological-observability` on
+macOS/Linux or `.venv\Scripts\homological-observability.exe` on Windows,
+relative to the installation directory. Use the same environment's Python
+for the Python examples. The model is included in the package.
 
 ```console
 $ homological-observability example wedge-c3-c5
 $ homological-observability example wedge-c3-c5 --format json
 ```
 
-The first command gives a compact table. The second emits the exact versioned
-document stored as
-[`examples/wedge_c3_c5_result.json`](../examples/wedge_c3_c5_result.json).
-A human-readable summary of the same result is available in
-[`examples/wedge_c3_c5_result.md`](../examples/wedge_c3_c5_result.md).
+The first command gives a compact table. The second emits a structured result
+that records the software version used for this run. Reference
+[JSON](../examples/wedge_c3_c5_result.json) and
+[Markdown](../examples/wedge_c3_c5_result.md) reports show the same scientific
+calculation; their producer version identifies the run that created them.
 
 ## Layer two: triangle exposure
 
@@ -186,34 +190,65 @@ uninstrumented triangle direction is supercritical, whereas the weighted
 counter's first hidden layer is subcritical. This comparison concerns the
 growth of snapshot requirements; it does not assign a cost to the counters.
 
-Run all three choices through the same public API:
+Use a comparison study to run these three choices under shared conditions.
+Start from the packaged model, reuse its weighted readout, and add the other
+two configurations. The sampling exponent is $\alpha=3/4$ for every candidate:
 
 ```python
 import homological_observability as ho
 
-base = ho.load_example("wedge-c3-c5")
-choices = {
-    "snapshots only": (),
-    "weighted counter": tuple((r.name, r.as_mapping()) for r in base.readouts),
-    "separate counters": (
-        ("triangle", {("a1", "a2"): 1}),
-        ("five-cycle", {("b1", "b2"): 1}),
-    ),
+base = ho.model_to_dict(ho.load_example("wedge-c3-c5"))
+weighted = base.pop("readouts")
+settings = base.pop("analysis")
+settings["alpha"] = 0.75
+
+separate = [
+    {"name": name, "coefficients": [{"edge": edge, "coefficient": 1}]}
+    for name, edge in [
+        ("triangle", ["a1", "a2"]),
+        ("five-cycle", ["b1", "b2"]),
+    ]
+]
+study = {
+    "schema_version": 1,
+    "name": "Wedge counter choices",
+    "model": base,
+    "analysis": settings,
+    "configurations": [
+        {"id": "none", "label": "Snapshots only", "readouts": []},
+        {"id": "weighted", "label": "Weighted counter", "readouts": weighted},
+        {"id": "separate", "label": "Separate counters", "readouts": separate},
+    ],
 }
-for label, readouts in choices.items():
-    model = ho.GraphModel.create(
-        name=label,
-        vertices=base.vertices,
-        edges=base.edges,
-        readouts=readouts,
-        max_layer=3,
-    )
-    document = ho.analysis_to_dict(ho.analyze_model(model, alpha=0.75))
-    print(label, document["summary"]["first_nonzero_hidden_layer"])
+comparison = ho.compare_configurations(study)
+print(ho.render_comparison_text(comparison))
 ```
 
-The printed layers are `2`, `3`, and `None`, respectively. Inspect `filtration`
-for its integer generators and `phase` for the sampling interpretation.
+The first hidden layers are `2`, `3`, and `None`, respectively, in
+`comparison["rows"]`. All three candidates reach the full cycle lattice.
+The separate counters strictly refine the weighted counter, which strictly
+refines snapshots alone: each step distinguishes all histories distinguished
+before it and resolves additional ambiguity. The `relations` records contain
+the exact integer certificates; `results` contains each candidate's full
+filtration and phase analysis.
+
+In the same Python session, save the result into a new directory:
+
+```python
+ho.write_comparison_bundle(comparison, "wedge-comparison")
+```
+
+The bundle contains a readable report, the shared study, and the individual
+analyses. Its saved input can be run directly from the command line:
+
+```bash
+homological-observability compare wedge-comparison/study.json --output-dir wedge-replay
+```
+
+The [comparison guide](COMPARISON_GUIDE.md) develops this workflow with
+equivalent and incomparable counters, channel redundancy, and incomplete
+computations. These cases help distinguish a gain in one sampling objective
+from a gain in the information retained.
 
 ## Read it through the Python API
 

@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+from contextlib import chdir
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,12 +48,17 @@ class DocumentationTests(unittest.TestCase):
                 )
 
     def test_python_and_json_blocks_execute_or_parse(self) -> None:
-        namespace = {"__name__": "__documentation_test__"}
         for path in public_markdown():
             text = path.read_text(encoding="utf-8")
-            for index, block in enumerate(fenced_blocks(text, "python")):
-                with self.subTest(path=path.name, language="python", index=index):
-                    exec(compile(block, str(path), "exec"), namespace.copy())
+            namespace = {"__name__": "__documentation_test__"}
+            with tempfile.TemporaryDirectory() as directory:
+                shutil.copytree(ROOT / "examples", Path(directory) / "examples")
+                with chdir(directory):
+                    for index, block in enumerate(fenced_blocks(text, "python")):
+                        with self.subTest(
+                            path=path.name, language="python", index=index
+                        ):
+                            exec(compile(block, str(path), "exec"), namespace)
             for index, block in enumerate(fenced_blocks(text, "json")):
                 with self.subTest(path=path.name, language="json", index=index):
                     json.loads(block)

@@ -1,9 +1,15 @@
 # Model guide
 
-The package accepts two input formats. `analyze` needs graph
-topology and optional integer readouts; `critical` additionally needs every
-positive directed rate, a selected layer, and a critical intensity. Fields
-are checked against the format required by the selected command.
+Choose the input format for the question you want to answer:
+
+| Task | Command | Input |
+| --- | --- | --- |
+| Analyze one observation configuration | `analyze` | [Graph, readouts, and analysis settings](#topology-analysis-model) |
+| Compare candidate counter configurations | `compare` | [A study with shared conditions and named candidates](#configuration-study) |
+| Construct a rate-dependent critical experiment | `critical` | [Graph, readouts, exact directed rates, and critical settings](#critical-experiment-model) |
+
+All formats use the graph and readout conventions below. Each command checks
+the fields required by its own format.
 
 ## From a physical model to an input
 
@@ -33,9 +39,10 @@ The program has no units field and performs no automatic unit conversion.
 The graph-only filtration needs rate support, whereas the critical path
 weights also need the rate magnitudes.
 
-The [wedge example](END_TO_END_EXAMPLE.md#compare-observation-choices) shows
-how to compare counters; the [critical example](CRITICAL_EXPERIMENT.md)
-shows how to add exact rates.
+The [wedge example](END_TO_END_EXAMPLE.md) explains a single configuration's
+filtration. The [comparison guide](COMPARISON_GUIDE.md) follows several counter
+choices on one network; the [critical example](CRITICAL_EXPERIMENT.md) shows
+how to add exact rates.
 
 ## Topology analysis model
 
@@ -44,7 +51,7 @@ The `analyze` command reads a UTF-8 JSON document with
 `homological_observability.load_model_schema()` and at
 [`src/homological_observability/schemas/model.schema.json`](../src/homological_observability/schemas/model.schema.json).
 
-## Minimal model
+### Minimal model
 
 ```json
 {
@@ -68,7 +75,7 @@ dynamics-aware support contract.
 The parser rejects unknown fields so a misspelling cannot silently change the
 scientific request.
 
-## Complete structure
+### Complete structure
 
 ```json
 {
@@ -105,7 +112,7 @@ scientific request.
 The repository copy is
 [`examples/wedge_c3_c5.json`](../examples/wedge_c3_c5.json).
 
-## Field reference
+### Field reference
 
 | Field | Required | Meaning |
 | --- | --- | --- |
@@ -116,7 +123,7 @@ The repository copy is
 | `readouts` | no | Named integer edge 1-cochains; default is none |
 | `analysis` | no | Resource and sampling settings; default is `{}` |
 
-## Readouts
+### Readouts
 
 Each readout has a unique nonempty name and a list of edge coefficients. Only
 nonzero coefficients need to be supplied. Coefficients are integers; booleans,
@@ -135,7 +142,7 @@ readout.
 Several readouts produce a map into $\mathbb Z^q$, with one output coordinate per
 readout in the listed order.
 
-## Analysis settings
+### Analysis settings
 
 | Setting | Constraint | Effect |
 | --- | --- | --- |
@@ -178,7 +185,7 @@ A smaller `max_layer` limits the scientific horizon. The result is
 $H_1(G;\mathbb Z)$. In that state the requested layers are exact, but higher
 layers may still expose additional directions.
 
-## Run and inspect a model
+### Run and inspect a model
 
 The command-line examples in this guide assume the repository root and an
 activated virtual environment. Without activation, use the platform-specific
@@ -207,7 +214,7 @@ assert payload["status"] == "COMPLETE"
 assert payload["summary"]["natural_filtration_complete"] is True
 ```
 
-## Validation layers
+### Validation layers
 
 The JSON Schema checks document shape, primitive types, required pairs, and
 mutual exclusion of sampling modes. Runtime validation additionally checks
@@ -221,7 +228,7 @@ with code 0. Exceeding `max_cycles` is different: it is a valid request that
 could not be completed within the resource budget, so the command emits
 `LIMIT_REACHED` and exits with code 1.
 
-## Normalization and provenance
+### Normalization and provenance
 
 Results include the normalized model and its SHA-256 digest. The digest is
 computed from canonical JSON after sorting vertices and edges, normalizing edge
@@ -231,6 +238,53 @@ independent of input whitespace and file location.
 Two syntactically different files that normalize to the same model therefore
 receive the same digest. The original input bytes are not embedded in the
 result.
+
+## Configuration study
+
+A study compares counter choices on one graph with the same sampling settings
+and computation limits. Create an editable study and run it with:
+
+```bash
+homological-observability study-example minimal --output my-study.json
+homological-observability compare my-study.json --output-dir my-results
+```
+
+Both destinations must be new. See the [comparison guide](COMPARISON_GUIDE.md)
+for interpreting the report and editing the example.
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `schema_version` | yes | Study format version; must be `1` |
+| `name` | yes | Nonempty study title |
+| `question` | no | Descriptive text; default is an empty string |
+| `model` | yes | Shared `schema_version`, `name`, `vertices`, and `edges` |
+| `analysis` | no | Shared [analysis settings](#analysis-settings); default is `{}` |
+| `configurations` | yes | From 1 to 64 named counter configurations |
+
+Each configuration has a unique `id`, an optional nonempty `label` that defaults
+to its ID, and a required `readouts` list using the [readout format](#readouts).
+An empty list selects snapshots alone. IDs contain 1–64 lowercase letters,
+digits, underscores, or hyphens and begin with a letter or digit.
+
+The shared `model` contains topology only: put `readouts` inside each
+configuration and `analysis` at the study's top level. The same horizon,
+sampling parameters, and per-configuration `max_cycles` limit apply to every
+candidate. `question` labels the study; it does not select an optimization
+objective or change the calculation.
+
+In Python, `load_study(path)` reads a JSON study and `parse_study(document)`
+validates and normalizes a dictionary. `compare_configurations(study)` accepts
+either result and checks the input again before analysis. The authoring schema
+is available through `load_study_schema()` and
+[`study.schema.json`](../src/homological_observability/schemas/study.schema.json).
+
+Invalid shared topology, analysis settings, configuration identities, or
+document structure reject the whole study. Invalid readout contents are
+isolated during comparison: that candidate receives `ERROR`, while the others
+can still be analyzed. The authoring schema describes valid readouts; a saved
+comparison can retain malformed candidate input to explain an error. See the
+[comparison output contract](OUTPUT_CONTRACT.md#configuration-comparison-document)
+for statuses, scopes, and exact evidence.
 
 ## Critical experiment model
 

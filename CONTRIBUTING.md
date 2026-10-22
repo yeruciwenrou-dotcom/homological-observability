@@ -57,8 +57,18 @@ Update the input/output guides when a public contract changes.
 Keep new calculations in a separate output directory. The committed CSV files
 and their packaged copies are the paper's numerical references; changes to
 them need an independently justified correction and a matching changelog entry.
-Regenerate built-in example reports with `python tools/freeze_examples.py` and
-verify them with `python tools/freeze_examples.py --check`.
+
+Check the existing example reports with:
+
+```bash
+python tools/freeze_examples.py --check
+```
+
+This compares their scientific fields with the current implementation while
+preserving each reference's producing version. Regenerating the archived
+examples requires the corresponding 1.1.0 environment. For a new model or
+comparison study, save fresh results in a new directory and include the input,
+software version, and checks that establish the expected result.
 
 Submit focused pull requests with the user-visible effect and verification
 results. Contributions use the repository's MIT License.

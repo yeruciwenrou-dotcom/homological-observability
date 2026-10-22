@@ -1,4 +1,4 @@
-"""Command-line interface for topology, critical experiments, and evidence."""
+"""Command-line interface for observability analysis and comparison."""
 
 from __future__ import annotations
 
@@ -46,8 +46,8 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="homological-observability",
         description=(
-            "Exact integer homology filtrations, critical-limit experiments, "
-            "and frozen paper-evidence checks."
+            "Analyze cycle-history observability, compare counter configurations, "
+            "and construct critical-limit experiments for finite-state models."
         ),
     )
     parser.add_argument("--version", action="version", version=__version__)

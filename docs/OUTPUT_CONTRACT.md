@@ -1,10 +1,18 @@
 # Output contract
 
-The package returns two immutable result types:
-`TopologyAnalysis` for `analyze` and `CriticalExperimentResult` for `critical`.
-In each task, the Python API and CLI render the same structured result. JSON is
-the format for use by other programs. Terminal text and, for topology
-analyses, Markdown provide human-readable output.
+The Python API and CLI expose the same structured results. Choose the contract
+for your task:
+
+| Task | Python result | JSON contract |
+| --- | --- | --- |
+| `analyze` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
+| `compare` | Comparison dictionary | [Configuration comparison document](#configuration-comparison-document) |
+| `critical` | Immutable `CriticalExperimentResult` | [Critical experiment document](#critical-experiment-document) |
+
+JSON is the format for downstream processing. Terminal text and the topology
+and comparison Markdown reports are reading surfaces. Shared references below
+cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas), and
+[renderers](#renderers).
 
 ## Analysis document identity
 
@@ -15,7 +23,8 @@ for their sampling interpretation. `COMPLETE` certifies the calculation, not
 perfect observability. A zero leading entropy coefficient can coexist with
 finite critical ambiguity, as the [wedge example](END_TO_END_EXAMPLE.md) shows.
 
-Every analysis JSON document begins with:
+An analysis document has the following identity fields. The version shown
+here identifies this example record; a new run records its producing version.
 
 ```json
 {
@@ -55,8 +64,12 @@ inferring compatibility from field presence.
 | `phase` | Theorem-derived phase interpretation, or `null` |
 | `limit` | Resource-bound details, or `null` |
 
-No creation timestamp is included. Omitting nondeterministic run metadata keeps
-the same model and software version byte-stable under sorted JSON rendering.
+No creation timestamp is included. Byte-for-byte reproduction requires the
+same normalized input, software build, relevant environment, artifact role,
+coordinate options, and serialization settings. A version label alone does
+not identify all of those conditions. In particular, `--reverse-tree-order`
+changes the homology basis and can change serialized coordinates while
+preserving the scientific invariants.
 
 ## Artifact roles
 
@@ -71,6 +84,11 @@ Critical experiment documents use
 `artifact_role: fresh-critical-experiment`. Their provenance is the normalized
 critical model and its digest; the built-in topology example registry is not
 used by this task.
+
+Comparison documents use `artifact_role: configuration-comparison`. They
+record the normalized study and its digest, the computation's producer, and
+the raw single-configuration analyses. Their [bundle](#comparison-bundles)
+preserves these records for another run.
 
 The reproduction command emits a separate lightweight document with
 `artifact_role: canonical-paper-evidence`. That document describes generated
@@ -161,11 +179,16 @@ The `summary` object distinguishes the two notions of completeness:
 
 ## Process exit codes
 
-| Code | Meaning |
-| ---: | --- |
-| `0` | Requested topology or critical task completed, or reproduction calculation checks passed (reference comparison is reported separately) |
-| `1` | A valid topology or critical task hit a resource limit, or reproduction evidence mismatched |
-| `2` | CLI usage, file, JSON, model-validation, or controlled execution error |
+| Task | Exit `0` | Exit `1` |
+| --- | --- | --- |
+| `analyze` / `example` | `COMPLETE` or `PARTIAL_HORIZON` | `LIMIT_REACHED` |
+| `compare` | Every candidate is `COMPLETE` | Comparison is `INCOMPLETE`: at least one candidate is partial, limited, or in error |
+| `critical` | Requested critical experiment is `COMPLETE` | `LIMIT_REACHED` |
+| `reproduce` | Calculation checks passed; reference comparison is reported separately | Reference evidence mismatched |
+
+Exit `2` reports CLI usage, file, JSON, validation, or controlled execution
+errors, including invalid shared study input and comparison export failures.
+Listing examples or writing a study template exits `0` on success.
 
 JSON errors use `schema_name: homological-observability.error`,
 `schema_version: 1`, `status: ERROR`, and a message. Terminal errors are written
@@ -173,13 +196,15 @@ to standard error. Expected input errors do not print a traceback.
 
 ## Bundled schemas
 
-Every public JSON document has a Draft 2020-12 schema bundled in the installed
-package:
+The public input and result formats have Draft 2020-12 schemas bundled in the
+installed package:
 
 | Document | Loader | Schema file |
 | --- | --- | --- |
 | Model input | `load_model_schema()` | [`model.schema.json`](../src/homological_observability/schemas/model.schema.json) |
 | Analysis result | `load_analysis_schema()` | [`analysis.schema.json`](../src/homological_observability/schemas/analysis.schema.json) |
+| Configuration study input | `load_study_schema()` | [`study.schema.json`](../src/homological_observability/schemas/study.schema.json) |
+| Configuration comparison result | `load_comparison_schema()` | [`comparison.schema.json`](../src/homological_observability/schemas/comparison.schema.json) |
 | Example registry | `load_examples_schema()` | [`examples.schema.json`](../src/homological_observability/schemas/examples.schema.json) |
 | Reproduction result | `load_reproduction_schema()` | [`reproduction.schema.json`](../src/homological_observability/schemas/reproduction.schema.json) |
 | Controlled error | `load_error_schema()` | [`error.schema.json`](../src/homological_observability/schemas/error.schema.json) |
@@ -254,9 +279,94 @@ document and exit code 2, consistently with text output.
 The phase object always carries a boundary note stating that these are
 paper-derived asymptotic predictions, not finite-sample guarantees.
 
+## Configuration comparison document
+
+`compare_configurations(study)` returns a dictionary with
+`schema_name: homological-observability.comparison`, `schema_version: 1`, and
+`artifact_role: configuration-comparison`. It is already the structured JSON
+document and does not need `analysis_to_dict`.
+
+| Field | Meaning |
+| --- | --- |
+| `status` | `COMPLETE` when every candidate is naturally complete; otherwise `INCOMPLETE` |
+| `producer` | Package version, installed-code digest, source identity, and computation environment |
+| `study`, `study_sha256` | Normalized shared input and candidates, with a canonical JSON digest |
+| `shared_conditions` | Shared graph, analysis settings, coordinate option, and observation contract |
+| `rows` | Candidate summaries, statuses, scopes, hidden directions, redundancy, and explanations |
+| `results` | Raw analysis documents keyed by configuration ID; error candidates have no entry |
+| `relations` | Pairwise information relations, scope, exact certificates, and distinguishing witnesses |
+| `explanations` | Study-level interpretation of the computed results |
+
+The raw `results` retain the [analysis contract](#analysis-document-identity),
+including `LIMIT_REACHED` records. Each row has its own status:
+
+| Candidate status | Available interpretation |
+| --- | --- |
+| `COMPLETE` | The exposure reaches the full integer homology lattice |
+| `PARTIAL_HORIZON` | Exact conclusions on the exposure lattice through `computed_max_layer` |
+| `LIMIT_REACHED` | Read the raw analysis for completed components; hidden summaries and pairwise relations are unavailable |
+| `ERROR` | Read `error` and `recovery`; the study retains the candidate's supplied readouts |
+
+Each row and pair declares a `scope`: `FULL_HOMOLOGY`, `COMPUTED_EXPOSURE`, or
+`UNAVAILABLE`. Interpret a null `first_hidden_layer` together with that scope:
+it can mean no hidden direction on the full lattice, none yet in the computed
+layers, or an unavailable calculation. Other missing summaries remain null
+rather than becoming zero. A failed candidate does not erase valid neighbors.
+
+### Information relations and certificates
+
+Pairs identify candidates by `left` and `right` IDs. `relation` is one of
+`EQUIVALENT`, `LEFT_REFINES_RIGHT`, `RIGHT_REFINES_LEFT`, `INCOMPARABLE`, or
+`UNAVAILABLE`. Their meaning follows from [hidden-kernel inclusion on the
+common lattice](CONVENTIONS.md#information-relations-between-configurations).
+
+`left_kernel_in_right` and `right_kernel_in_left` each record `included` and,
+when true, integer `coordinates` expressing the source kernel basis in the
+target kernel basis. A failed inclusion supplies the corresponding
+`left_not_right_witness` or `right_not_left_witness`: cycle coordinates,
+an oriented physical edge chain, and both readout vectors. The named source
+readout vanishes on that witness; the other readout distinguishes it.
+Unavailable pairs carry null certificates and witnesses.
+
+`metric_comparison` records scalar comparisons separately from the information
+relation. Equal first hidden layers, ranks, or entropy coefficients do not
+imply equivalent information. A row's `redundant_channels` lists channels that
+can each be removed while all other channels are retained, on the stated
+scope; it does not describe their simultaneous removal.
+
+### Comparison bundles
+
+`write_comparison_bundle(comparison, output_dir)` and CLI `--output-dir` write
+a new directory containing:
+
+| File | Purpose |
+| --- | --- |
+| `study.json` | Input for a whole-study rerun |
+| `comparison.json`, `comparison.md` | Structured result and readable report |
+| `models/config-ID.json` | Input for each candidate, including invalid readouts retained for diagnosis |
+| `raw/config-ID.json` | Each available raw analysis |
+| `environment.json` | Environment captured when the comparison was computed |
+| `README.md` | Rerun and verification instructions |
+| `manifest.json` | File paths, byte sizes, and SHA-256 checksums |
+
+The manifest is written last. Its `bundle_status: COMPLETE` means the files
+were fully written; the scientific comparison can still be `INCOMPLETE`.
+Existing output directories are rejected.
+
+`producer.code_sha256` identifies the installed Python modules and schemas.
+`source_commit: null` means no Git commit is asserted. The producer environment
+belongs to the original calculation and remains unchanged if the result is
+exported later. `shared_conditions.reverse_tree_order` records the coordinate
+option, which the exported rerun commands retain. Exact byte comparison uses
+the same input, build, options, and environment; across environments, compare
+scientific fields with their statuses and scopes intact. See the
+[comparison guide](COMPARISON_GUIDE.md) for the reading and replay workflow.
+
 ## Critical experiment document
 
-Every critical result begins with:
+A critical result uses the following identity fields. As in the analysis
+example, `software.version` identifies the implementation that produced the
+record:
 
 ```json
 {
@@ -336,7 +446,7 @@ posterior at finite $(T,\delta)$ or an unconditional critical MAP solver. See th
 
 ## Renderers
 
-The public renderers are:
+Topology analysis renderers accept the immutable analysis result:
 
 ```python
 import homological_observability as ho
@@ -353,6 +463,31 @@ assert "status: COMPLETE" in terminal_text
 
 `render_json` sorts keys, rejects non-finite numbers, preserves Unicode, and
 adds one trailing newline. The CLI uses this exact function.
+
+Comparison renderers accept the comparison dictionary directly:
+
+```python
+import json
+
+import homological_observability as ho
+
+comparison = ho.compare_configurations(ho.load_study_example("bridge"))
+terminal_text = ho.render_comparison_text(comparison)
+markdown_text = ho.render_comparison_markdown(comparison)
+json_text = (
+    json.dumps(
+        comparison, ensure_ascii=False, allow_nan=False, sort_keys=True, indent=2
+    )
+    + "\n"
+)
+
+assert comparison["schema_name"] == "homological-observability.comparison"
+assert comparison["status"] == "COMPLETE"
+```
+
+The JSON settings above match `compare --format json`. Use
+`write_comparison_bundle(comparison, "new-results")` to save the result with
+its inputs and environment; the destination must not already exist.
 
 Critical results have separate deterministic renderers:
 

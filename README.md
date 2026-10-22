@@ -19,56 +19,76 @@ Use the command line or Python API to:
   filtrations, hidden directions, and asymptotic entropy and sampling requirements.
 - **Compare counter configurations:** run candidates under shared conditions,
   identify information gains and redundant channels, and export a rerunnable
-  study. Available in the 1.2.0 development source described below.
+  study.
 - **Construct a critical experiment:** use known transition rates to build
   exact path catalogues and the corresponding marked-Poisson limit.
 - **Reproduce the paper's calculations:** regenerate finite-cycle results and
   compare them with the packaged references.
 
-## Quick start
+## Install
 
-Use Python 3.11–3.13. In an activated virtual environment:
+Use Python 3.11–3.13. This guide covers the unreleased `1.2.0.dev0` source
+version on the `feature/configuration-comparison` branch. The published package is
+[1.1.0 on PyPI](https://pypi.org/project/homological-observability/1.1.0/), with
+its own [versioned installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
+
+### Install from a source checkout
+
+Clone this source version and enter its root directory:
 
 ```bash
-python -m pip install homological-observability==1.1.0
-homological-observability example wedge-c3-c5
+git clone --branch feature/configuration-comparison https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
 ```
 
-See [installation](#install) for virtual environment setup, Windows commands,
-and source installation.
+Create a virtual environment and install the package. On macOS or Linux:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install .
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install .
+```
+
+</details>
+
+Python 3.11 or 3.13 can be selected in place of 3.12. These commands use the
+virtual environment directly, so activation is optional. Installation needs
+internet access. Examples and reference data are included in the package;
+the checkout also contains source scripts and editable model files.
+
+## Quick start
+
+Analyze the built-in two-loop network with a weighted counter:
+
+```bash
+.venv/bin/homological-observability example wedge-c3-c5
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+.venv\Scripts\homological-observability.exe example wedge-c3-c5
+```
+
+</details>
+
+The result identifies a hidden combination of the two cycle counts and the
+sampling requirements for that remaining ambiguity. The worked example below
+explains the analysis table.
 
 [Worked example](#guided-example-a-wedge-of-c3-and-c5) ·
 [Compare configurations](#compare-counter-configurations) ·
 [Your own network](#analyze-your-own-network) ·
 [Python API](#python-api) ·
 [Reproduce the paper](#reproduce-the-paper-evidence)
-
-## Compare counter configurations
-
-The **1.2.0 development source** adds one study for several candidate counter
-configurations. From a checkout containing this command, in an activated
-virtual environment:
-
-```bash
-python -m pip install .
-homological-observability study-example bridge --output bridge-study.json
-homological-observability compare bridge-study.json --output-dir bridge-results
-```
-
-Open `bridge-results/comparison.md`. It shows what each candidate leaves
-hidden, which candidates carry equivalent or strictly richer information,
-and the integer witnesses behind the comparisons. The directory also contains
-the input, JSON results, and rerun instructions.
-
-In this example, counting the short ring postpones the first hidden layer
-more than counting the long ring. A weighted counter can tie that objective
-while retaining different information; a second proportional channel adds
-no information. The [comparison guide](docs/COMPARISON_GUIDE.md) explains these
-choices and takes you from the example to your own study.
-
-The comparison commands are not part of the released 1.1.0 package. The
-paper's archived 1.1.0 evidence and DOI remain available independently of
-later software development.
 
 ## Why homological observability?
 
@@ -97,66 +117,6 @@ The software identifies these layers and computes how additional counters
 change the hidden history and its sampling requirements. The
 [physical interpretation](docs/SCIENTIFIC_SCOPE.md) develops the observation
 problem and its research uses.
-
-## Install
-
-Use Python 3.11–3.13. The current release is
-[1.1.0 on PyPI](https://pypi.org/project/homological-observability/1.1.0/).
-Install it in a virtual environment. On macOS or Linux:
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability==1.1.0
-.venv/bin/homological-observability example wedge-c3-c5
-```
-
-On Windows PowerShell:
-
-```powershell
-py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability==1.1.0
-.venv\Scripts\homological-observability.exe example wedge-c3-c5
-```
-
-The built-in examples and reference data are included in the package.
-For the source scripts, editable model files, and pinned reproduction
-environment, use a source checkout as described below.
-
-### Install from a source checkout
-
-Use Python 3.11–3.13. Clone the repository and enter its root directory:
-
-```bash
-git clone https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-```
-
-You can also download and extract the repository ZIP, then open a terminal
-in the directory containing `quickstart.py`. To verify the paper calculations,
-go directly to [full verification from source](#full-verification-from-source);
-the script handles installation as well.
-
-For a first analysis, install the package and run the built-in example.
-On macOS or Linux:
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install .
-.venv/bin/homological-observability example wedge-c3-c5
-```
-
-On Windows PowerShell:
-
-```powershell
-py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install .
-.venv\Scripts\homological-observability.exe example wedge-c3-c5
-```
-
-Python 3.11 or 3.13 can be selected in place of 3.12. These commands use the
-virtual environment directly, so activation is optional. The first installation
-needs internet access. CI covers Ubuntu and Windows; the source installation
-also works on macOS.
 
 ## Guided example: a wedge of C3 and C5
 
@@ -193,6 +153,42 @@ lattice $\Lambda=H_1(G;\mathbb Z)$, the exposure layers $L_m$, their visible
 images $\pi(L_m)$, and the hidden lattices $K_m=L_m\cap\ker\pi$.
 Their successive quotients retain both free directions and finite-index
 information. See [conventions](docs/CONVENTIONS.md) for the definitions.
+
+## Compare counter configurations
+
+Keep the network and sampling conditions fixed while comparing candidate
+counters. A study collects their measurement rules, runs each configuration,
+and explains which history distinctions each one retains.
+
+After [installation](#install), create and run a study:
+
+```bash
+.venv/bin/homological-observability study-example bridge --output bridge-study.json
+.venv/bin/homological-observability compare bridge-study.json --output-dir bridge-results
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+.venv\Scripts\homological-observability.exe study-example bridge --output bridge-study.json
+.venv\Scripts\homological-observability.exe compare bridge-study.json --output-dir bridge-results
+```
+
+</details>
+
+Open `bridge-results/comparison.md` to read the configuration differences and
+their explanations. The report links to `comparison.json`, which retains the
+complete integer certificates and edge-chain witnesses. The same directory
+contains the input and instructions for another run; use a new output
+directory for each study.
+
+This example connects a four-cycle and a seven-cycle by a bridge. Counting
+the short ring postpones the first hidden layer more than counting the long
+ring. A weighted counter ties that objective while retaining different
+information; adding a proportional channel adds no information. The
+[comparison guide](docs/COMPARISON_GUIDE.md) explains the choices and shows
+how to prepare your own candidates.
 
 ## Analyze your own network
 
@@ -288,9 +284,22 @@ print(ho.render_text(result))
 This prints the same analysis table as the command-line example. Use
 `ho.load_model("triangle.json")` for a model file and
 `ho.analysis_to_dict(result)` to work with the structured result in Python.
-The API also exposes critical experiments, schemas, and JSON renderers;
-topology analyses can be rendered as Markdown. The
-[output guide](docs/OUTPUT_CONTRACT.md) describes the fields.
+
+For several configurations on one network, load a study and compare them:
+
+```python
+import homological_observability as ho
+
+study = ho.load_study_example("bridge")
+comparison = ho.compare_configurations(study)
+print(ho.render_comparison_text(comparison))
+```
+
+Use `ho.load_study("my-study.json")` for your own study. The
+[comparison guide](docs/COMPARISON_GUIDE.md) covers editable inputs and saving
+a complete study bundle. The API also exposes critical experiments, schemas,
+and result renderers; the [output guide](docs/OUTPUT_CONTRACT.md) describes
+their fields and formats.
 
 ## Scope and interpretation
 
@@ -311,7 +320,7 @@ objects to the manuscript.
 
 ## Reproduce the paper evidence
 
-With the PyPI package installed, reproduce the calculations and compare them
+With the package installed, reproduce the calculations and compare them
 with the packaged references:
 
 ```bash
@@ -394,8 +403,8 @@ table also reports the probability mass covered by the displayed range.
 | Document | What you will find |
 | --- | --- |
 | [Physical interpretation](docs/SCIENTIFIC_SCOPE.md) | Observation problem, research uses, and assumptions |
-| [End-to-end example](docs/END_TO_END_EXAMPLE.md) | Compare counters and interpret their sampling requirements |
-| [Comparison studies](docs/COMPARISON_GUIDE.md) | Run candidate configurations, understand information relations, and rerun a study |
+| [End-to-end example](docs/END_TO_END_EXAMPLE.md) | Understand a model's integer filtration and sampling requirements |
+| [Comparison studies](docs/COMPARISON_GUIDE.md) | Compare several counter configurations, inspect their differences, and rerun a study |
 | [Critical experiment](docs/CRITICAL_EXPERIMENT.md) | Rate-dependent path competition and the effect of a readout |
 | [Model guide](docs/MODEL_GUIDE.md) | Input fields, validation, resource controls, and examples |
 | [Output guide](docs/OUTPUT_CONTRACT.md) | Result fields, statuses, formats, and exit codes |

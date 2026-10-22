@@ -60,21 +60,23 @@ additional finite information such as parity.
 
 ## Research uses
 
-The two analysis commands support different comparisons:
+Choose a task according to what you want to vary:
 
 | Task | Inputs to vary | Read from the result |
 | --- | --- | --- |
-| Compare network structures | Graph edges, with the observation protocol fixed | Exposure layers and hidden directions; adding an edge can change more than the cycle count |
-| Compare counters | Integer readouts on the same graph | Hidden kernels, finite visible information, and the layers governing the remaining sampling requirements |
-| Compare sampling scalings | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Which hidden layers are sparse, critical, or dense, and their leading entropy coefficients |
-| Compare dynamics at a threshold | Exact positive directed rates for `critical` | Path weights, visible opportunity counts, and the limiting conditional mark laws |
+| Compare network structures with `analyze` | Graph edges, with the observation protocol fixed | Exposure layers and hidden directions; adding an edge can change more than the cycle count |
+| Compare counters with `compare` | Named integer readouts on one shared graph | Information equivalence, strict refinement, incomparable directions, and individually redundant channels |
+| Compare sampling scalings with `analyze` | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Which hidden layers are sparse, critical, or dense, and their leading entropy coefficients |
+| Compare dynamics with `critical` | Exact positive directed rates at a selected threshold | Path weights, visible opportunity counts, and the limiting conditional mark laws |
 
-The [wedge tutorial](END_TO_END_EXAMPLE.md) compares an uninstrumented network
-with one weighted counter and with separate counters. The
-[critical tutorial](CRITICAL_EXPERIMENT.md) keeps the graph fixed while
-separating the effects of rates and additional observations. These are
-model-analysis tasks: the program consumes a graph, readouts, and optional
-rates rather than fitting a measured trajectory.
+The [wedge tutorial](END_TO_END_EXAMPLE.md) explains how a weighted counter
+changes the hidden directions. The [comparison guide](COMPARISON_GUIDE.md)
+runs several configurations under common conditions and uses exact witnesses
+to distinguish an objective tie from equivalent information. The
+[critical tutorial](CRITICAL_EXPERIMENT.md) separates the effects of rates and
+additional observations. These are model-analysis tasks: the program consumes
+a graph, readouts, and optional rates rather than fitting a measured
+trajectory.
 
 The resulting exponents give asymptotic sampling guidance. For example,
 $N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
@@ -106,6 +108,12 @@ readout, starts the process in its stationary law, and uses noiseless regular
 vertex snapshots. The exact graph and lattice calculations themselves do not
 require a sampled trajectory.
 
+A `compare` study fixes the graph, sampling request, and computation limits
+while varying the declared counter configurations. Each counter is an exact
+cumulative integer measurement. The study compares the information supplied by
+those candidates; it does not generate candidate instruments or assign their
+physical costs.
+
 The separate `critical` input adds:
 
 - one known, strictly positive exact rate for each direction of every edge;
@@ -127,6 +135,21 @@ For topology analysis, the software computes:
 7. a versioned JSON document plus text and Markdown reports of the same
    immutable result.
 
+For a comparison study, the software performs the topology analysis for each
+candidate and compares its hidden kernel on the common computed exposure
+lattice. Kernel equality gives equivalent information; strict containment
+gives a refinement; otherwise each candidate distinguishes a direction hidden
+by the other. Integer containment certificates and physical edge-chain
+witnesses make these statements checkable. Individual channel removal tests
+identify redundancy on the same scope. The
+[coordinate conventions](CONVENTIONS.md#information-relations-between-configurations)
+give the precise relation to readout partitions and legal image lattices.
+
+The comparison retains the raw analyses, scalar summaries, relation scope,
+and computation identity in one structured result. A report and a rerunnable
+bundle expose the same evidence. A scalar objective can favor one candidate
+while the two configurations retain incomparable information.
+
 For a valid critical input, the software additionally computes the exact
 stationary law, every path weight at length $m$, graded and visible marks, the
 induced readout, the common compound-Poisson Lévy measure, and conditional
@@ -135,10 +158,12 @@ and reduced rational strings.
 
 The topology and integer-lattice analysis does not require rate magnitudes.
 Its contract isolates which ambiguity directions exist and when they become
-exposed. The critical task consumes the separate exact-rate model only after
-constructing that topology at the requested layer. Both tasks require positive
-support in both directions. If one directed rate vanishes, the static graph
-filtration can include a path witness that the dynamics cannot realize, so
+exposed. Counter comparisons use this rate-independent topology contract. The
+critical task consumes the separate exact-rate model after constructing that
+topology at the requested layer. Applying these calculations to a Markov
+process requires positive support in both directions. If one directed rate
+vanishes, the static graph filtration can include a path witness that the
+dynamics cannot realize, so
 this implementation must not be used unchanged.
 
 ## Evidence classes
@@ -152,15 +177,24 @@ Machine-readable results distinguish four kinds of support:
 | `EXACT_RATIONAL` | Exact stationary probabilities, directed path weights, and critical intensities |
 | `ASYMPTOTIC_THEOREM` | A direct application of the paper's asymptotic phase law |
 
-`LIMIT_REACHED` means the requested finite enumeration was not completed. The
-result then preserves the validated model, homology basis, and readout, but it
-does not expose a partial filtration or phase prediction as if it were
-complete.
+In a topology analysis, `LIMIT_REACHED` means the requested finite enumeration
+was not completed. The result preserves the validated model, homology basis,
+and readout, but it does not expose a partial filtration or phase prediction
+as if it were complete.
 
 `PARTIAL_HORIZON` has a different meaning: every requested layer is exact, but
 the exposure lattice has not yet reached the full integral homology lattice.
 The result may therefore describe the chosen finite horizon, but not the
 natural filtration beyond it.
+
+Comparison relations on a partial horizon have scope `COMPUTED_EXPOSURE`.
+They do not establish equality or containment on uncomputed directions.
+Candidates with `LIMIT_REACHED` or `ERROR` have no asserted information
+relations, while valid candidates retain their results. The whole study is
+`COMPLETE` only when every candidate is naturally complete; otherwise it is
+`INCOMPLETE`. See the
+[output contract](OUTPUT_CONTRACT.md#configuration-comparison-document)
+for the distinction between scientific completeness and successful export.
 
 For the independent critical task, `COMPLETE` means the requested layer and
 its full experiment were constructed. Natural topology completion remains an

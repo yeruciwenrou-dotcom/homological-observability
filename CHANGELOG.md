@@ -23,15 +23,14 @@ separately inside their JSON documents.
 
 - The existing single-model analysis and critical-experiment interfaces remain
   available. Comparison studies use their own versioned input and output.
-- Archived software 1.1.0 and its paper evidence remain frozen. New software
-  development and new user studies carry their own version and input identity.
-- Frozen-example verification compares scientific fields while retaining the
-  original producer version; regeneration requires the archived 1.1.0 build.
+- `compare` exits with code 1 when any candidate is incomplete or has an error;
+  the other candidates' results remain available. The existing `analyze`
+  exit code for a completed restricted horizon remains 0.
 
 ### Startup
 
-- Topology and comparison commands initialize no plotting font cache; plotting
-  starts only when the paper reproduction command generates its figures.
+- Topology and comparison commands start without initializing a plotting font
+  cache. Figure generation loads the plotting tools when needed.
 
 ## 1.1.0 — 2026-10-13
 
