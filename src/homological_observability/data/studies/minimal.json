@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "name": "Two loops with a shared junction",
+  "question": "Which loop counter postpones the first hidden cycle direction?",
+  "model": {
+    "schema_version": 1,
+    "name": "two-loop-network",
+    "vertices": [
+      "junction",
+      "short-a",
+      "short-b",
+      "long-a",
+      "long-b",
+      "long-c",
+      "long-d"
+    ],
+    "edges": [
+      [
+        "junction",
+        "short-a"
+      ],
+      [
+        "short-a",
+        "short-b"
+      ],
+      [
+        "short-b",
+        "junction"
+      ],
+      [
+        "junction",
+        "long-a"
+      ],
+      [
+        "long-a",
+        "long-b"
+      ],
+      [
+        "long-b",
+        "long-c"
+      ],
+      [
+        "long-c",
+        "long-d"
+      ],
+      [
+        "long-d",
+        "junction"
+      ]
+    ]
+  },
+  "analysis": {
+    "max_cycles": 1000,
+    "alpha": 0.375
+  },
+  "configurations": [
+    {
+      "id": "none",
+      "label": "Snapshots only",
+      "readouts": []
+    },
+    {
+      "id": "short-loop",
+      "label": "Short-loop counter",
+      "readouts": [
+        {
+          "name": "short-loop passages",
+          "coefficients": [
+            {
+              "edge": [
+                "junction",
+                "short-a"
+              ],
+              "coefficient": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "long-loop",
+      "label": "Long-loop counter",
+      "readouts": [
+        {
+          "name": "long-loop passages",
+          "coefficients": [
+            {
+              "edge": [
+                "junction",
+                "long-a"
+              ],
+              "coefficient": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

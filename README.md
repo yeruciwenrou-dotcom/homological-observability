@@ -3,19 +3,23 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-Companion code and reproducible calculations for
-*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
-[Paper DOI and archived PDF](https://doi.org/10.5281/zenodo.23424849).
+Research software for cyclic-history observability in known finite Markov
+networks. Analyze which accumulated integer cycle directions remain hidden
+by snapshots, and how sampling resolution and exact cumulative counters
+change the information available.
 
-At finite sampling intervals, different paths through a known Markov network
-can produce the same snapshots. The paper asks which accumulated integer cycle
-histories remain recoverable as the observation time grows, and how sampling
-resolution and additional counters change that answer.
+The theoretical foundation is
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
+The software also reproduces the paper's finite-model calculations.
+[Paper DOI and archived PDF](https://doi.org/10.5281/zenodo.23424849).
 
 Use the command line or Python API to:
 
 - **Analyze a network and its counters:** compute exact integer cycle
   filtrations, hidden directions, and asymptotic entropy and sampling requirements.
+- **Compare counter configurations:** run candidates under shared conditions,
+  identify information gains and redundant channels, and export a rerunnable
+  study. Available in the 1.2.0 development source described below.
 - **Construct a critical experiment:** use known transition rates to build
   exact path catalogues and the corresponding marked-Poisson limit.
 - **Reproduce the paper's calculations:** regenerate finite-cycle results and
@@ -34,9 +38,37 @@ See [installation](#install) for virtual environment setup, Windows commands,
 and source installation.
 
 [Worked example](#guided-example-a-wedge-of-c3-and-c5) ·
+[Compare configurations](#compare-counter-configurations) ·
 [Your own network](#analyze-your-own-network) ·
 [Python API](#python-api) ·
 [Reproduce the paper](#reproduce-the-paper-evidence)
+
+## Compare counter configurations
+
+The **1.2.0 development source** adds one study for several candidate counter
+configurations. From a checkout containing this command, in an activated
+virtual environment:
+
+```bash
+python -m pip install .
+homological-observability study-example bridge --output bridge-study.json
+homological-observability compare bridge-study.json --output-dir bridge-results
+```
+
+Open `bridge-results/comparison.md`. It shows what each candidate leaves
+hidden, which candidates carry equivalent or strictly richer information,
+and the integer witnesses behind the comparisons. The directory also contains
+the input, JSON results, and rerun instructions.
+
+In this example, counting the short ring postpones the first hidden layer
+more than counting the long ring. A weighted counter can tie that objective
+while retaining different information; a second proportional channel adds
+no information. The [comparison guide](docs/COMPARISON_GUIDE.md) explains these
+choices and takes you from the example to your own study.
+
+The comparison commands are not part of the released 1.1.0 package. The
+paper's archived 1.1.0 evidence and DOI remain available independently of
+later software development.
 
 ## Why homological observability?
 
@@ -363,6 +395,7 @@ table also reports the probability mass covered by the displayed range.
 | --- | --- |
 | [Physical interpretation](docs/SCIENTIFIC_SCOPE.md) | Observation problem, research uses, and assumptions |
 | [End-to-end example](docs/END_TO_END_EXAMPLE.md) | Compare counters and interpret their sampling requirements |
+| [Comparison studies](docs/COMPARISON_GUIDE.md) | Run candidate configurations, understand information relations, and rerun a study |
 | [Critical experiment](docs/CRITICAL_EXPERIMENT.md) | Rate-dependent path competition and the effect of a readout |
 | [Model guide](docs/MODEL_GUIDE.md) | Input fields, validation, resource controls, and examples |
 | [Output guide](docs/OUTPUT_CONTRACT.md) | Result fields, statuses, formats, and exit codes |

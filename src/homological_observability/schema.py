@@ -55,3 +55,15 @@ def load_critical_experiment_schema() -> dict[str, Any]:
     """Load a fresh copy of the bundled critical-experiment JSON Schema."""
 
     return _load_schema("critical-experiment.schema.json")
+
+
+def load_study_schema() -> dict[str, Any]:
+    """Load the authored configuration-study JSON Schema."""
+
+    return _load_schema("study.schema.json")
+
+
+def load_comparison_schema() -> dict[str, Any]:
+    """Load the configuration-comparison result JSON Schema."""
+
+    return _load_schema("comparison.schema.json")

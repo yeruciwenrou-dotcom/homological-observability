@@ -1,6 +1,13 @@
 """Public API for exact homological-observability analysis."""
 
 from .analysis import AnalysisLimit, AnalysisStatus, TopologyAnalysis, analyze_model
+from .comparison import compare_configurations, load_study, parse_study
+from .comparison_reporting import (
+    load_study_example,
+    render_comparison_markdown,
+    render_comparison_text,
+    write_comparison_bundle,
+)
 from .critical import (
     poisson_averaged_binomial_map_bessel,
     poisson_averaged_binomial_map_direct,
@@ -40,12 +47,14 @@ from .lattice import reciprocal_lattice_peak_error
 from .model import GraphModel, IntegerReadout, load_model, parse_model
 from .schema import (
     load_analysis_schema,
+    load_comparison_schema,
     load_critical_experiment_schema,
     load_critical_model_schema,
     load_error_schema,
     load_examples_schema,
     load_model_schema,
     load_reproduction_schema,
+    load_study_schema,
 )
 from .serialization import (
     ArtifactRole,
@@ -78,6 +87,7 @@ __all__ = [
     "analysis_to_dict",
     "analyze_critical_model",
     "analyze_model",
+    "compare_configurations",
     "c3_conditional_hidden_winding_probability",
     "c4_diametric_endpoint_probability",
     "c4_each_leading_route_probability",
@@ -86,6 +96,10 @@ __all__ = [
     "get_example",
     "list_examples",
     "load_example",
+    "load_study",
+    "load_study_example",
+    "load_study_schema",
+    "load_comparison_schema",
     "poisson_averaged_binomial_map_bessel",
     "poisson_averaged_binomial_map_direct",
     "load_model",
@@ -102,9 +116,12 @@ __all__ = [
     "normalized_critical_model_sha256",
     "parse_critical_model",
     "parse_model",
+    "parse_study",
     "reciprocal_lattice_peak_error",
     "residue_probability",
     "render_json",
+    "render_comparison_text",
+    "render_comparison_markdown",
     "render_critical_json",
     "render_critical_text",
     "render_markdown",
@@ -112,4 +129,5 @@ __all__ = [
     "ring_bridge_probability",
     "tv_c3_count_vector",
     "tv_c4_visible_count",
+    "write_comparison_bundle",
 ]

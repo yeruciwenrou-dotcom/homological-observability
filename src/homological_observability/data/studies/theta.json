@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "name": "Shared-path cycles: same rank, different missing information",
+  "question": "How do counters differ when one-channel summary scores tie?",
+  "model": {
+    "schema_version": 1,
+    "name": "theta-2-3-4",
+    "vertices": [
+      "a",
+      "b1",
+      "b2",
+      "c1",
+      "c2",
+      "c3",
+      "s",
+      "t"
+    ],
+    "edges": [
+      [
+        "s",
+        "a"
+      ],
+      [
+        "a",
+        "t"
+      ],
+      [
+        "s",
+        "b1"
+      ],
+      [
+        "b1",
+        "b2"
+      ],
+      [
+        "b2",
+        "t"
+      ],
+      [
+        "s",
+        "c1"
+      ],
+      [
+        "c1",
+        "c2"
+      ],
+      [
+        "c2",
+        "c3"
+      ],
+      [
+        "c3",
+        "t"
+      ]
+    ]
+  },
+  "analysis": {
+    "max_cycles": 1000,
+    "alpha": 0.375
+  },
+  "configurations": [
+    {
+      "id": "none",
+      "label": "Snapshots only",
+      "readouts": []
+    },
+    {
+      "id": "x",
+      "label": "Counter x",
+      "readouts": [
+        {
+          "name": "x",
+          "coefficients": [
+            {
+              "edge": [
+                "s",
+                "b1"
+              ],
+              "coefficient": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "y",
+      "label": "Counter y",
+      "readouts": [
+        {
+          "name": "y",
+          "coefficients": [
+            {
+              "edge": [
+                "s",
+                "c1"
+              ],
+              "coefficient": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mixed",
+      "label": "Counter x+y",
+      "readouts": [
+        {
+          "name": "x+y",
+          "coefficients": [
+            {
+              "edge": [
+                "s",
+                "b1"
+              ],
+              "coefficient": -1
+            },
+            {
+              "edge": [
+                "s",
+                "c1"
+              ],
+              "coefficient": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full",
+      "label": "Counters x and y",
+      "readouts": [
+        {
+          "name": "x",
+          "coefficients": [
+            {
+              "edge": [
+                "s",
+                "b1"
+              ],
+              "coefficient": -1
+            }
+          ]
+        },
+        {
+          "name": "y",
+          "coefficients": [
+            {
+              "edge": [
+                "s",
+                "c1"
+              ],
+              "coefficient": -1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,8 @@
 # Homological Observability
 
-This project provides companion code and reproducible calculations for
-research on homological observability in finite-state Markov jump processes.
-The research asks which accumulated cycle histories can be recovered from
-discrete observations of a known network.
+Research software for cyclic-history observability in known finite Markov
+networks. Analyze which accumulated cycle directions remain hidden by
+snapshots and how exact cumulative counters change the available information.
 
 Given a network and optional integer counters, the code computes hidden cycle
 directions and their asymptotic sampling requirements. With transition rates,
@@ -11,6 +10,11 @@ it also constructs the critical-limit experiment.
 
 You can reproduce the paper's calculations or apply the methods to your own
 networks through the command line and Python API.
+
+The 1.2.0 development source additionally compares named counter
+configurations under shared conditions, explains information gains and
+redundancy with exact integer witnesses, and exports rerunnable studies.
+The archived paper calculations remain associated with release 1.1.0.
 
 ## Installation
 
@@ -24,6 +28,24 @@ homological-observability example wedge-c3-c5
 The example joins a triangle and a five-cycle at one state and compares the
 cycle information retained by a weighted counter. Models and reference data
 are included in the installed package; no source checkout is needed.
+
+## Compare counter configurations from source
+
+From a checkout of the 1.2.0 development source, install in an activated
+virtual environment and run:
+
+```bash
+python -m pip install .
+homological-observability study-example bridge --output bridge-study.json
+homological-observability compare bridge-study.json --output-dir bridge-results
+```
+
+The report compares candidates on one shared model, distinguishes information
+equivalence from scalar objective ties, and retains exact witnesses and
+per-candidate completion states. The output directory must be new. The
+[comparison guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/main/docs/COMPARISON_GUIDE.md)
+explains the example, editable input, and rerun workflow. These commands are
+not included in the frozen 1.1.0 package.
 
 ## Python API
 

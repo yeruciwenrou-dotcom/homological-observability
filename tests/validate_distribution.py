@@ -12,6 +12,8 @@ import tempfile
 import venv
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -121,6 +123,104 @@ def smoke_artifact(artifact: Path, workspace: Path) -> None:
     document = json.loads(example.stdout)
     if document["status"] != "COMPLETE":
         raise AssertionError(f"{label} example did not complete")
+
+    # Exercise the independent comparison product from each installed artifact.
+    # This also catches missing study templates or schemas in wheel/sdist data.
+    installed_contract = subprocess.run(
+        [
+            str(python),
+            "-c",
+            "import json; import homological_observability as h; "
+            "study = h.load_study_example('bridge'); "
+            "print(json.dumps({'study': study, 'result': h.compare_configurations(study), "
+            "'study_schema': h.load_study_schema(), "
+            "'comparison_schema': h.load_comparison_schema()}))",
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    contract = json.loads(installed_contract.stdout)
+    Draft202012Validator(contract["study_schema"]).validate(contract["study"])
+    Draft202012Validator(contract["comparison_schema"]).validate(contract["result"])
+    study_path = run_directory / "study.json"
+    subprocess.run(
+        [
+            str(python),
+            "-m",
+            "homological_observability.cli",
+            "study-example",
+            "bridge",
+            "--output",
+            str(study_path),
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    bundle = run_directory / "comparison"
+    comparison = subprocess.run(
+        [
+            str(python),
+            "-m",
+            "homological_observability.cli",
+            "compare",
+            str(study_path),
+            "--format",
+            "json",
+            "--output-dir",
+            str(bundle),
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    if json.loads(comparison.stdout) != contract["result"]:
+        raise AssertionError(f"{label} comparison CLI differs from the installed API")
+    manifest = json.loads((bundle / "manifest.json").read_text(encoding="utf-8"))
+    if manifest["bundle_status"] != "COMPLETE":
+        raise AssertionError(f"{label} comparison export did not finish")
+    subprocess.run(
+        [
+            str(python),
+            "-m",
+            "homological_observability.cli",
+            "compare",
+            "study.json",
+            "--output-dir",
+            "replay",
+            "--format",
+            "json",
+        ],
+        check=True,
+        cwd=bundle,
+        capture_output=True,
+        text=True,
+    )
+    if (bundle / "comparison.json").read_bytes() != (
+        bundle / "replay/comparison.json"
+    ).read_bytes():
+        raise AssertionError(f"{label} installed group replay changed its result")
+    individual = subprocess.run(
+        [
+            str(python),
+            "-m",
+            "homological_observability.cli",
+            "analyze",
+            "models/config-mixed.json",
+            "--format",
+            "json",
+        ],
+        check=True,
+        cwd=bundle,
+        capture_output=True,
+        text=True,
+    )
+    if json.loads(individual.stdout) != contract["result"]["results"]["mixed"]:
+        raise AssertionError(f"{label} installed individual replay changed its result")
 
     critical_model = {
         "schema_version": 1,

@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "name": "Connected rings: select a counter and detect redundancy",
+  "question": "With one channel, which candidate delays the first hidden free layer?",
+  "model": {
+    "schema_version": 1,
+    "name": "c4-bridge-c7",
+    "vertices": [
+      "a0",
+      "a1",
+      "a2",
+      "a3",
+      "b0",
+      "b1",
+      "b2",
+      "b3",
+      "b4",
+      "b5",
+      "b6"
+    ],
+    "edges": [
+      [
+        "a0",
+        "a1"
+      ],
+      [
+        "a1",
+        "a2"
+      ],
+      [
+        "a2",
+        "a3"
+      ],
+      [
+        "a3",
+        "a0"
+      ],
+      [
+        "b0",
+        "b1"
+      ],
+      [
+        "b1",
+        "b2"
+      ],
+      [
+        "b2",
+        "b3"
+      ],
+      [
+        "b3",
+        "b4"
+      ],
+      [
+        "b4",
+        "b5"
+      ],
+      [
+        "b5",
+        "b6"
+      ],
+      [
+        "b6",
+        "b0"
+      ],
+      [
+        "a0",
+        "b0"
+      ]
+    ]
+  },
+  "analysis": {
+    "max_cycles": 1000,
+    "alpha": 0.375
+  },
+  "configurations": [
+    {
+      "id": "none",
+      "label": "Snapshots only",
+      "readouts": []
+    },
+    {
+      "id": "x",
+      "label": "Counter x (C4)",
+      "readouts": [
+        {
+          "name": "x",
+          "coefficients": [
+            {
+              "edge": [
+                "a0",
+                "a1"
+              ],
+              "coefficient": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "y",
+      "label": "Counter y (C7)",
+      "readouts": [
+        {
+          "name": "y",
+          "coefficients": [
+            {
+              "edge": [
+                "b0",
+                "b1"
+              ],
+              "coefficient": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mixed",
+      "label": "Counter 2x+y",
+      "readouts": [
+        {
+          "name": "2x+y",
+          "coefficients": [
+            {
+              "edge": [
+                "a0",
+                "a1"
+              ],
+              "coefficient": 2
+            },
+            {
+              "edge": [
+                "b0",
+                "b1"
+              ],
+              "coefficient": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "redundant",
+      "label": "Counters z and 2z",
+      "readouts": [
+        {
+          "name": "2x+y",
+          "coefficients": [
+            {
+              "edge": [
+                "a0",
+                "a1"
+              ],
+              "coefficient": 2
+            },
+            {
+              "edge": [
+                "b0",
+                "b1"
+              ],
+              "coefficient": 1
+            }
+          ]
+        },
+        {
+          "name": "4x+2y",
+          "coefficients": [
+            {
+              "edge": [
+                "a0",
+                "a1"
+              ],
+              "coefficient": 4
+            },
+            {
+              "edge": [
+                "b0",
+                "b1"
+              ],
+              "coefficient": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "full",
+      "label": "Counters z and y",
+      "readouts": [
+        {
+          "name": "2x+y",
+          "coefficients": [
+            {
+              "edge": [
+                "a0",
+                "a1"
+              ],
+              "coefficient": 2
+            },
+            {
+              "edge": [
+                "b0",
+                "b1"
+              ],
+              "coefficient": 1
+            }
+          ]
+        },
+        {
+          "name": "y",
+          "coefficients": [
+            {
+              "edge": [
+                "b0",
+                "b1"
+              ],
+              "coefficient": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

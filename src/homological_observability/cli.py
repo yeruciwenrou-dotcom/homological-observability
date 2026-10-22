@@ -9,6 +9,12 @@ from pathlib import Path
 from typing import Any
 
 from .analysis import AnalysisStatus, analyze_model
+from .comparison import compare_configurations, load_study
+from .comparison_reporting import (
+    load_study_example,
+    render_comparison_text,
+    write_comparison_bundle,
+)
 from .critical_experiment import (
     CriticalStatus,
     analyze_critical_model,
@@ -62,7 +68,35 @@ def _build_parser() -> argparse.ArgumentParser:
         "analyze", help="analyze a user-supplied JSON model"
     )
     analyze_parser.add_argument("model", type=Path, help="path to a model JSON file")
+    analyze_parser.add_argument(
+        "--reverse-tree-order",
+        action="store_true",
+        help="use the alternate deterministic spanning tree (for coordinate checks)",
+    )
     _add_format(analyze_parser)
+
+    study_parser = commands.add_parser(
+        "study-example", help="print or save an editable configuration study"
+    )
+    study_parser.add_argument("name", choices=("bridge", "theta", "minimal"))
+    study_parser.add_argument("--output", type=Path, help="save JSON to a new file")
+    study_parser.set_defaults(format="text")
+
+    compare_parser = commands.add_parser(
+        "compare", help="compare exact counter configurations on one shared model"
+    )
+    compare_parser.add_argument("study", type=Path, help="path to a study JSON file")
+    compare_parser.add_argument(
+        "--reverse-tree-order",
+        action="store_true",
+        help="use the alternate deterministic spanning tree and record it for replay",
+    )
+    compare_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="write report, results and replay inputs into a new directory",
+    )
+    _add_format(compare_parser)
 
     critical_parser = commands.add_parser(
         "critical", help="construct a critical-limit experiment from a rate model"
@@ -115,8 +149,10 @@ def _run_examples(output_format: str) -> int:
     return EXIT_SUCCESS
 
 
-def _run_analysis(model, *, role: ArtifactRole, output_format: str) -> int:
-    result = analyze_model(model)
+def _run_analysis(
+    model, *, role: ArtifactRole, output_format: str, reverse_tree_order: bool = False
+) -> int:
+    result = analyze_model(model, reverse_tree_order=reverse_tree_order)
     if output_format == "json":
         sys.stdout.write(render_json(result, artifact_role=role))
     else:
@@ -198,7 +234,46 @@ def main(argv: list[str] | None = None) -> int:
                 load_model(arguments.model),
                 role=ArtifactRole.FRESH_ANALYSIS,
                 output_format=arguments.format,
+                reverse_tree_order=arguments.reverse_tree_order,
             )
+        if arguments.command == "study-example":
+            study = load_study_example(arguments.name)
+            text = (
+                json.dumps(study, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
+            )
+            if arguments.output is None:
+                sys.stdout.write(text)
+            else:
+                with arguments.output.open("x", encoding="utf-8") as stream:
+                    stream.write(text)
+                print(f"Saved study to {arguments.output}", file=sys.stderr)
+            return EXIT_SUCCESS
+        if arguments.command == "compare":
+            study = load_study(arguments.study)
+            if arguments.output_dir is not None and arguments.output_dir.exists():
+                raise ValueError(
+                    "output directory already exists; choose a new directory"
+                )
+            document = compare_configurations(
+                study, reverse_tree_order=arguments.reverse_tree_order
+            )
+            if arguments.output_dir is not None:
+                write_comparison_bundle(document, arguments.output_dir)
+            if arguments.format == "json":
+                print(
+                    json.dumps(
+                        document,
+                        ensure_ascii=False,
+                        allow_nan=False,
+                        sort_keys=True,
+                        indent=2,
+                    )
+                )
+            else:
+                sys.stdout.write(render_comparison_text(document))
+                if arguments.output_dir is not None:
+                    print(f"Report: {arguments.output_dir / 'comparison.md'}")
+            return EXIT_SUCCESS if document["status"] == "COMPLETE" else EXIT_INCOMPLETE
         if arguments.command == "critical":
             return _run_critical(
                 load_critical_model(arguments.model),
