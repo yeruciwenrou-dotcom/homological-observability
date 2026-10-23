@@ -236,6 +236,19 @@ def _row_notes(row: Mapping[str, Any]) -> list[str]:
     return notes
 
 
+def _metric_guide(*, markdown: bool) -> str:
+    layer = "$m$" if markdown else "m"
+    scale = "$T\\delta^{m-1}$" if markdown else "T delta^(m-1)"
+    return (
+        f"The first hidden layer {layer} is the earliest computed layer that adds "
+        f"a hidden free direction. Its ambiguity scale is {scale}; tending to zero "
+        "gives the asymptotic recovery regime for that layer. A later first hidden "
+        "layer therefore permits coarser sampling as observation time grows. "
+        "Information relations separately describe which history differences "
+        "each configuration resolves."
+    )
+
+
 _RELATION_LABELS = {
     "EQUIVALENT": "Same information",
     "LEFT_REFINES_RIGHT": "First contains more information",
@@ -273,6 +286,7 @@ def _representative_pairs(document: Mapping[str, Any]) -> list[tuple[int, Any]]:
 def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
     rows = {row["id"]: row for row in document["rows"]}
     escape = _markdown if markdown else _plain
+    record = "[comparison.json](comparison.json)" if markdown else "the JSON output"
     lines = []
     for index, pair in _representative_pairs(document):
         left, right = _name(rows[pair["left"]]), _name(rows[pair["right"]])
@@ -287,7 +301,7 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
                 "Both exact kernel inclusions hold; the two configurations distinguish "
                 "the same histories on this scope. Their counter values can differ.",
                 "",
-                f"Certificates in comparison.json: `relations[{index}].left_kernel_in_right` "
+                f"Certificates in {record}: `relations[{index}].left_kernel_in_right` "
                 f"and `relations[{index}].right_kernel_in_left`.",
                 "",
             ]
@@ -325,7 +339,7 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
                     f"{right}: {witness['right_readout']}."
                 ),
                 "",
-                f"Exact witness in comparison.json: `relations[{index}].{key}`.",
+                f"Exact witness in {record}: `relations[{index}].{key}`.",
                 "",
             ]
     if not lines:
@@ -334,7 +348,7 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
             "",
         ]
     lines += [
-        "These are representative relations. The complete comparison.json retains every "
+        "These are representative relations. The complete JSON record retains every "
         "relation, both readout vectors, all containment certificates and hidden-direction bases.",
         "",
     ]
@@ -350,6 +364,13 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
     lines += (
         [""] + _summary(document) + ["", "Shared conditions"] + _conditions(document)
     )
+    lines += [
+        "",
+        _metric_guide(markdown=False),
+        "",
+        "Use --output-dir NEW_DIRECTORY to save linked reports and replay inputs, "
+        "or --format json to inspect all exact evidence.",
+    ]
     lines += ["", "Configurations"]
     for row in document["rows"]:
         lines += [
@@ -371,7 +392,6 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
     lines += [
         "Channel counts describe the declared counters, not hardware cost. "
         "Entropy coefficients are asymptotic log(T) terms; zero does not establish finite-time recovery.",
-        "Use --output-dir NEW_DIRECTORY for linked reports and replay inputs, or --format json for all exact evidence.",
         "",
     ]
     return "\n".join(lines)
@@ -398,6 +418,8 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
         "Metric summaries and information relations answer different questions.",
         "",
         "## Configuration comparison",
+        "",
+        _metric_guide(markdown=True),
         "",
         "| Configuration | Channels | Status | First hidden layer | Hidden rank | Entropy log(T) coefficient |",
         "|---|---:|---|---|---:|---:|",
@@ -537,8 +559,11 @@ def write_comparison_bundle(
             "[exact evidence](comparison.json) and [study input](study.json).\n\n"
             "## Run the study again\n\n"
             "1. Use the software build identified below and the package versions in "
-            "[environment.json](environment.json).\n"
-            "2. Open a terminal in this directory and run into a new destination:\n\n"
+            "[environment.json](environment.json).\n\n"
+            "   Activate that environment before changing directories, or replace "
+            "`homological-observability` in the commands below with the full path "
+            "to its executable.\n\n"
+            "2. From this directory, run into a new destination:\n\n"
             "```sh\nhomological-observability compare study.json --output-dir replay"
             + replay_flag
             + "\n```\n\n"

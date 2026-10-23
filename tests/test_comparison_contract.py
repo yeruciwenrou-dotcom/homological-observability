@@ -309,6 +309,24 @@ class ComparisonContractTests(unittest.TestCase):
                 self.assertEqual(single.returncode, 0, single.stderr)
                 self.assertEqual(json.loads(single.stdout), raw_result)
 
+    def test_terminal_only_comparison_locates_json_evidence_without_claiming_a_file(
+        self,
+    ):
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            path = workspace / "study.json"
+            path.write_text(json.dumps(study_document()), encoding="utf-8")
+            completed = self.run_cli("compare", str(path), cwd=workspace)
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            self.assertEqual(list(workspace.iterdir()), [path])
+            self.assertIn("Exact witness in the JSON output:", completed.stdout)
+            self.assertNotIn("comparison.json", completed.stdout)
+            self.assertLess(
+                completed.stdout.index("--format json"),
+                completed.stdout.index("Exact witness in the JSON output:"),
+            )
+            self.assertIn("T delta^(m-1)", completed.stdout)
+
     def test_cli_incomplete_exit_and_invalid_global_failure_do_not_look_successful(
         self,
     ):

@@ -58,15 +58,15 @@ certified `COMPLETE`.
 ## Run the example
 
 Follow the [installation instructions](../README.md#install), then run the
-commands below. If the environment is not activated, replace
-`homological-observability` with `.venv/bin/homological-observability` on
-macOS/Linux or `.venv\Scripts\homological-observability.exe` on Windows,
-relative to the installation directory. Use the same environment's Python
-for the Python examples. The model is included in the package.
+commands below from the checkout directory. They use the environment directly.
+On Windows, use `.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability`. Run Python examples with
+`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`). The model is included
+in the package.
 
 ```console
-$ homological-observability example wedge-c3-c5
-$ homological-observability example wedge-c3-c5 --format json
+$ .venv/bin/homological-observability example wedge-c3-c5
+$ .venv/bin/homological-observability example wedge-c3-c5 --format json
 ```
 
 The first command gives a compact table. The second emits a structured result
@@ -242,7 +242,7 @@ The bundle contains a readable report, the shared study, and the individual
 analyses. Its saved input can be run directly from the command line:
 
 ```bash
-homological-observability compare wedge-comparison/study.json --output-dir wedge-replay
+.venv/bin/homological-observability compare wedge-comparison/study.json --output-dir wedge-replay
 ```
 
 The [comparison guide](COMPARISON_GUIDE.md) develops this workflow with
@@ -284,15 +284,18 @@ regimes, remove `alpha` and provide both
 inside the `analysis` object. The phase result then reports
 $\lambda_2=10$ and $\lambda_3=1$ while leaving regime labels `null`.
 
-## Evidence boundary
+## Continue with your own question
 
 This example demonstrates staged exposure, an index-two visible inclusion, a
 hidden free direction, and the phase-law translation in one small network. Its
 integer statements are exact. Its phase statements are theorem-derived
 asymptotic predictions.
 
-This topology-only example does not establish large-graph performance,
-numerically prove the general theorem, or determine rate-dependent path
-weights. The separate [biased C4 critical experiment](CRITICAL_EXPERIMENT.md)
-shows how known exact rates generate one complete critical-limit law. Neither
-finite example replaces the manuscript's general proof.
+To compare your own counters, follow the
+[study-editing steps](COMPARISON_GUIDE.md#compare-your-own-configurations) and
+choose the sampling request for your question. If you also need the relative
+weights of competing paths at criticality, the
+[biased C4 critical experiment](CRITICAL_EXPERIMENT.md) shows how to supply
+exact rates and construct the limiting mark law. The
+[scientific scope](SCIENTIFIC_SCOPE.md) describes the assumptions behind these
+uses.

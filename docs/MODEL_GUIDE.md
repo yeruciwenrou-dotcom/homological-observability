@@ -183,18 +183,21 @@ an explicit budget is recommended for unfamiliar graphs.
 A smaller `max_layer` limits the scientific horizon. The result is
 `PARTIAL_HORIZON` unless the computed exposure lattice already equals all of
 $H_1(G;\mathbb Z)$. In that state the requested layers are exact, but higher
-layers may still expose additional directions.
+layers may still expose additional directions. To obtain a full-network
+result, remove this setting or raise it and rerun. Changing the sampling
+parameters does not extend the computed horizon.
 
 ### Run and inspect a model
 
-The command-line examples in this guide assume the repository root and an
-activated virtual environment. Without activation, use the platform-specific
-executable paths in the
-[installation instructions](../README.md#install-from-a-source-checkout).
+Run commands from the checkout directory after
+[installation](../README.md#install). They use the environment directly. On
+Windows, use `.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability`. Run Python examples with
+`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
 
 ```console
-$ homological-observability analyze examples/wedge_c3_c5.json
-$ homological-observability analyze examples/wedge_c3_c5.json --format json
+$ .venv/bin/homological-observability analyze examples/wedge_c3_c5.json
+$ .venv/bin/homological-observability analyze examples/wedge_c3_c5.json --format json
 ```
 
 Use JSON when processing results in another program. The terminal layout is
@@ -245,12 +248,15 @@ A study compares counter choices on one graph with the same sampling settings
 and computation limits. Create an editable study and run it with:
 
 ```bash
-homological-observability study-example minimal --output my-study.json
-homological-observability compare my-study.json --output-dir my-results
+.venv/bin/homological-observability study-example minimal --output my-study.json
+.venv/bin/homological-observability compare my-study.json --output-dir my-results
 ```
 
-Both destinations must be new. See the [comparison guide](COMPARISON_GUIDE.md)
-for interpreting the report and editing the example.
+Both destinations must be new. These commands run the template unchanged.
+Before using it for your own research, update the study and model names,
+question, graph, and counters, and choose or remove its preset `alpha`.
+The [comparison guide](COMPARISON_GUIDE.md#compare-your-own-configurations)
+walks through those edits and the resulting report.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
@@ -359,8 +365,8 @@ walk-level reconstruction is needed.
 ### Run and inspect a critical model
 
 ```console
-$ homological-observability critical examples/biased_c4_critical.json
-$ homological-observability critical examples/biased_c4_critical.json --format json
+$ .venv/bin/homological-observability critical examples/biased_c4_critical.json
+$ .venv/bin/homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
 The Python API equivalent is:

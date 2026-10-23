@@ -3,38 +3,42 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-Research software for cyclic-history observability in known finite Markov
-networks. Analyze which accumulated integer cycle directions remain hidden
-by snapshots, and how sampling resolution and exact cumulative counters
-change the information available.
+Analyze what your observations reveal about a system's accumulated cycle
+history, and compare counters that could reveal more. Homological
+Observability is research software for scientists working with a known
+finite-state Markov jump model and considering how to observe it.
 
-The theoretical foundation is
-*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
-The software also reproduces the paper's finite-model calculations.
-[Paper DOI and archived PDF](https://doi.org/10.5281/zenodo.23424849).
+Provide the network and candidate **exact cumulative integer counter rules**.
+The software identifies cycle-history differences that remain hidden,
+compares the information retained by each configuration, and computes
+asymptotic sampling requirements. Results include an explanatory report,
+exact integer evidence, and saved inputs for another run. Use it through the
+command line or Python.
 
-Use the command line or Python API to:
+| You provide | You can determine |
+| --- | --- |
+| A known transition graph | Which cycle-history ambiguities arise between snapshots |
+| Counter rules as signed integer increments on edges | Which ambiguities each counter resolves, and which channels are redundant |
+| Optional sampling parameters | Asymptotic regimes, or exposure scales at a specified time and sampling interval |
 
-- **Analyze a network and its counters:** compute exact integer cycle
-  filtrations, hidden directions, and asymptotic entropy and sampling requirements.
-- **Compare counter configurations:** run candidates under shared conditions,
-  identify information gains and redundant channels, and export a rerunnable
-  study.
-- **Construct a critical experiment:** use known transition rates to build
-  exact path catalogues and the corresponding marked-Poisson limit.
-- **Reproduce the paper's calculations:** regenerate finite-cycle results and
-  compare them with the packaged references.
+The supported graph is finite, connected, and simple, with positive
+transition-rate support in both directions on every edge. The observation
+model uses regular noiseless state snapshots and exact counters. Counter
+comparison needs the graph and measurement rules; exact rates are needed
+for the separate rate-dependent critical experiment. The input describes a
+model and observation scheme, rather than a measured trajectory.
+
+[Try a comparison](#quick-start) · [Use your own network](#analyze-your-own-network) ·
+[Python API](#python-api) · [Scientific scope](#scope-and-interpretation) ·
+[Documentation](#documentation-and-feedback)
 
 ## Install
 
-Use Python 3.11–3.13. This guide covers the unreleased `1.2.0.dev0` source
-version on the `feature/configuration-comparison` branch. The published package is
-[1.1.0 on PyPI](https://pypi.org/project/homological-observability/1.1.0/), with
-its own [versioned installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
+Use Python 3.11–3.13. These instructions cover the unreleased `1.2.0.dev0`
+source version. The published [1.1.0 package](https://pypi.org/project/homological-observability/1.1.0/)
+has its own [installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
 
-### Install from a source checkout
-
-Clone this source version and enter its root directory:
+Clone the source and enter its root directory:
 
 ```bash
 git clone --branch feature/configuration-comparison https://github.com/yeruciwenrou-dotcom/homological-observability.git
@@ -56,111 +60,33 @@ py -3.12 -m venv .venv
 .venv\Scripts\python.exe -m pip install .
 ```
 
+Python 3.11 or 3.13 can be selected in place of 3.12.
+
 </details>
 
-Python 3.11 or 3.13 can be selected in place of 3.12. These commands use the
-virtual environment directly, so activation is optional. Installation needs
-internet access. Examples and reference data are included in the package;
-the checkout also contains source scripts and editable model files.
+These commands use the virtual environment directly, so activation is optional.
+Installation needs internet access; examples and reference data are included
+in the package.
+The commands below run from this directory. In the linked guides, use
+`.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability` on Windows, and
+`.venv\Scripts\python.exe` in place of `.venv/bin/python`.
 
 ## Quick start
 
-Analyze the built-in two-loop network with a weighted counter:
+Suppose your model has a four-state ring and a seven-state ring joined by a
+bridge. State snapshots leave some circulation between observations unknown.
+You can add a counter on either ring: **which choice postpones the earliest
+remaining cycle ambiguity?**
 
-```bash
-.venv/bin/homological-observability example wedge-c3-c5
-```
+Call the signed edge counter on the short ring $x$, and the one on the long
+ring $y$. A forward crossing adds one and a reverse crossing subtracts one.
+The built-in study compares these choices with snapshots alone and with
+weighted combinations of the same counters.
 
-<details>
-<summary>Windows PowerShell</summary>
+### Compare counter configurations
 
-```powershell
-.venv\Scripts\homological-observability.exe example wedge-c3-c5
-```
-
-</details>
-
-The result identifies a hidden combination of the two cycle counts and the
-sampling requirements for that remaining ambiguity. The worked example below
-explains the analysis table.
-
-[Worked example](#guided-example-a-wedge-of-c3-and-c5) ·
-[Compare configurations](#compare-counter-configurations) ·
-[Your own network](#analyze-your-own-network) ·
-[Python API](#python-api) ·
-[Reproduce the paper](#reproduce-the-paper-evidence)
-
-## Why homological observability?
-
-Imagine a particle moving among three wells arranged around a ring, described
-by a three-state Markov jump model. A detector records only the occupied well
-every $\delta$ units of time. A pair of snapshots showing A and then B is
-compatible with a direct jump A → B or two jumps A → C → B. The two histories
-differ by one winding around the ring, but the snapshots are identical.
-
-![Two paths on a three-state ring give the same snapshots: a direct A-to-B jump and the alternative A-to-C-to-B route differ by one cycle.](docs/snapshot_ambiguity.svg)
-
-Knowing the transition rates gives probabilities to these alternatives; it
-does not reveal which history occurred. Even at equilibrium, with equal
-forward and reverse rates and zero mean cycle current, this ambiguity remains.
-The quantity to recover is the accumulated integer cycle displacement of an
-actual run, relative to a fixed endpoint reference.
-
-Longer observation produces more snapshots **and a longer history to recover**.
-For the triangle, a two-jump alternative has probability of order $\delta^2$
-per window. Across about $T/\delta$ windows, its cumulative scale is $T\delta$.
-On general networks, different cycle directions enter at different orders,
-giving the scales $T\delta^{m-1}$. Times here are measured in a fixed reference
-rate's inverse units.
-
-The software identifies these layers and computes how additional counters
-change the hidden history and its sampling requirements. The
-[physical interpretation](docs/SCIENTIFIC_SCOPE.md) develops the observation
-problem and its research uses.
-
-## Guided example: a wedge of C3 and C5
-
-The example joins a triangle and a five-cycle at one state. An extra counter
-measures $2n_3+n_5$, where $n_3$ and $n_5$ are the two cycle-history
-coordinates. Its value reveals the parity of $n_5$, while histories differing
-by $(-1,2)$ give the same reading.
-
-The command above returns `COMPLETE`. Its key results are:
-
-| Layer $m$ | Newly exposed cycle | Visible quotient | Hidden free rank added |
-| ---: | --- | --- | ---: |
-| 2 | Triangle | $\mathbb Z$ | 0 |
-| 3 | Five-cycle | $\mathbb Z/2\mathbb Z$ | 1 |
-
-At layer two, the counter resolves the triangle direction. At layer three,
-the visible image grows from $2\mathbb Z$ to $\mathbb Z$: the new odd class
-gives the quotient $\mathbb Z/2\mathbb Z$. Ordinary real rank would miss this
-change. The combination $(-1,2)$ remains hidden and first appears at this layer.
-
-This changes the sampling requirement for recovering the full cycle history.
-With snapshots alone, $T\delta\to0$ suffices. With the weighted counter, the
-weaker condition $T\delta^2\to0$ suffices. The example requests
-$\delta=T^{-1/2}$, placing its remaining hidden direction at criticality.
-
-The [end-to-end guide](docs/END_TO_END_EXAMPLE.md) compares snapshots alone,
-the weighted counter, and separate counters for the two cycles. It also
-explains the terminal output and provides the full
-[JSON](examples/wedge_c3_c5_result.json) and
-[Markdown](examples/wedge_c3_c5_result.md) results.
-
-For a general graph, the same calculation constructs the integer cycle
-lattice $\Lambda=H_1(G;\mathbb Z)$, the exposure layers $L_m$, their visible
-images $\pi(L_m)$, and the hidden lattices $K_m=L_m\cap\ker\pi$.
-Their successive quotients retain both free directions and finite-index
-information. See [conventions](docs/CONVENTIONS.md) for the definitions.
-
-## Compare counter configurations
-
-Keep the network and sampling conditions fixed while comparing candidate
-counters. A study collects their measurement rules, runs each configuration,
-and explains which history distinctions each one retains.
-
-After [installation](#install), create and run a study:
+Create the study input, then run it into a new results directory:
 
 ```bash
 .venv/bin/homological-observability study-example bridge --output bridge-study.json
@@ -177,115 +103,104 @@ After [installation](#install), create and run a study:
 
 </details>
 
-Open `bridge-results/comparison.md` to read the configuration differences and
-their explanations. The report links to `comparison.json`, which retains the
-complete integer certificates and edge-chain witnesses. The same directory
-contains the input and instructions for another run; use a new output
-directory for each study.
+The terminal output begins:
 
-This example connects a four-cycle and a seven-cycle by a bridge. Counting
-the short ring postpones the first hidden layer more than counting the long
-ring. A weighted counter ties that objective while retaining different
-information; adding a proportional channel adds no information. The
-[comparison guide](docs/COMPARISON_GUIDE.md) explains the choices and shows
-how to prepare your own candidates.
+```text
+Connected rings: select a counter and detect redundancy — COMPLETE
+With one channel, which candidate delays the first hidden free layer?
+```
+
+Open **`bridge-results/comparison.md`** for the findings and their exact
+witnesses. Start with these three configurations:
+
+| Configuration | First hidden layer | Remaining hidden rank |
+| --- | ---: | ---: |
+| Snapshots only | 2 | 2 |
+| Counter $x$ on the four-state ring | 4 | 1 |
+| Counter $y$ on the seven-state ring | 2 | 1 |
+
+The first hidden layer identifies the earliest short-time order at which a
+free cycle-history direction remains unresolved. A layer $m$ has accumulated
+scale $T\delta^{m-1}$, where $T$ is observation time and $\delta$ is the sampling
+interval, both in fixed reference-rate units. For this task, counting the
+short ring is useful: it moves that first unresolved direction from layer two
+to layer four. Counting the long ring leaves the earlier ambiguity in place.
+
+Both choices leave one hidden direction, but they hide different directions.
+The full study also shows that a weighted counter $z=2x+y$ ties $x$ on the
+first-hidden-layer objective while retaining different information; adding
+$2z$ alongside $z$ is redundant. This is why the report compares exact
+information relations as well as scalar summaries.
+
+`COMPLETE` means all six configurations were analyzed over the full integer
+cycle group. It describes the scope of the calculation; the remaining hidden
+directions describe the unresolved history. The study uses the sampling law
+$\delta=T^{-3/8}$. The [comparison guide](docs/COMPARISON_GUIDE.md) explains all
+six choices and their sampling interpretation.
+
+Keep the results directory to share or repeat the study. Its `README.md`
+gives the replay command, `study.json` holds the input, and `comparison.json`
+retains the full structured evidence. Each run uses a new output directory.
 
 ## Analyze your own network
 
-Save this model as `triangle.json` in your working directory:
+Save a copy of `bridge-study.json` as `my-study.json` and adapt the same study:
 
-```json
-{
-  "schema_version": 1,
-  "name": "triangle",
-  "vertices": ["a", "b", "c"],
-  "edges": [["a", "b"], ["b", "c"], ["a", "c"]],
-  "analysis": {"max_cycles": 10000}
-}
-```
-
-Run a text summary or request JSON for further processing:
+1. Set the study `name`, its `question`, and `model.name` to describe your task.
+2. Replace `model.vertices` and `model.edges` with your graph.
+3. Give each candidate an `id` and a readable `label`, then define its counters
+   in `readouts`. Each integer edge coefficient specifies a signed increment;
+   an empty readout list represents snapshots alone.
+4. Replace the example's `alpha: 0.375` with your own sampling exponent, or
+   remove it to compare graph and counter information without a sampling law.
+   For a finite-scale request, remove `alpha` and set both `observation_time`
+   and `sampling_interval` in the stated reference-rate units.
+5. Choose an explicit `max_cycles` budget and run into a new directory:
 
 ```bash
-.venv/bin/homological-observability analyze triangle.json
-.venv/bin/homological-observability analyze triangle.json --format json
+.venv/bin/homological-observability compare my-study.json --output-dir my-results
 ```
 
 <details>
 <summary>Windows PowerShell</summary>
 
 ```powershell
-.venv\Scripts\homological-observability.exe analyze triangle.json
-.venv\Scripts\homological-observability.exe analyze triangle.json --format json
+.venv\Scripts\homological-observability.exe compare my-study.json --output-dir my-results
 ```
 
 </details>
 
-The graph must be finite, connected, undirected, and simple. Add integer edge
-readouts to describe extra counters. Optional settings specify a maximum
-layer, an asymptotic exponent `alpha`, or the finite-scale pair
-`observation_time` and `sampling_interval`. The
-[model guide](docs/MODEL_GUIDE.md) explains the fields and gives a complete
-model with a readout.
+The [input guide](docs/MODEL_GUIDE.md) explains how to translate a physical
+model into graph and counter fields. The [comparison guide](docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
+walks through editing a study and checking its assumptions.
 
-Cycle enumeration can grow exponentially with the network. The example sets
-an explicit `max_cycles` budget; omitting it leaves enumeration unbounded by
-the application. Choose a budget when trying an unfamiliar graph. If it is
-exhausted, the analysis returns `LIMIT_REACHED` and identifies the limit.
+Cycle enumeration can grow exponentially with the network. Keep a budget
+when trying an unfamiliar graph. A `LIMIT_REACHED` result identifies the
+exhausted limit; `PARTIAL_HORIZON` restricts conclusions to the computed
+layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
+explains how to continue each calculation.
 
-`COMPLETE` means the requested layers were computed and the exposure lattice
-has reached all of $H_1(G;\mathbb Z)$. A shorter requested horizon that has
-not reached that lattice returns `PARTIAL_HORIZON`; its computed layers remain
-exact. The wedge example is already complete at layer three.
-
-## Construct a rate-dependent critical experiment
-
-The `critical` command adds known positive directed rates and constructs the
-exact path catalogue, stationary law, graded marks, and marked-Poisson
-experiment at a selected layer. From a source checkout, run the supplied
-nonreversible four-cycle:
+For a single configuration, use `analyze` with a model file. Every exported
+study includes such a file for each candidate; for example:
 
 ```bash
-.venv/bin/homological-observability critical examples/biased_c4_critical.json
+.venv/bin/homological-observability analyze bridge-results/models/config-x.json
 ```
 
 <details>
 <summary>Windows PowerShell</summary>
 
 ```powershell
-.venv\Scripts\homological-observability.exe critical examples/biased_c4_critical.json
+.venv\Scripts\homological-observability.exe analyze bridge-results/models/config-x.json
 ```
 
 </details>
-
-Before the extra readout is applied, the two antipodal path marks have exact
-conditional probabilities $4/5$ and $1/5$. The
-[biased C4 guide](docs/CRITICAL_EXPERIMENT.md) explains how rates and counters
-affect the uncertainty, and walks through the complete
-[JSON result](examples/biased_c4_critical_result.json).
-Add `--format json` to obtain this result from the command line.
-
-This experiment describes the critical limit $T\delta^{m-1}\to\theta$.
-Evaluating a posterior at finite $(T,\delta)$ requires a separate calculation.
 
 ## Python API
 
-Use the virtual environment's Python interpreter for this example. The model
-is included in the installed package, so it can be loaded from any directory:
-
-```python
-import homological_observability as ho
-
-model = ho.load_example("wedge-c3-c5")
-result = ho.analyze_model(model)
-print(ho.render_text(result))
-```
-
-This prints the same analysis table as the command-line example. Use
-`ho.load_model("triangle.json")` for a model file and
-`ho.analysis_to_dict(result)` to work with the structured result in Python.
-
-For several configurations on one network, load a study and compare them:
+Run this example with `.venv/bin/python` on macOS/Linux or
+`.venv\Scripts\python.exe` on Windows. The bridge model is included in the
+installed package:
 
 ```python
 import homological_observability as ho
@@ -295,33 +210,51 @@ comparison = ho.compare_configurations(study)
 print(ho.render_comparison_text(comparison))
 ```
 
-Use `ho.load_study("my-study.json")` for your own study. The
-[comparison guide](docs/COMPARISON_GUIDE.md) covers editable inputs and saving
-a complete study bundle. The API also exposes critical experiments, schemas,
-and result renderers; the [output guide](docs/OUTPUT_CONTRACT.md) describes
-their fields and formats.
+Use `ho.load_study("my-study.json")` for a saved study. To work with one
+configuration, use `ho.load_model(path)` and `ho.analyze_model(model)`.
+The [comparison guide](docs/COMPARISON_GUIDE.md) covers editable Python inputs
+and saving study bundles; the [output guide](docs/OUTPUT_CONTRACT.md) describes
+the result objects and renderers.
 
 ## Scope and interpretation
 
-The graph and readouts specify an observation model. The Markov interpretation
-assumes positive transition rates in both directions on every edge. Rate
-magnitudes are needed for critical path probabilities; the graph filtration
-only needs their support. The paper's statistical results use a fixed graph,
-generator, and readout, a stationary initial law, and regular noiseless vertex
-snapshots with exact integer counters.
+The software computes exact integer cycle lattices, their visible images and
+hidden directions. It retains finite-index information, such as parity,
+that ordinary real rank can miss. Counter comparisons use these exact
+relations on the reported scope.
 
-Lattice operations and finite catalogues are exact when the calculation
-completes. Phase labels, entropy coefficients, and sampling exponents apply
-the paper's long-time asymptotic results. A finite-run error tolerance calls
-for additional risk analysis of the chosen observation model. The
-[scientific scope](docs/SCIENTIFIC_SCOPE.md) gives the full assumptions and
-interpretation, and the [paper map](PAPER_MAP.md) connects the implemented
-objects to the manuscript.
+Sampling thresholds, phase labels, and entropy coefficients apply the
+long-time asymptotic results for a fixed graph, generator, and readout, with
+a stationary initial law. A sampling interval chosen to meet a specified
+finite-run error tolerance needs additional risk analysis. The
+[scientific scope](docs/SCIENTIFIC_SCOPE.md) explains the physical question,
+assumptions, and interpretation of each type of result.
+
+The theoretical foundation is
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
+The [paper map](PAPER_MAP.md) connects implemented objects to the manuscript;
+the software also reproduces its finite-model calculations.
+
+## Documentation and feedback
+
+| Your next task | Guide |
+| --- | --- |
+| Compare counters and understand their differences | [Comparison studies](docs/COMPARISON_GUIDE.md) |
+| Prepare a model or study | [Input fields and physical modeling](docs/MODEL_GUIDE.md) |
+| Understand integer layers, parity, and sampling requirements | [Worked two-loop example](docs/END_TO_END_EXAMPLE.md) |
+| Add known rates and construct a critical-limit experiment | [Rate-dependent critical experiment](docs/CRITICAL_EXPERIMENT.md) |
+| Interpret structured results or handle incomplete calculations | [Output fields, statuses, and formats](docs/OUTPUT_CONTRACT.md) |
+| Check mathematical or numerical details | [Conventions](docs/CONVENTIONS.md) · [Numerical methods](docs/NUMERICS.md) |
+| Reproduce the paper's finite-model calculations | [Reproduction commands](#reproduce-the-paper-evidence) · [Computational report](results/REPORT.md) |
+| Inspect changes or contribute | [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) |
+
+Use [Issues](https://github.com/yeruciwenrou-dotcom/homological-observability/issues/new/choose)
+to report a problem or discuss a research use.
 
 ## Reproduce the paper evidence
 
-With the package installed, reproduce the calculations and compare them
-with the packaged references:
+With the package installed, regenerate the finite-cycle calculations and
+compare them with the packaged references:
 
 ```bash
 .venv/bin/homological-observability reproduce --check --output-dir generated_results
@@ -336,12 +269,19 @@ with the packaged references:
 
 </details>
 
-The output directory contains `REPORT.md` and `companion_summary.png`.
+Open `generated_results/REPORT.md` for the scientific summary and
+`generated_results/companion_summary.png` for the figure. The calculations
+cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
+identity, and reciprocal-lattice peak suppression. Reference acceptance uses
+documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
+describes how results and file identities are compared.
+
+<details>
+<summary>Verify a source checkout or explore finite-ring bridges</summary>
 
 ### Full verification from source
 
-For pinned dependencies and the reader-side test suite, run from the source
-directory:
+From the source directory, run:
 
 ```bash
 python3 quickstart.py
@@ -358,64 +298,27 @@ and reproduces the frozen paper calculations. It manages the repository's
 `.venv`, reusing it for the same Python version and recreating it when the
 interpreter's major or minor version changes. Keep any separately managed
 environment in another directory. Installation needs internet access.
-
-A successful run confirms that the generated tables agree with the committed
-references. Open `generated_results/REPORT.md` for the scientific summary and
-`generated_results/companion_summary.png` for the figure. Fresh outputs are
-kept separate from the reference files in `results/`.
-
-Reference acceptance uses the documented numerical tolerances. File hashes
-identify a particular run's outputs; see the
-[output guide](docs/OUTPUT_CONTRACT.md#artifact-roles) for comparison details.
-
-The frozen calculations cover symmetric C3–C6 bridge posteriors, C3/C4
-critical kernels, the Poisson-averaged binomial MAP identity, and the
-reciprocal-lattice peak mechanism. The [report](results/REPORT.md) explains
-the distinction between an unseen winding and a visible opportunity with an
-unknown route. The figure shows approximation errors in the corresponding
-limiting descriptions.
-
-![Frozen finite-cycle checks: critical count convergence, finite-cycle asymptotics, and reciprocal-peak suppression.](results/companion_summary.png)
+Fresh outputs are kept separate from the reference files in `results/`.
 
 ### Finite-ring bridges
 
-To inspect the path ambiguity in a single window, run:
+To inspect winding probabilities between opposite-vertex snapshots on a
+symmetric four-state ring, run from the source directory:
 
 ```bash
 .venv/bin/python explore_cycles.py --cycle 4 --residue 2 --delta 0.1
 ```
 
-<details>
-<summary>Windows PowerShell</summary>
+On Windows:
 
 ```powershell
 .venv\Scripts\python.exe explore_cycles.py --cycle 4 --residue 2 --delta 0.1
 ```
 
+The two shortest routes have equal weight. The table also reports the
+probability mass covered by the displayed range.
+
 </details>
-
-This prints winding probabilities given opposite-vertex snapshots on a
-symmetric four-state ring. The two shortest routes have equal weight. The
-table also reports the probability mass covered by the displayed range.
-
-## Documentation and feedback
-
-| Document | What you will find |
-| --- | --- |
-| [Physical interpretation](docs/SCIENTIFIC_SCOPE.md) | Observation problem, research uses, and assumptions |
-| [End-to-end example](docs/END_TO_END_EXAMPLE.md) | Understand a model's integer filtration and sampling requirements |
-| [Comparison studies](docs/COMPARISON_GUIDE.md) | Compare several counter configurations, inspect their differences, and rerun a study |
-| [Critical experiment](docs/CRITICAL_EXPERIMENT.md) | Rate-dependent path competition and the effect of a readout |
-| [Model guide](docs/MODEL_GUIDE.md) | Input fields, validation, resource controls, and examples |
-| [Output guide](docs/OUTPUT_CONTRACT.md) | Result fields, statuses, formats, and exit codes |
-| [Conventions](docs/CONVENTIONS.md) | Orientations, coordinates, integer filtrations, and phase laws |
-| [Numerical methods](docs/NUMERICS.md) | Probability evaluation, range limits, and reference calibration |
-| [Paper map](PAPER_MAP.md) | Connections between paper objects, algorithms, examples, and tests |
-| [Changelog](CHANGELOG.md) | Changes by software version |
-
-Use [Issues](https://github.com/yeruciwenrou-dotcom/homological-observability/issues/new/choose)
-to report a problem or discuss a research use. The
-[contribution guide](CONTRIBUTING.md) explains how to prepare and check changes.
 
 ## Citation and license
 
@@ -429,11 +332,9 @@ This DOI identifies the archived 1.1.0 release. Record the version used and,
 for a source checkout, the exact Git commit. GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
-The companion paper, *Stochastic Histories at Finite Temporal Resolution:
-Homological Observability and Information Phase Diagrams in Markov Jump
-Processes*, presents the theoretical results and is available as a
-[preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes),
-with version 1 archived on Zenodo:
+Cite the paper for theoretical results. It is available on
+[alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes),
+with version 1 and its PDF archived on Zenodo:
 [10.5281/zenodo.23424849](https://doi.org/10.5281/zenodo.23424849).
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.

@@ -1,111 +1,136 @@
 # Homological Observability
 
-Research software for cyclic-history observability in known finite Markov
-networks. Analyze which accumulated integer cycle directions remain hidden
-by snapshots, and how sampling resolution and exact cumulative counters
-change the information available.
+Analyze what your observations reveal about accumulated cycle history, and
+compare counters that could reveal more. Homological Observability is
+research software for scientists working with a known finite-state Markov
+jump model and considering how to observe it.
 
-Use the command line or Python API to:
+Provide a transition graph and candidate **exact cumulative integer counter
+rules**. The software identifies hidden cycle-history differences, compares
+information gains and redundant channels, and computes asymptotic sampling
+requirements. It produces explanatory reports, exact integer evidence, and
+saved inputs for another run, through the command line or Python.
 
-- Analyze a network's exact integer cycle filtration, hidden directions,
-  and asymptotic sampling requirements.
-- Compare counter configurations under shared conditions, identify information
-  gains and redundant channels, and export a rerunnable study.
-- Construct a rate-dependent critical-limit experiment and reproduce the
-  reference finite-cycle calculations.
+The graph must be finite, connected, and simple, with positive transition-rate
+support in both directions on every edge. The observation model uses regular
+noiseless state snapshots and exact counters. Inputs specify a model and
+measurement rules, rather than a measured trajectory. Counter comparisons
+need rate support; rate-dependent critical experiments also need exact
+rates.
 
-## Installation
+## Install
 
-Use Python 3.11–3.13. This guide covers unreleased source version `1.2.0.dev0`.
-In an activated virtual environment, obtain and install that source:
+Use Python 3.11–3.13. These instructions cover unreleased source version
+`1.2.0.dev0`:
 
 ```bash
 git clone --branch feature/configuration-comparison https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
-python -m pip install .
+python3 -m venv .venv
+.venv/bin/python -m pip install .
 ```
 
 The [installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#install)
-includes virtual environment setup and Windows commands. The published
+includes Windows commands. On Windows, use
+`.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability` below, and `.venv\Scripts\python.exe`
+in place of `.venv/bin/python`. Activation is optional. The published
 [1.1.0 package](https://pypi.org/project/homological-observability/1.1.0/)
-has its own [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
+has its own [installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
 
-## Analyze a network
+## Try a counter comparison
 
-```bash
-homological-observability example wedge-c3-c5
-```
-
-The example joins a triangle and a five-cycle at one state. A weighted counter
-removes the earliest hidden cycle direction while preserving a parity signal
-at the next layer. The
-[worked example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/END_TO_END_EXAMPLE.md)
-explains the resulting table. Models and reference data are included in the
-installed package.
-
-## Compare counter configurations
+A four-state ring and a seven-state ring are connected by a bridge. You can
+count signed crossings on either ring: which choice postpones the earliest
+remaining cycle-history ambiguity?
 
 ```bash
-homological-observability study-example bridge --output bridge-study.json
-homological-observability compare bridge-study.json --output-dir bridge-results
+.venv/bin/homological-observability study-example bridge --output bridge-study.json
+.venv/bin/homological-observability compare bridge-study.json --output-dir bridge-results
 ```
 
-Open `bridge-results/comparison.md` to see what the candidate counters retain
-and leave hidden. Information equivalence, strict refinement, and
-incomparability distinguish choices that can share the same scalar summary.
-The study bundle retains the input, exact integer evidence, per-candidate
-completion states, and instructions for another run. Use a new output
-directory for each study.
+Open `bridge-results/comparison.md`. The study completes all six candidates;
+three of its results are:
 
-The [comparison guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/COMPARISON_GUIDE.md)
-explains the example and takes you through preparing your own candidates.
+| Configuration | First hidden layer | Remaining hidden rank |
+| --- | ---: | ---: |
+| Snapshots only | 2 | 2 |
+| Counter x on the four-state ring | 4 | 1 |
+| Counter y on the seven-state ring | 2 | 1 |
+
+Counting the short ring postpones the first unresolved cycle direction to
+layer four. Counting the long ring leaves the earlier ambiguity in place.
+The two counters retain different information, even though each leaves one
+hidden direction. The study also shows that a weighted counter can tie a
+scalar objective without retaining the same information, and that a
+proportional extra channel is redundant.
+
+The [worked comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/COMPARISON_GUIDE.md)
+explains the hidden layers and the example's sampling law. `COMPLETE` records
+the scope of the calculation; the report describes the remaining ambiguity.
+The bundle contains structured results, exact witnesses, the input, and replay
+instructions. Each run uses a new output directory.
+
+## Use your own model
+
+Save a copy of `bridge-study.json` as `my-study.json`. Update the study and
+model names, research question, graph, and candidate counters. Replace the
+example's `alpha: 0.375` with your own sampling exponent, or remove it for a
+comparison of graph and counter information alone. Keep an explicit cycle
+enumeration budget, then run:
+
+```bash
+.venv/bin/homological-observability compare my-study.json --output-dir my-results
+```
+
+The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
+walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/MODEL_GUIDE.md)
+describes signed edge increments, sampling units, validation, and resource
+limits. Use `analyze` with a model file when you need just one configuration.
 
 ## Python API
 
+Run this with the virtual environment's Python interpreter:
+
 ```python
 import homological_observability as ho
-
-model = ho.load_example("wedge-c3-c5")
-result = ho.analyze_model(model)
-print(ho.render_text(result))
 
 study = ho.load_study_example("bridge")
 comparison = ho.compare_configurations(study)
 print(ho.render_comparison_text(comparison))
 ```
 
-Use `ho.load_model("my-model.json")` for one model or
-`ho.load_study("my-study.json")` for several configurations. The
-[input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/MODEL_GUIDE.md)
-describes graph, counter, and resource settings; the
+Use `ho.load_study("my-study.json")` for your own study. The
 [output guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/OUTPUT_CONTRACT.md)
-describes structured results and renderers.
+describes structured results and renderers, including single-configuration
+analysis and rate-dependent critical experiments.
+
+## Interpretation and further reading
+
+Integer lattice calculations and finite catalogues are exact when complete.
+Sampling thresholds, phase labels, and entropy coefficients describe long-time
+asymptotic limits under the stated model assumptions. Choosing a sampling
+interval for a specified finite-run error tolerance requires additional risk
+analysis. Cycle enumeration can grow exponentially; use computation budgets
+and check the reported completeness of each result.
+
+- [Overview and first study](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md)
+- [Scientific assumptions and research uses](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/SCIENTIFIC_SCOPE.md)
+- [Integer layers and sampling: a worked two-loop example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/END_TO_END_EXAMPLE.md)
+- [Rate-dependent critical experiments](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/CRITICAL_EXPERIMENT.md)
+- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/CHANGELOG.md)
+- [Report an issue](https://github.com/yeruciwenrou-dotcom/homological-observability/issues)
 
 ## Reproduce the reference calculations
 
 ```bash
-homological-observability reproduce --check --output-dir generated_results
+.venv/bin/homological-observability reproduce --check --output-dir generated_results
 ```
 
 This command compares fresh calculations with the packaged reference data
 and writes a report and figure to `generated_results`. For pinned dependencies
 and the reader-side test suite, follow the
 [reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#full-verification-from-source).
-
-## Scope and documentation
-
-The graph must be finite, connected, undirected, and simple. The Markov
-interpretation requires positive transition-rate support in both directions
-on every edge; critical experiments also require the exact rate values.
-Counters are exact cumulative integer measurements. Lattice operations and
-finite catalogues are exact when the calculation completes. Sampling
-requirements and phase labels describe long-time asymptotic limits; a
-finite-run error tolerance requires additional risk analysis.
-
-- [Overview and worked examples](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md)
-- [Scientific assumptions](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/SCIENTIFIC_SCOPE.md)
-- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/CHANGELOG.md)
-- [Report an issue](https://github.com/yeruciwenrou-dotcom/homological-observability/issues)
 
 ## Theory and citation
 

@@ -63,6 +63,33 @@ class DocumentationTests(unittest.TestCase):
                 with self.subTest(path=path.name, language="json", index=index):
                     json.loads(block)
 
+    def test_critical_tutorial_accepts_json_decimal_rates(self) -> None:
+        guide = ROOT / "docs/CRITICAL_EXPERIMENT.md"
+        payload = json.loads(
+            (ROOT / "examples/biased_c4_critical.json").read_text(encoding="utf-8")
+        )
+        payload["rates"][0]["rate"] = 0.1
+        with tempfile.TemporaryDirectory() as directory:
+            examples = Path(directory) / "examples"
+            examples.mkdir()
+            (examples / "biased_c4_critical.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            namespace = {"__name__": "__documentation_test__"}
+            with chdir(directory):
+                editing_blocks = [
+                    block
+                    for block in fenced_blocks(
+                        guide.read_text(encoding="utf-8"), "python"
+                    )
+                    if "json.loads(" in block
+                ]
+                self.assertTrue(editing_blocks, "No editable JSON example in the guide")
+                for block in editing_blocks:
+                    exec(compile(block, str(guide), "exec"), namespace)
+            self.assertEqual(namespace["document"]["status"], "COMPLETE")
+            self.assertEqual(str(namespace["payload"]["rates"][0]["rate"]), "0.1")
+
     def test_reader_commands_run(self) -> None:
         commands = (
             ["examples", "--format", "json"],

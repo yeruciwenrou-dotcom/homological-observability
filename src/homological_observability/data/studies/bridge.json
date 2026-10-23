@@ -142,7 +142,7 @@
     },
     {
       "id": "redundant",
-      "label": "Counters z and 2z",
+      "label": "Counters 2x+y and 4x+2y",
       "readouts": [
         {
           "name": "2x+y",
@@ -186,7 +186,7 @@
     },
     {
       "id": "full",
-      "label": "Counters z and y",
+      "label": "Counters 2x+y and y",
       "readouts": [
         {
           "name": "2x+y",

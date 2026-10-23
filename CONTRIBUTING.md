@@ -13,9 +13,8 @@ and install the pinned dependencies and development tools. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m pip install -c requirements.txt -e '.[test]'
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip install -c requirements.txt -e '.[test]'
 ```
 
 On Windows PowerShell:
@@ -27,19 +26,20 @@ py -3.12 -m venv .venv
 ```
 
 This editable installation uses your working source files. In the checks
-below, Windows users can replace `python` with `.venv\Scripts\python.exe`
-and `ruff` with `.venv\Scripts\ruff.exe`; activation is optional.
+below, Windows users can replace `.venv/bin/python` with
+`.venv\Scripts\python.exe` and `.venv/bin/ruff` with
+`.venv\Scripts\ruff.exe`.
 
 Run the checks relevant to the change:
 
 ```bash
-python -W error -m unittest discover -s tests -v
-python -W error reproduce_all.py
-python tests/validate_schema.py
-python tests/validate_graph_atlas.py
-python tests/validate_distribution.py
-ruff check .
-ruff format --check .
+.venv/bin/python -W error -m unittest discover -s tests -v
+.venv/bin/python -W error reproduce_all.py
+.venv/bin/python tests/validate_schema.py
+.venv/bin/python tests/validate_graph_atlas.py
+.venv/bin/python tests/validate_distribution.py
+.venv/bin/ruff check .
+.venv/bin/ruff format --check .
 ```
 
 The distribution check builds a wheel and source archive, then installs and
@@ -61,7 +61,7 @@ them need an independently justified correction and a matching changelog entry.
 Check the existing example reports with:
 
 ```bash
-python tools/freeze_examples.py --check
+.venv/bin/python tools/freeze_examples.py --check
 ```
 
 This compares their scientific fields with the current implementation while

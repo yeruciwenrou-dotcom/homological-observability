@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 import re
+import string
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,7 +15,7 @@ import homological_observability as ho
 
 def readable(markdown):
     """Remove Markdown punctuation escapes for assertions on visible wording."""
-    return re.sub(r"\\([^\s])", r"\1", markdown)
+    return re.sub(r"\\([" + re.escape(string.punctuation) + r"])", r"\1", markdown)
 
 
 class ComparisonReportingTests(unittest.TestCase):
@@ -80,6 +81,8 @@ class ComparisonReportingTests(unittest.TestCase):
         self.assertIn("Same information", report)
         self.assertNotIn("RIGHT_REFINES_LEFT", report)
         self.assertIn("[All exact evidence](comparison.json)", report)
+        self.assertIn("Exact witness in [comparison.json](comparison.json)", report)
+        self.assertIn("$T\\delta^{m-1}$", report)
 
     def test_partial_and_unavailable_results_do_not_gain_full_scope_claims(self):
         partial_study = copy.deepcopy(self.study)

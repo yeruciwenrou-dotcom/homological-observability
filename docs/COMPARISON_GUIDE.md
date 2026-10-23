@@ -5,16 +5,19 @@ adds, which channels are redundant, and which histories remain hidden. A
 study holds the graph, sampling parameters, and computation budget fixed so
 that the candidates can be compared directly.
 
-Follow the [installation instructions](../README.md#install), then run the
-built-in bridge study below. If the environment is not activated, replace
-`homological-observability` with `.venv/bin/homological-observability` on
-macOS/Linux or `.venv\Scripts\homological-observability.exe` on Windows,
-relative to the installation directory. Use the same environment's Python
-for the Python examples.
+If you ran the [quick start](../README.md#quick-start), continue with
+[Read the answer](#read-the-answer) using your existing `bridge-results`.
+For a first run, follow the [installation instructions](../README.md#install),
+then run the built-in bridge study from the checkout directory.
+
+Commands below use the installed environment directly. On Windows, use
+`.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability`. Run the Python examples with
+`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
 
 ```bash
-homological-observability study-example bridge --output bridge-study.json
-homological-observability compare bridge-study.json --output-dir bridge-results
+.venv/bin/homological-observability study-example bridge --output bridge-study.json
+.venv/bin/homological-observability compare bridge-study.json --output-dir bridge-results
 ```
 
 The output directory must be new. Read `bridge-results/comparison.md` for the
@@ -71,24 +74,27 @@ filtration and sampling law, see the [two-loop example](END_TO_END_EXAMPLE.md).
 
 ## Compare your own configurations
 
-Create an editable starting point:
+Save a copy of `bridge-study.json` as `my-study.json` to adapt the network and
+counters you have just explored. If you already made this copy while following
+the README, continue editing that file.
+
+<details>
+<summary>Start from a smaller template</summary>
+
+For a fresh study, you can instead create `my-study.json` with the minimal
+example. The destination file must not already exist.
 
 ```bash
-homological-observability study-example minimal --output my-study.json
-homological-observability compare my-study.json --output-dir my-results
+.venv/bin/homological-observability study-example minimal --output my-study.json
 ```
 
-The minimal study has a short loop and a long loop sharing a junction. Its
+This study has a short loop and a long loop sharing a junction. Its
 three candidates use snapshots alone, a short-loop counter, or a long-loop
-counter. Edit this file in the following order:
+counter.
 
-1. Replace `model.vertices` and `model.edges` with your connected simple graph.
-2. Give each configuration a unique `id` and a readable `label`.
-3. Define each counter through its integer coefficients on graph edges.
-4. Set a shared `max_cycles` budget and, if needed, sampling parameters in
-   `analysis`. Run into a new output directory after each edit.
+</details>
 
-For a counter coefficient of `1` on `["junction", "short-a"]`, a jump in that
+For a counter coefficient of `1` on `["a0", "a1"]`, a jump in that
 direction adds one and the reverse jump subtracts one. Omitted edges have
 coefficient zero. Weighted counters use other integer coefficients. The
 [model guide](MODEL_GUIDE.md) gives the full graph and readout rules.
@@ -98,12 +104,44 @@ the study's `analysis` field. The shared `model` holds the topology. An empty
 readout list is the snapshots-only candidate. The [input reference](MODEL_GUIDE.md)
 describes study fields, identifiers, validation, and the 64-candidate limit.
 
+Edit this file in the following order:
+
+1. Update the study's `name` and the `model.name`. Set or remove the optional
+   `question` to describe your research question; this text labels the study
+   without choosing an optimization objective.
+2. Replace `model.vertices` and `model.edges` with your connected simple graph.
+3. Give each configuration a unique `id` and a readable `label`, then define
+   its counters through integer coefficients on the graph edges.
+4. Choose the sampling request below and retain an explicit `max_cycles`
+   budget in `analysis`.
+
+Both starting examples include `alpha: 0.375`, which specifies their sampling
+law. Confirm what your study needs before running it:
+
+| Your question | Sampling fields in `analysis` |
+| --- | --- |
+| Which histories do the counters distinguish? | Remove `alpha` to compare the exact structure without choosing a sampling law |
+| How do the candidates behave under a chosen asymptotic sampling law? | Set `alpha` to your exponent in $\delta=T^{-\alpha}$; keep `0.375` only if that is your intended law |
+| What are the exposure scales at a specified observation time and interval? | Remove `alpha` and provide both `observation_time` and `sampling_interval` in [normalized units](MODEL_GUIDE.md#from-a-physical-model-to-an-input) |
+
+With no sampling fields, the hidden directions, information relations, and
+structural critical exponents remain available; evaluated entropy coefficients
+are left unset. The finite time/interval pair reports $T\delta^{m-1}$ values,
+without assigning asymptotic regime labels or finite-run error probabilities.
+
+Run the edited study into a new directory, then check the report's title,
+**Shared conditions**, and candidate labels against your intended question:
+
+```bash
+.venv/bin/homological-observability compare my-study.json --output-dir my-results
+```
+
 Counter values here are exact cumulative measurements. These studies do not
 model measurement noise, estimate unknown graphs or rates, or choose physical
 instruments. For open histories with known endpoints, cycle coordinates are
 understood after the common endpoint-reference correction.
 
-The same study can be run through the Python API:
+The Python API follows the same workflow. To try it with a packaged study:
 
 ```python
 import homological_observability as ho
@@ -113,7 +151,7 @@ comparison = ho.compare_configurations(study)
 print(ho.render_comparison_text(comparison))
 ```
 
-For your own saved study, use `ho.load_study("my-study.json")`. For a Python
+For your edited study, use `ho.load_study("my-study.json")`. For a Python
 dictionary, use `ho.parse_study(document)` to validate the shared input.
 `ho.render_comparison_text(comparison)` and
 `ho.render_comparison_markdown(comparison)` read the same result object;
@@ -158,26 +196,32 @@ states. Several one-channel candidates share the same scalar summary while
 hiding different cycle combinations:
 
 ```bash
-homological-observability study-example theta --output theta-study.json
-homological-observability compare theta-study.json --output-dir theta-results
+.venv/bin/homological-observability study-example theta --output theta-study.json
+.venv/bin/homological-observability compare theta-study.json --output-dir theta-results
 ```
 
 ## Check completeness and recover from errors
 
 The report preserves a separate status for every candidate:
 
-| Candidate status | How to use the result |
+| Candidate status | Meaning and next step |
 | --- | --- |
-| `COMPLETE` | The exposure has reached the full integer homology lattice |
-| `PARTIAL_HORIZON` | Conclusions apply only to the computed exposure lattice |
-| `LIMIT_REACHED` | The budget stopped computation; missing filtration conclusions are unavailable |
-| `ERROR` | Correct this candidate's readouts using the accompanying message |
+| `COMPLETE` | The exposure has reached the full integer homology lattice. Interpret the remaining hidden directions and information relations on that full scope. |
+| `PARTIAL_HORIZON` | Conclusions cover only the computed exposure lattice. For a full-network comparison, remove the study's `analysis.max_layer` or raise it, rerun, and check natural completeness. |
+| `LIMIT_REACHED` | The computation exceeded its budget. Read the raw result's `limit` field; decide whether a larger `max_cycles` budget is affordable before rerunning. |
+| `ERROR` | Follow this candidate's error and recovery message to correct its readouts, then rerun the study. |
 
 The comparison is `COMPLETE` only when every candidate is complete. A
 partial-horizon relation cannot establish a full-history equivalence or
 refinement. A zero hidden rank at a short horizon does not show that later
 layers are resolved. Resource limits and candidate errors do not erase the
 other candidates' results.
+
+`max_layer` controls how far the calculation follows cycle exposure. Sampling
+parameters describe the observation protocol; changing `alpha` or the sampling
+interval does not complete a truncated calculation. When `max_layer` is
+omitted, the graph-size horizon covers every simple cycle. The
+[analysis settings](MODEL_GUIDE.md#analysis-settings) explain these choices.
 
 The `compare` command exits with `0` for a complete comparison, `1` when any
 candidate is incomplete or has an error, and `2` for invalid shared input or
@@ -203,7 +247,7 @@ and the recorded software identity.
 For the bridge study above, rerun into a new directory:
 
 ```bash
-homological-observability compare bridge-results/study.json --output-dir bridge-replay
+.venv/bin/homological-observability compare bridge-results/study.json --output-dir bridge-replay
 ```
 
 The bundle also includes `study.json`, each candidate's model and raw analysis,

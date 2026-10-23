@@ -38,8 +38,11 @@ $$
 \lambda_m=T\delta^{m-1}.
 $$
 
-Times are expressed in units set by a fixed reference rate $q_0$. With physical
-times, the dimensionless scale is $(q_0T)(q_0\delta)^{m-1}$; the exact path
+Times are expressed in units set by a fixed reference rate $q_0$. For physical
+observation time $T_{\mathrm{phys}}$ and sampling interval
+$\Delta_{\mathrm{phys}}$, use $T=q_0T_{\mathrm{phys}}$ and
+$\delta=q_0\Delta_{\mathrm{phys}}$. Thus the dimensionless exposure scale is
+$(q_0T_{\mathrm{phys}})(q_0\Delta_{\mathrm{phys}})^{m-1}$; the exact path
 intensities additionally depend on the transition rates. The filtration
 describes an asymptotic ordering of ambiguities, not a hard cutoff on how many
 jumps can occur in a finite window.
@@ -156,15 +159,12 @@ induced readout, the common compound-Poisson Lévy measure, and conditional
 critical-endpoint mark laws. These objects are serialized as exact integers
 and reduced rational strings.
 
-The topology and integer-lattice analysis does not require rate magnitudes.
-Its contract isolates which ambiguity directions exist and when they become
-exposed. Counter comparisons use this rate-independent topology contract. The
-critical task consumes the separate exact-rate model after constructing that
-topology at the requested layer. Applying these calculations to a Markov
-process requires positive support in both directions. If one directed rate
-vanishes, the static graph filtration can include a path witness that the
-dynamics cannot realize, so
-this implementation must not be used unchanged.
+Topology analysis and counter comparison determine which ambiguity directions
+exist and when they become exposed, using only the positive bidirectional
+support. The critical task also uses the rate magnitudes to weight those
+directions. If a directed rate vanishes, the static graph filtration can
+include a path witness that the dynamics cannot realize; such a model needs
+a different support calculation.
 
 ## Evidence classes
 
@@ -201,48 +201,35 @@ its full experiment were constructed. Natural topology completion remains an
 explicit, separate flag. `LIMIT_REACHED` returns no partial catalogue or
 marked-Poisson object.
 
-## Supported scope and exclusions
+## Interpreting results in a research workflow
 
-The scientific contract does not cover:
+The inputs describe a known model and exact measurement rules. Estimating an
+unknown graph, transition rates, or hidden states from data is a separate
+inference task. Noisy, adaptive, or irregular observations likewise need an
+observation model beyond the noiseless regular snapshots and exact integer
+counters used here. General trajectory simulation and real-valued measurement
+rules require other tools or extensions to that model.
 
-- inference of an unknown graph, unknown rates, or hidden states from data;
-- a general Markov-process simulator or trajectory sampler;
-- finite-sample risk guarantees, confidence intervals, or numerical error
-  bars for the asymptotic phase law or critical-limit experiment;
-- noisy, adaptive, or irregular sampling models;
-- directed graphs, multigraphs, self-loops, disconnected graphs, or general
-  cell complexes;
-- real-valued readouts rounded or coerced to integers;
-- zero directed rates or support that is not bidirectional;
-- a general solver for the posterior at finite $(T,\delta)$, or unconditional
-  critical MAP solving;
-- automatic expansion of the generally infinite total-mark probability table;
-- a graphical user interface or plugin framework.
+Dense, critical, and sparse labels describe limits under a specified sampling
+scaling. They do not classify a finite dataset or provide finite-sample risk
+guarantees or confidence intervals. The critical result gives a limiting
+generative specification and conditioning rule. A general
+posterior at finite $(T,\delta)$ or an unconditional critical MAP probability
+requires further calculation. The generally infinite total-mark probability
+table is not expanded by this task.
 
-These questions require different scientific inputs, algorithms, or evidence
-contracts. They are outside the meaning of a successful result from the
-package.
+For the paper's finite-cycle examples, the checkout includes specialized
+bridge calculations and critical MAP identities. The
+[computational report](../results/REPORT.md) explains these results, and the
+[finite-ring exploration command](../README.md#finite-ring-bridges) evaluates
+individual cases.
 
-The source checkout does include specialized finite-cycle bridge calculations
-and critical MAP identities for the paper's examples. See the
-[computational report](../results/REPORT.md) and
-[finite-ring exploration command](../README.md#finite-ring-bridges).
-
-## Interpretation limits
-
-- A small-graph validation sweep is strong implementation evidence, not a
-  proof of the paper's general theorems or a performance guarantee for large
-  graphs.
-- Result matrices use a deterministic homology basis. Their entries can change
-  under another valid basis; ranks, quotient invariants, and filtration
-  statements are the public scientific content.
-- Torsion in a graded quotient records an integral finite-index effect. It must
-  not be discarded by replacing integer lattices with real vector spaces.
-- A dense, critical, or sparse label is asymptotic in the specified scaling.
-  It does not assert that a particular finite dataset has entered that regime.
-- The frozen finite-cycle tables verify the advertised examples and
-  identities. They do not substitute for the manuscript's hypotheses and
-  proofs.
+When comparing exact results, use ranks, quotient invariants, and filtration
+statements. Coordinate matrix entries can change with a valid choice of
+homology basis. Retain torsion factors as well as free ranks: a finite-index
+effect such as parity disappears if the integer lattices are replaced by
+their real spans. The [coordinate conventions](CONVENTIONS.md) describe this
+distinction.
 
 ## Scale and resource behavior
 
@@ -252,9 +239,11 @@ exceeded, the software returns `LIMIT_REACHED` and identifies complete and
 incomplete components. Users should increase the budget only after considering
 the graph size and the value of a complete enumeration.
 
-The implementation is intended for small and medium finite networks where
-exact integer answers and an auditable cycle catalogue are more important than
-large-scale approximation.
+Suitability depends on the cycle catalogue and the integer coefficients.
+Vertex count alone does not establish an
+affordable problem size. The [built-in study measurements](COMPARISON_GUIDE.md#resource-use)
+provide small-network baselines; use explicit budgets when trying a new
+network.
 
 Critical experiments add enumeration of every directed walk of length $m$ and
 exact rational arithmetic. `max_paths` bounds the exact walk count;

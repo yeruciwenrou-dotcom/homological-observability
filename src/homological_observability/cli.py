@@ -76,7 +76,19 @@ def _build_parser() -> argparse.ArgumentParser:
     _add_format(analyze_parser)
 
     study_parser = commands.add_parser(
-        "study-example", help="print or save an editable configuration study"
+        "study-example",
+        help="print or save an editable configuration study",
+        description=(
+            "Choose a starting point:\n"
+            "  bridge   Compare counters on two connected rings and detect redundancy.\n"
+            "  theta    Compare counters whose summary scores tie.\n"
+            "  minimal  Edit a small two-loop template for your own study."
+        ),
+        epilog=(
+            "Try: homological-observability study-example bridge --output study.json\n"
+            "Then: homological-observability compare study.json --output-dir results"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     study_parser.add_argument("name", choices=("bridge", "theta", "minimal"))
     study_parser.add_argument("--output", type=Path, help="save JSON to a new file")
