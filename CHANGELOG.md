@@ -4,7 +4,7 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
-## Unreleased
+## 1.2.1 — 2026-10-24
 
 ### Security
 
@@ -14,6 +14,13 @@ separately inside their JSON documents.
   After updating a source checkout, rebuild its managed environment with
   `python -m venv --clear .venv`, then run `python quickstart.py`.
   Previously published source archives retain their original dependency pins.
+- Require Pillow 13.0.0 or newer in the installable package so that installing
+  or upgrading to this release also upgrades an older Pillow dependency.
+
+### Documentation
+
+- Point installation, source-verification, and software-citation instructions
+  to the 1.2.1 release and its version-specific archive.
 
 ## 1.2.0 — 2026-10-24
 
