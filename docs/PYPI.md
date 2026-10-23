@@ -5,6 +5,11 @@ compare counters that could reveal more. Homological Observability is
 research software for scientists working with a known finite-state Markov
 jump model and considering how to observe it.
 
+The theoretical foundation is
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
+([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The package also
+reproduces the paper's finite-model calculations.
+
 Provide a transition graph and candidate **exact cumulative integer counter
 rules**. The software identifies hidden cycle-history differences, compares
 information gains and redundant channels, and computes asymptotic sampling
@@ -17,6 +22,11 @@ noiseless state snapshots and exact counters. Inputs specify a model and
 measurement rules, rather than a measured trajectory. Counter comparisons
 need rate support; rate-dependent critical experiments also need exact
 rates.
+
+[Try a comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#quick-start) ·
+[Reproduce the paper](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) ·
+[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
+[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
 
 ## Install
 
@@ -71,6 +81,18 @@ the scope of the calculation; the report describes the remaining ambiguity.
 The bundle contains structured results, exact witnesses, the input, and replay
 instructions. Each run uses a new output directory.
 
+## Reproduce the paper evidence
+
+```bash
+.venv/bin/homological-observability reproduce --check --output-dir generated_results
+```
+
+This command regenerates the paper's finite-model calculations, compares them
+with the packaged reference data, and writes `generated_results/REPORT.md`
+and `generated_results/companion_summary.png`. For pinned dependencies
+and the reader-side test suite, follow the
+[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#full-verification-from-source).
+
 ## Use your own model
 
 Save a copy of `bridge-study.json` as `my-study.json`. Update the study and
@@ -121,29 +143,16 @@ and check the reported completeness of each result.
 - [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/CHANGELOG.md)
 - [Report an issue](https://github.com/yeruciwenrou-dotcom/homological-observability/issues)
 
-## Reproduce the reference calculations
-
-```bash
-.venv/bin/homological-observability reproduce --check --output-dir generated_results
-```
-
-This command compares fresh calculations with the packaged reference data
-and writes a report and figure to `generated_results`. For pinned dependencies
-and the reader-side test suite, follow the
-[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#full-verification-from-source).
-
 ## Theory and citation
 
-The theoretical foundation is *Stochastic Histories at Finite Temporal
-Resolution: Homological Observability and Information Phase Diagrams in
-Markov Jump Processes*. Read the
-[preprint on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
-or the [archived paper](https://doi.org/10.5281/zenodo.23424849).
+The [paper map](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/PAPER_MAP.md)
+connects the software's calculations to the theoretical results and paper evidence.
 
 Cite the paper for theoretical results and the software for computations.
+When your work uses both, cite them separately. The
+[citation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
+provides the full paper and software references and a copyable paper BibTeX entry.
 Record the software version used and the Git commit for a source checkout.
-Software citation metadata is available in
-[CITATION.cff](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/CITATION.cff).
 
 Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 

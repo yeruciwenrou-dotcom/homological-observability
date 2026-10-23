@@ -1,12 +1,17 @@
 # Homological Observability
 
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
-[![DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
+[![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
 Analyze what your observations reveal about a system's accumulated cycle
 history, and compare counters that could reveal more. Homological
 Observability is research software for scientists working with a known
 finite-state Markov jump model and considering how to observe it.
+
+The theoretical foundation is
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
+([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The package also
+reproduces the paper's finite-model calculations.
 
 Provide the network and candidate **exact cumulative integer counter rules**.
 The software identifies cycle-history differences that remain hidden,
@@ -28,9 +33,10 @@ comparison needs the graph and measurement rules; exact rates are needed
 for the separate rate-dependent critical experiment. The input describes a
 model and observation scheme, rather than a measured trajectory.
 
-[Try a comparison](#quick-start) · [Use your own network](#analyze-your-own-network) ·
-[Python API](#python-api) · [Scientific scope](#scope-and-interpretation) ·
-[Documentation](#documentation-and-feedback)
+[Try a comparison](#quick-start) · [Reproduce the paper](#reproduce-the-paper-evidence) ·
+[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) · [Cite](#citation-and-license) ·
+[Use your own network](#analyze-your-own-network) · [Python API](#python-api) ·
+[Scientific scope](#scope-and-interpretation) · [Documentation](#documentation-and-feedback)
 
 ## Install
 
@@ -106,7 +112,7 @@ Create the study input, then run it into a new results directory:
 The terminal output begins:
 
 ```text
-Connected rings: select a counter and detect redundancy — COMPLETE
+Connected rings: select a counter and detect redundancy - COMPLETE
 With one channel, which candidate delays the first hidden free layer?
 ```
 
@@ -141,6 +147,75 @@ six choices and their sampling interpretation.
 Keep the results directory to share or repeat the study. Its `README.md`
 gives the replay command, `study.json` holds the input, and `comparison.json`
 retains the full structured evidence. Each run uses a new output directory.
+
+## Reproduce the paper evidence
+
+With the package installed, regenerate the finite-cycle calculations and
+compare them with the packaged references:
+
+```bash
+.venv/bin/homological-observability reproduce --check --output-dir generated_results
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
+```
+
+</details>
+
+Open `generated_results/REPORT.md` for the scientific summary and
+`generated_results/companion_summary.png` for the figure. The calculations
+cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
+identity, and reciprocal-lattice peak suppression. Reference acceptance uses
+documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
+describes how results and file identities are compared.
+
+<details>
+<summary>Verify a source checkout or explore finite-ring bridges</summary>
+
+### Full verification from source
+
+From the source directory, run:
+
+```bash
+python3 quickstart.py
+```
+
+On Windows:
+
+```powershell
+py -3.12 quickstart.py
+```
+
+The script installs pinned dependencies, runs the reader-side test suite,
+and reproduces the frozen paper calculations. It manages the repository's
+`.venv`, reusing it for the same Python version and recreating it when the
+interpreter's major or minor version changes. Keep any separately managed
+environment in another directory. Installation needs internet access.
+Fresh outputs are kept separate from the reference files in `results/`.
+
+### Finite-ring bridges
+
+To inspect winding probabilities between opposite-vertex snapshots on a
+symmetric four-state ring, run from the source directory:
+
+```bash
+.venv/bin/python explore_cycles.py --cycle 4 --residue 2 --delta 0.1
+```
+
+On Windows:
+
+```powershell
+.venv\Scripts\python.exe explore_cycles.py --cycle 4 --residue 2 --delta 0.1
+```
+
+The two shortest routes have equal weight. The table also reports the
+probability mass covered by the displayed range.
+
+</details>
 
 ## Analyze your own network
 
@@ -230,10 +305,8 @@ finite-run error tolerance needs additional risk analysis. The
 [scientific scope](docs/SCIENTIFIC_SCOPE.md) explains the physical question,
 assumptions, and interpretation of each type of result.
 
-The theoretical foundation is
-*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
-The [paper map](PAPER_MAP.md) connects implemented objects to the manuscript;
-the software also reproduces its finite-model calculations.
+The [paper map](PAPER_MAP.md) connects implemented objects to the theoretical
+results and the reproduced finite-model calculations.
 
 ## Documentation and feedback
 
@@ -251,78 +324,38 @@ the software also reproduces its finite-model calculations.
 Use [Issues](https://github.com/yeruciwenrou-dotcom/homological-observability/issues/new/choose)
 to report a problem or discuss a research use.
 
-## Reproduce the paper evidence
-
-With the package installed, regenerate the finite-cycle calculations and
-compare them with the packaged references:
-
-```bash
-.venv/bin/homological-observability reproduce --check --output-dir generated_results
-```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
-```
-
-</details>
-
-Open `generated_results/REPORT.md` for the scientific summary and
-`generated_results/companion_summary.png` for the figure. The calculations
-cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
-identity, and reciprocal-lattice peak suppression. Reference acceptance uses
-documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
-describes how results and file identities are compared.
-
-<details>
-<summary>Verify a source checkout or explore finite-ring bridges</summary>
-
-### Full verification from source
-
-From the source directory, run:
-
-```bash
-python3 quickstart.py
-```
-
-On Windows:
-
-```powershell
-py -3.12 quickstart.py
-```
-
-The script installs pinned dependencies, runs the reader-side test suite,
-and reproduces the frozen paper calculations. It manages the repository's
-`.venv`, reusing it for the same Python version and recreating it when the
-interpreter's major or minor version changes. Keep any separately managed
-environment in another directory. Installation needs internet access.
-Fresh outputs are kept separate from the reference files in `results/`.
-
-### Finite-ring bridges
-
-To inspect winding probabilities between opposite-vertex snapshots on a
-symmetric four-state ring, run from the source directory:
-
-```bash
-.venv/bin/python explore_cycles.py --cycle 4 --residue 2 --delta 0.1
-```
-
-On Windows:
-
-```powershell
-.venv\Scripts\python.exe explore_cycles.py --cycle 4 --residue 2 --delta 0.1
-```
-
-The two shortest routes have equal weight. The table also reports the
-probability mass covered by the displayed range.
-
-</details>
-
 ## Citation and license
 
-Cite the software for computations performed with this package:
+Cite the paper for theoretical results and the software for computations.
+When your work uses both, cite them separately.
+
+### Paper
+
+> Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Stochastic Histories at Finite
+> Temporal Resolution: Homological Observability and Information Phase Diagrams
+> in Markov Jump Processes* (Version 1) [Preprint]. Zenodo.
+> https://doi.org/10.5281/zenodo.23424849
+
+<details>
+<summary>Copy the paper citation as BibTeX</summary>
+
+```bibtex
+@misc{liu2026stochastic_histories,
+  author = {Liu, HongZheng and Tian, YiNuo and Wu, Zhiyue and Cheng, Jianqun},
+  title = {{Stochastic Histories at Finite Temporal Resolution:
+            Homological Observability and Information Phase Diagrams
+            in Markov Jump Processes}},
+  year = {2026},
+  howpublished = {Zenodo},
+  doi = {10.5281/zenodo.23424849},
+  url = {https://doi.org/10.5281/zenodo.23424849},
+  note = {Preprint, version 1}
+}
+```
+
+</details>
+
+### Software
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.1.0) [Computer
@@ -331,11 +364,6 @@ Cite the software for computations performed with this package:
 This DOI identifies the archived 1.1.0 release. Record the version used and,
 for a source checkout, the exact Git commit. GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
-
-Cite the paper for theoretical results. It is available on
-[alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes),
-with version 1 and its PDF archived on Zenodo:
-[10.5281/zenodo.23424849](https://doi.org/10.5281/zenodo.23424849).
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 
