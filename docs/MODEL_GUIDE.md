@@ -189,9 +189,14 @@ parameters does not extend the computed horizon.
 
 ### Run and inspect a model
 
-Run commands from the checkout directory after
-[installation](../README.md#install). They use the environment directly. On
-Windows, use `.venv\Scripts\homological-observability.exe` in place of
+This example uses `examples/wedge_c3_c5.json` from the
+[complete source archive](https://zenodo.org/records/23600829/files/homological-observability-1.2.0-source.zip?download=1).
+Download and unpack the archive, then open a terminal in the extracted
+source directory containing `examples/`. Follow the
+[installation instructions](../README.md#install) in that directory.
+
+Run the commands below from the same directory. They use the environment
+directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability`. Run Python examples with
 `.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
 
@@ -363,6 +368,9 @@ preflight estimate. `audit_paths: false` is recommended unless individual
 walk-level reconstruction is needed.
 
 ### Run and inspect a critical model
+
+Use the [source directory and environment prepared above](#run-and-inspect-a-model).
+The critical input is `examples/biased_c4_critical.json` in the same archive.
 
 ```console
 $ .venv/bin/homological-observability critical examples/biased_c4_critical.json

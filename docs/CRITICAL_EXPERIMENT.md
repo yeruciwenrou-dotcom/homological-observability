@@ -21,9 +21,14 @@ requires a separate calculation.
 
 ## Run the example
 
-Run these commands from the checkout directory after
-[installation](../README.md#install). They use the environment directly. On
-Windows, use `.venv\Scripts\homological-observability.exe` in place of
+This example uses `examples/biased_c4_critical.json` from the
+[complete source archive](https://zenodo.org/records/23600829/files/homological-observability-1.2.0-source.zip?download=1).
+Download and unpack the archive, then open a terminal in the extracted
+source directory containing `examples/`. Follow the
+[installation instructions](../README.md#install) in that directory.
+
+Run the commands below from the same directory. They use the environment
+directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability`. Run Python examples with
 `.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
 
