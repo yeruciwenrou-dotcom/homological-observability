@@ -28,7 +28,7 @@ finite-resolution records can leave several cycle histories possible. The
 generator determines their conditional probabilities; identifying the realized
 history still depends on what the record resolves.
 
-Homological Observability implements calculations for this observation
+The software implements calculations for this observation
 problem. Given a support graph and optional cumulative integer counter rules,
 it computes hidden cycle differences, their exposure layers, and asymptotic
 sampling requirements. Exact transition rates are additional inputs for

@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-Homological Observability is research software for analyzing the
+This repository provides research software for analyzing the
 recoverability of accumulated cycle histories in finite-state Markov jump
 processes.
 

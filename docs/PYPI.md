@@ -1,6 +1,6 @@
 # Homological Observability
 
-Homological Observability is research software for analyzing the
+This package provides tools for analyzing the
 recoverability of accumulated cycle histories in finite-state Markov jump
 processes.
 
