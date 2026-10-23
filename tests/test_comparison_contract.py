@@ -327,6 +327,55 @@ class ComparisonContractTests(unittest.TestCase):
             )
             self.assertIn("T delta^(m-1)", completed.stdout)
 
+    def test_comparison_print_and_cli_redirect_work_with_strict_cp1252_stdout(self):
+        environment = dict(os.environ)
+        environment["PYTHONPATH"] = str(Path(ho.__file__).resolve().parent.parent)
+        environment["PYTHONIOENCODING"] = "cp1252:strict"
+        environment["PYTHONUTF8"] = "0"
+        with tempfile.TemporaryDirectory() as directory:
+            workspace = Path(directory)
+            study = ho.load_study_example("bridge")
+            path = workspace / "study.json"
+            path.write_text(json.dumps(study), encoding="utf-8")
+            expected = ho.render_comparison_text(ho.compare_configurations(study))
+            printed = subprocess.run(
+                [
+                    sys.executable,
+                    "-c",
+                    "import sys; import homological_observability as ho; "
+                    "assert sys.stdout.encoding == 'cp1252'; "
+                    "assert sys.stdout.errors == 'strict'; "
+                    "print(ho.render_comparison_text(ho.compare_configurations("
+                    "ho.load_study_example('bridge'))))",
+                ],
+                cwd=workspace,
+                env=environment,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(printed.returncode, 0, printed.stderr)
+            self.assertEqual(
+                printed.stdout.decode("cp1252").replace("\r\n", "\n"), expected + "\n"
+            )
+            output = workspace / "report.txt"
+            with output.open("wb") as stream:
+                redirected = subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "homological_observability.cli",
+                        "compare",
+                        str(path),
+                    ],
+                    cwd=workspace,
+                    env=environment,
+                    stdout=stream,
+                    stderr=subprocess.PIPE,
+                    check=False,
+                )
+            self.assertEqual(redirected.returncode, 0, redirected.stderr)
+            self.assertEqual(output.read_text(encoding="cp1252"), expected)
+
     def test_cli_incomplete_exit_and_invalid_global_failure_do_not_look_successful(
         self,
     ):

@@ -106,6 +106,27 @@ class ComparisonReportingTests(unittest.TestCase):
             self.assertNotIn("Readout changes:", text)
             self.assertIn("Increase analysis.max_cycles", text)
 
+    def test_terminal_punctuation_is_ascii_including_truncated_counters(self):
+        study = copy.deepcopy(self.study)
+        study["configurations"][1]["readouts"][0]["coefficients"] = [
+            {"edge": edge, "coefficient": 1} for edge in study["model"]["edges"][:9]
+        ]
+        result = ho.compare_configurations(study)
+        terminal = ho.render_comparison_text(result)
+        self.assertTrue(terminal.isascii())
+        self.assertIn("... (1 further terms in the model)", terminal)
+        self.assertIn("a0 -> a1", terminal)
+        report = readable(ho.render_comparison_markdown(result))
+        self.assertIn("a0 → a1", report)
+        self.assertIn("… (1 further terms in the model)", report)
+
+    def test_terminal_rendering_preserves_user_unicode_labels(self):
+        result = copy.deepcopy(self.document)
+        label = "Flux α → β — exact"
+        result["rows"][1]["label"] = label
+        self.assertIn(label, ho.render_comparison_text(result))
+        self.assertEqual(result["rows"][1]["label"], label)
+
     def test_user_text_cannot_create_markdown_structure_or_terminal_controls(self):
         result = copy.deepcopy(self.document)
         label = "# <img src=x> | `x`\n[link](https://example.org)\x1b"

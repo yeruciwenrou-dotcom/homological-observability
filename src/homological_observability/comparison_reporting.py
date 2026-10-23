@@ -183,23 +183,29 @@ def _conditions(document: Mapping[str, Any]) -> list[str]:
     return notes
 
 
-def _counter_definitions(document: Mapping[str, Any], identifier: str) -> str:
+def _counter_definitions(
+    document: Mapping[str, Any], identifier: str, *, markdown: bool
+) -> str:
     result = document["results"].get(identifier)
     if result is None:
         return "Input could not be validated; see the recovery note and saved model."
     readouts = result["model"]["readouts"]
     if not readouts:
         return "Snapshots only; no additional counter."
+    arrow = "→" if markdown else "->"
+    ellipsis = "…" if markdown else "..."
     definitions = []
     for readout in readouts[:8]:
         coefficients = readout["coefficients"]
         terms = [
-            f"{item['coefficient']} C({_plain(item['edge'][0])} → {_plain(item['edge'][1])})"
+            f"{item['coefficient']} C({_plain(item['edge'][0])} {arrow} {_plain(item['edge'][1])})"
             for item in coefficients[:8]
         ]
         expression = " + ".join(terms) if terms else "0"
         if len(coefficients) > 8:
-            expression += f" + … ({len(coefficients) - 8} further terms in the model)"
+            expression += (
+                f" + {ellipsis} ({len(coefficients) - 8} further terms in the model)"
+            )
         definitions.append(f"{_plain(readout['name'])} = {expression}")
     if len(readouts) > 8:
         definitions.append(f"{len(readouts) - 8} further counters in the model")
@@ -287,6 +293,7 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
     rows = {row["id"]: row for row in document["rows"]}
     escape = _markdown if markdown else _plain
     record = "[comparison.json](comparison.json)" if markdown else "the JSON output"
+    arrow = "→" if markdown else "->"
     lines = []
     for index, pair in _representative_pairs(document):
         left, right = _name(rows[pair["left"]]), _name(rows[pair["right"]])
@@ -321,7 +328,7 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
             if markdown:
                 lines += ["| Oriented edge | Integer coefficient |", "|---|---:|"]
             for term in witness["edge_chain"][:12]:
-                edge = f"{_plain(term['edge'][0])} → {_plain(term['edge'][1])}"
+                edge = f"{_plain(term['edge'][0])} {arrow} {_plain(term['edge'][1])}"
                 lines.append(
                     f"| {escape(edge)} | {term['coefficient']} |"
                     if markdown
@@ -358,7 +365,7 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
 def render_comparison_text(document: Mapping[str, Any]) -> str:
     """Render the same computed metrics and certificates as the Markdown report."""
     study = document["study"]
-    lines = [f"{_plain(study['name'])} — {document['status']}"]
+    lines = [f"{_plain(study['name'])} - {document['status']}"]
     if study.get("question"):
         lines += [_plain(study["question"])]
     lines += (
@@ -377,7 +384,8 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
             f"  {_name(row)}: {row['status']}; channels={_cell(row['channels'])}; "
             f"first hidden={_first_hidden(row)}; hidden rank={_cell(row['computed_hidden_rank'])}; "
             f"entropy log(T) coefficient={_cell(row['entropy_log_t_coefficient'])}",
-            "    Counters: " + _counter_definitions(document, row["id"]),
+            "    Counters: "
+            + _counter_definitions(document, row["id"], markdown=False),
         ] + ["    " + note for note in _row_notes(row)]
     rows = {row["id"]: row for row in document["rows"]}
     lines += ["", "Information relations (first / second)"]
@@ -457,7 +465,7 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
         lines += [
             "### " + _markdown(_name(row)),
             "",
-            _markdown(_counter_definitions(document, row["id"])),
+            _markdown(_counter_definitions(document, row["id"], markdown=True)),
             "",
         ]
         lines += ["- " + _markdown(note) for note in _row_notes(row)]
