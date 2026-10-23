@@ -49,22 +49,12 @@ distributions.
 
 ## Install
 
-Use Python 3.11–3.13. These instructions cover the unreleased `1.2.0.dev0`
-source version. The published [1.1.0 package](https://pypi.org/project/homological-observability/1.1.0/)
-has its own [installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
-
-Clone the source and enter its root directory:
-
-```bash
-git clone --branch feature/configuration-comparison https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-```
-
-Create a virtual environment and install the package. On macOS or Linux:
+Use Python 3.11–3.13. In your working directory, create a virtual environment
+and install the package from PyPI. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install .
+.venv/bin/python -m pip install homological-observability==1.2.0
 ```
 
 <details>
@@ -72,7 +62,7 @@ python3 -m venv .venv
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install .
+.venv\Scripts\python.exe -m pip install homological-observability==1.2.0
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -187,7 +177,14 @@ describes how results and file identities are compared.
 
 ### Full verification from source
 
-From the source directory, run:
+Clone the release and enter its source directory:
+
+```bash
+git clone --branch v1.2.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
+```
+
+Then run:
 
 ```bash
 python3 quickstart.py
@@ -381,11 +378,11 @@ When your work uses both, cite them separately.
 ### Software
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.1.0) [Computer
-> software]. Zenodo. https://doi.org/10.5281/zenodo.23329444
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.2.0) [Computer
+> software]. Zenodo. https://doi.org/10.5281/zenodo.23600829
 
-This DOI identifies the archived 1.1.0 release. Record the version used and,
-for a source checkout, the exact Git commit. GitHub's citation menu and
+Record the software version used and, for a source checkout, the exact Git
+commit. GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.

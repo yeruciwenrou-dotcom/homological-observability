@@ -17,8 +17,8 @@ The theoretical foundation is
 reproduces the paper's finite-model calculations.
 
 [Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
-[Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) ·
-[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
+[Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#reproduce-the-paper-evidence) ·
+[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#citation-and-license)
 
 **Analyze your own network.** Provide its transition graph and optional
 integer counter rules. Each counter accumulates signed integer increments on
@@ -30,10 +30,10 @@ reports and exact integer evidence.
 
 | Task | Inputs | Guide |
 | --- | --- | --- |
-| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [`analyze`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#analyze-your-own-network) |
-| Compare counter configurations | Several counter choices on one graph | [`compare`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#quick-start) |
-| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/CRITICAL_EXPERIMENT.md) |
-| Reproduce the paper's calculations | Included models and reference data | [`reproduce`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) |
+| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [`analyze`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#analyze-your-own-network) |
+| Compare counter configurations | Several counter choices on one graph | [`compare`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#quick-start) |
+| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/CRITICAL_EXPERIMENT.md) |
+| Reproduce the paper's calculations | Included models and reference data | [`reproduce`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#reproduce-the-paper-evidence) |
 
 The graph must be finite, connected, and simple, with positive transition-rate
 support in both directions. The recording protocol uses regular noiseless
@@ -43,23 +43,20 @@ compute path weights and limiting mark distributions.
 
 ## Install
 
-Use Python 3.11–3.13. These instructions cover unreleased source version
-`1.2.0.dev0`:
+Use Python 3.11–3.13. In your working directory, create a virtual environment
+and install the package from PyPI:
 
 ```bash
-git clone --branch feature/configuration-comparison https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
 python3 -m venv .venv
-.venv/bin/python -m pip install .
+.venv/bin/python -m pip install homological-observability==1.2.0
 ```
 
-The [installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#install)
+The [installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#install)
 includes Windows commands. On Windows, use
 `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability` below, and `.venv\Scripts\python.exe`
-in place of `.venv/bin/python`. Activation is optional. The published
-[1.1.0 package](https://pypi.org/project/homological-observability/1.1.0/)
-has its own [installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.1.0/README.md).
+in place of `.venv/bin/python`. Activation is optional. Installation needs
+internet access; examples and reference data are included in the package.
 
 ## Try a counter comparison
 
@@ -88,7 +85,7 @@ hidden direction. The study also shows that a weighted counter can tie a
 scalar objective without retaining the same information, and that a
 proportional extra channel is redundant.
 
-The [worked comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/COMPARISON_GUIDE.md)
+The [worked comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/COMPARISON_GUIDE.md)
 explains the hidden layers and the example's sampling law. `COMPLETE` records
 the scope of the calculation; the report describes the remaining ambiguity.
 The bundle contains structured results, exact witnesses, the input, and replay
@@ -104,13 +101,13 @@ This command regenerates the paper's finite-model calculations, compares them
 with the packaged reference data, and writes `generated_results/REPORT.md`
 and `generated_results/companion_summary.png`. For pinned dependencies
 and the reader-side test suite, follow the
-[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#full-verification-from-source).
+[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#full-verification-from-source).
 
 ## Analyze your own network
 
 For one observation scheme, prepare `my-model.json` with your graph, optional
 counter rules, and any sampling parameters. The
-[model input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/MODEL_GUIDE.md)
+[model input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/MODEL_GUIDE.md)
 explains the fields and includes a complete example. Run:
 
 ```bash
@@ -128,8 +125,8 @@ enumeration budget, then run:
 .venv/bin/homological-observability compare my-study.json --output-dir my-results
 ```
 
-The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
-walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/MODEL_GUIDE.md)
+The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
+walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/MODEL_GUIDE.md)
 describes signed edge increments, sampling units, validation, and resource
 limits. Every exported study also includes a model file for each candidate,
 ready to inspect separately with `analyze`.
@@ -147,7 +144,7 @@ print(ho.render_comparison_text(comparison))
 ```
 
 Use `ho.load_study("my-study.json")` for your own study. The
-[output guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/OUTPUT_CONTRACT.md)
+[output guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/OUTPUT_CONTRACT.md)
 describes structured results and renderers, including single-configuration
 analysis and rate-dependent critical experiments.
 
@@ -160,21 +157,21 @@ interval for a specified finite-run error tolerance requires additional risk
 analysis. Cycle enumeration can grow exponentially; use computation budgets
 and check the reported completeness of each result.
 
-- [Overview and first study](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md)
-- [Scientific assumptions and research uses](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/SCIENTIFIC_SCOPE.md)
-- [Integer layers and sampling: a worked two-loop example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/END_TO_END_EXAMPLE.md)
-- [Rate-dependent critical experiments](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/CRITICAL_EXPERIMENT.md)
-- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/CHANGELOG.md)
+- [Overview and first study](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md)
+- [Scientific assumptions and research uses](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/SCIENTIFIC_SCOPE.md)
+- [Integer layers and sampling: a worked two-loop example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/END_TO_END_EXAMPLE.md)
+- [Rate-dependent critical experiments](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/CRITICAL_EXPERIMENT.md)
+- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/CHANGELOG.md)
 - [Report an issue](https://github.com/yeruciwenrou-dotcom/homological-observability/issues)
 
 ## Theory and citation
 
-The [paper map](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/PAPER_MAP.md)
+The [paper map](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/PAPER_MAP.md)
 connects the software's calculations to the theoretical results and paper evidence.
 
 Cite the paper for theoretical results and the software for computations.
 When your work uses both, cite them separately. The
-[citation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
+[citation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#citation-and-license)
 provides the full paper and software references and a copyable paper BibTeX entry.
 Record the software version used and the Git commit for a source checkout.
 
