@@ -22,7 +22,7 @@ requires a separate calculation.
 ## Run the example
 
 This example uses `examples/biased_c4_critical.json` from the
-[complete source archive](../README.md#full-verification-from-source).
+[complete source archive](https://zenodo.org/records/23600829/files/homological-observability-1.2.0-source.zip?download=1).
 Download and unpack the archive, then open a terminal in the extracted
 source directory containing `examples/`. Follow the
 [installation instructions](../README.md#install) in that directory.
