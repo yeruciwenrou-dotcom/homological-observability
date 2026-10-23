@@ -8,7 +8,8 @@ that the candidates can be compared directly.
 If you ran the [quick start](../README.md#quick-start), continue with
 [Read the answer](#read-the-answer) using your existing `bridge-results`.
 For a first run, follow the [installation instructions](../README.md#install),
-then run the built-in bridge study from the checkout directory.
+then run the built-in bridge study in that working directory. The study
+template is included in the installed package.
 
 Commands below use the installed environment directly. On Windows, use
 `.venv\Scripts\homological-observability.exe` in place of

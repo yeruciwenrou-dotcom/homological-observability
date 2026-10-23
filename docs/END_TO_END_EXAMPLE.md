@@ -58,7 +58,7 @@ certified `COMPLETE`.
 ## Run the example
 
 Follow the [installation instructions](../README.md#install), then run the
-commands below from the checkout directory. They use the environment directly.
+commands below in that working directory. They use the environment directly.
 On Windows, use `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability`. Run Python examples with
 `.venv/bin/python` (Windows: `.venv\Scripts\python.exe`). The model is included
