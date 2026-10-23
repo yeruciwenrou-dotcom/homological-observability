@@ -1,13 +1,13 @@
 # Physical interpretation and scientific scope
 
-## The question this software answers
+## The observation problem
 
-A Markov jump network specifies the states a system can occupy and the rates
-at which it moves between them. A snapshot records its state at one instant.
-Between snapshots, several routes may be possible, including routes whose
-integer cycle counts differ. Knowing the network and its rates determines
-the probabilities of those routes, but leaves the history of a particular run
-to be inferred from its records.
+State snapshots taken at finite intervals can be compatible with paths that
+wind differently around a network. These alternatives leave uncertainty about
+the history that occurred. As observation continues, more snapshots arrive
+and the history to be recovered grows with them. The research question is how
+temporal resolution and additional readouts determine which cycle-history
+differences the record can distinguish.
 
 The target here is accumulated cycle history. On a ring it is a net winding
 count; on a network with several independent cycles it is an integer vector.
@@ -20,6 +20,19 @@ retains cumulative circulation while omitting individual jump times. An
 accurate estimate of a long-time average current need not identify the exact
 integer count in a single run. Likewise, zero mean current at equilibrium
 does not remove the alternative cycle histories compatible with snapshots.
+
+The paper studies this question for finite-state Markov jump processes. It
+gives the observer complete knowledge of the transition generator $Q$, so the
+benchmark has no uncertainty about the dynamics. Even with this knowledge,
+finite-resolution records can leave several cycle histories possible. The
+generator determines their conditional probabilities; identifying the realized
+history still depends on what the record resolves.
+
+Homological Observability implements calculations for this observation
+problem. Given a support graph and optional cumulative integer counter rules,
+it computes hidden cycle differences, their exposure layers, and asymptotic
+sampling requirements. Exact transition rates are additional inputs for
+constructing the rate-dependent critical experiment.
 
 ## How local ambiguity accumulates
 
@@ -77,9 +90,9 @@ changes the hidden directions. The [comparison guide](COMPARISON_GUIDE.md)
 runs several configurations under common conditions and uses exact witnesses
 to distinguish an objective tie from equivalent information. The
 [critical tutorial](CRITICAL_EXPERIMENT.md) separates the effects of rates and
-additional observations. These are model-analysis tasks: the program consumes
-a graph, readouts, and optional rates rather than fitting a measured
-trajectory.
+additional observations. These are model-analysis tasks: their inputs specify
+the graph and measurement rules, with exact rates added for `critical`.
+Measured trajectories are outside these input formats.
 
 The resulting exponents give asymptotic sampling guidance. For example,
 $N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
@@ -106,10 +119,12 @@ The supported input is:
 - optionally, either an asymptotic sampling exponent `alpha` or a positive
   observation-time/sampling-interval pair.
 
-The paper's statistical interpretation fixes the graph, generator, and
-readout, starts the process in its stationary law, and uses noiseless regular
-vertex snapshots. The exact graph and lattice calculations themselves do not
-require a sampled trajectory.
+The paper establishes its statistical results for a fixed graph and fixed
+positive bidirectional rates, a known generator $Q$, a stationary initial
+distribution, noiseless regular vertex snapshots, and a fixed exact integral
+readout. These conditions govern the theorem-derived sampling interpretations.
+The graph and lattice calculations take the graph and readout rules as inputs;
+they require neither rate magnitudes nor a sampled trajectory.
 
 A `compare` study fixes the graph, sampling request, and computation limits
 while varying the declared counter configurations. Each counter is an exact
@@ -119,7 +134,7 @@ physical costs.
 
 The separate `critical` input adds:
 
-- one known, strictly positive exact rate for each direction of every edge;
+- one strictly positive exact rate for each direction of every edge;
 - a selected layer $m\geq2$ and positive exact critical intensity $\theta$;
 - explicit path, preflight and exact integer-digit, output-record, and cycle
   limits;
@@ -203,7 +218,7 @@ marked-Poisson object.
 
 ## Interpreting results in a research workflow
 
-The inputs describe a known model and exact measurement rules. Estimating an
+The inputs specify a support graph and exact measurement rules. Estimating an
 unknown graph, transition rates, or hidden states from data is a separate
 inference task. Noisy, adaptive, or irregular observations likewise need an
 observation model beyond the noiseless regular snapshots and exact integer

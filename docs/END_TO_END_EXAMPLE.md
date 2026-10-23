@@ -176,16 +176,26 @@ finite-sample error probability for this graph.
 
 ## Compare observation choices
 
-Keeping the graph fixed isolates what the counters contribute:
+Keeping the graph fixed isolates what the counters contribute. To interpret
+the sampling requirements, use the paper's benchmark: a stationary process
+with a fixed, known generator, positive rates in both directions, regular
+noiseless state snapshots, and the stated exact counters.
 
-| Extra readout | Earliest hidden layer | Hidden history difference | Consequence for sampling |
+In the joint limit $T\to\infty$, $\delta\to0$, with $T/\delta$ an integer,
+Corollary 6.5 gives an exact criterion for recovering the complete integer
+cycle displacement. When the counters leave a hidden direction, the optimal
+average success probability tends to one if and only if the exposure of the
+earliest nonzero hidden layer vanishes:
+
+| Extra readout | Earliest hidden layer | Hidden history difference | Recovery condition |
 | --- | --- | --- | --- |
-| None | 2 | Triangle winding already remains hidden | $T\delta\to0$ suffices for full cycle-history recovery |
-| $2n_3+n_5$ | 3 | $(-1,2)$ in the two cycle coordinates | The weaker condition $T\delta^2\to0$ suffices |
-| $n_3$ and $n_5$ separately | None | No hidden cycle direction | The exact counters already determine the target |
+| None | 2 | Triangle winding already remains hidden | $T\delta\to0$ |
+| $2n_3+n_5$ | 3 | $(-1,2)$ in the two cycle coordinates | $T\delta^2\to0$ |
+| $n_3$ and $n_5$ separately | None | No hidden cycle direction | The exact counters determine the target on every run |
 
-In normalized units, the first two sufficient window budgets are respectively
-$N_T\gg T^2$ and $N_T\gg T^{3/2}$. For example, under $\delta=T^{-3/4}$ the
+With $N_T=T/\delta$ sampling windows in normalized units, the first two
+conditions are equivalently $N_T/T^2\to\infty$ and
+$N_T/T^{3/2}\to\infty$. For example, under $\delta=T^{-3/4}$ the
 uninstrumented triangle direction is supercritical, whereas the weighted
 counter's first hidden layer is subcritical. This comparison concerns the
 growth of snapshot requirements; it does not assign a cost to the counters.

@@ -1,32 +1,44 @@
 # Homological Observability
 
-Analyze what your observations reveal about accumulated cycle history, and
-compare counters that could reveal more. Homological Observability is
-research software for scientists working with a known finite-state Markov
-jump model and considering how to observe it.
+Homological Observability is research software for analyzing the
+recoverability of accumulated cycle histories in finite-state Markov jump
+processes.
+
+A state snapshot records where a system is; its cycle history records the
+net circulation accumulated around the network. At finite temporal
+resolution, the same sequence of snapshots can hide different net windings,
+even when all transition rates are known. Longer observation adds both
+snapshots and history to recover. How rapidly must sampling improve to keep
+pace, and how can additional counters reduce that requirement?
 
 The theoretical foundation is
 *[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
 ([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The package also
 reproduces the paper's finite-model calculations.
 
-Provide a transition graph and candidate **exact cumulative integer counter
-rules**. The software identifies hidden cycle-history differences, compares
-information gains and redundant channels, and computes asymptotic sampling
-requirements. It produces explanatory reports, exact integer evidence, and
-saved inputs for another run, through the command line or Python.
+[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
+[Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) ·
+[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
+
+Provide a transition graph and optional counter rules. Each counter
+accumulates signed integer increments on edge crossings. The software
+computes hidden cycle differences and their exposure layers, the corresponding
+asymptotic sampling requirements, and the information retained by different
+counter configurations. Use the command line or Python to obtain explanatory
+reports and exact integer evidence.
+
+| Task | Inputs | Guide |
+| --- | --- | --- |
+| Analyze one observation scheme | Graph, optional counters and sampling parameters | [`analyze`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#analyze-your-own-network) |
+| Compare counter configurations | Several counter choices on one graph | [`compare`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#quick-start) |
+| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/CRITICAL_EXPERIMENT.md) |
+| Reproduce the paper's calculations | Included models and reference data | [`reproduce`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) |
 
 The graph must be finite, connected, and simple, with positive transition-rate
-support in both directions on every edge. The observation model uses regular
-noiseless state snapshots and exact counters. Inputs specify a model and
-measurement rules, rather than a measured trajectory. Counter comparisons
-need rate support; rate-dependent critical experiments also need exact
-rates.
-
-[Try a comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#quick-start) ·
-[Reproduce the paper](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) ·
-[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
-[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
+support in both directions. The recording protocol uses regular noiseless
+state snapshots and optional exact counters. **Network and counter analyses
+need no rate values.** The critical experiment uses exact positive rates to
+compute path weights and limiting mark distributions.
 
 ## Install
 
@@ -95,6 +107,16 @@ and the reader-side test suite, follow the
 
 ## Use your own model
 
+For one observation scheme, prepare `my-model.json` with your graph, optional
+counter rules, and any sampling parameters. The
+[model input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/MODEL_GUIDE.md)
+explains the fields and includes a complete example. Run:
+
+```bash
+.venv/bin/homological-observability analyze my-model.json
+```
+
+To compare several counter configurations, adapt the bridge study.
 Save a copy of `bridge-study.json` as `my-study.json`. Update the study and
 model names, research question, graph, and candidate counters. Replace the
 example's `alpha: 0.375` with your own sampling exponent, or remove it for a
@@ -108,7 +130,8 @@ enumeration budget, then run:
 The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
 walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/MODEL_GUIDE.md)
 describes signed edge increments, sampling units, validation, and resource
-limits. Use `analyze` with a model file when you need just one configuration.
+limits. Every exported study also includes a model file for each candidate,
+ready to inspect separately with `analyze`.
 
 ## Python API
 

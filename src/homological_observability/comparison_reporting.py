@@ -153,8 +153,9 @@ def _conditions(document: Mapping[str, Any]) -> list[str]:
     model, analysis = study["model"], study["analysis"]
     notes = [
         f"Network: {_plain(model['name'])}; {len(model['vertices'])} vertices, "
-        f"{len(model['edges'])} edges. All configurations use this graph, the same "
-        "snapshots and exact cumulative integer counters."
+        f"{len(model['edges'])} edges. All configurations share this graph, a "
+        "regular noiseless snapshot protocol and the sampling conditions below. "
+        "They differ in their exact cumulative integer counter rules."
     ]
     if analysis.get("alpha") is not None:
         notes.append(

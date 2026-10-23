@@ -3,40 +3,48 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability)](https://pypi.org/project/homological-observability/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-Analyze what your observations reveal about a system's accumulated cycle
-history, and compare counters that could reveal more. Homological
-Observability is research software for scientists working with a known
-finite-state Markov jump model and considering how to observe it.
+Homological Observability is research software for analyzing the
+recoverability of accumulated cycle histories in finite-state Markov jump
+processes.
+
+A state snapshot records where a system is; its cycle history records the
+net circulation accumulated around the network. At finite temporal
+resolution, the same sequence of snapshots can hide different net windings,
+even when all transition rates are known. Longer observation adds both
+snapshots and history to recover. How rapidly must sampling improve to keep
+pace, and how can additional counters reduce that requirement?
 
 The theoretical foundation is
 *[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
 ([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The package also
 reproduces the paper's finite-model calculations.
 
-Provide the network and candidate **exact cumulative integer counter rules**.
-The software identifies cycle-history differences that remain hidden,
-compares the information retained by each configuration, and computes
-asymptotic sampling requirements. Results include an explanatory report,
-exact integer evidence, and saved inputs for another run. Use it through the
-command line or Python.
+[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
+[Reproduce the calculations](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
 
-| You provide | You can determine |
-| --- | --- |
-| A known transition graph | Which cycle-history ambiguities arise between snapshots |
-| Counter rules as signed integer increments on edges | Which ambiguities each counter resolves, and which channels are redundant |
-| Optional sampling parameters | Asymptotic regimes, or exposure scales at a specified time and sampling interval |
+Provide a transition graph and optional counter rules. Each counter
+accumulates signed integer increments on edge crossings. The software
+computes hidden cycle differences and their exposure layers, the corresponding
+asymptotic sampling requirements, and the information retained by different
+counter configurations. Results include explanatory reports and exact
+integer evidence, available through the command line or Python.
+
+| Task | Inputs | Start here |
+| --- | --- | --- |
+| Analyze a network and its observation scheme | Graph, optional counters and sampling parameters | [`analyze`](#analyze-your-own-network) |
+| Compare counter configurations | Several counter choices on one graph | [`compare`](#quick-start) |
+| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](docs/CRITICAL_EXPERIMENT.md) |
+| Reproduce the paper's calculations | Included models and reference data | [`reproduce`](#reproduce-the-paper-evidence) |
 
 The supported graph is finite, connected, and simple, with positive
-transition-rate support in both directions on every edge. The observation
-model uses regular noiseless state snapshots and exact counters. Counter
-comparison needs the graph and measurement rules; exact rates are needed
-for the separate rate-dependent critical experiment. The input describes a
-model and observation scheme, rather than a measured trajectory.
+transition-rate support in both directions on every edge. The recording
+protocol uses regular noiseless state snapshots and optional exact counters.
+**Network and counter analyses need no rate values.** The critical experiment
+uses exact positive rates to compute path weights and limiting mark
+distributions.
 
-[Try a comparison](#quick-start) · [Reproduce the paper](#reproduce-the-paper-evidence) ·
-[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) · [Cite](#citation-and-license) ·
-[Use your own network](#analyze-your-own-network) · [Python API](#python-api) ·
-[Scientific scope](#scope-and-interpretation) · [Documentation](#documentation-and-feedback)
+[Python API](#python-api) · [Scientific scope](#scope-and-interpretation) ·
+[Documentation](#documentation-and-feedback)
 
 ## Install
 
@@ -219,6 +227,36 @@ probability mass covered by the displayed range.
 
 ## Analyze your own network
 
+Use `analyze` for a single observation scheme, or `compare` for a study of
+several counter configurations. Both take a graph and optional counter rules;
+sampling parameters are optional.
+
+### Analyze one configuration
+
+Prepare `my-model.json` using the [model input guide](docs/MODEL_GUIDE.md),
+then run:
+
+```bash
+.venv/bin/homological-observability analyze my-model.json
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+.venv\Scripts\homological-observability.exe analyze my-model.json
+```
+
+</details>
+
+Each exported study also includes a model file for every candidate. For
+example, you can use `bridge-results/models/config-x.json` with the same
+command to inspect the short-ring counter on its own. The
+[worked two-loop example](docs/END_TO_END_EXAMPLE.md) explains a single
+analysis and its integer results.
+
+### Compare your own configurations
+
 Save a copy of `bridge-study.json` as `my-study.json` and adapt the same study:
 
 1. Set the study `name`, its `question`, and `model.name` to describe your task.
@@ -254,22 +292,6 @@ when trying an unfamiliar graph. A `LIMIT_REACHED` result identifies the
 exhausted limit; `PARTIAL_HORIZON` restricts conclusions to the computed
 layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
 explains how to continue each calculation.
-
-For a single configuration, use `analyze` with a model file. Every exported
-study includes such a file for each candidate; for example:
-
-```bash
-.venv/bin/homological-observability analyze bridge-results/models/config-x.json
-```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe analyze bridge-results/models/config-x.json
-```
-
-</details>
 
 ## Python API
 

@@ -572,8 +572,9 @@ def compare_configurations(
                 else "default spanning-tree order"
             ),
             "observation_contract": (
-                "One known connected simple support graph, the same snapshots "
-                "and sampling conditions, and exact cumulative integer counters."
+                "One supplied connected simple support graph with a shared "
+                "regular noiseless snapshot protocol and sampling conditions. "
+                "Configurations vary the exact cumulative integer counter rules."
             ),
             "information_contract": (
                 "Relations compare kernels on the declared common integer "
