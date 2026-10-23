@@ -22,16 +22,17 @@ reproduces the paper's finite-model calculations.
 [Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
 [Reproduce the calculations](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
 
-Provide a transition graph and optional counter rules. Each counter
-accumulates signed integer increments on edge crossings. The software
-computes hidden cycle differences and their exposure layers, the corresponding
-asymptotic sampling requirements, and the information retained by different
+**Analyze your own network.** Provide its transition graph and optional
+integer counter rules. Each counter accumulates signed integer increments on
+edge crossings. The software computes hidden cycle differences and their
+exposure layers, the corresponding asymptotic sampling requirements, and the
+information retained by different
 counter configurations. Results include explanatory reports and exact
 integer evidence, available through the command line or Python.
 
 | Task | Inputs | Start here |
 | --- | --- | --- |
-| Analyze a network and its observation scheme | Graph, optional counters and sampling parameters | [`analyze`](#analyze-your-own-network) |
+| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [`analyze`](#analyze-your-own-network) |
 | Compare counter configurations | Several counter choices on one graph | [`compare`](#quick-start) |
 | Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](docs/CRITICAL_EXPERIMENT.md) |
 | Reproduce the paper's calculations | Included models and reference data | [`reproduce`](#reproduce-the-paper-evidence) |

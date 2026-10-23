@@ -20,16 +20,17 @@ reproduces the paper's finite-model calculations.
 [Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) ·
 [Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#citation-and-license)
 
-Provide a transition graph and optional counter rules. Each counter
-accumulates signed integer increments on edge crossings. The software
-computes hidden cycle differences and their exposure layers, the corresponding
-asymptotic sampling requirements, and the information retained by different
+**Analyze your own network.** Provide its transition graph and optional
+integer counter rules. Each counter accumulates signed integer increments on
+edge crossings. The software computes hidden cycle differences and their
+exposure layers, the corresponding asymptotic sampling requirements, and the
+information retained by different
 counter configurations. Use the command line or Python to obtain explanatory
 reports and exact integer evidence.
 
 | Task | Inputs | Guide |
 | --- | --- | --- |
-| Analyze one observation scheme | Graph, optional counters and sampling parameters | [`analyze`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#analyze-your-own-network) |
+| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [`analyze`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#analyze-your-own-network) |
 | Compare counter configurations | Several counter choices on one graph | [`compare`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#quick-start) |
 | Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/docs/CRITICAL_EXPERIMENT.md) |
 | Reproduce the paper's calculations | Included models and reference data | [`reproduce`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#reproduce-the-paper-evidence) |
@@ -105,7 +106,7 @@ and `generated_results/companion_summary.png`. For pinned dependencies
 and the reader-side test suite, follow the
 [reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feature/configuration-comparison/README.md#full-verification-from-source).
 
-## Use your own model
+## Analyze your own network
 
 For one observation scheme, prepare `my-model.json` with your graph, optional
 counter rules, and any sampling parameters. The
