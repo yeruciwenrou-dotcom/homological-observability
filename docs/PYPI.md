@@ -2,7 +2,8 @@
 
 This package provides tools for analyzing the
 recoverability of accumulated cycle histories in finite-state Markov jump
-processes.
+processes. Use it to study your own network, compare observation schemes,
+and reproduce the paper's finite-model calculations.
 
 A state snapshot records where a system is; its cycle history records the
 net circulation accumulated around the network. At finite temporal
@@ -11,10 +12,13 @@ even when all transition rates are known. Longer observation adds both
 snapshots and history to recover. How rapidly must sampling improve to keep
 pace, and how can additional counters reduce that requirement?
 
-The theoretical foundation is
-*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
-([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The package also
-reproduces the paper's finite-model calculations.
+**What the theory establishes.** The paper organizes unresolved cycle
+differences into an integer hierarchy and derives the asymptotic sampling
+conditions for recovering accumulated windings. Its information phase diagram
+describes how residual uncertainty grows as observation time and sampling
+resolution change. These transitions persist at equilibrium under detailed
+balance. The [scientific scope](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/docs/SCIENTIFIC_SCOPE.md)
+explains the assumptions and physical interpretation.
 
 [Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
 [Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#reproduce-the-paper-evidence) ·
@@ -22,11 +26,10 @@ reproduces the paper's finite-model calculations.
 
 **Analyze your own network.** Provide its transition graph and optional
 integer counter rules. Each counter accumulates signed integer increments on
-edge crossings. The software computes hidden cycle differences and their
-exposure layers, the corresponding asymptotic sampling requirements, and the
-information retained by different
-counter configurations. Use the command line or Python to obtain explanatory
-reports and exact integer evidence.
+edge crossings. Find which cycle differences remain hidden, how sampling
+must scale to resolve them, and which counter choices reveal different or
+redundant information. The command line and Python API return explanatory
+reports backed by exact integer calculations.
 
 | Task | Inputs | Guide |
 | --- | --- | --- |
@@ -44,15 +47,21 @@ compute path weights and limiting mark distributions.
 ## Install
 
 Use Python 3.11–3.13. In your working directory, create a virtual environment
-and install the package from PyPI:
+and install the package from PyPI. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install homological-observability==1.2.0
 ```
 
-The [installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#install)
-includes Windows commands. On Windows, use
+On Windows PowerShell:
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\python.exe -m pip install homological-observability==1.2.0
+```
+
+Python 3.11 or 3.13 can be selected in place of 3.12. On Windows, use
 `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability` below, and `.venv\Scripts\python.exe`
 in place of `.venv/bin/python`. Activation is optional. Installation needs
@@ -93,13 +102,19 @@ instructions. Each run uses a new output directory.
 
 ## Reproduce the paper evidence
 
+After installing the package above, run:
+
 ```bash
 .venv/bin/homological-observability reproduce --check --output-dir generated_results
 ```
 
 This command regenerates the paper's finite-model calculations, compares them
 with the packaged reference data, and writes `generated_results/REPORT.md`
-and `generated_results/companion_summary.png`. For pinned dependencies
+and `generated_results/companion_summary.png`. Successful verification prints
+`PASS: all calculation checks completed` and
+`PASS: generated tables agree with frozen reference results`.
+The output directory also contains the numerical CSV tables.
+For pinned dependencies
 and the reader-side test suite, follow the
 [reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.0/README.md#full-verification-from-source).
 

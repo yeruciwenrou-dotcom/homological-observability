@@ -5,7 +5,12 @@
 
 This repository provides research software for analyzing the
 recoverability of accumulated cycle histories in finite-state Markov jump
-processes.
+processes. Use it to study your own network, compare observation schemes,
+and reproduce the paper's finite-model calculations.
+
+[Install and try](#install) · [Your network](#analyze-your-own-network) ·
+[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
+[Reproduce](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
 
 A state snapshot records where a system is; its cycle history records the
 net circulation accumulated around the network. At finite temporal
@@ -14,28 +19,27 @@ even when all transition rates are known. Longer observation adds both
 snapshots and history to recover. How rapidly must sampling improve to keep
 pace, and how can additional counters reduce that requirement?
 
-The theoretical foundation is
-*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
-([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The package also
-reproduces the paper's finite-model calculations.
-
-[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
-[Reproduce the calculations](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
+**What the theory establishes.** The paper organizes unresolved cycle
+differences into an integer hierarchy and derives the asymptotic sampling
+conditions for recovering accumulated windings. Its information phase diagram
+describes how residual uncertainty grows as observation time and sampling
+resolution change. These transitions persist at equilibrium under detailed
+balance. The [scientific scope](docs/SCIENTIFIC_SCOPE.md) explains the model
+assumptions and the connection between topology, recording, and recovery.
 
 **Analyze your own network.** Provide its transition graph and optional
 integer counter rules. Each counter accumulates signed integer increments on
-edge crossings. The software computes hidden cycle differences and their
-exposure layers, the corresponding asymptotic sampling requirements, and the
-information retained by different
-counter configurations. Results include explanatory reports and exact
-integer evidence, available through the command line or Python.
+edge crossings. Find which cycle differences remain hidden, how sampling
+must scale to resolve them, and which counter choices reveal different or
+redundant information. The command line and Python API return explanatory
+reports backed by exact integer calculations.
 
 | Task | Inputs | Start here |
 | --- | --- | --- |
-| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [`analyze`](#analyze-your-own-network) |
-| Compare counter configurations | Several counter choices on one graph | [`compare`](#quick-start) |
-| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](docs/CRITICAL_EXPERIMENT.md) |
-| Reproduce the paper's calculations | Included models and reference data | [`reproduce`](#reproduce-the-paper-evidence) |
+| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [Prepare and analyze a model](#analyze-your-own-network) |
+| Compare counter configurations | Several counter choices on one graph | [Run a worked comparison](#quick-start) |
+| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [Add rates and construct the experiment](docs/CRITICAL_EXPERIMENT.md) |
+| Reproduce the paper's calculations | Included models and reference data | [Regenerate and check the results](#reproduce-the-paper-evidence) |
 
 The supported graph is finite, connected, and simple, with positive
 transition-rate support in both directions on every edge. The recording
@@ -149,8 +153,9 @@ retains the full structured evidence. Each run uses a new output directory.
 
 ## Reproduce the paper evidence
 
-With the package installed, regenerate the finite-cycle calculations and
-compare them with the packaged references:
+Start with [Install](#install) in a new working directory; the package includes
+the models and reference data needed here. Then regenerate the finite-cycle
+calculations and compare them with the packaged references:
 
 ```bash
 .venv/bin/homological-observability reproduce --check --output-dir generated_results
@@ -165,8 +170,20 @@ compare them with the packaged references:
 
 </details>
 
-Open `generated_results/REPORT.md` for the scientific summary and
-`generated_results/companion_summary.png` for the figure. The calculations
+Successful verification prints:
+
+```text
+PASS: all calculation checks completed
+PASS: generated tables agree with frozen reference results
+```
+
+| Result in `generated_results/` | What to read |
+| --- | --- |
+| `REPORT.md` | Scientific summary and interpretation of the checks |
+| `companion_summary.png` | Summary figure |
+| `selected_appendix_checks.csv`, `critical_kernel_results.csv` | Numerical tables for further inspection |
+
+The calculations
 cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
 identity, and reciprocal-lattice peak suppression. Reference acceptance uses
 documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
@@ -177,7 +194,13 @@ describes how results and file identities are compared.
 
 ### Full verification from source
 
-Clone the release and enter its source directory:
+For the archived source, download and unpack
+`homological-observability-1.2.0-source.zip` from
+[Zenodo](https://zenodo.org/records/23600829), then open a terminal in the
+extracted `homological-observability-1.2.0` directory. The archive includes
+the code, documentation, tests, pinned dependencies, and reference results.
+
+You can also clone the release and enter its source directory:
 
 ```bash
 git clone --branch v1.2.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
