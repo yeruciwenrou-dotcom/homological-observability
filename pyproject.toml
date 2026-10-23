@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homological-observability"
-version = "1.1.0"
-description = "Homological observability and asymptotic sampling requirements for finite-state Markov jump processes"
+version = "1.2.0"
+description = "Analyze cycle-history observability in finite-state Markov jump processes"
 readme = "docs/PYPI.md"
 requires-python = ">=3.11,<3.14"
 license = "MIT"
@@ -72,6 +72,7 @@ where = ["src"]
 [tool.setuptools.package-data]
 homological_observability = [
   "data/examples/*.json",
+  "data/studies/*.json",
   "data/reference/*.csv",
   "schemas/*.json",
 ]

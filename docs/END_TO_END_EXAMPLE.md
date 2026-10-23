@@ -4,10 +4,11 @@ Suppose a system can circulate around two loops, but its extra counter reports
 only a weighted sum of the two cycle counts. Which histories remain
 indistinguishable, and does that counter reduce the sampling requirements?
 
-This example follows the calculation from graph input to an answer. A single
-counter removes the earliest hidden direction while retaining a parity signal
-at the next layer. Comparing it with no counter and with two separate counters
-shows what each observation adds.
+Follow one counter from graph input through the integer filtration and its
+sampling interpretation, then compare three observation choices in one study.
+The weighted counter removes the earliest hidden direction while retaining a
+parity signal at the next layer. Snapshots alone and separate counters for the
+two loops provide the comparison.
 
 ## Network and readout
 
@@ -56,20 +57,23 @@ certified `COMPLETE`.
 
 ## Run the example
 
-Run these commands from the repository root with the virtual environment
-activated. Without activation, use the platform-specific executable paths in
-the [installation instructions](../README.md#install-from-a-source-checkout).
+Follow the [installation instructions](../README.md#install), then run the
+commands below from the checkout directory. They use the environment directly.
+On Windows, use `.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability`. Run Python examples with
+`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`). The model is included
+in the package.
 
 ```console
-$ homological-observability example wedge-c3-c5
-$ homological-observability example wedge-c3-c5 --format json
+$ .venv/bin/homological-observability example wedge-c3-c5
+$ .venv/bin/homological-observability example wedge-c3-c5 --format json
 ```
 
-The first command gives a compact table. The second emits the exact versioned
-document stored as
-[`examples/wedge_c3_c5_result.json`](../examples/wedge_c3_c5_result.json).
-A human-readable summary of the same result is available in
-[`examples/wedge_c3_c5_result.md`](../examples/wedge_c3_c5_result.md).
+The first command gives a compact table. The second emits a structured result
+that records the software version used for this run. Reference
+[JSON](../examples/wedge_c3_c5_result.json) and
+[Markdown](../examples/wedge_c3_c5_result.md) reports show the same scientific
+calculation; their producer version identifies the run that created them.
 
 ## Layer two: triangle exposure
 
@@ -172,48 +176,89 @@ finite-sample error probability for this graph.
 
 ## Compare observation choices
 
-Keeping the graph fixed isolates what the counters contribute:
+Keeping the graph fixed isolates what the counters contribute. To interpret
+the sampling requirements, use the paper's benchmark: a stationary process
+with a fixed, known generator, positive rates in both directions, regular
+noiseless state snapshots, and the stated exact counters.
 
-| Extra readout | Earliest hidden layer | Hidden history difference | Consequence for sampling |
+In the joint limit $T\to\infty$, $\delta\to0$, with $T/\delta$ an integer,
+Corollary 6.5 gives an exact criterion for recovering the complete integer
+cycle displacement. When the counters leave a hidden direction, the optimal
+average success probability tends to one if and only if the exposure of the
+earliest nonzero hidden layer vanishes:
+
+| Extra readout | Earliest hidden layer | Hidden history difference | Recovery condition |
 | --- | --- | --- | --- |
-| None | 2 | Triangle winding already remains hidden | $T\delta\to0$ suffices for full cycle-history recovery |
-| $2n_3+n_5$ | 3 | $(-1,2)$ in the two cycle coordinates | The weaker condition $T\delta^2\to0$ suffices |
-| $n_3$ and $n_5$ separately | None | No hidden cycle direction | The exact counters already determine the target |
+| None | 2 | Triangle winding already remains hidden | $T\delta\to0$ |
+| $2n_3+n_5$ | 3 | $(-1,2)$ in the two cycle coordinates | $T\delta^2\to0$ |
+| $n_3$ and $n_5$ separately | None | No hidden cycle direction | The exact counters determine the target on every run |
 
-In normalized units, the first two sufficient window budgets are respectively
-$N_T\gg T^2$ and $N_T\gg T^{3/2}$. For example, under $\delta=T^{-3/4}$ the
+With $N_T=T/\delta$ sampling windows in normalized units, the first two
+conditions are equivalently $N_T/T^2\to\infty$ and
+$N_T/T^{3/2}\to\infty$. For example, under $\delta=T^{-3/4}$ the
 uninstrumented triangle direction is supercritical, whereas the weighted
 counter's first hidden layer is subcritical. This comparison concerns the
 growth of snapshot requirements; it does not assign a cost to the counters.
 
-Run all three choices through the same public API:
+Use a comparison study to run these three choices under shared conditions.
+Start from the packaged model, reuse its weighted readout, and add the other
+two configurations. The sampling exponent is $\alpha=3/4$ for every candidate:
 
 ```python
 import homological_observability as ho
 
-base = ho.load_example("wedge-c3-c5")
-choices = {
-    "snapshots only": (),
-    "weighted counter": tuple((r.name, r.as_mapping()) for r in base.readouts),
-    "separate counters": (
-        ("triangle", {("a1", "a2"): 1}),
-        ("five-cycle", {("b1", "b2"): 1}),
-    ),
+base = ho.model_to_dict(ho.load_example("wedge-c3-c5"))
+weighted = base.pop("readouts")
+settings = base.pop("analysis")
+settings["alpha"] = 0.75
+
+separate = [
+    {"name": name, "coefficients": [{"edge": edge, "coefficient": 1}]}
+    for name, edge in [
+        ("triangle", ["a1", "a2"]),
+        ("five-cycle", ["b1", "b2"]),
+    ]
+]
+study = {
+    "schema_version": 1,
+    "name": "Wedge counter choices",
+    "model": base,
+    "analysis": settings,
+    "configurations": [
+        {"id": "none", "label": "Snapshots only", "readouts": []},
+        {"id": "weighted", "label": "Weighted counter", "readouts": weighted},
+        {"id": "separate", "label": "Separate counters", "readouts": separate},
+    ],
 }
-for label, readouts in choices.items():
-    model = ho.GraphModel.create(
-        name=label,
-        vertices=base.vertices,
-        edges=base.edges,
-        readouts=readouts,
-        max_layer=3,
-    )
-    document = ho.analysis_to_dict(ho.analyze_model(model, alpha=0.75))
-    print(label, document["summary"]["first_nonzero_hidden_layer"])
+comparison = ho.compare_configurations(study)
+print(ho.render_comparison_text(comparison))
 ```
 
-The printed layers are `2`, `3`, and `None`, respectively. Inspect `filtration`
-for its integer generators and `phase` for the sampling interpretation.
+The first hidden layers are `2`, `3`, and `None`, respectively, in
+`comparison["rows"]`. All three candidates reach the full cycle lattice.
+The separate counters strictly refine the weighted counter, which strictly
+refines snapshots alone: each step distinguishes all histories distinguished
+before it and resolves additional ambiguity. The `relations` records contain
+the exact integer certificates; `results` contains each candidate's full
+filtration and phase analysis.
+
+In the same Python session, save the result into a new directory:
+
+```python
+ho.write_comparison_bundle(comparison, "wedge-comparison")
+```
+
+The bundle contains a readable report, the shared study, and the individual
+analyses. Its saved input can be run directly from the command line:
+
+```bash
+.venv/bin/homological-observability compare wedge-comparison/study.json --output-dir wedge-replay
+```
+
+The [comparison guide](COMPARISON_GUIDE.md) develops this workflow with
+equivalent and incomparable counters, channel redundancy, and incomplete
+computations. These cases help distinguish a gain in one sampling objective
+from a gain in the information retained.
 
 ## Read it through the Python API
 
@@ -249,15 +294,18 @@ regimes, remove `alpha` and provide both
 inside the `analysis` object. The phase result then reports
 $\lambda_2=10$ and $\lambda_3=1$ while leaving regime labels `null`.
 
-## Evidence boundary
+## Continue with your own question
 
 This example demonstrates staged exposure, an index-two visible inclusion, a
 hidden free direction, and the phase-law translation in one small network. Its
 integer statements are exact. Its phase statements are theorem-derived
 asymptotic predictions.
 
-This topology-only example does not establish large-graph performance,
-numerically prove the general theorem, or determine rate-dependent path
-weights. The separate [biased C4 critical experiment](CRITICAL_EXPERIMENT.md)
-shows how known exact rates generate one complete critical-limit law. Neither
-finite example replaces the manuscript's general proof.
+To compare your own counters, follow the
+[study-editing steps](COMPARISON_GUIDE.md#compare-your-own-configurations) and
+choose the sampling request for your question. If you also need the relative
+weights of competing paths at criticality, the
+[biased C4 critical experiment](CRITICAL_EXPERIMENT.md) shows how to supply
+exact rates and construct the limiting mark law. The
+[scientific scope](SCIENTIFIC_SCOPE.md) describes the assumptions behind these
+uses.

@@ -144,6 +144,49 @@ Torsion is not determined by this rank identity and must be retained
 separately. No bare symbol $J$ is used for the visible image because the paper
 reserves related notation for a shifted low-layer object.
 
+## Information relations between configurations
+
+Two counter configurations are compared on the same integer lattice $M$:
+the terminal computed exposure lattice, or all of $\Lambda$ once the natural
+filtration is complete. For a configuration $A$ with readout $\pi_A$, write
+
+$$
+K^A=M\cap\ker\pi_A.
+$$
+
+Histories in $M$ have the same readout exactly when their difference lies in
+$K^A$. This gives the information relations used by `compare`:
+
+| Relation | Kernel condition on $M$ |
+| --- | --- |
+| Equivalent information | $K^A=K^B$ |
+| $A$ strictly refines $B$ | $K^A\subsetneq K^B$ |
+| $B$ strictly refines $A$ | $K^B\subsetneq K^A$ |
+| Incomparable information | Neither kernel contains the other |
+
+A smaller kernel distinguishes more histories. Equal ranks, equal first hidden
+layers, and equal entropy coefficients alone do not determine these relations.
+The comparison checks integer inclusion and returns inclusion coordinates or
+an explicit cycle direction that one readout hides and the other distinguishes.
+Edge-chain witnesses use the canonical graph orientation.
+
+Equivalent configurations may have different integer image lattices. For
+example, $x$ and $2x$ carry the same information under exact measurement:
+decoding $x$ from $2x$ is defined on the legal image $2\mathbb Z$. It does not
+require an integer inverse on every ambient output value. For open histories,
+the common endpoint-reference correction gives the same comparison of cycle
+differences.
+
+A channel is individually redundant when removing it leaves the kernel on
+$M$ unchanged while retaining every other channel. Several channels can each
+pass that test without being removable together. These statements have scope
+`COMPUTED_EXPOSURE` when $M$ is a proper sublattice of $\Lambda$, and
+`FULL_HOMOLOGY` when $M=\Lambda$. An unavailable calculation supplies no
+relation. See the
+[output contract](OUTPUT_CONTRACT.md#information-relations-and-certificates)
+for the certificate fields and the [comparison guide](COMPARISON_GUIDE.md)
+for worked configurations.
+
 ## Matrices in JSON
 
 Every integer matrix is encoded with explicit dimensions:
@@ -291,9 +334,17 @@ Treat the following as public invariant content:
 - first nonzero exposure, visible, and hidden layers;
 - cycle lengths and completeness of the finite catalogue;
 - theorem-derived phase exponents and regimes;
+- information equivalence, refinement, and individual channel redundancy on
+  the declared common lattice;
 - exact stationary probabilities, aggregated critical weights, and intensities.
 
 Tree edges, chord edges, fundamental-cycle matrices, readout matrices, and
 lattice basis columns are auditable coordinates. They are included so a
 researcher can reconstruct the calculation, not because their entries are
 canonical under every valid basis choice.
+
+`analyze` and `compare` accept `--reverse-tree-order` to choose another
+deterministic spanning tree. Comparison candidates always share the chosen
+basis. Integer certificate coordinates and the particular witness selected
+can change, while the information relation and the validity of its physical
+edge-chain evidence remain unchanged.

@@ -24,13 +24,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ProductContractTests(unittest.TestCase):
-    def test_runtime_package_and_citation_versions_match(self) -> None:
+    def test_runtime_and_release_citation_identities(self) -> None:
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
         citation_version = re.search(r"^version: (.+)$", citation, flags=re.MULTILINE)
         self.assertIsNotNone(citation_version)
         self.assertEqual(project["project"]["version"], ho.__version__)
-        self.assertEqual(citation_version.group(1), ho.__version__)
+        if ".dev" in ho.__version__:
+            # Development builds have their own runtime identity. The citation
+            # continues to identify the actual published, archived release.
+            self.assertEqual(citation_version.group(1), "1.1.0")
+            self.assertIn("10.5281/zenodo.23329444", citation)
+        else:
+            self.assertEqual(citation_version.group(1), ho.__version__)
 
     def test_public_api_serializes_the_builtin_example_deterministically(self) -> None:
         model = load_example("wedge-c3-c5")

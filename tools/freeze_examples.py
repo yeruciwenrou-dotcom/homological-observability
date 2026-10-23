@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 import homological_observability as ho
@@ -40,12 +41,32 @@ def main(argv: list[str] | None = None) -> int:
         help="fail if committed artifacts differ instead of rewriting them",
     )
     arguments = parser.parse_args(argv)
+    if not arguments.check and ho.__version__ != "1.1.0":
+        parser.error(
+            "these archived examples belong to software 1.1.0; use that version "
+            "to regenerate them, or --check to compare a later implementation"
+        )
 
     artifacts = expected_artifacts()
     mismatches: list[Path] = []
     for path, expected in artifacts.items():
         if arguments.check:
-            if not path.is_file() or path.read_text(encoding="utf-8") != expected:
+            if not path.is_file():
+                mismatches.append(path)
+                continue
+            frozen = path.read_text(encoding="utf-8")
+            if path.suffix == ".json":
+                original = json.loads(frozen)
+                current = json.loads(expected)
+                if original["software"].pop("version") != "1.1.0":
+                    mismatches.append(path)
+                    continue
+                if current["software"].pop("version") != ho.__version__:
+                    mismatches.append(path)
+                    continue
+                if original != current:
+                    mismatches.append(path)
+            elif frozen != expected:
                 mismatches.append(path)
         else:
             path.write_text(expected, encoding="utf-8")

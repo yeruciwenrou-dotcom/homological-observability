@@ -46,9 +46,11 @@ def write_report(
 
 **Frozen-reference comparison: {"PASS" if checked else "NOT REQUESTED"}**
 
-The calculation reproduces the finite-cycle bridge posteriors, critical count
-limits, the Poisson-averaged binomial MAP identity, and the reciprocal-lattice
-peak mechanism presented in the paper.
+This report reproduces finite-model calculations from
+*[Stochastic Histories at Finite Temporal Resolution: Homological Observability and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
+([paper DOI](https://doi.org/10.5281/zenodo.23424849)). The calculations cover
+finite-cycle bridge posteriors, critical count limits, the Poisson-averaged
+binomial MAP identity, and the reciprocal-lattice peak mechanism.
 
 ## What the calculations explain
 

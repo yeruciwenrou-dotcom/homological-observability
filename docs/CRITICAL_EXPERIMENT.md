@@ -21,13 +21,15 @@ requires a separate calculation.
 
 ## Run the example
 
-Run these commands from the repository root with the virtual environment
-activated. Without activation, use the platform-specific executable paths in
-the [installation instructions](../README.md#install-from-a-source-checkout).
+Run these commands from the checkout directory after
+[installation](../README.md#install). They use the environment directly. On
+Windows, use `.venv\Scripts\homological-observability.exe` in place of
+`.venv/bin/homological-observability`. Run Python examples with
+`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
 
 ```console
-$ homological-observability critical examples/biased_c4_critical.json
-$ homological-observability critical examples/biased_c4_critical.json --format json
+$ .venv/bin/homological-observability critical examples/biased_c4_critical.json
+$ .venv/bin/homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
 The compact view reports:
@@ -137,11 +139,14 @@ Remove the counter to study the ambiguity left by snapshots alone:
 
 ```python
 import json
+from decimal import Decimal
 from pathlib import Path
 
 import homological_observability as ho
 
-payload = json.loads(Path("examples/biased_c4_critical.json").read_text())
+payload = json.loads(
+    Path("examples/biased_c4_critical.json").read_text(), parse_float=Decimal
+)
 for label, readouts in (
     ("with cycle counter", payload["readouts"]),
     ("snapshots only", []),
@@ -152,7 +157,9 @@ for label, readouts in (
     print(label, document["groups"]["hidden_kernel"])
 ```
 
-The hidden free rank changes from zero to one. The physical rates, stationary
+The `Decimal` parser preserves exact JSON decimal values when adapting this
+example to your own rates. The hidden free rank changes from zero to one.
+The physical rates, stationary
 law, and total critical endpoint intensity $5/2$ stay the same; what changes
 is how much of the accumulated mark the observations reveal. Each antipodal
 endpoint count is visible in the snapshot record. Conditional on those counts,
@@ -227,17 +234,22 @@ for walks of length $m$ are needed; the default aggregated catalogue is the
 more compact result. This option reduces public output, while the
 internal construction still enumerates all requested paths.
 
-## Interpretation boundary
+## Use your own rates and counters
 
-The result is an exact construction of the paper's critical-limit generative
-specification from a known model. It provides the limiting mark laws and the
-rule for conditioning a total-mark law on an observed visible residue. It is
-not a trajectory simulation, an empirical fit, an unconditional critical MAP
-solver, a finite-sample error guarantee, or an expanded probability table over
-the generally infinite total-mark support.
+Start from `examples/biased_c4_critical.json`, update its `name`, replace the
+graph and its two directed rates per edge, then specify the counters, selected
+layer, intensity, and resource limits. The [model guide](MODEL_GUIDE.md#critical-experiment-model)
+defines these fields; the [output contract](OUTPUT_CONTRACT.md#critical-experiment-document)
+explains the exact result.
 
-For topology-only inputs, begin with the
-[wedge C3–C5 example](END_TO_END_EXAMPLE.md). The complete field definitions
-are in the [model guide](MODEL_GUIDE.md) and [output contract](OUTPUT_CONTRACT.md),
-and the implementation-to-paper chain is recorded in the
-[paper map](../PAPER_MAP.md).
+The result is a critical-limit generative specification: it gives the limiting
+mark laws and their conditioning rule. Obtaining a posterior or error
+probability at a specified finite observation time requires a further
+calculation. See the [scientific scope](SCIENTIFIC_SCOPE.md) for the supported
+observation model and the specialized finite-cycle tools.
+
+For a question about which counters distinguish more histories, use a
+[configuration study](COMPARISON_GUIDE.md). The
+[wedge C3–C5 example](END_TO_END_EXAMPLE.md) explains the exposure layers
+without specifying rates; the [paper map](../PAPER_MAP.md) gives the
+theoretical sources for both calculations.

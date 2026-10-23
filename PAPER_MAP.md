@@ -53,6 +53,25 @@ appear in $L_2$. The separate chord {0,2} example has ranks 1 and 2 at layers 2
 and 3. The tests identify these as `chorded_c6_diametric` and
 `chorded_c6_distance_two`, respectively.
 
+### Comparing counter configurations
+
+The software also uses these hidden lattices to compare observation
+configurations on a shared graph. On the same cycle lattice, equal hidden
+kernels give the same information; a strict kernel inclusion identifies the
+more informative configuration. Kernels with neither inclusion retain
+different history distinctions. This comparison applies the integer objects
+above to a choice among candidate counters.
+
+The [comparison conventions](docs/CONVENTIONS.md#information-relations-between-configurations)
+define the common domain and legal readout images.
+[comparison.py](src/homological_observability/comparison.py) constructs the
+kernel-inclusion certificates and distinguishing edge-chain witnesses;
+[independent comparison checks](tests/test_comparison_math.py) test these
+relations and witnesses against separate integer calculations.
+The [comparison guide](docs/COMPARISON_GUIDE.md) shows how to interpret and
+rerun a study. The comparison's evidence concerns the stated computed domain;
+an unfinished exposure filtration leaves later layers open.
+
 ## Rate-dependent critical experiment
 
 | Paper object | Computation | Implementation |

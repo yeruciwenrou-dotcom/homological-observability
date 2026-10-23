@@ -21,6 +21,7 @@ body:
       options:
         - Python API
         - analyze CLI
+        - compare or study-example CLI
         - critical CLI
         - example CLI
         - reproduce CLI or quickstart
@@ -31,8 +32,8 @@ body:
   - type: textarea
     id: model
     attributes:
-      label: Minimal model or command
-      description: Paste the smallest JSON model, Python call, or terminal command that reproduces the problem.
+      label: Minimal model, study, or command
+      description: Paste the smallest JSON model or study, Python call, or terminal command that reproduces the problem.
       render: text
     validations:
       required: true

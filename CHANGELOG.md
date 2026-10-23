@@ -4,6 +4,34 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## 1.2.0 — 2026-10-24
+
+### Added
+
+- Comparison studies for named exact cumulative-counter configurations on a
+  shared graph, with shared sampling parameters and resource budgets.
+- Exact information-equivalence, refinement, and incomparability relations,
+  including integer edge-chain witnesses and redundant-channel explanations.
+- `study-example` and `compare` commands, editable bridge, theta, and two-loop
+  studies, and structured comparison results with a Markdown report.
+- Study exports containing inputs, individual analyses, environment identity,
+  checksums, and instructions for rerunning the whole comparison.
+- Per-candidate failure and completeness states; partial-horizon relations
+  explicitly apply only to the computed exposure lattice.
+
+### Compatibility
+
+- The existing single-model analysis and critical-experiment interfaces remain
+  available. Comparison studies use their own versioned input and output.
+- `compare` exits with code 1 when any candidate is incomplete or has an error;
+  the other candidates' results remain available. The existing `analyze`
+  exit code for a completed restricted horizon remains 0.
+
+### Startup
+
+- Topology and comparison commands start without initializing a plotting font
+  cache. Figure generation loads the plotting tools when needed.
+
 ## 1.1.0 — 2026-10-13
 
 ### Added

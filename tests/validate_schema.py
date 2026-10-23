@@ -25,6 +25,8 @@ def main() -> int:
         "error": ho.load_error_schema(),
         "critical_model": ho.load_critical_model_schema(),
         "critical_experiment": ho.load_critical_experiment_schema(),
+        "study": ho.load_study_schema(),
+        "comparison": ho.load_comparison_schema(),
     }
     for schema in schemas.values():
         Draft202012Validator.check_schema(schema)
@@ -113,10 +115,23 @@ def main() -> int:
         (ROOT / "examples/biased_c4_critical_result.json").read_text(encoding="utf-8")
     )
     validators["critical_experiment"].validate(public_critical_document)
-    if public_critical_document != ho.critical_experiment_to_dict(
+    fresh_critical_document = ho.critical_experiment_to_dict(
         ho.analyze_critical_model(public_critical_model)
-    ):
-        raise AssertionError("the public critical example result is stale")
+    )
+    validators["critical_experiment"].validate(fresh_critical_document)
+    # The published example remains the original 1.1.0 record. A later software
+    # producer may change its version label while every scientific field stays
+    # exactly equal; no frozen evidence is rewritten to impersonate a new run.
+    if public_critical_document["software"]["version"] != "1.1.0":
+        raise AssertionError("the public critical example lost its frozen producer")
+    if fresh_critical_document["software"]["version"] != ho.__version__:
+        raise AssertionError("the fresh critical result has the wrong producer")
+    frozen_science = copy.deepcopy(public_critical_document)
+    fresh_science = copy.deepcopy(fresh_critical_document)
+    frozen_science["software"].pop("version")
+    fresh_science["software"].pop("version")
+    if frozen_science != fresh_science:
+        raise AssertionError("the public critical example's scientific result changed")
     false_limited_document = copy.deepcopy(critical_document)
     false_limited_document["status"] = "LIMIT_REACHED"
     if validators["critical_experiment"].is_valid(false_limited_document):
@@ -144,6 +159,23 @@ def main() -> int:
         raise AssertionError(
             "the critical schema accepted a resource-limited result as COMPLETE"
         )
+
+    for name in ("minimal", "bridge", "theta"):
+        study = ho.load_study_example(name)
+        validators["study"].validate(study)
+        validators["comparison"].validate(ho.compare_configurations(study))
+    incomplete_study = ho.load_study_example("bridge")
+    incomplete_study["configurations"][0]["readouts"] = "invalid counter payload"
+    validators["comparison"].validate(ho.compare_configurations(incomplete_study))
+    for settings in ({"max_layer": 2}, {"max_cycles": 1}):
+        bounded_study = ho.load_study_example("bridge")
+        bounded_study["analysis"].update(settings)
+        bounded_result = ho.compare_configurations(bounded_study)
+        validators["comparison"].validate(bounded_result)
+        false_complete = copy.deepcopy(bounded_result)
+        false_complete["status"] = "COMPLETE"
+        if validators["comparison"].is_valid(false_complete):
+            raise AssertionError("the comparison schema accepted false completeness")
 
     print("PASS: all public JSON documents satisfy their bundled schemas")
     return 0

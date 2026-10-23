@@ -12,7 +12,6 @@ from typing import Any
 import pandas as pd
 
 from . import reference_appendix, reference_critical
-from .reporting import write_report, write_summary_figure
 
 REFERENCE_NAMES = (
     "critical_kernel_results.csv",
@@ -182,6 +181,10 @@ def run_reproduction(
                 encoding="utf-8",
             )
             raise
+
+    # Plotting and its font cache are only needed by the reproduction command.
+    # Topology/compare CLI startup should work without initializing Matplotlib.
+    from .reporting import write_report, write_summary_figure
 
     write_summary_figure(critical, selected, figure_png, figure_svg)
     write_report(critical, selected, report_path, checked=check)

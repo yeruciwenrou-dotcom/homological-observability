@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 import xml.etree.ElementTree as ET
+from contextlib import chdir
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,15 +48,47 @@ class DocumentationTests(unittest.TestCase):
                 )
 
     def test_python_and_json_blocks_execute_or_parse(self) -> None:
-        namespace = {"__name__": "__documentation_test__"}
         for path in public_markdown():
             text = path.read_text(encoding="utf-8")
-            for index, block in enumerate(fenced_blocks(text, "python")):
-                with self.subTest(path=path.name, language="python", index=index):
-                    exec(compile(block, str(path), "exec"), namespace.copy())
+            namespace = {"__name__": "__documentation_test__"}
+            with tempfile.TemporaryDirectory() as directory:
+                shutil.copytree(ROOT / "examples", Path(directory) / "examples")
+                with chdir(directory):
+                    for index, block in enumerate(fenced_blocks(text, "python")):
+                        with self.subTest(
+                            path=path.name, language="python", index=index
+                        ):
+                            exec(compile(block, str(path), "exec"), namespace)
             for index, block in enumerate(fenced_blocks(text, "json")):
                 with self.subTest(path=path.name, language="json", index=index):
                     json.loads(block)
+
+    def test_critical_tutorial_accepts_json_decimal_rates(self) -> None:
+        guide = ROOT / "docs/CRITICAL_EXPERIMENT.md"
+        payload = json.loads(
+            (ROOT / "examples/biased_c4_critical.json").read_text(encoding="utf-8")
+        )
+        payload["rates"][0]["rate"] = 0.1
+        with tempfile.TemporaryDirectory() as directory:
+            examples = Path(directory) / "examples"
+            examples.mkdir()
+            (examples / "biased_c4_critical.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            namespace = {"__name__": "__documentation_test__"}
+            with chdir(directory):
+                editing_blocks = [
+                    block
+                    for block in fenced_blocks(
+                        guide.read_text(encoding="utf-8"), "python"
+                    )
+                    if "json.loads(" in block
+                ]
+                self.assertTrue(editing_blocks, "No editable JSON example in the guide")
+                for block in editing_blocks:
+                    exec(compile(block, str(guide), "exec"), namespace)
+            self.assertEqual(namespace["document"]["status"], "COMPLETE")
+            self.assertEqual(str(namespace["payload"]["rates"][0]["rate"]), "0.1")
 
     def test_reader_commands_run(self) -> None:
         commands = (

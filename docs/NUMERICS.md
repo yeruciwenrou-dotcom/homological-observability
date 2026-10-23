@@ -41,10 +41,11 @@ problem. A short cutoff or very large parameters can produce a broad interval.
 
 The independent tests use 100-digit closed-form PMFs and an exact-rational
 finite multinomial law. They cover large $N$, the displayed refinement
-sequence, short cutoffs and degenerate probabilities. Run:
+sequence, short cutoffs and degenerate probabilities. From the
+[development environment](../CONTRIBUTING.md#development-environment), run:
 
 ```console
-$ python -m unittest tests.test_numerical_boundaries -v
+$ .venv/bin/python -m unittest tests.test_numerical_boundaries -v
 ```
 
 ## Reference calibration
