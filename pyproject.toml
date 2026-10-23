@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homological-observability"
-version = "1.2.0"
+version = "1.2.1"
 description = "Analyze cycle-history observability in finite-state Markov jump processes"
 readme = "docs/PYPI.md"
 requires-python = ">=3.11,<3.14"
@@ -39,6 +39,7 @@ dependencies = [
   "networkx>=3.6,<4",
   "numpy>=2.3,<3",
   "pandas>=2.2,<3",
+  "pillow>=13.0.0,<14",
   "scipy>=1.17,<2",
   "sympy>=1.14,<2",
 ]

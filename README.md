@@ -58,7 +58,7 @@ and install the package from PyPI. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability==1.2.0
+.venv/bin/python -m pip install homological-observability==1.2.1
 ```
 
 <details>
@@ -66,7 +66,7 @@ python3 -m venv .venv
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability==1.2.0
+.venv\Scripts\python.exe -m pip install homological-observability==1.2.1
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -195,15 +195,15 @@ describes how results and file identities are compared.
 ### Full verification from source
 
 For the archived source, download and unpack
-`homological-observability-1.2.0-source.zip` from
-[Zenodo](https://zenodo.org/records/23600829), then open a terminal in the
-extracted `homological-observability-1.2.0` directory. The archive includes
+`homological-observability-1.2.1-source.zip` from
+[Zenodo](https://zenodo.org/records/23604825), then open a terminal in the
+extracted `homological-observability-1.2.1` directory. The archive includes
 the code, documentation, tests, pinned dependencies, and reference results.
 
 You can also clone the release and enter its source directory:
 
 ```bash
-git clone --branch v1.2.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v1.2.1 https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 ```
 
@@ -401,8 +401,8 @@ When your work uses both, cite them separately.
 ### Software
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.2.0) [Computer
-> software]. Zenodo. https://doi.org/10.5281/zenodo.23600829
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.2.1) [Computer
+> software]. Zenodo. https://doi.org/10.5281/zenodo.23604825
 
 Record the software version used and, for a source checkout, the exact Git
 commit. GitHub's citation menu and

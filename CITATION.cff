@@ -11,9 +11,9 @@ authors:
     given-names: Zhiyue
   - family-names: Cheng
     given-names: Jianqun
-version: 1.2.0
+version: 1.2.1
 date-released: 2026-10-24
-doi: 10.5281/zenodo.23600829
+doi: 10.5281/zenodo.23604825
 license: MIT
 repository-code: "https://github.com/yeruciwenrou-dotcom/homological-observability"
 references:
