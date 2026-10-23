@@ -11,9 +11,9 @@ separately inside their JSON documents.
 - Upgrade the pinned quickstart Pillow dependency from 12.3.0 to 13.0.0,
   which fixes upstream security vulnerabilities including
   [GHSA-v9pv-5gc8-w2m6](https://github.com/python-pillow/Pillow/security/advisories/GHSA-v9pv-5gc8-w2m6).
-  After updating a source checkout, rerun `python quickstart.py` to refresh
-  its managed environment. Previously published source archives retain their
-  original dependency pins.
+  After updating a source checkout, rebuild its managed environment with
+  `python -m venv --clear .venv`, then run `python quickstart.py`.
+  Previously published source archives retain their original dependency pins.
 
 ## 1.2.0 — 2026-10-24
 
