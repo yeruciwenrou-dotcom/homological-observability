@@ -11,7 +11,7 @@
     </mask>
     <g mask="url(#a)">
         <path fill="#555" d="M0 0h31v20H0z"/>
-        <path fill="#007ec6" d="M31 0h162v20H31z"/>
+        <path fill="#b85c00" d="M31 0h162v20H31z"/>
         <path fill="url(#b)" d="M0 0h193v20H0z"/>
     </g>
     <g fill="#fff" text-anchor="middle"
