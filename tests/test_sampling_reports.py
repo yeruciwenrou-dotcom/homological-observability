@@ -19,7 +19,7 @@ class SamplingReportTests(unittest.TestCase):
             ({"alpha": "1/3"}, "CRITICAL", "lambda_m ="),
             (
                 {"observation_time": 100, "sampling_interval": 0.1},
-                "lambda_m =",
+                "Sampling scales",
                 "Entropy log(T) coefficient",
             ),
         ):

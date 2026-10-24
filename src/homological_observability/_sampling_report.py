@@ -70,7 +70,10 @@ def sampling_tables(
         for layer in result["phase"]["layers"]:
             shared.setdefault(layer["layer"], layer)
     if mode == "finite":
-        headers = ["Layer m", "lambda_m = T delta^(m-1)"]
+        headers = [
+            "Layer $m$" if markdown else "Layer m",
+            r"$\lambda_m=T\delta^{m-1}$" if markdown else "lambda_m = T delta^(m-1)",
+        ]
         rows = [[str(m), repr(layer["lambda"])] for m, layer in sorted(shared.items())]
         lines += [
             "Each scale is shared by configurations computed through that layer."
@@ -79,7 +82,11 @@ def sampling_tables(
             "",
         ]
     else:
-        headers = ["Layer m", "1 - alpha(m-1)", "Regime"]
+        headers = [
+            "Layer $m$" if markdown else "Layer m",
+            r"$1-\alpha(m-1)$" if markdown else "1 - alpha(m-1)",
+            "Regime",
+        ]
         rows = [
             [str(m), repr(layer["scaling_exponent"]), layer["regime"]]
             for m, layer in sorted(shared.items())
@@ -138,7 +145,11 @@ def sampling_tables(
         ]
     else:
         lines += [
-            "A finite lambda_m is an exposure scale, not a recovery probability or an error bound.",
+            (
+                r"A finite $\lambda_m$ is an exposure scale, not a recovery probability or an error bound."
+                if markdown
+                else "A finite lambda_m is an exposure scale, not a recovery probability or an error bound."
+            ),
             "",
         ]
     return lines
