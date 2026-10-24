@@ -3,8 +3,8 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability.svg?logo=pypi)](https://pypi.org/project/homological-observability/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-`homological-observability` is Python research software for analyzing
-cycle-history recoverability and comparing observation schemes in finite-state
+This repository provides tools to analyze cycle-history recoverability,
+determine sampling thresholds, and compare observation schemes in finite-state
 Markov jump processes.
 
 **Homological observability is the recoverability of a system's accumulated

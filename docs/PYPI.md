@@ -1,7 +1,7 @@
 # Homological Observability
 
-`homological-observability` is Python research software for analyzing
-cycle-history recoverability and comparing observation schemes in finite-state
+This repository provides tools to analyze cycle-history recoverability,
+determine sampling thresholds, and compare observation schemes in finite-state
 Markov jump processes.
 
 **Homological observability is the recoverability of a system's accumulated
