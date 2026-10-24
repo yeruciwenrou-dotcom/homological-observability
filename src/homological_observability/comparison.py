@@ -97,14 +97,16 @@ def parse_study(document: Mapping[str, Any]) -> dict[str, Any]:
         "study",
     )
     version = root.get("schema_version")
-    if type(version) is not int or version != 1:
-        raise ValueError("study schema_version must equal integer 1")
+    if type(version) is not int or version not in (1, 2):
+        raise ValueError("study schema_version must equal integer 1 or 2")
     name = _text(root.get("name"), "study name")
     question = root.get("question", "")
     if not isinstance(question, str):
         raise TypeError("study question must be a string")
     base = _object(root.get("model"), "shared model")
     _fields(base, {"schema_version", "name", "vertices", "edges"}, "shared model")
+    if base.get("schema_version") != version:
+        raise ValueError("study and shared model schema_version must match")
     settings = _object(root.get("analysis", {}), "shared analysis")
     model = parse_model({**base, "readouts": [], "analysis": settings})
     normalized = model_to_dict(model)
@@ -142,7 +144,7 @@ def parse_study(document: Mapping[str, Any]) -> dict[str, Any]:
         )
     return _json_copy(
         {
-            "schema_version": 1,
+            "schema_version": 2,
             "name": name,
             "question": question,
             "model": normalized,
@@ -552,7 +554,7 @@ def compare_configurations(
 
     output = {
         "schema_name": "homological-observability.comparison",
-        "schema_version": 1,
+        "schema_version": 2,
         "artifact_role": "configuration-comparison",
         "status": (
             "COMPLETE"

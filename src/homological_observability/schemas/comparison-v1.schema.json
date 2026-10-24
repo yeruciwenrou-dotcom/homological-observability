@@ -1,0 +1,2140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:comparison:1",
+  "title": "Homological observability configuration comparison",
+  "description": "A deterministic scoped comparison, including candidate failures and exact lattice witnesses. Raw analyses retain analysis schema version 2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "artifact_role",
+    "status",
+    "producer",
+    "study",
+    "study_sha256",
+    "shared_conditions",
+    "rows",
+    "results",
+    "relations",
+    "explanations"
+  ],
+  "properties": {
+    "schema_name": {
+      "const": "homological-observability.comparison"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "artifact_role": {
+      "const": "configuration-comparison"
+    },
+    "status": {
+      "enum": [
+        "COMPLETE",
+        "INCOMPLETE"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "code_sha256",
+        "source_commit",
+        "environment"
+      ],
+      "properties": {
+        "name": {
+          "const": "homological-observability"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_commit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "python",
+            "implementation",
+            "platform",
+            "machine",
+            "dependencies"
+          ],
+          "properties": {
+            "python": {
+              "type": "string",
+              "minLength": 1
+            },
+            "implementation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "platform": {
+              "type": "string",
+              "minLength": 1
+            },
+            "machine": {
+              "type": "string",
+              "minLength": 1
+            },
+            "dependencies": {
+              "type": "object",
+              "required": [
+                "sympy",
+                "networkx",
+                "numpy",
+                "scipy",
+                "mpmath"
+              ],
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "study": {
+      "$ref": "#/$defs/recorded_study"
+    },
+    "study_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "shared_conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model",
+        "analysis",
+        "coordinates",
+        "observation_contract",
+        "information_contract",
+        "reverse_tree_order"
+      ],
+      "properties": {
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_version",
+            "name",
+            "vertices",
+            "edges"
+          ],
+          "properties": {
+            "schema_version": {
+              "const": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "vertices": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "edges": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/edge"
+              }
+            }
+          }
+        },
+        "analysis": {
+          "$ref": "#/$defs/analysis"
+        },
+        "coordinates": {
+          "enum": [
+            "default spanning-tree order",
+            "reverse spanning-tree order"
+          ]
+        },
+        "observation_contract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "information_contract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reverse_tree_order": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rows": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/row"
+      }
+    },
+    "results": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/analysis_document"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "maxItems": 2016,
+      "items": {
+        "$ref": "#/$defs/relation"
+      }
+    },
+    "explanations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rows": {
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "COMPLETE"
+                }
+              }
+            }
+          },
+          "relations": {
+            "items": {
+              "properties": {
+                "relation": {
+                  "enum": [
+                    "EQUIVALENT",
+                    "LEFT_REFINES_RIGHT",
+                    "RIGHT_REFINES_LEFT",
+                    "INCOMPARABLE"
+                  ]
+                },
+                "scope": {
+                  "const": "FULL_HOMOLOGY"
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "rows": {
+            "contains": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "PARTIAL_HORIZON",
+                    "LIMIT_REACHED",
+                    "ERROR"
+                  ]
+                }
+              }
+            },
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "edge": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coefficient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge",
+        "coefficient"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/edge"
+        },
+        "coefficient": {
+          "type": "integer"
+        }
+      }
+    },
+    "readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "coefficients"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coefficients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coefficient"
+          }
+        }
+      }
+    },
+    "analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "dependentRequired": {
+        "observation_time": [
+          "sampling_interval"
+        ],
+        "sampling_interval": [
+          "observation_time"
+        ]
+      },
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "alpha",
+              "observation_time"
+            ]
+          }
+        },
+        {
+          "not": {
+            "required": [
+              "alpha",
+              "sampling_interval"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "max_layer": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_cycles": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "alpha": {
+          "type": "number",
+          "minimum": 0
+        },
+        "observation_time": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "sampling_interval": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "readouts"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/readout"
+          }
+        }
+      }
+    },
+    "matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rows",
+        "columns",
+        "data"
+      ],
+      "properties": {
+        "rows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "edge_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge",
+        "coefficient"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/edge"
+        },
+        "coefficient": {
+          "type": "integer"
+        }
+      }
+    },
+    "witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cycle_coordinates",
+        "edge_chain"
+      ],
+      "properties": {
+        "cycle_coordinates": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "edge_chain": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/edge_entry"
+          }
+        }
+      }
+    },
+    "pair_witness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cycle_coordinates",
+        "edge_chain",
+        "left_readout",
+        "right_readout"
+      ],
+      "properties": {
+        "cycle_coordinates": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "edge_chain": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/edge_entry"
+          }
+        },
+        "left_readout": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "right_readout": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "containment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "included",
+        "coordinates"
+      ],
+      "properties": {
+        "included": {
+          "type": "boolean"
+        },
+        "coordinates": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/matrix"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "included": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "coordinates": {
+                "$ref": "#/$defs/matrix"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "coordinates": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "first_hidden_layer",
+        "hidden_rank_tied",
+        "entropy_coefficient_tied",
+        "channel_count_difference"
+      ],
+      "properties": {
+        "first_hidden_layer": {
+          "enum": [
+            "TIED",
+            "LEFT_LATER",
+            "RIGHT_LATER",
+            "LEFT_HAS_NO_HIDDEN_DIRECTION",
+            "RIGHT_HAS_NO_HIDDEN_DIRECTION"
+          ]
+        },
+        "hidden_rank_tied": {
+          "type": "boolean"
+        },
+        "entropy_coefficient_tied": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "channel_count_difference": {
+          "type": "integer"
+        }
+      }
+    },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "channels",
+        "status",
+        "error",
+        "recovery",
+        "scope",
+        "computed_max_layer",
+        "natural_complete",
+        "first_hidden_layer",
+        "computed_hidden_rank",
+        "entropy_log_t_coefficient",
+        "visible_torsion",
+        "hidden_edge_witnesses",
+        "redundant_channels",
+        "explanations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "channels": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "COMPLETE",
+            "PARTIAL_HORIZON",
+            "LIMIT_REACHED",
+            "ERROR"
+          ]
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        },
+        "recovery": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        },
+        "scope": {
+          "enum": [
+            "FULL_HOMOLOGY",
+            "COMPUTED_EXPOSURE",
+            "UNAVAILABLE"
+          ]
+        },
+        "computed_max_layer": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "natural_complete": {
+          "type": "boolean"
+        },
+        "first_hidden_layer": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "computed_hidden_rank": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "entropy_log_t_coefficient": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "visible_torsion": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "patternProperties": {
+                "^[0-9]+$": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 2
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "hidden_edge_witnesses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/witness"
+          }
+        },
+        "redundant_channels": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          ]
+        },
+        "explanations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "COMPLETE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "const": "FULL_HOMOLOGY"
+              },
+              "natural_complete": {
+                "const": true
+              },
+              "channels": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "computed_max_layer": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "computed_hidden_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "visible_torsion": {
+                "type": "object"
+              },
+              "redundant_channels": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "error": {
+                "type": "null"
+              },
+              "recovery": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "PARTIAL_HORIZON"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "const": "COMPUTED_EXPOSURE"
+              },
+              "natural_complete": {
+                "const": false
+              },
+              "channels": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "computed_max_layer": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "computed_hidden_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "visible_torsion": {
+                "type": "object"
+              },
+              "redundant_channels": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "error": {
+                "type": "null"
+              },
+              "recovery": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "LIMIT_REACHED",
+                  "ERROR"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "const": "UNAVAILABLE"
+              },
+              "natural_complete": {
+                "const": false
+              },
+              "computed_max_layer": {
+                "type": "null"
+              },
+              "first_hidden_layer": {
+                "type": "null"
+              },
+              "computed_hidden_rank": {
+                "type": "null"
+              },
+              "entropy_log_t_coefficient": {
+                "type": "null"
+              },
+              "visible_torsion": {
+                "type": "null"
+              },
+              "hidden_edge_witnesses": {
+                "maxItems": 0
+              },
+              "redundant_channels": {
+                "type": "null"
+              },
+              "recovery": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ERROR"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "error": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "left",
+        "right",
+        "relation",
+        "scope",
+        "computed_max_layer",
+        "left_kernel_in_right",
+        "right_kernel_in_left",
+        "left_not_right_witness",
+        "right_not_left_witness",
+        "metric_comparison",
+        "explanations"
+      ],
+      "properties": {
+        "left": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "right": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "relation": {
+          "enum": [
+            "EQUIVALENT",
+            "LEFT_REFINES_RIGHT",
+            "RIGHT_REFINES_LEFT",
+            "INCOMPARABLE",
+            "UNAVAILABLE"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "FULL_HOMOLOGY",
+            "COMPUTED_EXPOSURE",
+            "UNAVAILABLE"
+          ]
+        },
+        "computed_max_layer": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "integer",
+              "minimum": 0
+            }
+          ]
+        },
+        "left_kernel_in_right": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/containment"
+            }
+          ]
+        },
+        "right_kernel_in_left": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/containment"
+            }
+          ]
+        },
+        "left_not_right_witness": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/pair_witness"
+            }
+          ]
+        },
+        "right_not_left_witness": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/pair_witness"
+            }
+          ]
+        },
+        "metric_comparison": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/metrics"
+            }
+          ]
+        },
+        "explanations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "UNAVAILABLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "scope": {
+                "const": "UNAVAILABLE"
+              },
+              "computed_max_layer": {
+                "type": "null"
+              },
+              "left_kernel_in_right": {
+                "type": "null"
+              },
+              "right_kernel_in_left": {
+                "type": "null"
+              },
+              "left_not_right_witness": {
+                "type": "null"
+              },
+              "right_not_left_witness": {
+                "type": "null"
+              },
+              "metric_comparison": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "scope": {
+                "enum": [
+                  "FULL_HOMOLOGY",
+                  "COMPUTED_EXPOSURE"
+                ]
+              },
+              "computed_max_layer": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "left_kernel_in_right": {
+                "$ref": "#/$defs/containment"
+              },
+              "right_kernel_in_left": {
+                "$ref": "#/$defs/containment"
+              },
+              "metric_comparison": {
+                "$ref": "#/$defs/metrics"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "EQUIVALENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "left_kernel_in_right": {
+                "properties": {
+                  "included": {
+                    "const": true
+                  }
+                }
+              },
+              "right_kernel_in_left": {
+                "properties": {
+                  "included": {
+                    "const": true
+                  }
+                }
+              },
+              "left_not_right_witness": {
+                "type": "null"
+              },
+              "right_not_left_witness": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "LEFT_REFINES_RIGHT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "left_kernel_in_right": {
+                "properties": {
+                  "included": {
+                    "const": true
+                  }
+                }
+              },
+              "right_kernel_in_left": {
+                "properties": {
+                  "included": {
+                    "const": false
+                  }
+                }
+              },
+              "left_not_right_witness": {
+                "type": "null"
+              },
+              "right_not_left_witness": {
+                "$ref": "#/$defs/pair_witness"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "RIGHT_REFINES_LEFT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "left_kernel_in_right": {
+                "properties": {
+                  "included": {
+                    "const": false
+                  }
+                }
+              },
+              "right_kernel_in_left": {
+                "properties": {
+                  "included": {
+                    "const": true
+                  }
+                }
+              },
+              "left_not_right_witness": {
+                "$ref": "#/$defs/pair_witness"
+              },
+              "right_not_left_witness": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "relation": {
+                "const": "INCOMPARABLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "left_kernel_in_right": {
+                "properties": {
+                  "included": {
+                    "const": false
+                  }
+                }
+              },
+              "right_kernel_in_left": {
+                "properties": {
+                  "included": {
+                    "const": false
+                  }
+                }
+              },
+              "left_not_right_witness": {
+                "$ref": "#/$defs/pair_witness"
+              },
+              "right_not_left_witness": {
+                "$ref": "#/$defs/pair_witness"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "recorded_study": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "name",
+        "question",
+        "model",
+        "analysis",
+        "configurations"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string"
+        },
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schema_version",
+            "name",
+            "vertices",
+            "edges"
+          ],
+          "properties": {
+            "schema_version": {
+              "const": 1
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "vertices": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "edges": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/edge"
+              }
+            }
+          }
+        },
+        "analysis": {
+          "$ref": "#/$defs/analysis"
+        },
+        "configurations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/recorded_configuration"
+          }
+        }
+      }
+    },
+    "recorded_configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "readouts"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "readouts": {}
+      }
+    },
+    "analysis_document": {
+      "title": "Homological observability analysis result",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_name",
+        "schema_version",
+        "software",
+        "artifact_role",
+        "status",
+        "evidence_categories",
+        "normalized_model_sha256",
+        "model",
+        "summary",
+        "homology",
+        "filtration",
+        "phase",
+        "limit"
+      ],
+      "properties": {
+        "schema_name": {
+          "const": "homological-observability.analysis"
+        },
+        "schema_version": {
+          "const": 2
+        },
+        "software": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "version"
+          ],
+          "properties": {
+            "name": {
+              "const": "homological-observability"
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "artifact_role": {
+          "enum": [
+            "fresh-analysis",
+            "builtin-example"
+          ]
+        },
+        "status": {
+          "enum": [
+            "COMPLETE",
+            "PARTIAL_HORIZON",
+            "LIMIT_REACHED"
+          ]
+        },
+        "evidence_categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "EXACT_INTEGER",
+              "EXACT_COMBINATORIAL",
+              "ASYMPTOTIC_THEOREM"
+            ]
+          }
+        },
+        "normalized_model_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "model": {
+          "$ref": "#/$defs/raw_model"
+        },
+        "summary": {
+          "$ref": "#/$defs/raw_summary"
+        },
+        "homology": {
+          "$ref": "#/$defs/raw_homology"
+        },
+        "filtration": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/raw_filtration"
+            }
+          ]
+        },
+        "phase": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/raw_phase"
+            }
+          ]
+        },
+        "limit": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/raw_limit"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "COMPLETE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "filtration": {
+                "$ref": "#/$defs/raw_filtration"
+              },
+              "phase": {
+                "$ref": "#/$defs/raw_phase"
+              },
+              "limit": {
+                "type": "null"
+              },
+              "summary": {
+                "required": [
+                  "cycle_count",
+                  "first_nonzero_exposure_layer",
+                  "first_nonzero_visible_layer",
+                  "first_nonzero_hidden_layer"
+                ],
+                "properties": {
+                  "computed_max_layer": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "requested_horizon_complete": {
+                    "const": true
+                  },
+                  "natural_filtration_complete": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "PARTIAL_HORIZON"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "filtration": {
+                "$ref": "#/$defs/raw_filtration"
+              },
+              "phase": {
+                "$ref": "#/$defs/raw_phase"
+              },
+              "limit": {
+                "type": "null"
+              },
+              "summary": {
+                "required": [
+                  "cycle_count",
+                  "first_nonzero_exposure_layer",
+                  "first_nonzero_visible_layer",
+                  "first_nonzero_hidden_layer"
+                ],
+                "properties": {
+                  "computed_max_layer": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "requested_horizon_complete": {
+                    "const": true
+                  },
+                  "natural_filtration_complete": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "LIMIT_REACHED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "filtration": {
+                "type": "null"
+              },
+              "phase": {
+                "type": "null"
+              },
+              "limit": {
+                "$ref": "#/$defs/raw_limit"
+              },
+              "summary": {
+                "properties": {
+                  "computed_max_layer": {
+                    "type": "null"
+                  },
+                  "requested_horizon_complete": {
+                    "const": false
+                  },
+                  "natural_filtration_complete": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "raw_edge": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "raw_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "homology_rank",
+        "requested_max_layer",
+        "natural_max_layer",
+        "computed_max_layer",
+        "requested_horizon_complete",
+        "natural_filtration_complete"
+      ],
+      "properties": {
+        "homology_rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "requested_max_layer": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "natural_max_layer": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "computed_max_layer": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "requested_horizon_complete": {
+          "type": "boolean"
+        },
+        "natural_filtration_complete": {
+          "type": "boolean"
+        },
+        "cycle_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "first_nonzero_exposure_layer": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "first_nonzero_visible_layer": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "first_nonzero_hidden_layer": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "raw_matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rows",
+        "columns",
+        "data"
+      ],
+      "properties": {
+        "rows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "raw_quotient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "free_rank",
+        "torsion_factors",
+        "finite_order",
+        "evidence_category"
+      ],
+      "properties": {
+        "free_rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "torsion_factors": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 2
+          }
+        },
+        "finite_order": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1
+        },
+        "evidence_category": {
+          "const": "EXACT_INTEGER"
+        }
+      }
+    },
+    "raw_lattice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ambient_rank",
+        "rank",
+        "basis_columns",
+        "graded_quotient",
+        "evidence_category"
+      ],
+      "properties": {
+        "ambient_rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "basis_columns": {
+          "$ref": "#/$defs/raw_matrix"
+        },
+        "graded_quotient": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/raw_quotient"
+            }
+          ]
+        },
+        "evidence_category": {
+          "const": "EXACT_INTEGER"
+        }
+      }
+    },
+    "raw_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "name",
+        "vertices",
+        "edges",
+        "readouts",
+        "analysis"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vertices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "edges": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/raw_edge"
+          }
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "coefficients"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "coefficients": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "edge",
+                    "coefficient"
+                  ],
+                  "properties": {
+                    "edge": {
+                      "$ref": "#/$defs/raw_edge"
+                    },
+                    "coefficient": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_layer": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "max_cycles": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "alpha": {
+              "type": "number",
+              "minimum": 0
+            },
+            "observation_time": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "sampling_interval": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        }
+      }
+    },
+    "raw_homology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rank",
+        "edge_orientation",
+        "tree_edges",
+        "chord_edges",
+        "fundamental_cycle_matrix",
+        "readout_names",
+        "readout_matrix",
+        "coordinate_warning",
+        "evidence_category"
+      ],
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "edge_orientation": {
+          "type": "string"
+        },
+        "tree_edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/raw_edge"
+          }
+        },
+        "chord_edges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/raw_edge"
+          }
+        },
+        "fundamental_cycle_matrix": {
+          "$ref": "#/$defs/raw_matrix"
+        },
+        "readout_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "readout_matrix": {
+          "$ref": "#/$defs/raw_matrix"
+        },
+        "coordinate_warning": {
+          "type": "string"
+        },
+        "evidence_category": {
+          "const": "EXACT_INTEGER"
+        }
+      }
+    },
+    "raw_filtration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cycles",
+        "layers",
+        "evidence_categories"
+      ],
+      "properties": {
+        "cycles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "vertices",
+              "length"
+            ],
+            "properties": {
+              "vertices": {
+                "type": "array",
+                "minItems": 3,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "length": {
+                "type": "integer",
+                "minimum": 3
+              }
+            }
+          }
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "layer",
+              "maximum_cycle_length",
+              "exposure",
+              "visible",
+              "hidden"
+            ],
+            "properties": {
+              "layer": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "maximum_cycle_length": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "exposure": {
+                "$ref": "#/$defs/raw_lattice"
+              },
+              "visible": {
+                "$ref": "#/$defs/raw_lattice"
+              },
+              "hidden": {
+                "$ref": "#/$defs/raw_lattice"
+              }
+            }
+          }
+        },
+        "evidence_categories": {
+          "type": "array",
+          "const": [
+            "EXACT_COMBINATORIAL",
+            "EXACT_INTEGER"
+          ]
+        }
+      }
+    },
+    "raw_rational": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "numerator",
+        "denominator"
+      ],
+      "properties": {
+        "numerator": {
+          "type": "integer"
+        },
+        "denominator": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "raw_phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interpretation",
+        "alpha",
+        "observation_time",
+        "sampling_interval",
+        "entropy_log_t_coefficient",
+        "layers",
+        "evidence_category",
+        "boundary_note"
+      ],
+      "properties": {
+        "interpretation": {
+          "const": "paper-derived asymptotic prediction"
+        },
+        "alpha": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "observation_time": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "sampling_interval": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "entropy_log_t_coefficient": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "layer",
+              "hidden_free_rank",
+              "critical_alpha",
+              "snapshot_budget_exponent",
+              "scaling_exponent",
+              "regime",
+              "lambda",
+              "entropy_log_t_coefficient"
+            ],
+            "properties": {
+              "layer": {
+                "type": "integer",
+                "minimum": 2
+              },
+              "hidden_free_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "critical_alpha": {
+                "$ref": "#/$defs/raw_rational"
+              },
+              "snapshot_budget_exponent": {
+                "$ref": "#/$defs/raw_rational"
+              },
+              "scaling_exponent": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "regime": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "DENSE",
+                  "CRITICAL",
+                  "SPARSE",
+                  null
+                ]
+              },
+              "lambda": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "entropy_log_t_coefficient": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "evidence_category": {
+          "const": "ASYMPTOTIC_THEOREM"
+        },
+        "boundary_note": {
+          "type": "string"
+        }
+      }
+    },
+    "raw_limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource",
+        "limit",
+        "complete_components",
+        "incomplete_components"
+      ],
+      "properties": {
+        "resource": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "complete_components": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "incomplete_components": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

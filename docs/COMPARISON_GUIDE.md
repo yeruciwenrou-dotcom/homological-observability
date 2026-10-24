@@ -29,7 +29,8 @@ same comparison as JSON on standard output.
 ## Read the answer
 
 Begin with the report's **Main findings** and **Shared conditions**, then use
-**Configuration comparison** for the scalar summaries and **Information
+**Sampling phases** or **Sampling scales** when those parameters were supplied.
+Use **Configuration comparison** for scalar summaries and **Information
 relations** for what each candidate can distinguish.
 
 The bridge example joins a four-cycle and a seven-cycle by one connecting
@@ -125,10 +126,20 @@ law. Confirm what your study needs before running it:
 | How do the candidates behave under a chosen asymptotic sampling law? | Set `alpha` to your exponent in $\delta=T^{-\alpha}$; keep `0.375` only if that is your intended law |
 | What are the exposure scales at a specified observation time and interval? | Remove `alpha` and provide both `observation_time` and `sampling_interval` in [normalized units](MODEL_GUIDE.md#from-a-physical-model-to-an-input) |
 
+For an exact layer-four threshold, set `"alpha": "1/3"` in the generated
+format-2 study. Keep both the study and shared model `schema_version` at `2`.
+The ordinary number `1/3` in Python is a float and keeps its small positive
+layer-four exponent. The [sampling input rules](MODEL_GUIDE.md#analysis-settings)
+explain the distinction and normalization.
+
 With no sampling fields, the hidden directions, information relations, and
 structural critical exponents remain available; evaluated entropy coefficients
 are left unset. The finite time/interval pair reports $T\delta^{m-1}$ values,
 without assigning asymptotic regime labels or finite-run error probabilities.
+The report shows this common scale once per computed layer, followed by each
+candidate's hidden graded free rank and torsion. Zero free rank alone does
+not rule out finite hidden torsion. Failed candidates retain their recovery
+notes; if none produced sampling results, the report states that explicitly.
 
 Run the edited study into a new directory, then check the report's title,
 **Shared conditions**, and candidate labels against your intended question:

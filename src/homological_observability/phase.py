@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from fractions import Fraction
 
+from ._sampling import Alpha, exact_alpha
 from .filtration import FiltrationAnalysis
 from .model import validate_sampling_parameters
 
@@ -37,7 +38,7 @@ class PhaseLayer:
 class PhasePrediction:
     """Structured asymptotic interpretation of a filtration result."""
 
-    alpha: float | None
+    alpha: Alpha | None
     observation_time: float | None
     sampling_interval: float | None
     layers: tuple[PhaseLayer, ...]
@@ -51,7 +52,7 @@ def _regime(exponent: Fraction) -> SamplingRegime:
 
 
 def _finite_result(value: Fraction, *, label: str) -> float:
-    """Round once after exact binary-input arithmetic, checking output range."""
+    """Round once after exact input arithmetic, checking output range."""
     try:
         rounded = float(value)
     except OverflowError as error:
@@ -64,7 +65,7 @@ def _finite_result(value: Fraction, *, label: str) -> float:
 def predict_phase(
     filtration: FiltrationAnalysis,
     *,
-    alpha: float | None = None,
+    alpha: Alpha | None = None,
     observation_time: float | None = None,
     sampling_interval: float | None = None,
 ) -> PhasePrediction:
@@ -92,7 +93,7 @@ def predict_phase(
             regime = None
             entropy_coefficient = None
         else:
-            exponent = 1 - Fraction.from_float(alpha) * (layer.layer - 1)
+            exponent = 1 - exact_alpha(alpha) * (layer.layer - 1)
             scaling_exponent = _finite_result(exponent, label="scaling exponent")
             regime = _regime(exponent)
             entropy = hidden_free_rank * max(exponent, Fraction(0)) / 2

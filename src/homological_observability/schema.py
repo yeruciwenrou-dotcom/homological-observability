@@ -15,16 +15,27 @@ def _load_schema(name: str) -> dict[str, Any]:
     return payload
 
 
-def load_analysis_schema() -> dict[str, Any]:
+def _versioned_schema(
+    name: str, version: int | None, latest: int, previous: int
+) -> dict[str, Any]:
+    if version is None:
+        version = latest
+    if type(version) is not int or version not in (previous, latest):
+        raise ValueError(f"{name} schema version must be {previous} or {latest}")
+    suffix = "" if version == latest else f"-v{version}"
+    return _load_schema(f"{name}{suffix}.schema.json")
+
+
+def load_analysis_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load a fresh copy of the bundled analysis-result JSON Schema."""
 
-    return _load_schema("analysis.schema.json")
+    return _versioned_schema("analysis", version, latest=3, previous=2)
 
 
-def load_model_schema() -> dict[str, Any]:
+def load_model_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load a fresh copy of the bundled model-input JSON Schema."""
 
-    return _load_schema("model.schema.json")
+    return _versioned_schema("model", version, latest=2, previous=1)
 
 
 def load_examples_schema() -> dict[str, Any]:
@@ -57,13 +68,13 @@ def load_critical_experiment_schema() -> dict[str, Any]:
     return _load_schema("critical-experiment.schema.json")
 
 
-def load_study_schema() -> dict[str, Any]:
+def load_study_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load the authored configuration-study JSON Schema."""
 
-    return _load_schema("study.schema.json")
+    return _versioned_schema("study", version, latest=2, previous=1)
 
 
-def load_comparison_schema() -> dict[str, Any]:
+def load_comparison_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load the configuration-comparison result JSON Schema."""
 
-    return _load_schema("comparison.schema.json")
+    return _versioned_schema("comparison", version, latest=2, previous=1)

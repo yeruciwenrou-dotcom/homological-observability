@@ -5,12 +5,11 @@ recoverability of accumulated cycle histories in finite-state Markov jump
 processes. Use it to study your own network, compare observation schemes,
 and reproduce the paper's finite-model calculations.
 
-A state snapshot records where a system is; its cycle history records the
-net circulation accumulated around the network. At finite temporal
-resolution, the same sequence of snapshots can hide different net windings,
-even when all transition rates are known. Longer observation adds both
-snapshots and history to recover. How rapidly must sampling improve to keep
-pace, and how can additional counters reduce that requirement?
+Between two snapshots, a system can move from A to B directly or take the
+route A → C → B. The recorded endpoints are identical, but the routes differ
+by a circulation around the triangle. Over a long observation, such unresolved
+circulations can accumulate. Homological observability asks how much of this
+cycle history can be recovered from state snapshots and additional counters.
 
 **What the theory establishes.** The paper organizes unresolved cycle
 differences into an integer hierarchy and derives the asymptotic sampling
@@ -45,6 +44,13 @@ need no rate values.** The critical experiment uses exact positive rates to
 compute path weights and limiting mark distributions.
 
 ## Install
+
+The latest published release is **1.2.1**. This source revision prepares
+**2.0.0** with exact rational sampling exponents and reports that follow the
+sampling request. To try these additions, create the environment below and
+install this checkout with `.venv/bin/python -m pip install .` (Windows:
+`.venv\Scripts\python.exe -m pip install .`) from the repository root.
+The PyPI commands below install the published release.
 
 Use Python 3.11–3.13. In your working directory, create a virtual environment
 and install the package from PyPI. On macOS or Linux:
@@ -145,6 +151,19 @@ walks through these choices. The [input guide](https://github.com/yeruciwenrou-d
 describes signed edge increments, sampling units, validation, and resource
 limits. Every exported study also includes a model file for each candidate,
 ready to inspect separately with `analyze`.
+
+## Exact sampling requests
+
+In this source revision, model and study format 2 accept `"alpha": "1/3"`.
+This gives an exactly critical fourth layer. A JSON number such as
+`0.3333333333333333` keeps its binary floating-point value and gives a slightly
+positive exponent at that layer. Use the fraction when your intended law is
+exactly one third; no tolerance silently moves numeric inputs onto a threshold.
+
+Reports follow the request: structure alone shows hidden information and
+counter relations; an exponent adds phases and entropy contributions; a
+finite observation time and interval add exposure scales with each hidden
+graded quotient. Each result states which layers were computed.
 
 ## Python API
 

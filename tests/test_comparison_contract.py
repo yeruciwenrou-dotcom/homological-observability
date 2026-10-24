@@ -93,7 +93,8 @@ class ComparisonContractTests(unittest.TestCase):
     def test_public_schemas_validate_authored_studies_and_fresh_results(self):
         study_schema = ho.load_study_schema()
         Draft202012Validator.check_schema(study_schema)
-        Draft202012Validator(study_schema).validate(study_document())
+        Draft202012Validator(ho.load_study_schema(version=1)).validate(study_document())
+        Draft202012Validator(study_schema).validate(ho.parse_study(study_document()))
         result = ho.compare_configurations(study_document())
         self.validate_comparison(result)
         self.assertEqual(result["status"], "COMPLETE")

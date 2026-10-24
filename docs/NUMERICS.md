@@ -117,7 +117,8 @@ the largest finite binary float, and its output must be finite and in $(0,1]$.
 
 ## Sampling and exact resource values
 
-Phase labels use the exact binary sampling input and the sign of
+Phase labels preserve explicit rational alpha values; numeric inputs retain
+their exact binary value. Classification uses the sign of
 $1-(m-1)\alpha$. Finite-scale exposure rounds only after evaluating
 $T\delta^{m-1}$ on those exact inputs. See the
 [sampling contract](MODEL_GUIDE.md#analysis-settings) for range errors and

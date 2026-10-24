@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:homological-observability:schema:comparison:1",
+  "$id": "urn:homological-observability:schema:comparison:2",
   "title": "Homological observability configuration comparison",
   "description": "A deterministic scoped comparison, including candidate failures and exact lattice witnesses. Raw analyses retain analysis schema version 2.",
   "type": "object",
@@ -24,7 +24,7 @@
       "const": "homological-observability.comparison"
     },
     "schema_version": {
-      "const": 1
+      "const": 2
     },
     "artifact_role": {
       "const": "configuration-comparison"
@@ -141,7 +141,7 @@
           ],
           "properties": {
             "schema_version": {
-              "const": 1
+              "const": 2
             },
             "name": {
               "type": "string",
@@ -373,10 +373,7 @@
           "type": "integer",
           "minimum": 1
         },
-        "alpha": {
-          "type": "number",
-          "minimum": 0
-        },
+        "alpha": {"anyOf": [{"type": "number", "minimum": 0}, {"type": "string", "pattern": "^[0-9]+/[0-9]*[1-9][0-9]*$", "maxLength": 8601}]},
         "observation_time": {
           "type": "number",
           "exclusiveMinimum": 0
@@ -1254,7 +1251,7 @@
       ],
       "properties": {
         "schema_version": {
-          "const": 1
+          "const": 2
         },
         "name": {
           "type": "string",
@@ -1274,7 +1271,7 @@
           ],
           "properties": {
             "schema_version": {
-              "const": 1
+              "const": 2
             },
             "name": {
               "type": "string",
@@ -1357,7 +1354,7 @@
           "const": "homological-observability.analysis"
         },
         "schema_version": {
-          "const": 2
+          "const": 3
         },
         "software": {
           "type": "object",
@@ -1757,7 +1754,7 @@
       ],
       "properties": {
         "schema_version": {
-          "const": 1
+          "const": 2
         },
         "name": {
           "type": "string",
@@ -1827,10 +1824,7 @@
               "type": "integer",
               "minimum": 1
             },
-            "alpha": {
-              "type": "number",
-              "minimum": 0
-            },
+            "alpha": {"anyOf": [{"type": "number", "minimum": 0}, {"type": "string", "pattern": "^[0-9]+/[0-9]*[1-9][0-9]*$", "maxLength": 8601}]},
             "observation_time": {
               "type": "number",
               "exclusiveMinimum": 0
@@ -2006,13 +2000,7 @@
         "interpretation": {
           "const": "paper-derived asymptotic prediction"
         },
-        "alpha": {
-          "type": [
-            "number",
-            "null"
-          ],
-          "minimum": 0
-        },
+        "alpha": {"anyOf": [{"type": "number", "minimum": 0}, {"type": "string", "pattern": "^[0-9]+/[0-9]*[1-9][0-9]*$", "maxLength": 8601}, {"type": "null"}]},
         "observation_time": {
           "type": [
             "number",

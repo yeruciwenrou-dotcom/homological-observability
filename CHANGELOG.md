@@ -4,6 +4,23 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## 2.0.0 — unreleased
+
+- Preserve explicit `Fraction` alpha values in Python and accept integer
+  fraction strings in model/study format 2. Numeric inputs retain binary-float
+  semantics. This corrects critical-layer classification for exact thirds,
+  fifths and other non-dyadic fractions.
+- Record effective API sampling overrides in the returned model and digest,
+  so exported models replay the calculation that actually ran.
+- Normalize models/studies to format 2, analyses to format 3 and comparisons
+  to format 2. Earlier numeric inputs remain readable; earlier schemas are
+  selectable through the loaders' `version` argument. See
+  [reading earlier records](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+- Present structure, asymptotic phases or finite exposure scales according
+  to the request, preserving graded torsion and incomplete-result boundaries.
+- Exercise wheel/sdist installation against public dependency ranges and
+  upgrades from 1.2.1, alongside the pinned scientific reproduction checks.
+
 ## 1.2.1 — 2026-10-24
 
 ### Security

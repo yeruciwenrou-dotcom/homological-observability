@@ -11,6 +11,7 @@ import json
 import math
 from collections.abc import Mapping as MappingABC
 from dataclasses import dataclass
+from fractions import Fraction
 from numbers import Real
 from pathlib import Path
 from types import MappingProxyType
@@ -19,6 +20,7 @@ from typing import Any, Iterable, Mapping, Sequence
 import networkx as nx
 
 from ._integer_io import check_integer_text, parse_json_integer
+from ._sampling import Alpha, parse_alpha, validate_exact_alpha
 
 Edge = tuple[str, str]
 
@@ -148,7 +150,7 @@ class GraphModel:
     readouts: tuple[IntegerReadout, ...] = ()
     max_layer: int | None = None
     max_cycles: int | None = None
-    alpha: float | None = None
+    alpha: Alpha | None = None
     observation_time: float | None = None
     sampling_interval: float | None = None
 
@@ -198,7 +200,7 @@ class GraphModel:
         readouts: Iterable[tuple[str, Mapping[tuple[str, str], int]]] = (),
         max_layer: int | None = None,
         max_cycles: int | None = None,
-        alpha: float | None = None,
+        alpha: Alpha | None = None,
         observation_time: float | None = None,
         sampling_interval: float | None = None,
     ) -> GraphModel:
@@ -240,13 +242,15 @@ def _validated_sampling_scalar(value: float, *, label: str, positive: bool) -> f
 
 def validate_sampling_parameters(
     *,
-    alpha: float | None,
+    alpha: Alpha | None,
     observation_time: float | None,
     sampling_interval: float | None,
-) -> tuple[float | None, float | None, float | None]:
+) -> tuple[Alpha | None, float | None, float | None]:
     """Validate the mutually exclusive asymptotic and finite-scale inputs."""
 
-    if alpha is not None:
+    if isinstance(alpha, Fraction):
+        alpha = validate_exact_alpha(alpha)
+    elif alpha is not None:
         alpha = _validated_sampling_scalar(
             alpha,
             label="alpha",
@@ -306,8 +310,8 @@ def parse_model(payload: Mapping[str, Any]) -> GraphModel:
         label="model",
     )
     schema_version = root.get("schema_version")
-    if isinstance(schema_version, bool) or schema_version != 1:
-        raise ValueError("schema_version must equal 1")
+    if isinstance(schema_version, bool) or schema_version not in (1, 2):
+        raise ValueError("schema_version must equal 1 or 2")
 
     vertices = _array(root.get("vertices"), label="vertices")
     raw_edges = _array(root.get("edges"), label="edges")
@@ -376,7 +380,7 @@ def parse_model(payload: Mapping[str, Any]) -> GraphModel:
         readouts=readouts,
         max_layer=analysis.get("max_layer"),
         max_cycles=analysis.get("max_cycles"),
-        alpha=analysis.get("alpha"),
+        alpha=parse_alpha(analysis.get("alpha"), schema_version=schema_version),
         observation_time=analysis.get("observation_time"),
         sampling_interval=analysis.get("sampling_interval"),
     )

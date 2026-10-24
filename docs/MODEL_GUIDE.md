@@ -47,7 +47,7 @@ how to add exact rates.
 ## Topology analysis model
 
 The `analyze` command reads a UTF-8 JSON document with
-`schema_version: 1`. The bundled machine-readable schema is available through
+`schema_version: 2`. The bundled machine-readable schema is available through
 `homological_observability.load_model_schema()` and at
 [`src/homological_observability/schemas/model.schema.json`](../src/homological_observability/schemas/model.schema.json).
 
@@ -55,7 +55,7 @@ The `analyze` command reads a UTF-8 JSON document with
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "name": "triangle",
   "vertices": ["a", "b", "c"],
   "edges": [["a", "b"], ["b", "c"], ["a", "c"]]
@@ -79,7 +79,7 @@ scientific request.
 
 ```json
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "name": "wedge-c3-c5-visible-index-two",
   "vertices": ["o", "a1", "a2", "b1", "b2", "b3", "b4"],
   "edges": [
@@ -109,14 +109,14 @@ scientific request.
 }
 ```
 
-The repository copy is
+The repository copy retains the earlier numeric input format, which remains readable:
 [`examples/wedge_c3_c5.json`](../examples/wedge_c3_c5.json).
 
 ### Field reference
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `schema_version` | yes | Input contract version; must be `1` |
+| `schema_version` | yes | Input contract version; use `2`; version `1` numeric inputs remain readable |
 | `name` | yes | Nonempty model label propagated into results |
 | `vertices` | yes | Unique nonempty string identifiers |
 | `edges` | yes | Undirected simple edges, each written as two vertex strings |
@@ -148,7 +148,7 @@ readout in the listed order.
 | --- | --- | --- |
 | `max_layer` | positive integer | Highest requested filtration layer |
 | `max_cycles` | positive integer | Maximum complete simple-cycle catalogue size |
-| `alpha` | finite number, at least zero | Evaluate asymptotic regimes under $\delta=T^{-\alpha}$ |
+| `alpha` | nonnegative number or integer fraction string such as `"1/3"` | Evaluate asymptotic regimes under $\delta=T^{-\alpha}$ |
 | `observation_time` | finite positive number | Set $T$ for finite-scale $\lambda_m$ values |
 | `sampling_interval` | finite positive number | Set $\delta$ for finite-scale $\lambda_m$ values |
 
@@ -160,11 +160,38 @@ interpretations.
 detector's time resolution. Sampling information is supplied separately by
 `alpha` or the time/interval pair.
 
-Sampling parameters are converted to binary `float`. Phase classification uses
-the exact value of that float in $1-(m-1)\alpha$, with equality reserved for
-zero. For example, Python's `1/3` is slightly below the exact layer-four
-threshold; its phase is `DENSE`, while the next larger float is `SPARSE`.
-The result also reports the exact rational threshold for reference.
+For an exact threshold, use `"alpha": "1/3"` in model format 2. Numerator
+and denominator must be unsigned decimal integers and the denominator must
+be positive. Values normalize to reduced fractions: `"2/6"` becomes `"1/3"`,
+and zero becomes `"0/1"`. Each component is limited to 4,300 digits, or the
+interpreter's smaller active limit. Decimal strings, spaces, scientific
+notation and signed fractions are not accepted for this field.
+
+A JSON number still becomes a binary `float`. Phase classification uses the
+exact supplied value in $1-(m-1)\alpha$, with equality reserved for zero.
+Python's `1/3` is slightly below the exact layer-four threshold: its phase is
+`DENSE`, while `Fraction(1, 3)` gives `CRITICAL`. At layer six, float `1/5`
+gives `SPARSE`, while `Fraction(1, 5)` gives `CRITICAL`. Values on either
+side retain their sign; no near-zero tolerance changes the result.
+
+The Python constructors, `analyze_model` overrides and `predict_phase` accept
+`fractions.Fraction` for exact alpha. Other real numeric inputs keep float
+conversion. Time and interval inputs continue to use binary floats.
+
+```python
+from fractions import Fraction
+import homological_observability as ho
+
+model = ho.load_example("wedge-c3-c5")
+result = ho.analyze_model(model, alpha=Fraction(1, 3))
+assert result.model.alpha == Fraction(1, 3)
+assert ho.model_to_dict(result.model)["analysis"]["alpha"] == "1/3"
+```
+
+Supplying any sampling override replaces the entire sampling request; omitted
+sampling arguments become `None`. Explicit `alpha=None` clears the request.
+The result's model and digest record the effective parameters, including when
+a resource limit is reached. The caller's original model is unchanged.
 
 For `alpha=0`, the sampling grid is fixed in the chosen rate units. With a
 complete filtration, the summed leading entropy coefficient is
@@ -265,7 +292,7 @@ walks through those edits and the resulting report.
 
 | Field | Required | Meaning |
 | --- | --- | --- |
-| `schema_version` | yes | Study format version; must be `1` |
+| `schema_version` | yes | Study format version; use `2` with shared model version `2`; version `1` studies remain readable |
 | `name` | yes | Nonempty study title |
 | `question` | no | Descriptive text; default is an empty string |
 | `model` | yes | Shared `schema_version`, `name`, `vertices`, and `edges` |

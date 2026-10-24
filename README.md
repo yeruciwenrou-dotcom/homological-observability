@@ -12,12 +12,11 @@ and reproduce the paper's finite-model calculations.
 [Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
 [Reproduce](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
 
-A state snapshot records where a system is; its cycle history records the
-net circulation accumulated around the network. At finite temporal
-resolution, the same sequence of snapshots can hide different net windings,
-even when all transition rates are known. Longer observation adds both
-snapshots and history to recover. How rapidly must sampling improve to keep
-pace, and how can additional counters reduce that requirement?
+Between two snapshots, a system can move from A to B directly or take the
+route A → C → B. The recorded endpoints are identical, but the routes differ
+by a circulation around the triangle. Over a long observation, such unresolved
+circulations can accumulate. Homological observability asks how much of this
+cycle history can be recovered from state snapshots and additional counters.
 
 **What the theory establishes.** The paper organizes unresolved cycle
 differences into an integer hierarchy and derives the asymptotic sampling
@@ -52,6 +51,13 @@ distributions.
 [Documentation](#documentation-and-feedback)
 
 ## Install
+
+The latest published release is **1.2.1**. This source revision prepares
+**2.0.0** with exact rational sampling exponents and reports that follow the
+sampling request. To try these additions, create the environment below and
+install this checkout with `.venv/bin/python -m pip install .` (Windows:
+`.venv\Scripts\python.exe -m pip install .`) from the repository root.
+The PyPI commands below install the published release.
 
 Use Python 3.11–3.13. In your working directory, create a virtual environment
 and install the package from PyPI. On macOS or Linux:
@@ -313,6 +319,19 @@ when trying an unfamiliar graph. A `LIMIT_REACHED` result identifies the
 exhausted limit; `PARTIAL_HORIZON` restricts conclusions to the computed
 layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
 explains how to continue each calculation.
+
+## Exact sampling requests
+
+In this source revision, model and study format 2 accept `"alpha": "1/3"`.
+This gives an exactly critical fourth layer. A JSON number such as
+`0.3333333333333333` keeps its binary floating-point value and gives a slightly
+positive exponent at that layer. Use the fraction when your intended law is
+exactly one third; no tolerance silently moves numeric inputs onto a threshold.
+
+Reports follow the request: structure alone shows hidden information and
+counter relations; an exponent adds phases and entropy contributions; a
+finite observation time and interval add exposure scales with each hidden
+graded quotient. Each result states which layers were computed.
 
 ## Python API
 
