@@ -1,8 +1,12 @@
 # Homological Observability
 
-This repository provides tools to analyze cycle-history recoverability,
-determine sampling thresholds, and compare observation schemes in finite-state
-Markov jump processes.
+This repository provides **computational tools for homological observability**,
+including exact integer calculations and reproducible finite-model examples.
+
+> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
+> *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
+> and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
+> (Version 1) [Preprint]. Zenodo. https://doi.org/10.5281/zenodo.23424849
 
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.** Its physical
@@ -29,23 +33,22 @@ under detailed balance.
 [Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#reproduce-the-paper-evidence) ·
 [Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#citation-and-license)
 
-**Analyze your own network.** Supply a transition graph and optional integer
-counter rules to find which cycle-history differences remain hidden, how
-sampling must scale to resolve them, and which counters reveal different or
-redundant information. The command line and Python API provide readable
-reports and rerunnable comparison bundles backed by exact integer calculations.
+You can use the software to:
 
-| Task | Inputs | Guide |
-| --- | --- | --- |
-| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [`analyze`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#analyze-your-own-network) |
-| Compare counter configurations | Several counter choices on one graph | [`compare`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#quick-start) |
-| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [`critical`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/docs/CRITICAL_EXPERIMENT.md) |
-| Reproduce the paper's calculations | Included models and reference data | [`reproduce`](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#reproduce-the-paper-evidence) |
+- **[Analyze your own network](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#analyze-your-own-network):** provide a transition graph and
+  optional integer counter rules to identify hidden cycle differences and
+  asymptotic sampling requirements.
+- **[Compare counter configurations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#quick-start):** determine which choices
+  reveal different or redundant information, with explanatory reports and
+  exact integer evidence.
+- **[Reproduce the paper](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#reproduce-the-paper-evidence):** regenerate the included finite-model
+  calculations and compare them with the reference results.
 
 The graph must be finite, connected, and simple, with positive transition-rate
 support in both directions. The recording protocol uses regular noiseless
 state snapshots and optional exact counters. **Network and counter analyses
-need no rate values.** The critical experiment uses exact positive rates to
+need no rate values.** The
+[critical experiment](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/docs/CRITICAL_EXPERIMENT.md) uses exact positive rates to
 compute path weights and limiting mark distributions.
 
 ## Install

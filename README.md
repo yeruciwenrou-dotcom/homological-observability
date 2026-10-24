@@ -3,9 +3,13 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability.svg?logo=pypi)](https://pypi.org/project/homological-observability/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-This repository provides tools to analyze cycle-history recoverability,
-determine sampling thresholds, and compare observation schemes in finite-state
-Markov jump processes.
+This repository provides **computational tools for homological observability**,
+including exact integer calculations and reproducible finite-model examples.
+
+> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
+> *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
+> and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
+> (Version 1) [Preprint]. Zenodo. https://doi.org/10.5281/zenodo.23424849
 
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.** Its physical
@@ -33,25 +37,23 @@ under detailed balance.
 [Install and try](#install) · [Your network](#analyze-your-own-network) ·
 [Reproduce](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
 
-**Analyze your own network.** Supply a transition graph and optional integer
-counter rules to find which cycle-history differences remain hidden, how
-sampling must scale to resolve them, and which counters reveal different or
-redundant information. The command line and Python API provide readable
-reports and rerunnable comparison bundles backed by exact integer calculations.
+You can use the software to:
 
-| Task | Inputs | Start here |
-| --- | --- | --- |
-| Analyze your own network and observation scheme | Graph, optional counters and sampling parameters | [Prepare and analyze a model](#analyze-your-own-network) |
-| Compare counter configurations | Several counter choices on one graph | [Run a worked comparison](#quick-start) |
-| Construct a critical-limit experiment | Graph, optional counters, exact rates, critical layer and intensity | [Add rates and construct the experiment](docs/CRITICAL_EXPERIMENT.md) |
-| Reproduce the paper's calculations | Included models and reference data | [Regenerate and check the results](#reproduce-the-paper-evidence) |
+- **[Analyze your own network](#analyze-your-own-network):** provide a transition graph and
+  optional integer counter rules to identify hidden cycle differences and
+  asymptotic sampling requirements.
+- **[Compare counter configurations](#quick-start):** determine which choices
+  reveal different or redundant information, with explanatory reports and
+  exact integer evidence.
+- **[Reproduce the paper](#reproduce-the-paper-evidence):** regenerate the included finite-model
+  calculations and compare them with the reference results.
 
 The supported graph is finite, connected, and simple, with positive
 transition-rate support in both directions on every edge. The recording
 protocol uses regular noiseless state snapshots and optional exact counters.
-**Network and counter analyses need no rate values.** The critical experiment
-uses exact positive rates to compute path weights and limiting mark
-distributions.
+**Network and counter analyses need no rate values.** The
+[critical experiment](docs/CRITICAL_EXPERIMENT.md) uses exact positive rates to
+compute path weights and limiting mark distributions.
 
 [Python API](#python-api) · [Scientific scope](#scope-and-interpretation) ·
 [Documentation](#documentation-and-feedback)
@@ -398,11 +400,6 @@ Cite the paper for theoretical results and the software for computations.
 When your work uses both, cite them separately.
 
 ### Paper
-
-> Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Stochastic Histories at Finite
-> Temporal Resolution: Homological Observability and Information Phase Diagrams
-> in Markov Jump Processes* (Version 1) [Preprint]. Zenodo.
-> https://doi.org/10.5281/zenodo.23424849
 
 <details>
 <summary>Copy the paper citation as BibTeX</summary>
