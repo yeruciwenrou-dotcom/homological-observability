@@ -3,30 +3,33 @@
 [![PyPI](https://img.shields.io/pypi/v/homological-observability.svg?logo=pypi)](https://pypi.org/project/homological-observability/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
-This repository provides research software for analyzing the
-recoverability of accumulated cycle histories in finite-state Markov jump
-processes. Use it to study your own network, compare observation schemes,
-and reproduce the paper's finite-model calculations.
+**Homological observability is the recoverability of a system's accumulated
+cycle history from observations with finite temporal resolution.** Its physical
+origin is finite access to motion: whenever dynamically allowed trajectories
+with different net circulations produce the same record, that record
+necessarily leaves part of the cycle history unresolved.
 
-[Install and try](#install) · [Your network](#analyze-your-own-network) ·
+For example, a system can move from A to B directly or via A → C → B between
+two snapshots. Both routes produce the same endpoints, while their difference
+is one circulation around the triangle. Repeated unresolved circulations
+create uncertainty in the accumulated history.
+
+For finite-state Markov jump processes, **we establish an information phase
+diagram and sharp sampling thresholds for recovering accumulated cycle
+histories.** The theory quantifies how uncertainty grows with observation time
+and resolution, derives the posterior laws at critical sampling scales, and
+determines the number of independent hidden cycle directions at each scale
+from the phase diagram. These information transitions persist at equilibrium
+under detailed balance.
+
 [Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
+[Physical interpretation](docs/SCIENTIFIC_SCOPE.md) ·
+[Install and try](#install) · [Your network](#analyze-your-own-network) ·
 [Reproduce](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
 
-Between two snapshots, a system can move from A to B directly or take the
-route A → C → B. The recorded endpoints are identical, but the routes differ
-by a circulation around the triangle. Over a long observation, such unresolved
-circulations can accumulate. Homological observability asks how much of this
-cycle history can be recovered from state snapshots and additional counters.
-
-**What the theory establishes.** The paper organizes unresolved cycle
-differences into an integer hierarchy and derives the asymptotic sampling
-conditions for recovering accumulated windings. Its information phase diagram
-describes how residual uncertainty grows as observation time and sampling
-resolution change. These transitions persist at equilibrium under detailed
-balance. The [scientific scope](docs/SCIENTIFIC_SCOPE.md) explains the model
-assumptions and the connection between topology, recording, and recovery.
-
-**Analyze your own network.** Provide its transition graph and optional
+**Analyze your own network.** This software turns the theory into exact
+calculations for your network and observation scheme. Provide its transition
+graph and optional
 integer counter rules. Each counter accumulates signed integer increments on
 edge crossings. Find which cycle differences remain hidden, how sampling
 must scale to resolve them, and which counter choices reveal different or

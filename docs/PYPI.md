@@ -1,29 +1,31 @@
 # Homological Observability
 
-This package provides tools for analyzing the
-recoverability of accumulated cycle histories in finite-state Markov jump
-processes. Use it to study your own network, compare observation schemes,
-and reproduce the paper's finite-model calculations.
+**Homological observability is the recoverability of a system's accumulated
+cycle history from observations with finite temporal resolution.** Its physical
+origin is finite access to motion: whenever dynamically allowed trajectories
+with different net circulations produce the same record, that record
+necessarily leaves part of the cycle history unresolved.
 
-Between two snapshots, a system can move from A to B directly or take the
-route A → C → B. The recorded endpoints are identical, but the routes differ
-by a circulation around the triangle. Over a long observation, such unresolved
-circulations can accumulate. Homological observability asks how much of this
-cycle history can be recovered from state snapshots and additional counters.
+For example, a system can move from A to B directly or via A → C → B between
+two snapshots. Both routes produce the same endpoints, while their difference
+is one circulation around the triangle. Repeated unresolved circulations
+create uncertainty in the accumulated history.
 
-**What the theory establishes.** The paper organizes unresolved cycle
-differences into an integer hierarchy and derives the asymptotic sampling
-conditions for recovering accumulated windings. Its information phase diagram
-describes how residual uncertainty grows as observation time and sampling
-resolution change. These transitions persist at equilibrium under detailed
-balance. The [scientific scope](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/docs/SCIENTIFIC_SCOPE.md)
-explains the assumptions and physical interpretation.
+For finite-state Markov jump processes, **we establish an information phase
+diagram and sharp sampling thresholds for recovering accumulated cycle
+histories.** The theory quantifies how uncertainty grows with observation time
+and resolution, derives the posterior laws at critical sampling scales, and
+determines the number of independent hidden cycle directions at each scale
+from the phase diagram. These information transitions persist at equilibrium
+under detailed balance.
 
 [Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
 [Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#reproduce-the-paper-evidence) ·
 [Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#citation-and-license)
 
-**Analyze your own network.** Provide its transition graph and optional
+**Analyze your own network.** This software turns the theory into exact
+calculations for your network and observation scheme. Provide its transition
+graph and optional
 integer counter rules. Each counter accumulates signed integer increments on
 edge crossings. Find which cycle differences remain hidden, how sampling
 must scale to resolve them, and which counter choices reveal different or
