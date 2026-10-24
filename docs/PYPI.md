@@ -1,5 +1,9 @@
 # Homological Observability
 
+`homological-observability` is Python research software for analyzing
+cycle-history recoverability and comparing observation schemes in finite-state
+Markov jump processes.
+
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.** Its physical
 origin is finite access to motion: whenever dynamically allowed trajectories
@@ -10,6 +14,8 @@ For example, a system can move from A to B directly or via A → C → B between
 two snapshots. Both routes produce the same endpoints, while their difference
 is one circulation around the triangle. Repeated unresolved circulations
 create uncertainty in the accumulated history.
+
+![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](https://raw.githubusercontent.com/yeruciwenrou-dotcom/homological-observability/v1.2.1/docs/snapshot_ambiguity.svg)
 
 For finite-state Markov jump processes, **we establish an information phase
 diagram and sharp sampling thresholds for recovering accumulated cycle
@@ -23,14 +29,11 @@ under detailed balance.
 [Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#reproduce-the-paper-evidence) ·
 [Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v1.2.1/README.md#citation-and-license)
 
-**Analyze your own network.** This software turns the theory into exact
-calculations for your network and observation scheme. Provide its transition
-graph and optional
-integer counter rules. Each counter accumulates signed integer increments on
-edge crossings. Find which cycle differences remain hidden, how sampling
-must scale to resolve them, and which counter choices reveal different or
-redundant information. The command line and Python API return explanatory
-reports backed by exact integer calculations.
+**Analyze your own network.** Supply a transition graph and optional integer
+counter rules to find which cycle-history differences remain hidden, how
+sampling must scale to resolve them, and which counters reveal different or
+redundant information. The command line and Python API provide readable
+reports and rerunnable comparison bundles backed by exact integer calculations.
 
 | Task | Inputs | Guide |
 | --- | --- | --- |
