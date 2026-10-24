@@ -99,10 +99,11 @@ def main(argv: list[str] | None = None) -> int:
                 if original != current:
                     mismatches.append(path)
             elif (
-                hashlib.sha256(path.read_bytes()).hexdigest() != FROZEN_MARKDOWN_SHA256
+                hashlib.sha256(frozen.encode("utf-8")).hexdigest()
+                != FROZEN_MARKDOWN_SHA256
             ):
-                # The archived 1.1.0 reading surface stays byte-identical. New
-                # report behavior is exercised separately with current results.
+                # Preserve archived text after platform checkout newline conversion.
+                # New report behavior is exercised with current results.
                 mismatches.append(path)
         else:
             path.write_text(expected, encoding="utf-8")
