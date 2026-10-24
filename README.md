@@ -9,7 +9,6 @@ including exact integer calculations and reproducible finite-model examples.
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
 > and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
-> (Version 1) [Preprint]. Zenodo. https://doi.org/10.5281/zenodo.23424849
 
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.** Its physical
@@ -32,7 +31,6 @@ determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
 under detailed balance.
 
-[Read the paper](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes) ·
 [Physical interpretation](docs/SCIENTIFIC_SCOPE.md) ·
 [Install and try](#install) · [Your network](#analyze-your-own-network) ·
 [Reproduce](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
