@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 from math import ceil
 from typing import cast
 
 from sympy import ImmutableMatrix, eye
 
+from ._sampling import Alpha
 from .filtration import CycleLimitExceeded, FiltrationAnalysis, analyze_filtration
 from .homology import HomologyBasis, build_homology_basis, readout_matrix
 from .model import GraphModel, validate_sampling_parameters
@@ -63,7 +64,7 @@ def analyze_model(
     model: GraphModel,
     *,
     reverse_tree_order: bool = False,
-    alpha: float | None | object = _UNSET,
+    alpha: Alpha | None | object = _UNSET,
     observation_time: float | None | object = _UNSET,
     sampling_interval: float | None | object = _UNSET,
 ) -> TopologyAnalysis:
@@ -85,7 +86,7 @@ def _analyze_topology(
     model: GraphModel,
     *,
     reverse_tree_order: bool = False,
-    alpha: float | None | object = _UNSET,
+    alpha: Alpha | None | object = _UNSET,
     observation_time: float | None | object = _UNSET,
     sampling_interval: float | None | object = _UNSET,
 ) -> TopologyAnalysis:
@@ -111,10 +112,20 @@ def _analyze_topology(
         effective_observation_time,
         effective_sampling_interval,
     ) = validate_sampling_parameters(
-        alpha=cast(float | None, effective_alpha),
+        alpha=cast(Alpha | None, effective_alpha),
         observation_time=cast(float | None, effective_observation_time),
         sampling_interval=cast(float | None, effective_sampling_interval),
     )
+
+    # Every result, including a resource-limited one, records the request used.
+    # A replacement leaves the caller's immutable model untouched.
+    if override_sampling:
+        model = replace(
+            model,
+            alpha=effective_alpha,
+            observation_time=effective_observation_time,
+            sampling_interval=effective_sampling_interval,
+        )
 
     basis = build_homology_basis(
         model,

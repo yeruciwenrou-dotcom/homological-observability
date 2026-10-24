@@ -35,10 +35,10 @@ here identifies this example record; a new run records its producing version.
 ```json
 {
   "schema_name": "homological-observability.analysis",
-  "schema_version": 2,
+  "schema_version": 3,
   "software": {
     "name": "homological-observability",
-    "version": "1.1.0"
+    "version": "2.0.0"
   },
   "artifact_role": "fresh-analysis",
   "status": "COMPLETE"
@@ -53,6 +53,35 @@ The complete bundled analysis schema is available through
 implementation that produced it. Consumers should check both instead of
 inferring compatibility from field presence.
 
+### Reading earlier records
+
+| Document | Earlier format | Current normalized format |
+| --- | ---: | ---: |
+| Model | 1 | 2 |
+| Study | 1 | 2 |
+| Analysis | 2 | 3 |
+| Comparison | 1 | 2 |
+
+Model and study parsers accept both input versions and emit the current
+normalized form. In a study, the study and shared model versions must match.
+A format-1 numeric input therefore keeps its scientific meaning while its
+normalized model or study digest changes. Earlier software cannot read the
+new format or exact alpha strings. Keep original records with their original
+producer version; rerunning them creates a new record.
+
+Schema loaders default to the current format. Pass `version=1` to
+`load_model_schema`, `load_study_schema` or `load_comparison_schema` for an
+earlier record; pass `version=2` to `load_analysis_schema` for archived
+analyses. The packaged earlier schemas retain their original definitions.
+Critical input, critical experiment and bundle-manifest formats remain at
+version 1. The critical experiment's baseline reference still identifies the
+analysis-2 topology fields used by that independent contract.
+
+For a cross-version check, compare scientific fields with their statuses,
+scopes and coordinate conventions intact. Do not expect identical hashes or
+report bytes after normalization and presentation changes. Exact byte replay
+uses the same build, environment, request and options.
+
 ### Top-level fields
 
 | Field | Meaning |
@@ -63,7 +92,7 @@ inferring compatibility from field presence.
 | `status` | `COMPLETE`, `PARTIAL_HORIZON`, or `LIMIT_REACHED` |
 | `evidence_categories` | Evidence kinds present in the document |
 | `normalized_model_sha256` | Digest of the validated normalized model |
-| `model` | Validated, normalized input model |
+| `model` | Effective normalized request, including API sampling overrides |
 | `summary` | Summary of basis-independent results |
 | `homology` | Auditable basis, readout coordinates, and rank |
 | `filtration` | Exact cycles, lattices, and graded quotients, or `null` |
@@ -161,8 +190,10 @@ were supplied, `lambda` is populated instead. With neither sampling request,
 the structural critical and budget exponents remain available while optional
 evaluations are `null`.
 
-The sign test uses the exact binary value of the normalized `alpha`; no
-near-zero tolerance changes the regime. Exponents, entropy coefficients and
+The sign test uses the exact rational alpha or the exact binary value of a
+numeric alpha; no near-zero tolerance changes the regime. `phase.alpha` and
+`model.analysis.alpha` retain the same normalized number or reduced fraction
+string. Exact threshold and budget outputs keep their rational-object form. Exponents, entropy coefficients and
 finite-scale exposure are rounded to float after exact input arithmetic.
 An unrepresentable nonzero result produces the existing controlled error
 document and exit code 2, consistently with text output.
@@ -173,7 +204,7 @@ paper-derived asymptotic predictions, not finite-sample guarantees.
 ## Configuration comparison document
 
 `compare_configurations(study)` returns a dictionary with
-`schema_name: homological-observability.comparison`, `schema_version: 1`, and
+`schema_name: homological-observability.comparison`, `schema_version: 2`, and
 `artifact_role: configuration-comparison`. It is already the structured JSON
 document and does not need `analysis_to_dict`.
 
@@ -457,6 +488,13 @@ use rational strings; floating-point values appear in the sampling
 interpretation.
 
 ## Renderers
+
+Reading surfaces adapt to the effective request. Structure-only reports show
+integer filtrations and counter relations. Alpha reports add per-layer
+regimes and entropy contributions. Finite time/interval reports show the
+computed exposure scales and hidden graded quotients, including torsion.
+Partial and unavailable results keep their completion boundaries; a renderer
+does not compute missing scientific results.
 
 Topology analysis renderers accept the immutable analysis result:
 

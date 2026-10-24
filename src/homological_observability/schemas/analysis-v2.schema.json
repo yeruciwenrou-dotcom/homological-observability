@@ -1,0 +1,477 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:analysis:2",
+  "title": "Homological observability analysis result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_name",
+    "schema_version",
+    "software",
+    "artifact_role",
+    "status",
+    "evidence_categories",
+    "normalized_model_sha256",
+    "model",
+    "summary",
+    "homology",
+    "filtration",
+    "phase",
+    "limit"
+  ],
+  "properties": {
+    "schema_name": { "const": "homological-observability.analysis" },
+    "schema_version": { "const": 2 },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "const": "homological-observability" },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "artifact_role": {
+      "enum": ["fresh-analysis", "builtin-example"]
+    },
+    "status": { "enum": ["COMPLETE", "PARTIAL_HORIZON", "LIMIT_REACHED"] },
+    "evidence_categories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "EXACT_INTEGER",
+          "EXACT_COMBINATORIAL",
+          "ASYMPTOTIC_THEOREM"
+        ]
+      }
+    },
+    "normalized_model_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "model": { "$ref": "#/$defs/model" },
+    "summary": { "$ref": "#/$defs/summary" },
+    "homology": { "$ref": "#/$defs/homology" },
+    "filtration": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/filtration" }
+      ]
+    },
+    "phase": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/phase" }
+      ]
+    },
+    "limit": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/limit" }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "COMPLETE" } } },
+      "then": {
+        "properties": {
+          "filtration": { "$ref": "#/$defs/filtration" },
+          "phase": { "$ref": "#/$defs/phase" },
+          "limit": { "type": "null" },
+          "summary": {
+            "required": [
+              "cycle_count",
+              "first_nonzero_exposure_layer",
+              "first_nonzero_visible_layer",
+              "first_nonzero_hidden_layer"
+            ],
+            "properties": {
+              "computed_max_layer": { "type": "integer", "minimum": 0 },
+              "requested_horizon_complete": { "const": true },
+              "natural_filtration_complete": { "const": true }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "PARTIAL_HORIZON" } } },
+      "then": {
+        "properties": {
+          "filtration": { "$ref": "#/$defs/filtration" },
+          "phase": { "$ref": "#/$defs/phase" },
+          "limit": { "type": "null" },
+          "summary": {
+            "required": [
+              "cycle_count",
+              "first_nonzero_exposure_layer",
+              "first_nonzero_visible_layer",
+              "first_nonzero_hidden_layer"
+            ],
+            "properties": {
+              "computed_max_layer": { "type": "integer", "minimum": 0 },
+              "requested_horizon_complete": { "const": true },
+              "natural_filtration_complete": { "const": false }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "status": { "const": "LIMIT_REACHED" } } },
+      "then": {
+        "properties": {
+          "filtration": { "type": "null" },
+          "phase": { "type": "null" },
+          "limit": { "$ref": "#/$defs/limit" },
+          "summary": {
+            "properties": {
+              "computed_max_layer": { "type": "null" },
+              "requested_horizon_complete": { "const": false },
+              "natural_filtration_complete": { "const": false }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "edge": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "string", "minLength": 1 },
+        { "type": "string", "minLength": 1 }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "homology_rank",
+        "requested_max_layer",
+        "natural_max_layer",
+        "computed_max_layer",
+        "requested_horizon_complete",
+        "natural_filtration_complete"
+      ],
+      "properties": {
+        "homology_rank": { "type": "integer", "minimum": 0 },
+        "requested_max_layer": { "type": "integer", "minimum": 1 },
+        "natural_max_layer": { "type": "integer", "minimum": 1 },
+        "computed_max_layer": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "requested_horizon_complete": { "type": "boolean" },
+        "natural_filtration_complete": { "type": "boolean" },
+        "cycle_count": { "type": "integer", "minimum": 0 },
+        "first_nonzero_exposure_layer": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "first_nonzero_visible_layer": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "first_nonzero_hidden_layer": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        }
+      }
+    },
+    "matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rows", "columns", "data"],
+      "properties": {
+        "rows": { "type": "integer", "minimum": 0 },
+        "columns": { "type": "integer", "minimum": 0 },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "quotient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "free_rank",
+        "torsion_factors",
+        "finite_order",
+        "evidence_category"
+      ],
+      "properties": {
+        "free_rank": { "type": "integer", "minimum": 0 },
+        "torsion_factors": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 2 }
+        },
+        "finite_order": {
+          "type": ["integer", "null"],
+          "minimum": 1
+        },
+        "evidence_category": { "const": "EXACT_INTEGER" }
+      }
+    },
+    "lattice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ambient_rank",
+        "rank",
+        "basis_columns",
+        "graded_quotient",
+        "evidence_category"
+      ],
+      "properties": {
+        "ambient_rank": { "type": "integer", "minimum": 0 },
+        "rank": { "type": "integer", "minimum": 0 },
+        "basis_columns": { "$ref": "#/$defs/matrix" },
+        "graded_quotient": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/quotient" }
+          ]
+        },
+        "evidence_category": { "const": "EXACT_INTEGER" }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "name",
+        "vertices",
+        "edges",
+        "readouts",
+        "analysis"
+      ],
+      "properties": {
+        "schema_version": { "const": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "vertices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "edges": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/edge" }
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "coefficients"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "coefficients": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["edge", "coefficient"],
+                  "properties": {
+                    "edge": { "$ref": "#/$defs/edge" },
+                    "coefficient": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_layer": { "type": "integer", "minimum": 1 },
+            "max_cycles": { "type": "integer", "minimum": 1 },
+            "alpha": { "type": "number", "minimum": 0 },
+            "observation_time": { "type": "number", "exclusiveMinimum": 0 },
+            "sampling_interval": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        }
+      }
+    },
+    "homology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rank",
+        "edge_orientation",
+        "tree_edges",
+        "chord_edges",
+        "fundamental_cycle_matrix",
+        "readout_names",
+        "readout_matrix",
+        "coordinate_warning",
+        "evidence_category"
+      ],
+      "properties": {
+        "rank": { "type": "integer", "minimum": 0 },
+        "edge_orientation": { "type": "string" },
+        "tree_edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/edge" }
+        },
+        "chord_edges": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/edge" }
+        },
+        "fundamental_cycle_matrix": { "$ref": "#/$defs/matrix" },
+        "readout_names": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "readout_matrix": { "$ref": "#/$defs/matrix" },
+        "coordinate_warning": { "type": "string" },
+        "evidence_category": { "const": "EXACT_INTEGER" }
+      }
+    },
+    "filtration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cycles", "layers", "evidence_categories"],
+      "properties": {
+        "cycles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["vertices", "length"],
+            "properties": {
+              "vertices": {
+                "type": "array",
+                "minItems": 3,
+                "items": { "type": "string" }
+              },
+              "length": { "type": "integer", "minimum": 3 }
+            }
+          }
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "layer",
+              "maximum_cycle_length",
+              "exposure",
+              "visible",
+              "hidden"
+            ],
+            "properties": {
+              "layer": { "type": "integer", "minimum": 0 },
+              "maximum_cycle_length": { "type": "integer", "minimum": 0 },
+              "exposure": { "$ref": "#/$defs/lattice" },
+              "visible": { "$ref": "#/$defs/lattice" },
+              "hidden": { "$ref": "#/$defs/lattice" }
+            }
+          }
+        },
+        "evidence_categories": {
+          "type": "array",
+          "const": ["EXACT_COMBINATORIAL", "EXACT_INTEGER"]
+        }
+      }
+    },
+    "rational": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator"],
+      "properties": {
+        "numerator": { "type": "integer" },
+        "denominator": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interpretation",
+        "alpha",
+        "observation_time",
+        "sampling_interval",
+        "entropy_log_t_coefficient",
+        "layers",
+        "evidence_category",
+        "boundary_note"
+      ],
+      "properties": {
+        "interpretation": { "const": "paper-derived asymptotic prediction" },
+        "alpha": { "type": ["number", "null"], "minimum": 0 },
+        "observation_time": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "sampling_interval": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "entropy_log_t_coefficient": { "type": ["number", "null"] },
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "layer",
+              "hidden_free_rank",
+              "critical_alpha",
+              "snapshot_budget_exponent",
+              "scaling_exponent",
+              "regime",
+              "lambda",
+              "entropy_log_t_coefficient"
+            ],
+            "properties": {
+              "layer": { "type": "integer", "minimum": 2 },
+              "hidden_free_rank": { "type": "integer", "minimum": 0 },
+              "critical_alpha": { "$ref": "#/$defs/rational" },
+              "snapshot_budget_exponent": { "$ref": "#/$defs/rational" },
+              "scaling_exponent": { "type": ["number", "null"] },
+              "regime": {
+                "type": ["string", "null"],
+                "enum": ["DENSE", "CRITICAL", "SPARSE", null]
+              },
+              "lambda": { "type": ["number", "null"] },
+              "entropy_log_t_coefficient": { "type": ["number", "null"] }
+            }
+          }
+        },
+        "evidence_category": { "const": "ASYMPTOTIC_THEOREM" },
+        "boundary_note": { "type": "string" }
+      }
+    },
+    "limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource",
+        "limit",
+        "complete_components",
+        "incomplete_components"
+      ],
+      "properties": {
+        "resource": { "type": "string", "minLength": 1 },
+        "limit": { "type": "integer", "minimum": 1 },
+        "complete_components": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "incomplete_components": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

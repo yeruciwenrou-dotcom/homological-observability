@@ -33,8 +33,8 @@ class ProductContractTests(unittest.TestCase):
         if ".dev" in ho.__version__:
             # Development builds have their own runtime identity. The citation
             # continues to identify the actual published, archived release.
-            self.assertEqual(citation_version.group(1), "1.1.0")
-            self.assertIn("10.5281/zenodo.23329444", citation)
+            self.assertEqual(citation_version.group(1), "1.2.1")
+            self.assertIn("10.5281/zenodo.23604825", citation)
         else:
             self.assertEqual(citation_version.group(1), ho.__version__)
 
@@ -52,7 +52,7 @@ class ProductContractTests(unittest.TestCase):
             )
         )
         self.assertEqual(first, second)
-        self.assertEqual(first["schema_version"], 2)
+        self.assertEqual(first["schema_version"], 3)
         self.assertEqual(first["status"], "COMPLETE")
         self.assertEqual(first["artifact_role"], "builtin-example")
         self.assertEqual(len(first["normalized_model_sha256"]), 64)
@@ -147,7 +147,7 @@ class ProductContractTests(unittest.TestCase):
     def test_analysis_schema_is_bundled_and_tracks_the_document(self) -> None:
         schema = ho.load_analysis_schema()
         document = ho.analysis_to_dict(ho.analyze_model(load_example("wedge-c3-c5")))
-        self.assertEqual(schema["properties"]["schema_version"]["const"], 2)
+        self.assertEqual(schema["properties"]["schema_version"]["const"], 3)
         self.assertEqual(set(schema["required"]), set(document))
         self.assertEqual(
             schema["properties"]["artifact_role"]["enum"],

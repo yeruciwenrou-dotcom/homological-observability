@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import re
 import shutil
@@ -12,6 +13,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from contextlib import chdir
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -208,6 +210,27 @@ class DocumentationTests(unittest.TestCase):
             capture_output=True,
             text=True,
         )
+
+    def test_frozen_markdown_allows_checkout_newlines_but_detects_text_changes(
+        self,
+    ) -> None:
+        spec = importlib.util.spec_from_file_location(
+            "freeze_examples", ROOT / "tools/freeze_examples.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            shutil.copytree(ROOT / "examples", target / "examples")
+            path = target / "examples/wedge_c3_c5_result.md"
+            original = path.read_text(encoding="utf-8").encode("utf-8")
+            with mock.patch.object(module, "ROOT", target):
+                path.write_bytes(original.replace(b"\n", b"\r\n"))
+                self.assertEqual(module.main(["--check"]), 0)
+                path.write_bytes(original.replace(b"COMPLETE", b"LIMIT_REACHED"))
+                with self.assertRaises(SystemExit) as error:
+                    module.main(["--check"])
+                self.assertEqual(error.exception.code, 2)
 
     def test_public_documents_do_not_expose_process_language(self) -> None:
         forbidden = (

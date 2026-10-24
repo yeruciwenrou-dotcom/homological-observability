@@ -101,7 +101,7 @@ class CriticalModelContractTests(unittest.TestCase):
         model_schema = ho.load_model_schema()
         critical_schema = ho.load_critical_model_schema()
         self.assertEqual(
-            model_schema["$id"], "urn:homological-observability:schema:model:1"
+            model_schema["$id"], "urn:homological-observability:schema:model:2"
         )
         self.assertEqual(
             critical_schema["$id"],

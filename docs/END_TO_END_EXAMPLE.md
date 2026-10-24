@@ -220,7 +220,7 @@ separate = [
     ]
 ]
 study = {
-    "schema_version": 1,
+    "schema_version": base["schema_version"],
     "name": "Wedge counter choices",
     "model": base,
     "analysis": settings,

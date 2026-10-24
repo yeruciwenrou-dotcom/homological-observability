@@ -4,12 +4,16 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
 import homological_observability as ho
 
 ROOT = Path(__file__).resolve().parents[1]
+FROZEN_MARKDOWN_SHA256 = (
+    "4633502da1a52be11a890474cdc15430950c3e3311c15277f915ceb4cefd8804"
+)
 
 
 def expected_artifacts() -> dict[Path, str]:
@@ -64,9 +68,42 @@ def main(argv: list[str] | None = None) -> int:
                 if current["software"].pop("version") != ho.__version__:
                     mismatches.append(path)
                     continue
+                if path.name == "wedge_c3_c5_result.json":
+                    # Check each record's own identity before comparing the
+                    # scientific content across the explicit format transition.
+                    for record in (original, current):
+                        canonical = json.dumps(
+                            record["model"],
+                            ensure_ascii=False,
+                            allow_nan=False,
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ).encode("utf-8")
+                        if (
+                            record.pop("normalized_model_sha256")
+                            != hashlib.sha256(canonical).hexdigest()
+                        ):
+                            raise AssertionError("example model digest is inconsistent")
+                    if (
+                        original["schema_version"] != 2
+                        or original["model"]["schema_version"] != 1
+                    ):
+                        raise AssertionError("unexpected archived example format")
+                    if (
+                        current["schema_version"] != 3
+                        or current["model"]["schema_version"] != 2
+                    ):
+                        raise AssertionError("unexpected current example format")
+                    original["schema_version"] = 3
+                    original["model"]["schema_version"] = 2
                 if original != current:
                     mismatches.append(path)
-            elif frozen != expected:
+            elif (
+                hashlib.sha256(frozen.encode("utf-8")).hexdigest()
+                != FROZEN_MARKDOWN_SHA256
+            ):
+                # Preserve archived text after platform checkout newline conversion.
+                # New report behavior is exercised with current results.
                 mismatches.append(path)
         else:
             path.write_text(expected, encoding="utf-8")

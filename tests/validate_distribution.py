@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
 import sys
 import tempfile
+import tomllib
 import venv
 from pathlib import Path
 
@@ -23,7 +25,14 @@ def environment_python(environment: Path) -> Path:
     return environment / "bin" / "python"
 
 
-def smoke_artifact(artifact: Path, workspace: Path) -> None:
+def smoke_artifact(
+    artifact: Path,
+    workspace: Path,
+    *,
+    dependency_mode: str,
+    evidence_dir: Path | None,
+    upgrade_from: str | None = None,
+) -> None:
     label = "wheel" if artifact.suffix == ".whl" else "sdist"
     environment = workspace / f"{label}-environment"
     run_directory = workspace / f"{label}-run"
@@ -31,19 +40,120 @@ def smoke_artifact(artifact: Path, workspace: Path) -> None:
     run_directory.mkdir()
     venv.EnvBuilder(with_pip=True).create(environment)
     python = environment_python(environment)
+    constraints = (
+        ["--constraint", str(ROOT / "requirements.txt")]
+        if dependency_mode == "locked"
+        else []
+    )
+    old_result = None
+    if upgrade_from is not None:
+        subprocess.run(
+            [
+                str(python),
+                "-m",
+                "pip",
+                "install",
+                *constraints,
+                f"homological-observability=={upgrade_from}",
+            ],
+            check=True,
+            cwd=run_directory,
+        )
+        previous = subprocess.run(
+            [
+                str(python),
+                "-c",
+                "import json; import homological_observability as h; "
+                "print(json.dumps(h.analysis_to_dict(h.analyze_model(h.load_example('wedge-c3-c5')))))",
+            ],
+            check=True,
+            cwd=run_directory,
+            capture_output=True,
+            text=True,
+        )
+        old_result = json.loads(previous.stdout)
+        if old_result["software"]["version"] != upgrade_from:
+            raise AssertionError("upgrade baseline imported the wrong software")
+        (run_directory / "old-model.json").write_text(
+            json.dumps(old_result["model"]), encoding="utf-8"
+        )
     subprocess.run(
-        [
-            str(python),
-            "-m",
-            "pip",
-            "install",
-            "--constraint",
-            str(ROOT / "requirements.txt"),
-            str(artifact),
-        ],
+        [str(python), "-m", "pip", "install", "--upgrade", *constraints, str(artifact)],
         check=True,
         cwd=run_directory,
     )
+    subprocess.run([str(python), "-m", "pip", "check"], check=True, cwd=run_directory)
+    identity = subprocess.run(
+        [
+            str(python),
+            "-c",
+            "import json, platform; from importlib import metadata; import homological_observability as h; "
+            "versions=[d.version for d in metadata.distributions() if d.metadata['Name']=='homological-observability']; "
+            "assert versions == [h.__version__], versions; "
+            "print(json.dumps({'version':h.__version__, 'python':platform.python_version(), 'platform':platform.platform(), 'import_path':h.__file__}))",
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    identity = json.loads(identity.stdout)
+    expected_version = tomllib.loads(
+        (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    )["project"]["version"]
+    if identity["version"] != expected_version:
+        raise AssertionError("installed candidate version differs from source metadata")
+    resolved = subprocess.run(
+        [str(python), "-m", "pip", "freeze", "--all"],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    ).stdout
+    if old_result is not None:
+        current = subprocess.run(
+            [
+                str(python),
+                "-m",
+                "homological_observability.cli",
+                "analyze",
+                "old-model.json",
+                "--format",
+                "json",
+            ],
+            check=True,
+            cwd=run_directory,
+            capture_output=True,
+            text=True,
+        )
+        current = json.loads(current.stdout)
+        for record in (old_result, current):
+            canonical = json.dumps(
+                record["model"],
+                ensure_ascii=False,
+                allow_nan=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+            if (
+                record.pop("normalized_model_sha256")
+                != hashlib.sha256(canonical).hexdigest()
+            ):
+                raise AssertionError("upgrade replay has an inconsistent model digest")
+            record["software"].pop("version")
+        if old_result["schema_version"] != 2 or current["schema_version"] != 3:
+            raise AssertionError("unexpected upgrade output format")
+        if (
+            old_result["model"]["schema_version"] != 1
+            or current["model"]["schema_version"] != 2
+        ):
+            raise AssertionError("unexpected upgrade model format")
+        old_result["schema_version"] = 3
+        old_result["model"]["schema_version"] = 2
+        if old_result != current:
+            raise AssertionError(
+                "upgrade changed a scientific result for the old numeric input"
+            )
 
     location = subprocess.run(
         [
@@ -131,7 +241,7 @@ def smoke_artifact(artifact: Path, workspace: Path) -> None:
             str(python),
             "-c",
             "import json; import homological_observability as h; "
-            "study = h.load_study_example('bridge'); "
+            "study = h.load_study_example('bridge'); study['analysis']['alpha'] = '1/3'; "
             "print(json.dumps({'study': study, 'result': h.compare_configurations(study), "
             "'study_schema': h.load_study_schema(), "
             "'comparison_schema': h.load_comparison_schema()}))",
@@ -160,6 +270,9 @@ def smoke_artifact(artifact: Path, workspace: Path) -> None:
         capture_output=True,
         text=True,
     )
+    edited = json.loads(study_path.read_text(encoding="utf-8"))
+    edited["analysis"]["alpha"] = "1/3"
+    study_path.write_text(json.dumps(edited), encoding="utf-8")
     bundle = run_directory / "comparison"
     comparison = subprocess.run(
         [
@@ -295,6 +408,22 @@ def smoke_artifact(artifact: Path, workspace: Path) -> None:
     reproduction_document = json.loads(reproduction.stdout)
     if reproduction_document["status"] != "PASS":
         raise AssertionError(f"{label} reference check did not pass")
+    if evidence_dir is not None:
+        evidence_dir.mkdir(parents=True, exist_ok=True)
+        name = label + ("-upgrade" if upgrade_from else "-fresh")
+        report = {
+            **identity,
+            "artifact": artifact.name,
+            "artifact_sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+            "dependency_mode": dependency_mode,
+            "upgrade_from": upgrade_from,
+            "pip_check": "PASS",
+            "resolved_packages": resolved.splitlines(),
+            "analysis_comparison_export_replay_reproduction": "PASS",
+        }
+        (evidence_dir / (name + ".json")).write_text(
+            json.dumps(report, indent=2) + "\n", encoding="utf-8"
+        )
 
 
 def main() -> int:
@@ -304,7 +433,24 @@ def main() -> int:
         type=Path,
         help="test existing wheel and sdist files without rebuilding",
     )
+    parser.add_argument(
+        "--dependency-mode",
+        choices=("locked", "public"),
+        default="locked",
+        help="use the reproduction pins or resolve declared public ranges",
+    )
+    parser.add_argument(
+        "--upgrade-from",
+        choices=("1.2.1",),
+        help="also verify an in-place wheel upgrade",
+    )
+    parser.add_argument(
+        "--evidence-dir",
+        type=Path,
+        help="retain resolved versions and validation records",
+    )
     arguments = parser.parse_args()
+    evidence_dir = arguments.evidence_dir.resolve() if arguments.evidence_dir else None
     with tempfile.TemporaryDirectory() as directory:
         workspace = Path(directory)
         distribution = (
@@ -321,8 +467,23 @@ def main() -> int:
         sdists = [path for path in artifacts if path.name.endswith(".tar.gz")]
         if len(artifacts) != 2 or len(wheels) != 1 or len(sdists) != 1:
             raise AssertionError(f"unexpected distribution artifacts: {artifacts!r}")
-        smoke_artifact(wheels[0], workspace)
-        smoke_artifact(sdists[0], workspace)
+        for artifact in (wheels[0], sdists[0]):
+            smoke_artifact(
+                artifact,
+                workspace,
+                dependency_mode=arguments.dependency_mode,
+                evidence_dir=evidence_dir,
+            )
+        if arguments.upgrade_from:
+            upgrade_workspace = workspace / "upgrade"
+            upgrade_workspace.mkdir()
+            smoke_artifact(
+                wheels[0],
+                upgrade_workspace,
+                dependency_mode=arguments.dependency_mode,
+                evidence_dir=evidence_dir,
+                upgrade_from=arguments.upgrade_from,
+            )
     print("PASS: wheel and sdist work outside the repository")
     return 0
 

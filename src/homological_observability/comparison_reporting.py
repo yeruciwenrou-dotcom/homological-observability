@@ -10,6 +10,8 @@ from importlib import resources
 from pathlib import Path
 from typing import Any
 
+from ._sampling_report import sampling_mode, sampling_request, sampling_tables
+
 
 def load_study_example(name: str) -> dict[str, Any]:
     """Load an editable comparison study: bridge, theta, or minimal."""
@@ -80,7 +82,16 @@ def _summary(document: Mapping[str, Any]) -> list[str]:
     """Select facts from reported metrics without interpreting the free-text question."""
     rows = document["rows"]
     complete = sum(row["status"] == "COMPLETE" for row in rows)
+    mode = sampling_mode(document["study"]["analysis"])
     notes = []
+    if mode == "finite":
+        notes.append(
+            "The sampling-scales table pairs the requested finite exposure with each configuration's hidden graded information."
+        )
+    elif mode == "asymptotic":
+        notes.append(
+            "The sampling-phases table gives layer regimes and entropy contributions for the supplied alpha."
+        )
     groups: dict[tuple[Any, ...], list[Mapping[str, Any]]] = {}
     for row in rows:
         if row["scope"] != "UNAVAILABLE":
@@ -157,19 +168,7 @@ def _conditions(document: Mapping[str, Any]) -> list[str]:
         "regular noiseless snapshot protocol and the sampling conditions below. "
         "They differ in their exact cumulative integer counter rules."
     ]
-    if analysis.get("alpha") is not None:
-        notes.append(
-            f"Sampling law: delta = T^(-{analysis['alpha']}) in reference-rate units."
-        )
-    elif analysis.get("observation_time") is not None:
-        notes.append(
-            f"Observation time: {analysis['observation_time']}; sampling interval: "
-            f"{analysis['sampling_interval']} (reference-rate units)."
-        )
-    else:
-        notes.append(
-            "No sampling parameters supplied; entropy coefficients are unavailable."
-        )
+    notes.append(sampling_request(analysis))
     horizon = analysis.get("max_layer")
     budget = analysis.get("max_cycles")
     notes.append(
@@ -379,12 +378,19 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
         "Use --output-dir NEW_DIRECTORY to save linked reports and replay inputs, "
         "or --format json to inspect all exact evidence.",
     ]
+    lines += [""] + sampling_tables(
+        document["results"], study["analysis"], markdown=False, comparison=True
+    )
     lines += ["", "Configurations"]
     for row in document["rows"]:
         lines += [
             f"  {_name(row)}: {row['status']}; channels={_cell(row['channels'])}; "
-            f"first hidden={_first_hidden(row)}; hidden rank={_cell(row['computed_hidden_rank'])}; "
-            f"entropy log(T) coefficient={_cell(row['entropy_log_t_coefficient'])}",
+            f"first hidden={_first_hidden(row)}; hidden rank={_cell(row['computed_hidden_rank'])}"
+            + (
+                f"; entropy log(T) coefficient={_cell(row['entropy_log_t_coefficient'])}"
+                if sampling_mode(study["analysis"]) == "asymptotic"
+                else ""
+            ),
             "    Counters: "
             + _counter_definitions(document, row["id"], markdown=False),
         ] + ["    " + note for note in _row_notes(row)]
@@ -399,8 +405,7 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
         document, markdown=False
     )
     lines += [
-        "Channel counts describe the declared counters, not hardware cost. "
-        "Entropy coefficients are asymptotic log(T) terms; zero does not establish finite-time recovery.",
+        "Channel counts describe the declared counters, not hardware cost.",
         "",
     ]
     return "\n".join(lines)
@@ -421,6 +426,10 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
     lines += ["- " + _markdown(note) for note in _summary(document)]
     lines += ["", "## Shared conditions", ""]
     lines += ["- " + _markdown(note) for note in _conditions(document)]
+    lines += [""] + sampling_tables(
+        document["results"], study["analysis"], markdown=True, comparison=True
+    )
+    asymptotic = sampling_mode(study["analysis"]) == "asymptotic"
     lines += [
         "",
         "Channel counts describe declared counters; they do not assign hardware cost. "
@@ -430,8 +439,9 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
         "",
         _metric_guide(markdown=True),
         "",
-        "| Configuration | Channels | Status | First hidden layer | Hidden rank | Entropy log(T) coefficient |",
-        "|---|---:|---|---|---:|---:|",
+        "| Configuration | Channels | Status | First hidden layer | Hidden rank |"
+        + (" Entropy log(T) coefficient |" if asymptotic else ""),
+        "|---|---:|---|---|---:|" + ("---:|" if asymptotic else ""),
     ]
     for row in document["rows"]:
         lines.append(
@@ -443,8 +453,8 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
                     row["status"],
                     _first_hidden(row),
                     _cell(row["computed_hidden_rank"]),
-                    _cell(row["entropy_log_t_coefficient"]),
                 ]
+                + ([_cell(row["entropy_log_t_coefficient"])] if asymptotic else [])
             )
             + " |"
         )
@@ -452,9 +462,7 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
         "",
         "Hidden rank refers to each candidate's computed horizon. In the first-hidden-layer "
         "column, 'none' applies to the full cycle group, 'none in computed layers' "
-        "applies only to the computed exposure, and 'unavailable' records no conclusion. "
-        "Entropy coefficients describe "
-        "asymptotic log(T) growth; zero does not establish finite-time recovery.",
+        "applies only to the computed exposure, and 'unavailable' records no conclusion.",
         "",
         "## Counters and configuration notes",
         "",

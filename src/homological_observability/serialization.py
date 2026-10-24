@@ -12,13 +12,15 @@ from typing import Any
 from sympy.matrices.matrixbase import MatrixBase
 
 from ._integer_io import check_output_integers
+from ._sampling import alpha_to_json
+from ._sampling_report import sampling_request, sampling_tables
 from .analysis import AnalysisStatus, TopologyAnalysis
 from .integer_lattice import QuotientInvariants
 from .model import GraphModel
 from .version import __version__
 
 SCHEMA_NAME = "homological-observability.analysis"
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 
 
 class ArtifactRole(str, Enum):
@@ -44,14 +46,14 @@ def model_to_dict(model: GraphModel) -> dict[str, Any]:
         for key, value in (
             ("max_layer", model.max_layer),
             ("max_cycles", model.max_cycles),
-            ("alpha", model.alpha),
+            ("alpha", alpha_to_json(model.alpha)),
             ("observation_time", model.observation_time),
             ("sampling_interval", model.sampling_interval),
         )
         if value is not None
     }
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "name": model.name,
         "vertices": list(model.vertices),
         "edges": [list(edge) for edge in model.edges],
@@ -209,7 +211,7 @@ def analysis_to_dict(
             )
         phase_document = {
             "interpretation": "paper-derived asymptotic prediction",
-            "alpha": result.phase.alpha,
+            "alpha": alpha_to_json(result.phase.alpha),
             "observation_time": result.phase.observation_time,
             "sampling_interval": result.phase.sampling_interval,
             "entropy_log_t_coefficient": result.phase.entropy_log_t_coefficient,
@@ -342,6 +344,7 @@ def render_text(
         "natural filtration complete: "
         + str(document["summary"]["natural_filtration_complete"]).lower(),
     ]
+    lines += ["", sampling_request(model["analysis"])]
     if document["status"] == AnalysisStatus.LIMIT_REACHED.value:
         limit = document["limit"]
         lines.extend(
@@ -362,6 +365,9 @@ def render_text(
             ]
         )
 
+    lines += [""] + sampling_tables(
+        {"model": document}, model["analysis"], markdown=False, comparison=False
+    )
     rows = [
         [
             "layer",
@@ -371,10 +377,8 @@ def render_text(
             "E quotient",
             "V quotient",
             "H quotient",
-            "regime",
         ]
     ]
-    phase_layers = {layer["layer"]: layer for layer in document["phase"]["layers"]}
     for layer in document["filtration"]["layers"]:
         if layer["layer"] < 2:
             continue
@@ -384,7 +388,6 @@ def render_text(
             entries.append(
                 f"r{quotient['free_rank']};torsion={_torsion_label(quotient)}"
             )
-        regime = phase_layers[layer["layer"]]["regime"] or "not-evaluated"
         rows.append(
             [
                 str(layer["layer"]),
@@ -392,7 +395,6 @@ def render_text(
                 str(layer["visible"]["rank"]),
                 str(layer["hidden"]["rank"]),
                 *entries,
-                regime,
             ]
         )
     widths = [max(map(len, column)) for column in zip(*rows)]
@@ -438,6 +440,7 @@ def render_markdown(
         f"`{str(document['summary']['natural_filtration_complete']).lower()}`",
         f"- Normalized model SHA-256: `{document['normalized_model_sha256']}`",
     ]
+    lines += ["", sampling_request(model["analysis"])]
     if document["status"] == AnalysisStatus.LIMIT_REACHED.value:
         limit = document["limit"]
         lines.extend(
@@ -466,6 +469,9 @@ def render_markdown(
             ]
         )
 
+    lines += [""] + sampling_tables(
+        {"model": document}, model["analysis"], markdown=True, comparison=False
+    )
     lines.extend(
         [
             "",
@@ -476,11 +482,10 @@ def render_markdown(
             "previous layer.",
             "",
             "| Layer $m$ | Exposure rank | Visible rank | Hidden rank | "
-            "Exposure quotient | Visible quotient | Hidden quotient | Regime |",
-            "| ---: | ---: | ---: | ---: | --- | --- | --- | --- |",
+            "Exposure quotient | Visible quotient | Hidden quotient |",
+            "| ---: | ---: | ---: | ---: | --- | --- | --- |",
         ]
     )
-    phase_layers = {layer["layer"]: layer for layer in document["phase"]["layers"]}
     for layer in document["filtration"]["layers"]:
         if layer["layer"] < 2:
             continue
@@ -491,11 +496,10 @@ def render_markdown(
                 f"free rank {quotient['free_rank']}; torsion "
                 f"{_markdown_torsion_label(quotient)}"
             )
-        regime = phase_layers[layer["layer"]]["regime"] or "not evaluated"
         lines.append(
             f"| {layer['layer']} | {layer['exposure']['rank']} | "
             f"{layer['visible']['rank']} | {layer['hidden']['rank']} | "
-            f"{quotients[0]} | {quotients[1]} | {quotients[2]} | {regime} |"
+            f"{quotients[0]} | {quotients[1]} | {quotients[2]} |"
         )
     lines.extend(
         [
