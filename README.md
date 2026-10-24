@@ -1,6 +1,6 @@
 # Homological Observability
 
-[![PyPI](https://img.shields.io/pypi/v/homological-observability.svg?logo=pypi)](https://pypi.org/project/homological-observability/)
+[![PyPI v2.0.0](https://img.shields.io/badge/PyPI-v2.0.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.0.0/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 
 This repository provides **computational tools for homological observability**,
