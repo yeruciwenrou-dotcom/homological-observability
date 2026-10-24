@@ -38,7 +38,7 @@ here identifies this example record; a new run records its producing version.
   "schema_version": 3,
   "software": {
     "name": "homological-observability",
-    "version": "2.0.0.dev0"
+    "version": "2.0.0"
   },
   "artifact_role": "fresh-analysis",
   "status": "COMPLETE"

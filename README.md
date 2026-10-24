@@ -60,19 +60,16 @@ compute path weights and limiting mark distributions.
 
 ## Install
 
-The latest published release is **1.2.1**. This source revision prepares
-**2.0.0** with exact rational sampling exponents and reports that follow the
-sampling request. To try these additions, create the environment below and
-install this checkout with `.venv/bin/python -m pip install .` (Windows:
-`.venv\Scripts\python.exe -m pip install .`) from the repository root.
-The PyPI commands below install the published release.
+Version **2.0.0** supports exact rational sampling exponents and organizes
+reports around the sampling request. For upgrades from 1.x, see the
+[format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
 
 Use Python 3.11–3.13. In your working directory, create a virtual environment
 and install the package from PyPI. On macOS or Linux:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability==1.2.1
+.venv/bin/python -m pip install homological-observability==2.0.0
 ```
 
 <details>
@@ -80,7 +77,7 @@ python3 -m venv .venv
 
 ```powershell
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability==1.2.1
+.venv\Scripts\python.exe -m pip install homological-observability==2.0.0
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -209,15 +206,15 @@ describes how results and file identities are compared.
 ### Full verification from source
 
 For the archived source, download and unpack
-`homological-observability-1.2.1-source.zip` from
-[Zenodo](https://zenodo.org/records/23604825), then open a terminal in the
-extracted `homological-observability-1.2.1` directory. The archive includes
+`homological-observability-2.0.0-source.zip` from
+[Zenodo](https://zenodo.org/records/23618828), then open a terminal in the
+extracted `homological-observability-2.0.0` directory. The archive includes
 the code, documentation, tests, pinned dependencies, and reference results.
 
 You can also clone the release and enter its source directory:
 
 ```bash
-git clone --branch v1.2.1 https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v2.0.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 ```
 
@@ -423,8 +420,8 @@ When your work uses both, cite them separately.
 ### Software
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 1.2.1) [Computer
-> software]. Zenodo. https://doi.org/10.5281/zenodo.23604825
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.0.0) [Computer
+> software]. Zenodo. https://doi.org/10.5281/zenodo.23618828
 
 Record the software version used and, for a source checkout, the exact Git
 commit. GitHub's citation menu and

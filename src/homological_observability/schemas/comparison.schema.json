@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:homological-observability:schema:comparison:2",
   "title": "Homological observability configuration comparison",
-  "description": "A deterministic scoped comparison, including candidate failures and exact lattice witnesses. Raw analyses retain analysis schema version 2.",
+  "description": "A deterministic scoped comparison, including candidate failures and exact lattice witnesses. Raw analyses use analysis schema version 3.",
   "type": "object",
   "additionalProperties": false,
   "required": [

@@ -217,7 +217,7 @@ parameters does not extend the computed horizon.
 ### Run and inspect a model
 
 This example uses `examples/wedge_c3_c5.json` from the
-[complete source archive](https://zenodo.org/records/23604825/files/homological-observability-1.2.1-source.zip?download=1).
+[complete source archive](https://zenodo.org/records/23618828/files/homological-observability-2.0.0-source.zip?download=1).
 Download and unpack the archive, then open a terminal in the extracted
 source directory containing `examples/`. Follow the
 [installation instructions](../README.md#install) in that directory.

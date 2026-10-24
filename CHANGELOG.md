@@ -4,7 +4,7 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
-## 2.0.0 — unreleased
+## 2.0.0 — 2026-10-24
 
 - Preserve explicit `Fraction` alpha values in Python and accept integer
   fraction strings in model/study format 2. Numeric inputs retain binary-float
