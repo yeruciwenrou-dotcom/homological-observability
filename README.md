@@ -2,6 +2,7 @@
 
 [![PyPI v2.0.0](https://img.shields.io/badge/PyPI-v2.0.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.0.0/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
+[![alphaXiv Paper](https://img.shields.io/badge/alphaXiv-Paper-7C3AED)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
