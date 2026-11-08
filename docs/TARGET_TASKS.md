@@ -57,6 +57,20 @@ future collection or replay from available complete event logs. When a simulator
 already exposes every event, directly accumulating DeltaW is a valid baseline;
 the design task is useful when records are fixed, restricted or shared by targets.
 
+The original counter-comparison task also explains why individual counters
+carry different information. Let C_ON be the cycle 0→1→2→0 and C_OFF the cycle
+3→4→5→3. Their (W, W_ON, W_OFF) values are (1,1,0) and (1,0,1).
+
+| Compared counters | Invisible to the first, visible to the second | Invisible to the second, visible to the first |
+| --- | --- | --- |
+| W_ON and W_OFF | C_OFF | C_ON |
+| W and W_ON | C_ON − C_OFF | C_OFF |
+
+These are two incomparable pairs on the full cycle group. Connecting the loops
+by a bridge traversed in opposite directions realizes their signed difference
+as a closed walk without changing the counter values. Once W is fixed, adding
+either cycle counter determines both and gives the same information for DeltaW.
+
 ## Use your own target
 
 Copy `examples/dfr_design.json` and edit the following fields. The same
