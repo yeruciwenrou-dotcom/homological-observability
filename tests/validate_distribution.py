@@ -141,10 +141,15 @@ def smoke_artifact(
             ):
                 raise AssertionError("upgrade replay has an inconsistent model digest")
             record["software"].pop("version")
-        if old_result["schema_version"] != 2 or current["schema_version"] != 3:
+        old_analysis_schema = 2 if upgrade_from == "1.2.1" else 3
+        old_model_schema = 1 if upgrade_from == "1.2.1" else 2
+        if (
+            old_result["schema_version"] != old_analysis_schema
+            or current["schema_version"] != 3
+        ):
             raise AssertionError("unexpected upgrade output format")
         if (
-            old_result["model"]["schema_version"] != 1
+            old_result["model"]["schema_version"] != old_model_schema
             or current["model"]["schema_version"] != 2
         ):
             raise AssertionError("unexpected upgrade model format")
@@ -470,7 +475,7 @@ def smoke_artifact(
         raise AssertionError(f"{label} reference check did not pass")
     if evidence_dir is not None:
         evidence_dir.mkdir(parents=True, exist_ok=True)
-        name = label + ("-upgrade" if upgrade_from else "-fresh")
+        name = label + (f"-upgrade-{upgrade_from}" if upgrade_from else "-fresh")
         report = {
             **identity,
             "artifact": artifact.name,
@@ -502,7 +507,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--upgrade-from",
-        choices=("1.2.1",),
+        choices=("1.2.1", "2.0.0"),
         help="also verify an in-place wheel upgrade",
     )
     parser.add_argument(

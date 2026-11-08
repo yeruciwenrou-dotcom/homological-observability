@@ -20,6 +20,12 @@ spanning tree. The cycle rank is four.
 See the [model and data provenance](SCIENTIFIC_ML.md#model-and-data-provenance)
 for the physical model, parameters and references.
 
+![DFR support, counter orientations and two target reconstruction formulas](dfr-readouts.svg)
+
+The colored arrows set the positive signs of the two cycle counters. Switching
+counters retain their own edge identities; they cannot replace either cycle
+counter for this target.
+
 Run from the repository directory, using the installed environment's command:
 
 ```bash
@@ -179,8 +185,8 @@ cooperative deadline shared by the core and optional explanation. Prechecks,
 search, legal-image solving, certificates and serialization have checkpoints.
 The time limit is **not a hard wall-clock timeout**: a single SymPy operation
 cannot be interrupted by it, and intermediate algebraic growth is checked at
-operation boundaries. These limits bound work; supported input scales and
-latency have yet to be measured. Exhausting a result cap preserves an
+operation boundaries. The [resource measurements](TARGET_VALIDATION.md#scale-and-budgets)
+document tested input families and timing conditions. Exhausting a result cap preserves an
 already proved minimum and complete enumeration count; it marks returned ties
 incomplete. Exhausting certificate work preserves an already established rank
 decision. The stop stage/resource is reported as `limit`.
@@ -254,5 +260,6 @@ submit predictions through the adapter.
 Automated regressions also cover empty/fixed-sufficient pools, an
 insufficient full pool, direct targets, more than 64 distinct candidates, pure
 endpoint targets, certificate truncation, and independent completion flags.
-Performance measurements and comparisons with direct accumulation or task-specific
-scripts are still needed to establish practical scale and collection cost.
+The [assessment protocol and measurements](TARGET_VALIDATION.md) compare direct
+accumulation, task-specific scripts, existing comparison tools and ordered
+heuristics, and record tested scale and storage representations.

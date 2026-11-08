@@ -19,6 +19,9 @@ separate natural/pressure evaluation and a versioned user-prediction adapter.
 Optional `explain=True` supplies target-image layers and entropy coefficients
 with independent completion status. The [technical source](docs/TARGET_THEORY.md)
 records the derivations.
+The same-source [PDF](docs/TARGET_THEORY.pdf), DFR counter diagram and
+[assessment](docs/TARGET_VALIDATION.md) cover reconstruction, comparison
+baselines, record sizes and measured resource limits.
 
 The quick start demonstrates target diagnosis and readout design, with separate
 installation instructions for development and published versions.

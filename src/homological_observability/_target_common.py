@@ -19,7 +19,7 @@ from .version import __version__
 
 @dataclass(frozen=True)
 class TargetLimits:
-    """Provisional development budgets, checked between exact operations.
+    """Task budgets, checked between exact operations.
 
     ``max_seconds`` is a cooperative deadline, not a hard process timeout.
     One atomic SymPy operation can overrun it. Counts bound search and output;

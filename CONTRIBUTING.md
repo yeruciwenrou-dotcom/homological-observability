@@ -37,7 +37,7 @@ Run the checks relevant to the change:
 .venv/bin/python -W error reproduce_all.py
 .venv/bin/python tests/validate_schema.py
 .venv/bin/python tests/validate_graph_atlas.py
-.venv/bin/python tests/validate_distribution.py
+.venv/bin/python tests/validate_distribution.py --upgrade-from 2.0.0 --evidence-dir install-evidence
 .venv/bin/ruff check .
 .venv/bin/ruff format --check .
 ```
@@ -46,6 +46,16 @@ The distribution check builds a wheel and source archive, then installs and
 exercises each in a separate environment outside the checkout. It needs
 internet access for build tools and dependencies. CI runs these checks on
 each pull request.
+
+The [target-task assessment](docs/TARGET_VALIDATION.md) can be repeated with
+`python tools/assess_target_tasks.py --output-dir target-assessment` in this
+environment. Use a new output directory for each run.
+
+The technical PDF is generated from `docs/TARGET_THEORY.md`. To rebuild it,
+install Pandoc and the optional documentation dependencies `reportlab>=4,<5`
+and `svglib>=2,<3`, then run `python tools/build_target_note.py`. Matplotlib
+supplies the fonts and vector equations. These extra tools are only needed
+to build the PDF, not to run the package.
 
 ## Scientific changes
 
