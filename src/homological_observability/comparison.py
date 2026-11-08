@@ -291,7 +291,7 @@ def _summarize(
         notes.append(
             "Individually removing any of these channels preserves the "
             f"information on this scope: {', '.join(redundant)}. "
-            "This does not authorize removing all of them together."
+            "Recompute redundancy after each removal when pruning several channels."
         )
     if row["visible_torsion"]:
         notes.append(
@@ -300,8 +300,8 @@ def _summarize(
         )
     if row["entropy_log_t_coefficient"] == 0 and last.hidden.cols:
         notes.append(
-            "A zero log(T) entropy coefficient does not establish zero "
-            "uncertainty or finite-time recovery."
+            "The log(T) term vanishes on this scope; the conditional history "
+            "law describes the remaining ambiguity."
         )
     row["explanations"] = notes
     return row
@@ -433,8 +433,8 @@ def _pair(
     notes = [conclusion]
     if first_relation == "TIED":
         notes.append(
-            "The first-hidden-layer objective is tied. An objective tie alone "
-            "does not imply information equivalence."
+            "The first-hidden-layer objective is tied. The kernel relation "
+            "above describes which histories each configuration distinguishes."
         )
     elif first_relation in ("LEFT_LATER", "RIGHT_LATER"):
         side = "left" if first_relation == "LEFT_LATER" else "right"
@@ -444,8 +444,8 @@ def _pair(
         )
     if not full:
         notes.append(
-            f"The relation applies only to the exposure lattice through layer "
-            f"{ll.layer}; it is not a full-homology relation."
+            f"The relation applies to the computed exposure lattice through layer "
+            f"{ll.layer}; higher layers remain uncomputed."
         )
     pair["explanations"] = notes
     return pair
@@ -488,8 +488,8 @@ def _overview(
             f"Exact kernel comparisons find {equivalent} equivalent pair(s) "
             f"and {incomparable} incomparable pair(s) on their stated scopes."
             + (
-                " Incomparable pairs offer different information, so their "
-                "scalar summaries cannot provide a universal ordering."
+                " Incomparable pairs distinguish different histories; "
+                "a choice between them depends on the research target."
                 if incomparable
                 else ""
             )
@@ -581,7 +581,7 @@ def compare_configurations(
             "information_contract": (
                 "Relations compare kernels on the declared common integer "
                 "cycle lattice. Equivalent information is decoded on legal "
-                "readout images; an ambient integer inverse is not required."
+                "readout images using the stated coordinate conventions."
             ),
         },
         "rows": rows,
@@ -590,12 +590,11 @@ def compare_configurations(
         "explanations": _overview(rows, relations)
         + [
             "Compare the scoped information relations and their witnesses "
-            "alongside the objective summaries; scalar ties do not imply "
-            "equivalent information.",
-            "Channel counts describe the supplied cumulative counters. They "
-            "do not establish equal hardware cost or a universal best design.",
-            "Entropy coefficients are asymptotic log(T) terms. A zero value "
-            "does not establish zero uncertainty or finite-time recovery.",
+            "alongside the objective summaries to choose a configuration for your target.",
+            "Channel counts describe the supplied cumulative counters; "
+            "physical costs depend on their implementation.",
+            "Entropy coefficients describe leading log(T) growth. Critical "
+            "uncertainty is described by the conditional limit law.",
             "PARTIAL_HORIZON conclusions cover computed exposure only. "
             "LIMIT_REACHED and ERROR candidates carry no missing-layer "
             "or information-relation conclusion.",

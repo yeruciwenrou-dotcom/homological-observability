@@ -258,7 +258,7 @@ assert payload["summary"]["natural_filtration_complete"] is True
 
 The JSON Schema checks document shape, primitive types, required pairs, and
 mutual exclusion of sampling modes. Runtime validation additionally checks
-properties that JSON Schema cannot conveniently establish here, including
+graph and readout properties, including
 connectivity, edge endpoints, undirected duplicates, unique readout names, and
 unknown readout edges.
 
@@ -424,8 +424,8 @@ assert payload["summary"]["critical_total_intensity"] == "5/2"
 ```
 
 `COMPLETE` means the requested layer and its full critical experiment were
-constructed. It does not by itself say that the graph's natural topology
-filtration has ended; read `topology.natural_filtration_complete` separately.
+constructed. Read `topology.natural_filtration_complete` for the separate
+question of whether the graph's exposure filtration has reached full homology.
 A resource ceiling produces `LIMIT_REACHED`, a null catalogue and limit
 experiment, and exit code 1. Invalid input produces the controlled error
 contract and exit code 2.

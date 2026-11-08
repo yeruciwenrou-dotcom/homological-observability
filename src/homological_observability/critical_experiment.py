@@ -1306,8 +1306,9 @@ def critical_experiment_to_dict(result: CriticalExperimentResult) -> dict[str, A
             "infinite_support_probability_table_expanded": False,
             "evidence_category": "ASYMPTOTIC_THEOREM",
             "boundary_note": (
-                "This is a critical-limit generative specification, not an exact "
-                "finite-(T, delta) posterior or an unconditional critical MAP solver."
+                "This object specifies the critical-limit experiment and its "
+                "conditioning rule. Finite-time posteriors and unconditional "
+                "MAP probabilities require the corresponding conditional-law calculation."
             ),
         }
         zero = CriticalMark(
@@ -1448,8 +1449,8 @@ def render_critical_text(result: CriticalExperimentResult) -> str:
             "",
             "Evidence: exact integer quotient coordinates, finite path enumeration, "
             "and exact rational weights.",
-            "Boundary: the marked-Poisson object is a theorem-derived critical-limit "
-            "specification, not a finite-sample posterior.",
+            "Scope: the marked-Poisson object specifies the theorem-derived "
+            "critical-limit experiment and its conditioning rule.",
         ]
     )
     return "\n".join(lines) + "\n"

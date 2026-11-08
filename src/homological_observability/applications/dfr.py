@@ -121,7 +121,7 @@ def _render_case_text(result):
         )
     elif design["feasible"] is False:
         lines.append(
-            "The candidate pool cannot determine DeltaW with W already recorded."
+            "Histories with identical W and candidate readouts can still have different DeltaW values."
         )
     else:
         lines.append(

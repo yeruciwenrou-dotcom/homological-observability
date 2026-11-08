@@ -2,8 +2,14 @@
 
 This CPU case helps a researcher decide whether their recorded inputs determine
 an integer trajectory target, choose an additional counter, and evaluate their
-own point predictions on the same paths. Available in the unreleased 2.1.0.dev0
-source, it uses the package's existing NumPy/SciPy dependencies.
+own point predictions on the same paths. A pre-training check can reveal
+histories that share the same recorded inputs but have different target values.
+That finding helps you choose between changing the recording scheme, adding a
+channel, or adapting the prediction target and evaluation to the information
+available.
+
+Available in the unreleased 2.1.0.dev0 source, the example uses the package's
+existing NumPy/SciPy dependencies.
 
 The example uses a **discrete flashing ratchet (DFR)**: a particle moves among
 three positions while an asymmetric potential switches ON and OFF, giving six
@@ -58,7 +64,8 @@ The pressure set is a separate, constructed equal-weight pair. Its inputs agree
 at **every** snapshot time and in W, while DeltaW is 0 and 2. A deterministic
 point prediction from that shared input has MAE at least 1 and exact-match
 accuracy at most 1/2. The training-median baseline reaches these bounds. The
-pressure pair has no estimated natural sampling frequency.
+pressure evaluation assigns weight 1/2 to each path; natural-sample metrics
+use the separately simulated trajectories.
 
 ## Supply your model's predictions
 
@@ -97,13 +104,12 @@ training data. Each row is one complete trajectory. All schemes share those
 trajectory IDs and splits. `X` contains only the snapshot sequence and the
 selected integer counter totals. IDs and column names are separate metadata.
 
-The loader's returned `files` also contains truth for inspection and scoring.
-Keep these files out of model features: complete event times/states, event count,
-labels, and construction metadata. In particular, do not pass the whole dataset
-object to a learner. Labels for validation/test are evaluation targets. IDs are
-alignment keys, not predictive inputs. Compare algorithms with the same visible
-scheme; compare observation designs with the same learning method and budget,
-recording explicitly which information changed.
+Pass `feature_view`'s `X` to the learner. The loader's `files` additionally
+contains complete event times/states, event counts, labels and construction
+metadata for inspection and scoring. Validation/test labels serve as evaluation
+targets, and trajectory IDs align predictions with their records. Compare
+algorithms with the same visible scheme; compare observation designs with the
+same learning method and budget, recording explicitly which information changed.
 
 `make_predictions` accepts a one-dimensional array in `feature_view` row order.
 It binds each prediction to a trajectory ID, protocol version, dataset hash,
@@ -122,21 +128,24 @@ NaN/infinity, unknown fields and malformed values before producing metrics.
 A conditional mean can fall outside the realized-target lattice: labels 0 and 2
 may have mean 1 (or labels 1 and 3 mean 2). `rounding="nearest_even"` explicitly
 requests Python's nearest-integer, ties-to-even rule. Both original and rounded
-values and metrics are retained; rounding does not replace the original output
-or enforce the target's parity lattice. MAE evaluates the submitted point values;
-it does not test whether a submitted conditional mean is calibrated.
+values and metrics are retained. This rule rounds to the nearest integer;
+target-lattice projection, such as enforcing even parity, is a separate operation.
+MAE measures point-prediction error. Conditional-mean calibration can be assessed
+separately by comparing predicted means with empirical conditional averages.
 
 Every evaluation includes label distribution, zero fraction, sample count,
 a zero baseline and a median baseline fitted only on natural training labels.
 For sufficient schemes it also includes exact reconstruction from visible
-records and endpoints. No event log or target label enters that reconstruction.
+records and endpoints. Target labels provide the reference for scoring the
+reconstructed values.
 
-The identical-input check compares predictions on repeated visible inputs. If
-the two pressure predictions differ, the file does not demonstrate a deterministic
-function of those inputs; `applicable_to_submitted_point_values` is false. This
-can arise from hidden inputs or per-row randomness. It does not prove a leak,
-and an unusually successful random realization does not refute an expected-risk
-bound. This finite check cannot certify that an arbitrary learner is leakage-free.
+The identical-input check compares the two pressure predictions. Equal values
+allow direct comparison with the deterministic pair bound. If they differ,
+`applicable_to_submitted_point_values` is false: inspect the model's input path
+and any per-row randomness to understand the difference. For randomized
+predictors with randomness independent of the hidden label, the bound concerns
+expected error over repeated predictions. Reviewing training and preprocessing
+inputs provides the broader check for information leakage.
 
 ## Generate another reproducible sample
 
@@ -186,10 +195,10 @@ evaluate target observability and submitted point predictions.
 Finite positive rates on the fixed, connected bidirectional support make these
 path events admissible. The exact cochain reconstruction is independent of the
 numeric rates. The optional audit reports target-image exposure layers and
-finite scales T delta^(m−1); finite scales do not provide recovery probabilities.
-The [technical derivation](TARGET_THEORY.md) gives the assumptions for asymptotic
-entropy coefficients. General finite-time posterior solvers, calibrated
-probabilities and controlled neural-training comparisons remain open extensions.
+finite scales T delta^(m−1), which describe the accumulation of ambiguity at
+each layer. The [technical derivation](TARGET_THEORY.md) gives the assumptions
+for asymptotic entropy coefficients. Finite-time recovery probabilities require
+the conditional history law for the chosen dynamics and observations.
 
 ## References
 

@@ -8,7 +8,7 @@ target ambiguity to exposure layers; the
 and model predictions.
 
 Use the [development installation](../README.md#install) for these interfaces
-(2.1.0.dev0). The published 2.0.0 package does not yet include them.
+in 2.1.0.dev0.
 
 ## First task: an existing record and a new research target
 
@@ -22,9 +22,9 @@ for the physical model, parameters and references.
 
 ![DFR support, counter orientations and two target reconstruction formulas](dfr-readouts.svg)
 
-The colored arrows set the positive signs of the two cycle counters. Switching
-counters retain their own edge identities; they cannot replace either cycle
-counter for this target.
+The colored arrows set the positive signs of the two cycle counters. The
+switching counters record crossings between ON and OFF states. With W fixed,
+the two minimum choices for DeltaW are W_ON and W_OFF, as the search below shows.
 
 Run from the repository directory, using the installed environment's command:
 
@@ -48,9 +48,9 @@ The two reconstruction formulas are DeltaW=2W_ON−W and DeltaW=W−2W_OFF.
 Even the insufficient W-only record retains parity: DeltaW≡W (mod 2).
 For a single observation interval the paths `[0,3]` and
 `[0,1,2,0,3,5,4,3,0,3]` share endpoints and W=0, but have targets 0 and 2.
-This pair is an algebraic ambiguity example; it is not a natural-sampling
-frequency estimate. A full snapshot-grid dataset must verify equality at every
-visible grid point before using such a pair as a prediction benchmark.
+The pair exhibits the ambiguity algebraically. The [ML tutorial](SCIENTIFIC_ML.md)
+places all its jumps before the first positive snapshot time, giving equal
+inputs across the full grid, and evaluates the two paths with equal weights.
 
 Existing records can be audited with `target`. Additional channels apply to
 future collection or replay from available complete event logs. When a simulator
@@ -83,8 +83,8 @@ apply to fixed readouts, targets and candidates.
 3. Define the quantities you want to recover in `targets`. Several targets
    are handled jointly, so a channel can serve more than one target.
 4. List admissible additional scalar counters in `candidates`, each with a
-   distinct name. The minimum is over this pool; it does not optimize hardware
-   cost. Include a direct target counter if your recording system permits it.
+   distinct name. The objective is the number of added channels from this pool.
+   Include a direct target counter if your recording system permits it.
 5. Run `design` on the saved request. For diagnosis alone, set `operation` to
    `analyze`, remove `candidates`, and run `target`.
 
@@ -147,11 +147,11 @@ keys, missing values and floats are rejected. `record_kind="raw"` requires valid
 `start` and `end` vertices. The deterministic tree path is subtracted from each
 readout, the cycle contribution is decoded, and the target's tree-path term is
 added back. Pure-gradient targets are therefore supported. `record_kind="cycle"`
-accepts already corrected records, forbids endpoints, and returns the cycle
-target in the selected tree convention. It does not silently return a raw target.
+accepts already corrected records without endpoint arguments and returns the
+cycle target in the selected tree convention.
 
 Input validation rejects targets/candidates on unknown edges before algebra.
-The default core calculations do not enumerate simple cycles. Optional
+The core calculations use fundamental-cycle coordinates. Optional
 `explain=True` on analyze/design adds a separately bounded exposure explanation
 after the core result; `max_cycles` and `max_layer` apply to that explanation
 without discarding a target certificate.
@@ -170,14 +170,14 @@ P=2I2, F=(1,1), p=(1,1)
 is illegal even though the rational formula gives the integer 1. P(x)=(2x,4x),
 p=(2,5) is inconsistent and is also rejected. Illegal records yield
 `legal_record=false`, `target_values=null`; insufficient legal records also yield
-no target value. They are completed diagnoses, not computational failures.
+no target value. In both cases, the completed diagnosis reports the record's
+legality and the readout's sufficiency separately.
 
 For legal p, any integer preimage c0 gives the target ambiguity set
 F(c0)+F(ker_Z P). The exact ambiguity image requires a saturated integer kernel;
 clearing denominators of rational-nullspace columns separately can miss lattice
 points. For P=(2,1,1), F=(0,1,0), the true image is Z, not 2Z. The result format
-provides ambiguity witnesses and target-image layers; it does not expose a
-general target-coset object. The DFR example illustrates the retained parity.
+provides ambiguity witnesses and target-image layers. The DFR example illustrates the retained parity.
 Target-image exposure layers and their entropy interpretation are available
 with `explain=True`. The [technical source](TARGET_THEORY.md) derives them using
 the original paper's assumptions separately from this algebra.
@@ -191,17 +191,17 @@ separately records `feasible`, `minimum_proven`, `enumeration_complete`,
 `lower_bound_added` / `upper_bound_added` retain established bounds when a
 search stops before its minimum is found. `ties_found` is a count of discovered ties; it is the full
 count only if enumeration completed. `fully_searched_through` counts exhaustive
-cardinality levels, with -1 meaning none. A full-pool impossibility precheck
-does not pretend to have enumerated every subset.
+cardinality levels, with -1 meaning none. A failed full-pool precheck proves
+infeasibility by monotonicity and leaves this enumeration count at -1.
 
 `TargetLimits` defaults to 10,000 subset checks,
 100 returned choices, 100,000 entries per bounded matrix, 4,096 bits per checked
 integer numerator/denominator, 10,000 explanation cycles, and a 30-second
 cooperative deadline shared by the core and optional explanation. Prechecks,
 search, legal-image solving, certificates and serialization have checkpoints.
-The time limit is **not a hard wall-clock timeout**: a single SymPy operation
-cannot be interrupted by it, and intermediate algebraic growth is checked at
-operation boundaries. The [resource measurements](TARGET_VALIDATION.md#scale-and-budgets)
+The deadline is checked between exact operations, so a single SymPy operation
+can run past it. Intermediate algebraic growth is checked at those same
+boundaries. Use an externally timed process when a hard deadline is required. The [resource measurements](TARGET_VALIDATION.md#scale-and-budgets)
 document tested input families and timing conditions. Exhausting a result cap preserves an
 already proved minimum and complete enumeration count; it marks returned ties
 incomplete. Exhausting certificate work preserves an already established rank
@@ -233,7 +233,8 @@ incomplete core/explanation work, and 2 for input/IO errors.
 `report.txt` to a new directory. Existing directories are rejected. Replay via
 `run_target_request(result["request"])` reproduces deterministic scientific fields;
 a time-limited run can stop at a different checkpoint on another machine. A result
-is an audit record, not an executable decoder trusted without the input checks.
+records the calculation for audit; use `evaluate_target` to validate and decode
+a new record.
 
 ## Dataset and prediction protocol v1
 
@@ -260,7 +261,8 @@ features; preprocessing is fitted on train only. Splits are by complete trajecto
 The balanced ambiguity pressure set has equal visible inputs and labels 0 and 2
 with equal weights. A deterministic point predictor then has exact-match accuracy
 at most 1/2 and MAE at least 1. This constructed set is separately identified from
-natural known-Q CTMC samples; the bound is not reported as natural-population risk.
+natural known-Q CTMC samples, whose prediction errors are measured on their
+own test split.
 The CPU tutorial covers generation/loading, audit, design, reconstruct, import
 user predictions, evaluate and replay. Users train their models separately and
 submit predictions through the adapter.

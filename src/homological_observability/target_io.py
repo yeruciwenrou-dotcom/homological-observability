@@ -239,7 +239,7 @@ def render_target_text(document: dict) -> str:
                 f"Explanation stopped: {explanation['limit']['resource']}; established core results are retained."
             )
         lines.append(
-            "Exposure scales and asymptotic coefficients are not finite-time prediction probabilities."
+            "Exposure scales describe ambiguity accumulation. Entropy coefficients give the leading log(T) term in target uncertainty."
         )
     lines.append(f"Replay request SHA-256: {document['request_sha256']}")
     return "\n".join(lines) + "\n"

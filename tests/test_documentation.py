@@ -312,7 +312,10 @@ class DocumentationTests(unittest.TestCase):
             ["1/5", "4/5"],
         )
         for document in (guide, scope, paper_map):
-            self.assertIn("posterior at finite $(T,\\delta)$", document)
+            self.assertRegex(
+                " ".join(document.split()),
+                r"posterior at finite|Finite-time posteriors",
+            )
         self.assertIn(
             "critical-limit generative specification",
             " ".join(guide.split()),

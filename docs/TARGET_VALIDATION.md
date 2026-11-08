@@ -45,18 +45,17 @@ target-deficit greedy selection each run in forward, reverse and seeded orders.
 | DFR, W fixed and a direct target counter available | 1 | 3 | All runs find one addition, including direct recording |
 | Constructed deletion-order example | 1 | 1 | Reverse deletion retains two; other deletion orders find one |
 
-The constructed example illustrates order dependence; it is not a physical
-DFR measurement. These results support exact minimum proofs and complete tied
-choices. Simple methods also solve several cases optimally. A short exact
-rank/enumeration script is a valid alternative for a fixed small problem.
-The product adds validated inputs, legal-record evaluation, certificates,
-completion states and replay to that calculation.
+The final row uses a constructed cochain system to exhibit deletion-order
+dependence. In the DFR cases, several ordered searches also attain the exact
+minimum. A short rank/enumeration script can solve a fixed small problem;
+the package combines that calculation with input validation, legal-record
+evaluation, reconstruction certificates and replay.
 
 The existing `compare` workflow independently identifies that adding DeltaW to
 W strictly refines the full-history information. Native `analyze_target` answers
 the focused sufficiency question directly. Their output responsibilities differ,
-as do those of a rank-only script and certificate-producing design; their recorded
-times are not an equal-work speed comparison.
+as do those of a rank-only script and certificate-producing design. The recorded
+times describe each workflow with its own outputs.
 
 ## Paired records and reconstruction
 
@@ -78,12 +77,14 @@ A direct DeltaW accumulator, the two-counter scheme and the six-counter scheme
 are timed on the same event trajectories. If all events are available and only
 DeltaW is needed, direct accumulation is a natural choice. The design task is
 useful when channels are restricted, records already exist, or measurements
-must serve several questions. Counter counts do not specify hardware cost.
+must serve several questions. Instrument costs enter through the physical
+recording design.
 
 The [prediction tutorial](SCIENTIFIC_ML.md) reports natural-data and constructed
 pressure results separately and accepts predictions from a user's model.
-This assessment measures exact reconstruction and recording overhead; it does
-not measure neural-network training improvements.
+The measurements here cover exact reconstruction and recording overhead.
+A training comparison can use the paired observation schemes with the same
+model, training procedure and evaluation split.
 
 ## Scale and budgets
 
@@ -102,20 +103,21 @@ integer size. They are reproducible resource probes, separate from the DFR case.
 | 16 / 16 / 4, two-second budget | 967 | 2.00 | Search limited; partial result retained |
 
 Peak process RSS is about 123–124 MiB in these probes, including Python and
-imports. It is not incremental algorithm memory. The raw record separates
+imports. The raw record separates
 coordinate preparation, rank decisions, certificates, optional explanation and
 JSON encoding. Deterministic replay agrees for non-time-limited results.
 
 Additional probes verify subset and output caps, a matrix-size rejection before
 search, 1,024-bit coefficients, and an explanation limit that preserves a complete
 core result. A discovered minimum, all ties, returned certificates and optional
-explanation have separate completion fields; a limit does not erase established
-facts or imply that all requested work finished.
+explanation have separate completion fields. Each field records the work
+completed before the limit.
 
 The current defaults remain 10,000 subsets, 100 returned solutions, 100,000
 matrix entries, 4,096-bit integers, 30 cooperative seconds and 10,000 explanation
 cycles. The measured small pools are suitable starting examples. General subset
-search is combinatorial; candidate count alone cannot predict completion. Review
+search is combinatorial, with cost depending on the candidate cochains, target
+rank and integer sizes as well as pool size. Review
 partial-result fields before raising a budget. `max_seconds` is checked between
 exact operations, so one atomic operation can overrun it. Applications needing
 a hard deadline should run the task in a separate process with an external timeout.

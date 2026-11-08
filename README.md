@@ -142,8 +142,9 @@ Open **`dfr-case/report.txt`**. It reports:
 The search proves that **one extra scalar channel is sufficient and necessary
 within the supplied pool**. On the bundled dataset, each sufficient scheme
 evaluated by the case reconstructs all 64 trajectories with zero mismatch.
-Adding a channel changes future collection; existing full event logs can also
-be replayed to obtain the extra counts.
+This diagnosis helps choose the next experiment: add the missing count to
+future collection, replay available full event logs to obtain it, or choose a
+prediction target and evaluation suited to the existing records.
 
 The case saves `case.json` with the structural evidence and evaluations, plus
 `predictions.json` with training-median predictions for the 13-path natural test

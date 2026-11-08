@@ -122,8 +122,9 @@ Read `dfr-case/report.txt`:
 - Natural-test prediction scores and the separate constructed ambiguity-pair
   scores have their own sample counts and baselines.
 
-Adding a counter changes future collection; complete event logs can also be
-replayed to obtain the extra counts.
+The diagnosis helps choose between adding a counter to future collection,
+replaying complete event logs, or adapting the prediction target and evaluation
+to the available records.
 
 The [scientific ML tutorial](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/SCIENTIFIC_ML.md) explains the model's
 sources, paired observation schemes and prediction interface. Users can train

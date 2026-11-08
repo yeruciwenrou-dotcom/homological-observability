@@ -32,11 +32,11 @@ The code verifies $DP=F$ exactly before returning the decoder. If ranks differ,
 a saturated integer kernel basis has a column $z$ with $Fz\neq0$. Returning $z$,
 $Bz$ and $Fz$ witnesses the insufficiency; the product verifies $Pz=0$ and $Fz\neq0$.
 
-The rank criterion concerns **all** possible records and trajectories under this
-support. A particular finite observation can carry extra incidental restrictions.
-The universal guarantee is the task exposed by `analyze_target`. No simple-cycle
-enumeration is required for this decision. A spanning-tree change is an integral
-unimodular coordinate change, preserving the criterion and physical cochains.
+`analyze_target` applies this criterion uniformly to **all** records and
+trajectories on the stated support. It works directly with fundamental-cycle
+coordinates. Additional restrictions from a particular finite observation enter
+its conditional history set. A spanning-tree change is an integral unimodular
+coordinate change, preserving the criterion and physical cochains.
 
 ## 2. Legal integer images and open trajectories
 
@@ -45,10 +45,10 @@ first solves $Pc=p$ over $\mathbb{Z}$ via a verified Smith decomposition $UPV=S$
 by each nonzero diagonal entry and vanishing of every residual row are necessary
 and sufficient for membership. It constructs and verifies an integer preimage.
 For example $P(x)=2x$, $F(x)=x$ permits decoding $x=p/2$ for even $p$.
-With $P=2I_2$, $F=(1,1)$, $p=(1,1)$,
-the formula's integer result 1 does not make the input record legal.
+With $P=2I_2$, $F=(1,1)$ and $p=(1,1)$, the record lies outside
+$P(H)=2\mathbb{Z}^2$, even though the decoder formula returns the integer 1.
 
-An open walk chain $x$ from $s$ to $t$ is not itself a cycle. Let $h(s,t)$ be the tree
+For an open walk chain $x$ from $s$ to $t$, let $h(s,t)$ be the tree
 path with the same boundary. Then $x-h=Bc$ for a unique integer $c$. For raw cochain
 matrices $A$ and $G$, the evaluator uses
 
@@ -56,9 +56,9 @@ $$
 p'=Ax-Ah=Pc,\qquad Gx=D p'+Gh,\qquad P=AB,\ F=GB.
 $$
 
-Known endpoints therefore retain pure-gradient targets, whose cycle restriction
-is zero. `record_kind="cycle"` already uses corrected coordinates and returns $Fc$;
-it forbids endpoints so the two meanings are not mixed.
+Known endpoints therefore determine pure-gradient targets, whose cycle
+restriction is zero. `record_kind="cycle"` accepts the corrected coordinates
+without endpoint arguments and returns the cycle contribution $Fc$.
 
 ## 3. The exact target ambiguity image
 
@@ -117,8 +117,8 @@ $$
 
 is nonnegative. Here $r$ denotes the corresponding hidden graded free rank.
 The implementation constructs the integer images, verifies lattice inclusion,
-and checks this rank identity. Torsion or finite-index parity information is not
-represented by a rank alone and does not contribute a $\log T$ leading coefficient.
+and checks this rank identity. The free ranks determine the $\log T$ leading
+coefficient; the integer lattices also retain finite-index information such as parity.
 
 Let $C$ be the latent integer cycle history, $S$ the snapshots and $PC$ the observed
 cochain record. Since $FC$ is a function of $C$, the conditional entropy chain rule is
@@ -147,11 +147,12 @@ $$
 
 Here $\mathrm{rank}F(\ker P)=\sum_m g_m$, matching the leading coefficient at
 $\alpha=0$. At a layer carrying target rank, the critical exponent is
-$\alpha=1/(m-1)$. Residual uncertainty at critical scales requires separate
-analysis; a zero leading coefficient alone does not establish deterministic
-reconstruction or a zero finite-time error. Finite inputs $T,\delta$ yield exposure
-scales $T\delta^{m-1}$, not a prediction success probability. These are distinct
-from the exact full-group criterion in section 1.
+$\alpha=1/(m-1)$. A zero coefficient gives sublogarithmic target entropy in
+this limit. Its residual uncertainty calls for finer asymptotic analysis,
+including the conditional limit law at critical scales. For finite inputs
+$T,\delta$, the reported $T\delta^{m-1}$ measures exposure at each layer.
+Recovery probabilities depend on the dynamics and the conditional history law;
+exact reconstruction from counters follows the criterion in section 1.
 
 The global coefficient is available once the computed exposure lattice reaches
 $H$; an earlier stop returns a prefix coefficient and `PARTIAL_HORIZON`. The default
@@ -173,25 +174,27 @@ ties. Constructing each returned certificate is a separate operation.
 Thus feasibility, minimum proof, tied-set enumeration, output truncation and
 certificate completion have independent fields. Stopping mid-size retains
 established lower/upper bounds and any proven minimum. A count of discovered ties
-is the total only when that size's enumeration is complete. This optimizes the
-number of scalar channels, not hardware costs, noise or numerical conditioning.
-A direct target counter is valid and may be the best choice when all events are
-available; the task adds value for fixed or restricted records and shared targets.
+equals the total after that size's enumeration is complete. The objective is
+the number of added scalar channels, with each candidate counted once.
+When all events are available, the candidate pool can include a direct target
+counter. Fixed records, restricted instruments and shared targets determine
+which choices are available in a particular application.
 
 ## 6. Equal-input prediction reference
 
 On the constructed equal-weight pair with targets 0 and 2, a deterministic
 function of the identical visible input returns a common real $a$. Its mean
 absolute error obeys $(|a|+|2-a|)/2\geq1$ by the triangle inequality. It can equal at
-most one target, giving exact-match accuracy $\leq1/2$. Random predictors independent
-of the hidden label satisfy the same bounds in expectation. Separate sampled
-random outputs need not satisfy an empirical two-row bound.
+most one target, giving exact-match accuracy $\leq1/2$. For randomized predictors
+whose randomness is independent of the hidden label, these bounds hold after
+averaging over prediction randomness as well as the equal-weight pair.
 
-A conditional mean of 1 is legitimate despite the realized targets' even parity.
-The evaluation adapter keeps mean/real-point/integer-realized semantics separate,
-preserves original values, and scores any explicitly rounded version separately.
-The natural CTMC sample and constructed pressure population are scored separately;
-no natural-population risk bound is inferred from the balanced construction.
+The pair's conditional mean is 1, while its realized targets are 0 and 2.
+The evaluation adapter distinguishes conditional means, real point predictions
+and realized integer values, preserves original values, and scores explicitly
+rounded predictions separately. The bounds above use the constructed pair's
+equal weights. Natural CTMC predictions are evaluated on their own sampled
+trajectories and reported separately.
 
 ## 7. Executable evidence
 

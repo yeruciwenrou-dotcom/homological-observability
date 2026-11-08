@@ -135,7 +135,7 @@ class CriticalExperimentContractTests(unittest.TestCase):
         )
         self.assertTrue(document["limit_experiment"]["components_mutually_independent"])
         self.assertIn(
-            "not an exact finite-(T, delta) posterior",
+            "critical-limit experiment",
             document["limit_experiment"]["boundary_note"],
         )
         self.assertIsNone(document["catalogue"]["audit_paths"])

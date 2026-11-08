@@ -405,7 +405,7 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
         document, markdown=False
     )
     lines += [
-        "Channel counts describe the declared counters, not hardware cost.",
+        "Channel counts describe the declared counters; physical costs depend on their implementation.",
         "",
     ]
     return "\n".join(lines)
@@ -432,7 +432,7 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
     asymptotic = sampling_mode(study["analysis"]) == "asymptotic"
     lines += [
         "",
-        "Channel counts describe declared counters; they do not assign hardware cost. "
+        "Channel counts describe declared counters; physical costs depend on their implementation. "
         "Metric summaries and information relations answer different questions.",
         "",
         "## Configuration comparison",

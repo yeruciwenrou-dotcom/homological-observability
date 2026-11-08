@@ -64,8 +64,8 @@ The full study also includes weighted counters:
   determinant two; recovery is valid on the legal image, where
   $x=(z-y)/2$ is an integer.
 
-The channel count describes the number of declared readouts. It does not
-assign a hardware cost to building a weighted counter.
+Each declared readout counts as one channel. The physical cost of a weighted
+counter depends on its implementation.
 
 The example sets `alpha` to $0.375$, meaning the asymptotic sampling law
 $\delta=T^{-3/8}$ in fixed reference-rate units. A zero $\log T$ entropy
@@ -135,7 +135,7 @@ explain the distinction and normalization.
 With no sampling fields, the hidden directions, information relations, and
 structural critical exponents remain available; evaluated entropy coefficients
 are left unset. The finite time/interval pair reports $T\delta^{m-1}$ values,
-without assigning asymptotic regime labels or finite-run error probabilities.
+with asymptotic regime fields left unset.
 The report shows this common scale once per computed layer, followed by each
 candidate's hidden graded free rank and torsion. Zero free rank alone does
 not rule out finite hidden torsion. Failed candidates retain their recovery
@@ -148,10 +148,10 @@ Run the edited study into a new directory, then check the report's title,
 .venv/bin/homological-observability compare my-study.json --output-dir my-results
 ```
 
-Counter values here are exact cumulative measurements. These studies do not
-model measurement noise, estimate unknown graphs or rates, or choose physical
-instruments. For open histories with known endpoints, cycle coordinates are
-understood after the common endpoint-reference correction.
+A study takes a known graph and declared exact cumulative counters. Estimating
+these inputs or incorporating measurement noise calls for the corresponding
+inference or observation model. For open histories with known endpoints,
+cycle coordinates use the common endpoint-reference correction.
 
 The Python API follows the same workflow. To try it with a packaged study:
 
@@ -192,8 +192,8 @@ ambient readout image lattices differ.
 
 Redundancy is tested by removing **one channel at a time** while retaining
 all the others. In $(z,2z)$, either channel can be removed individually.
-Removing both removes the observation, so the redundant-channel list is
-not an instruction to delete every listed channel together.
+Removing both removes the observation. Recompute redundancy after each removal
+when pruning several channels.
 
 The report's **Representative exact evidence** section shows selected
 containment certificates and edge-chain witnesses. Their readout values show
@@ -223,15 +223,15 @@ The report preserves a separate status for every candidate:
 | `LIMIT_REACHED` | The computation exceeded its budget. Read the raw result's `limit` field; decide whether a larger `max_cycles` budget is affordable before rerunning. |
 | `ERROR` | Follow this candidate's error and recovery message to correct its readouts, then rerun the study. |
 
-The comparison is `COMPLETE` only when every candidate is complete. A
-partial-horizon relation cannot establish a full-history equivalence or
-refinement. A zero hidden rank at a short horizon does not show that later
-layers are resolved. Resource limits and candidate errors do not erase the
-other candidates' results.
+The comparison is `COMPLETE` when every candidate is complete. On a partial
+horizon, equivalence, refinement and hidden ranks describe the computed
+exposure lattice; later layers remain open. Each candidate retains its own
+results and status, including when another candidate reaches a resource limit
+or encounters an error.
 
 `max_layer` controls how far the calculation follows cycle exposure. Sampling
-parameters describe the observation protocol; changing `alpha` or the sampling
-interval does not complete a truncated calculation. When `max_layer` is
+parameters describe the observation protocol. To extend a truncated
+calculation, raise or remove `max_layer`. When `max_layer` is
 omitted, the graph-size horizon covers every simple cycle. The
 [analysis settings](MODEL_GUIDE.md#analysis-settings) explain these choices.
 
@@ -284,8 +284,9 @@ the spanning tree, while coordinate matrices can change.
 ## Resource use
 
 Choose an explicit `max_cycles` budget when trying an unfamiliar network.
-Simple-cycle enumeration can grow exponentially; a small vertex count alone
-does not predict the work. A study accepts at most 64 configurations.
+Simple-cycle enumeration can grow exponentially; its cost depends on the
+cycle catalogue as well as the graph size. A study accepts at most 64
+configurations.
 Topology comparison uses cycle filtrations; rate-dependent path catalogues
 are computed by the separate `critical` command.
 
@@ -303,7 +304,7 @@ export.
 <summary>Measurement context</summary>
 
 Single runs used package 1.2.0.dev0 on Linux x86-64, Python 3.12.14,
-SymPy 1.14.0, and NetworkX 3.6.1, with other processes active. These small-model
-observations do not establish a maximum graph size or a timing guarantee.
+SymPy 1.14.0, and NetworkX 3.6.1, with other processes active. The timings
+describe these study inputs and the load on that host.
 
 </details>

@@ -65,8 +65,8 @@ $\Delta_{\mathrm{phys}}$, use $T=q_0T_{\mathrm{phys}}$ and
 $\delta=q_0\Delta_{\mathrm{phys}}$. Thus the dimensionless exposure scale is
 $(q_0T_{\mathrm{phys}})(q_0\Delta_{\mathrm{phys}})^{m-1}$; the exact path
 intensities additionally depend on the transition rates. The filtration
-describes an asymptotic ordering of ambiguities, not a hard cutoff on how many
-jumps can occur in a finite window.
+orders ambiguities by their short-time asymptotic contribution. A finite
+window includes paths with arbitrarily many jumps.
 
 An integer side readout $\pi$ represents an additional exact counter, such as
 a signed count across a selected edge or a weighted combination of cycle
@@ -142,8 +142,8 @@ they require neither rate magnitudes nor a sampled trajectory.
 A `compare` study fixes the graph, sampling request, and computation limits
 while varying the declared counter configurations. Each counter is an exact
 cumulative integer measurement. The study compares the information supplied by
-those candidates; it does not generate candidate instruments or assign their
-physical costs.
+those candidates. The researcher supplies the candidate instruments and
+assesses their physical costs.
 
 The separate `critical` input adds:
 
@@ -190,9 +190,8 @@ and reduced rational strings.
 Topology analysis and counter comparison determine which ambiguity directions
 exist and when they become exposed, using only the positive bidirectional
 support. The critical task also uses the rate magnitudes to weight those
-directions. If a directed rate vanishes, the static graph filtration can
-include a path witness that the dynamics cannot realize; such a model needs
-a different support calculation.
+directions. A model with vanishing directed rates requires a support calculation
+that follows its allowed transition directions.
 
 ## Evidence classes
 
@@ -207,16 +206,14 @@ Machine-readable results distinguish four kinds of support:
 
 In a topology analysis, `LIMIT_REACHED` means the requested finite enumeration
 was not completed. The result preserves the validated model, homology basis,
-and readout, but it does not expose a partial filtration or phase prediction
-as if it were complete.
+and readout; filtration and phase fields are null.
 
 `PARTIAL_HORIZON` has a different meaning: every requested layer is exact, but
 the exposure lattice has not yet reached the full integral homology lattice.
-The result may therefore describe the chosen finite horizon, but not the
-natural filtration beyond it.
+The result describes that finite horizon; higher layers remain uncomputed.
 
-Comparison relations on a partial horizon have scope `COMPUTED_EXPOSURE`.
-They do not establish equality or containment on uncomputed directions.
+Comparison relations on a partial horizon have scope `COMPUTED_EXPOSURE`,
+restricting their kernel statements to that lattice.
 Candidates with `LIMIT_REACHED` or `ERROR` have no asserted information
 relations, while valid candidates retain their results. The whole study is
 `COMPLETE` only when every candidate is naturally complete; otherwise it is
@@ -242,12 +239,10 @@ adapter for user predictions. It supports observation design and evaluation
 for scientific ML; users train their own models separately.
 
 Dense, critical, and sparse labels describe limits under a specified sampling
-scaling. They do not classify a finite dataset or provide finite-sample risk
-guarantees or confidence intervals. The critical result gives a limiting
-generative specification and conditioning rule. A general
-posterior at finite $(T,\delta)$ or an unconditional critical MAP probability
-requires further calculation. The generally infinite total-mark probability
-table is not expanded by this task.
+scaling. The critical result gives a limiting generative specification and
+conditioning rule, represented by its component laws. Evaluating a posterior
+at finite $(T,\delta)$ or an unconditional critical MAP probability requires
+the corresponding conditional-law calculation.
 
 For the paper's finite-cycle examples, the checkout includes specialized
 bridge calculations and critical MAP identities. The
@@ -278,8 +273,8 @@ incomplete components. Users should increase the budget only after considering
 the graph size and the value of a complete enumeration.
 
 Suitability depends on the cycle catalogue and the integer coefficients.
-Vertex count alone does not establish an
-affordable problem size. The [built-in study measurements](COMPARISON_GUIDE.md#resource-use)
+Graphs with the same vertex count can have very different cycle catalogues
+and arithmetic costs. The [built-in study measurements](COMPARISON_GUIDE.md#resource-use)
 provide small-network baselines; use explicit budgets when trying a new
 network.
 

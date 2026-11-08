@@ -142,7 +142,7 @@ class ProductContractTests(unittest.TestCase):
         self.assertIn("exact integer", text.lower())
         self.assertIn("asymptotic predictions", text.lower())
         self.assertIn("## Evidence boundary", markdown)
-        self.assertIn("finite-sample error bars", markdown)
+        self.assertIn("model and sampling assumptions", markdown)
 
     def test_analysis_schema_is_bundled_and_tracks_the_document(self) -> None:
         schema = ho.load_analysis_schema()

@@ -93,9 +93,9 @@ exposure filtration and hidden-history law under the same assumptions.
 The [ML tutorial](docs/SCIENTIFIC_ML.md#model-and-data-provenance) attributes the
 DFR model and parameter setting to their original sources. Its target task,
 paired observation schemes and prediction adapter are software applications
-developed here. They use newly generated data and do not reproduce a trained
-NeuralMJP model. The frozen paper calculations below remain a separate
-reproduction path.
+developed here. The tutorial generates its own trajectories and accepts
+predictions from a separately trained model. The frozen paper calculations
+below have their own reproduction path.
 
 ## Rate-dependent critical experiment
 
@@ -116,8 +116,9 @@ contains the stationary law, quotient groups, catalogue, and limit experiment.
 nonreversible weights, repeated-vertex walks, zero marks, torsion, and changes
 of reference geodesic. [Public-interface tests](tests/test_critical_product_contract.py)
 check exact parsing, serialization, API/CLI agreement, and atomic resource
-limits. The output is a critical-limit generative specification; it is not an
-exact posterior at finite $(T,\delta)$ or an unconditional critical MAP solver.
+limits. The output specifies the critical-limit experiment and its conditioning
+rule. Finite-time posteriors and unconditional MAP probabilities require
+evaluation of the corresponding conditional laws.
 
 ## Inputs, outputs, and reproducibility
 
@@ -153,9 +154,10 @@ the committed references unchanged.
 
 ## Evidence boundary
 
-Enumeration and graph-atlas checks support the implementation; they do not
-replace proofs for arbitrary finite graphs. The critical task assumes a known
-exact generator. The frozen cycle examples establish neither a universal
-finite-sample error bound nor extensions to one-way support, multigraphs,
-noisy observations, or unknown models. General theorem statements,
-hypotheses, and proofs remain in the manuscript.
+The manuscript gives the general theorem statements, hypotheses and proofs.
+Enumeration and graph-atlas tests check the implementation on the recorded
+finite graphs; frozen cycle calculations provide reproducible numerical
+references. Their Markov-process interpretation uses positive bidirectional
+support, noiseless regular observations and exact counters. The critical task
+also takes a known exact generator. Other supports or observation protocols
+require their own model and corresponding analysis.

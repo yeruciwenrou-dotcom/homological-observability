@@ -47,8 +47,8 @@ below. [Comparison](#configuration-comparison-document) and
 For a first reading, check `status` and the completeness fields before using
 `summary.first_nonzero_hidden_layer` to locate the earliest unresolved cycle
 direction. Then inspect `filtration` for the integer relations and `phase`
-for their sampling interpretation. `COMPLETE` certifies the calculation, not
-perfect observability. A zero leading entropy coefficient can coexist with
+for their sampling interpretation. `COMPLETE` certifies that the requested
+calculation reached the full cycle lattice. A zero leading entropy coefficient can coexist with
 finite critical ambiguity, as the [wedge example](END_TO_END_EXAMPLE.md) shows.
 
 An analysis document has the following identity fields. The version shown
@@ -220,8 +220,8 @@ finite-scale exposure are rounded to float after exact input arithmetic.
 An unrepresentable nonzero result produces the existing controlled error
 document and exit code 2, consistently with text output.
 
-The phase object always carries a boundary note stating that these are
-paper-derived asymptotic predictions, not finite-sample guarantees.
+The phase object's boundary note identifies the paper's asymptotic law and
+the role of the dynamics and observations in finite-run error analysis.
 
 ## Configuration comparison document
 
@@ -347,14 +347,12 @@ basis-independent content.
 
 `COMPLETE` means the requested one-layer topology, full path catalogue at
 length $m$, exact stationary law, and marked-Poisson specification were all
-constructed. It does not imply `natural_filtration_complete: true`; that flag
-separately records whether the exposure filtration has reached all integral
-homology directions.
+constructed. The separate `natural_filtration_complete` flag records whether
+the exposure filtration has reached all integral homology directions.
 
 `LIMIT_REACHED` is atomic. `groups`, `stationary_law`, `catalogue`, and
 `limit_experiment` are all `null`, while `limit` names the resource and the
-complete and incomplete components. The document does not expose a truncated
-catalogue as a completed experiment.
+complete and incomplete components.
 
 The resource contract separates admission estimates from exact result limits.
 The directed-path preflight stops once it can certify that `max_paths` is
@@ -380,12 +378,13 @@ complete normalized model and hash even in `LIMIT_REACHED` output.
 Within `limit_experiment`, zero marks are excluded from the common-endpoint
 Lévy measure and retained in each conditional critical-endpoint mark law. The
 object records independent limit components and the rule for conditioning a
-total-mark law on an observed visible residue. It deliberately does not expand
-the generally infinite total-mark probability table.
+total-mark law on an observed visible residue. This component representation
+specifies the generally infinite total-mark law compactly.
 
-Every complete critical document states its scientific boundary: the object
-is a theorem-derived critical-limit generative specification, not an exact
-posterior at finite $(T,\delta)$ or an unconditional critical MAP solver. See the
+Every complete critical document identifies the object as a theorem-derived
+critical-limit generative specification. Finite-time posteriors and
+unconditional MAP probabilities require evaluation of the corresponding
+conditional laws. See the
 [biased C4 example](CRITICAL_EXPERIMENT.md) for a complete example.
 
 ## Shared formats and process behavior
@@ -576,7 +575,7 @@ terminal_text = ho.render_critical_text(result)
 
 assert json_text.endswith("\n")
 assert "status: COMPLETE" in terminal_text
-assert "finite-sample posterior" in terminal_text
+assert "critical-limit experiment" in terminal_text
 ```
 
 There is no critical Markdown renderer. The JSON document is the downstream
