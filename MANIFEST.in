@@ -9,7 +9,7 @@ include quickstart.py
 include reproduce_all.py
 include requirements.txt
 include selected_appendix_checks.py
-recursive-include docs *.md *.svg *.pdf
+recursive-include docs *.md *.svg *.pdf *.sty
 recursive-include examples *.json *.md
 recursive-include results *.csv *.md *.png *.svg
 include results/target_task_assessment.json

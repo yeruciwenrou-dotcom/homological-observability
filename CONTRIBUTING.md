@@ -51,12 +51,17 @@ The [target-task assessment](docs/TARGET_VALIDATION.md) can be repeated with
 `.venv/bin/python tools/assess_target_tasks.py --output-dir target-assessment` in this
 environment. Use a new output directory for each run.
 
-The technical PDF is generated from `docs/TARGET_THEORY.md`. To rebuild it,
-install Pandoc and the optional documentation dependencies `reportlab>=4,<5`
-and `svglib>=2,<3` into the same environment, then run
-`.venv/bin/python tools/build_target_note.py`. Matplotlib
-supplies the fonts and vector equations. These extra tools are only needed
-to build the PDF, not to run the package.
+The technical PDF is generated from `docs/TARGET_THEORY.md` using
+`docs/note-style.sty`. To rebuild it, install XeLaTeX from TeX Live or MacTeX
+with the Latin Modern fonts, then run
+`.venv/bin/python tools/build_target_note.py`. The script uses the Python
+standard library and runs XeLaTeX twice for references and bookmarks.
+Use `--tex-bin /path/to/texlive/bin` if XeLaTeX is not on PATH, and
+`--ref <commit-or-tag>` to select the destination of relative documentation
+links. TeX sources and logs are written to `build/target-note/`.
+These tools are only needed to rebuild the PDF; the package includes the
+finished document. Check the rendered pages after changes to content, fonts
+or the TeX environment.
 
 ## Scientific changes
 

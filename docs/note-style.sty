@@ -1,0 +1,42 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{note-style}[2026/11/08 Technical note layout]
+\providecommand{\notemargin}{22mm}
+\RequirePackage[a4paper,left=\notemargin,right=\notemargin,top=20mm,bottom=21mm,footskip=10mm]{geometry}
+\RequirePackage{amsmath,amssymb,lmodern,fontspec}
+\setmainfont{lmroman10-regular.otf}[BoldFont=lmroman10-bold.otf,ItalicFont=lmroman10-italic.otf,BoldItalicFont=lmroman10-bolditalic.otf,Ligatures=TeX]
+\setmonofont{lmmono10-regular.otf}[Scale=0.90]
+\RequirePackage{microtype,xcolor}
+\definecolor{linkblue}{HTML}{28537D}
+\RequirePackage[colorlinks=true,allcolors=linkblue,bookmarksopen=true,bookmarksnumbered=true]{hyperref}
+\RequirePackage{bookmark,fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\normalfont\fontsize{8}{10}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{0pt}
+\frenchspacing
+\raggedbottom
+\setlength{\parindent}{1em}
+\setlength{\parskip}{2.5pt plus 0.5pt minus 0.5pt}
+\setlength{\emergencystretch}{1em}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\brokenpenalty=6000
+\pretolerance=500
+\tolerance=1500
+\makeatletter
+\renewcommand{\normalsize}{%
+  \@setfontsize\normalsize{11}{14}%
+  \abovedisplayskip=7pt plus 1pt minus 1pt
+  \belowdisplayskip=7pt plus 1pt minus 1pt
+  \abovedisplayshortskip=3pt plus 1pt
+  \belowdisplayshortskip=5pt plus 1pt minus 1pt}
+\renewcommand{\section}{\@startsection{section}{1}{0pt}{-10pt plus 1pt minus 1pt}{4pt}{\normalfont\fontsize{12}{15}\selectfont\bfseries}}
+\renewcommand{\@seccntformat}[1]{\csname the#1\endcsname.\hspace{0.5em}}
+\makeatother
+\newcommand{\notetitle}[1]{\begingroup\parindent=0pt\raggedright\fontsize{18}{22}\selectfont\bfseries #1\par\endgroup\vspace{8pt}\noindent\ignorespaces}
+\newenvironment{evidencelist}{\begin{list}{\textbullet}{\setlength{\leftmargin}{1.2em}\setlength{\labelsep}{0.55em}\setlength{\labelwidth}{0.65em}\setlength{\itemsep}{3pt}\setlength{\parsep}{0pt}\setlength{\topsep}{3pt}\setlength{\partopsep}{0pt}}}{\end{list}}
+\newcommand{\codesample}[1]{\par\begingroup\leftskip=1.2em\rightskip=0pt\parindent=0pt\small\ttfamily #1\par\endgroup}
+\AtBeginDocument{\normalsize}

@@ -1,245 +1,251 @@
 #!/usr/bin/env python3
-"""Build the technical PDF from Markdown with Pandoc, ReportLab and svglib."""
-
-from __future__ import annotations
+"""Build the technical PDF from Markdown with XeLaTeX."""
 
 import argparse
-import io
-import json
 import re
+import shutil
 import subprocess
-import tempfile
 from pathlib import Path
-from xml.sax.saxutils import escape, quoteattr
-
-import matplotlib as mpl
-from matplotlib.font_manager import FontProperties, findfont
-from matplotlib.mathtext import math_to_image
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.utils import ImageReader
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer
-from svglib.svglib import svg2rlg
 
 ROOT = Path(__file__).resolve().parents[1]
+LINK_ROOT = "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/"
+ESCAPES = {
+    "\\": r"\textbackslash{}",
+    "&": r"\&",
+    "%": r"\%",
+    "$": r"\$",
+    "#": r"\#",
+    "_": r"\_",
+    "{": r"\{",
+    "}": r"\}",
+    "~": r"\textasciitilde{}",
+    "^": r"\textasciicircum{}",
+}
+TOKENS = re.compile(r"(\$[^$]+\$|`[^`]+`|\*\*.+?\*\*|\[[^\]]+\]\([^)]+\))")
+
+
+def escape(text):
+    return "".join(ESCAPES.get(c, c) for c in text)
+
+
+def math(tex):
+    return tex.replace(r"\mathrm{rank}", r"\operatorname{rank}")
+
+
+def inline(text):
+    result = []
+    for token in TOKENS.split(text):
+        if token.startswith("$") and token.endswith("$"):
+            result.append("$" + math(token[1:-1]) + "$")
+        elif token.startswith("`") and token.endswith("`"):
+            result.append(r"\texttt{" + escape(token[1:-1]) + "}")
+        elif token.startswith("**") and token.endswith("**"):
+            result.append(r"\textbf{" + inline(token[2:-2]) + "}")
+        elif re.fullmatch(r"\[[^\]]+\]\([^)]+\)", token):
+            label, url = re.fullmatch(r"\[([^\]]+)\]\(([^)]+)\)", token).groups()
+            if not url.startswith(("https://", "http://")):
+                url = LINK_ROOT + url
+            result.append(
+                r"\href{"
+                + url.replace("#", r"\#").replace("%", r"\%")
+                + "}{"
+                + inline(label)
+                + "}"
+            )
+        else:
+            result.append(escape(token))
+    return "".join(result)
+
+
+def parse(text):
+    lines = text.splitlines()
+    blocks = []
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        if not line:
+            i += 1
+            continue
+        if line in ("$$", "```math", "```text"):
+            closing = "$$" if line == "$$" else "```"
+            kind = "code" if line == "```text" else "math"
+            data = []
+            i += 1
+            while i < len(lines) and lines[i].strip() != closing:
+                data.append(lines[i])
+                i += 1
+            if i == len(lines):
+                raise ValueError("Unclosed block")
+            blocks.append((kind, "\n".join(data)))
+        elif line.startswith("## "):
+            blocks.append(("section", line[3:]))
+        elif line.startswith("# "):
+            blocks.append(("title", line[2:]))
+        else:
+            kind = "item" if line.startswith("- ") else "para"
+            data = [line[2:] if kind == "item" else line]
+            i += 1
+            while (
+                i < len(lines)
+                and lines[i].strip()
+                and not re.match(r"^(#|\$\$|```|- )", lines[i])
+            ):
+                data.append(lines[i].strip())
+                i += 1
+            blocks.append((kind, " ".join(data)))
+            continue
+        i += 1
+    return blocks
+
+
+def equation_label(tex):
+    compact = re.sub(r"\s+", "", tex)
+    if compact.startswith(r"\ker_{\mathbb{Z}}P"):
+        return "eq:sufficiency"
+    if compact.startswith("p'=Ax-Ah=Pc"):
+        return "eq:open-path-decoder"
+    if compact.startswith("F(c_0)+M"):
+        return "eq:ambiguity-image"
+    if compact.startswith(r"H(FC\midS,PC)=") and r"\sum" in tex:
+        return "eq:target-entropy"
+    return None
+
+
+def convert(text):
+    blocks = parse(text)
+    output = []
+    in_list = False
+    labels = []
+    for i, (kind, value) in enumerate(blocks):
+        if in_list and kind != "item":
+            output.append(r"\end{evidencelist}")
+            in_list = False
+        if kind == "title":
+            output.append(r"\notetitle{" + inline(value) + "}")
+        elif kind == "section":
+            number, title = value.split(". ", 1)
+            output.append(r"\section{" + inline(title) + r"}\label{sec:" + number + "}")
+        elif kind == "math":
+            label = equation_label(value)
+            env = "equation" if label else "equation*"
+            output.append(r"\begin{" + env + "}")
+            if label:
+                labels.append(label)
+                output.append(r"\label{" + label + "}")
+            output.extend([math(value), r"\end{" + env + "}"])
+            if (
+                i + 1 < len(blocks)
+                and blocks[i + 1][0] == "para"
+                and not blocks[i + 1][1].startswith("is nonnegative")
+            ):
+                output.append(r"\par")
+        elif kind == "item":
+            if not in_list:
+                output.append(r"\begin{evidencelist}")
+                in_list = True
+            lead = re.match(r"^(`[^`]+`[:：])\s*(.*)$", value)
+            if lead:
+                output.append(
+                    r"\item " + inline(lead[1]) + r"\nopagebreak\par " + inline(lead[2])
+                )
+            else:
+                output.append(r"\item " + inline(value))
+        elif kind == "code":
+            output.append(r"\codesample{" + escape(value) + "}")
+        else:
+            paragraph = inline(value)
+            paragraph = paragraph.replace("section 1.", r"section~\hyperref[sec:1]{1}.")
+            if value.startswith("An open walk chain"):
+                paragraph = r"\looseness=-1 " + paragraph
+            if value.startswith("Known endpoints therefore"):
+                paragraph = paragraph.replace(
+                    r"zero. \texttt{record\_kind=", r"zero.\\* \texttt{record\_kind="
+                )
+            if value.startswith("Both inclusions follow"):
+                paragraph = (
+                    r"\begingroup\clubpenalties 5 10000 10000 10000 10000 0\relax "
+                    + paragraph
+                    + r"\par\endgroup"
+                )
+            following_math = i + 1 < len(blocks) and blocks[i + 1][0] == "math"
+            continuation = (
+                i and blocks[i - 1][0] == "math" and value.startswith("is nonnegative")
+            )
+            output.append((r"\noindent " if continuation else "") + paragraph)
+            if not following_math:
+                output.append(r"\par")
+    if in_list:
+        output.append(r"\end{evidencelist}")
+    assert labels == [
+        "eq:sufficiency",
+        "eq:open-path-decoder",
+        "eq:ambiguity-image",
+        "eq:target-entropy",
+    ]
+    assert sum(kind == "section" for kind, _ in blocks) == 7
+    return "\n".join(output)
+
+
+def latex_document(text):
+    title = parse(text)[0][1]
+    return "\n".join(
+        [
+            r"\documentclass[11pt,a4paper]{article}",
+            r"\newcommand{\notemargin}{20mm}",
+            r"\usepackage{note-style}",
+            "",
+            r"\hypersetup{pdftitle={" + escape(title) + "},pdfauthor={},pdfsubject={}}",
+            r"\begin{document}",
+            convert(text),
+            r"\end{document}",
+            "",
+        ]
+    )
 
 
 def main():
+    global LINK_ROOT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "docs/TARGET_THEORY.pdf")
     parser.add_argument("--ref", default="feat/target-observability")
+    parser.add_argument("--tex-bin", type=Path)
+    parser.add_argument("--build-dir", type=Path, default=ROOT / "build/target-note")
     args = parser.parse_args()
-    source = ROOT / "docs/TARGET_THEORY.md"
-    text = source.read_text(encoding="utf-8")
-    text = re.sub(r"```math\n(.*?)\n```", r"$$\n\1\n$$", text, flags=re.S)
-    ast = json.loads(
-        subprocess.check_output(
-            ["pandoc", "--from=markdown+tex_math_dollars", "-t", "json"],
-            input=text,
+    LINK_ROOT = (
+        "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/"
+        + args.ref
+        + "/docs/"
+    )
+    engine = str(args.tex_bin / "xelatex") if args.tex_bin else shutil.which("xelatex")
+    if not engine:
+        raise SystemExit("XeLaTeX is required to rebuild the PDF.")
+    build = args.build_dir.resolve()
+    build.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / "docs/note-style.sty", build / "note-style.sty")
+    text = (ROOT / "docs/TARGET_THEORY.md").read_text(encoding="utf-8")
+    (build / "TARGET_THEORY.tex").write_text(latex_document(text), encoding="utf-8")
+    for _ in range(2):
+        result = subprocess.run(
+            [
+                engine,
+                "-interaction=nonstopmode",
+                "-halt-on-error",
+                "-file-line-error",
+                "TARGET_THEORY.tex",
+            ],
+            cwd=build,
             text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
         )
-    )
-    for name, family, weight, style in (
-        ("Body", "DejaVu Serif", "normal", "normal"),
-        ("Body-Bold", "DejaVu Serif", "bold", "normal"),
-        ("Body-Italic", "DejaVu Serif", "normal", "italic"),
-        ("Body-BoldItalic", "DejaVu Serif", "bold", "italic"),
-        ("Mono", "DejaVu Sans Mono", "normal", "normal"),
-    ):
-        pdfmetrics.registerFont(
-            TTFont(
-                name,
-                findfont(FontProperties(family=family, weight=weight, style=style)),
-            )
-        )
-    pdfmetrics.registerFontFamily(
-        "Body",
-        normal="Body",
-        bold="Body-Bold",
-        italic="Body-Italic",
-        boldItalic="Body-BoldItalic",
-    )
-    styles = {
-        "body": ParagraphStyle(
-            "body",
-            fontName="Body",
-            fontSize=10,
-            leading=13,
-            spaceAfter=6,
-            allowWidows=0,
-            allowOrphans=0,
-        ),
-        "heading": ParagraphStyle(
-            "heading",
-            fontName="Body-Bold",
-            fontSize=12.5,
-            leading=17,
-            spaceBefore=11,
-            spaceAfter=6,
-            keepWithNext=True,
-        ),
-        "title": ParagraphStyle(
-            "title", fontName="Body-Bold", fontSize=20, leading=25, spaceAfter=10
-        ),
-    }
-    styles["before-equation"] = ParagraphStyle(
-        "before-equation", parent=styles["body"], keepWithNext=True
-    )
-    width = A4[0] - 108
-    inline_cache = {}
-
-    def inline_math(tex):
-        if tex not in inline_cache:
-            path = Path(math_directory) / f"equation-{len(inline_cache)}.png"
-            with mpl.rc_context({"mathtext.fontset": "dejavuserif"}):
-                math_to_image(
-                    "$" + " ".join(tex.split()) + "$",
-                    path,
-                    prop=FontProperties(size=10),
-                    dpi=300,
-                    format="png",
-                )
-            w, h = ImageReader(str(path)).getSize()
-            inline_cache[tex] = (
-                f'<img src={quoteattr(str(path))} width="{w * 72 / 300:.3f}" '
-                f'height="{h * 72 / 300:.3f}" valign="middle"/>'
-            )
-        return inline_cache[tex]
-
-    def inline(nodes):
-        parts = []
-        for index, node in enumerate(nodes):
-            kind, value = node["t"], node.get("c")
-            if kind == "Str":
-                if index and nodes[index - 1]["t"] == "Math":
-                    parts[-1] = "<nobr>" + parts[-1] + escape(value) + "</nobr>"
-                else:
-                    parts.append(escape(value))
-            elif kind in ("Space", "SoftBreak"):
-                parts.append(" ")
-            elif kind == "LineBreak":
-                parts.append("<br/>")
-            elif kind == "Math":
-                parts.append(inline_math(value[1]))
-            elif kind in ("Superscript", "Subscript"):
-                tag = "super" if kind == "Superscript" else "sub"
-                parts.append(f"<{tag}>" + inline(value) + f"</{tag}>")
-            elif kind in ("Strong", "Emph"):
-                tag = "b" if kind == "Strong" else "i"
-                parts.append(f"<{tag}>" + inline(value) + f"</{tag}>")
-            elif kind == "Code":
-                parts.append(
-                    '<font name="Mono" size="8.8">' + escape(value[1]) + "</font>"
-                )
-            elif kind == "Link":
-                url = value[2][0]
-                if not url.startswith(("https://", "http://")):
-                    url = (
-                        "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/"
-                        + args.ref
-                        + "/docs/"
-                        + url
-                    )
-                parts.append(
-                    "<link href="
-                    + quoteattr(url)
-                    + ' color="#28537d">'
-                    + inline(value[1])
-                    + "</link>"
-                )
-            else:
-                raise ValueError("Unsupported inline: " + kind)
-        return "".join(parts)
-
-    def equation(tex):
-        tex = tex.replace(r"\frac12", r"\frac{1}{2}")
-        tex = tex.replace(
-            r"\begin{bmatrix}P\\F\end{bmatrix}", r"\left[\genfrac{}{}{0}{}{P}{F}\right]"
-        )
-        buffer = io.BytesIO()
-        with mpl.rc_context(
-            {"mathtext.fontset": "dejavuserif", "svg.fonttype": "path"}
-        ):
-            math_to_image(
-                "$" + " ".join(tex.split()) + "$",
-                buffer,
-                prop=FontProperties(size=12),
-                format="svg",
-            )
-        buffer.seek(0)
-        drawing = svg2rlg(buffer)
-        factor = min(1, width / drawing.width)
-        drawing.scale(factor, factor)
-        drawing.width *= factor
-        drawing.height *= factor
-        drawing.hAlign = "CENTER"
-        return drawing
-
-    story = []
-
-    def is_equation(block):
-        return (
-            block["t"] in ("Para", "Plain")
-            and len(block["c"]) == 1
-            and block["c"][0]["t"] == "Math"
-        )
-
-    def blocks(values, bullet=False):
-        for index, block in enumerate(values):
-            kind, value = block["t"], block.get("c")
-            if kind == "Header":
-                heading = inline(value[2])
-                if value[0] == 1:
-                    heading = heading.replace(": ", ":<br/>", 1)
-                story.append(
-                    Paragraph(
-                        heading,
-                        styles["title" if value[0] == 1 else "heading"],
-                    )
-                )
-            elif kind in ("Para", "Plain"):
-                if is_equation(block):
-                    story.extend([equation(value[0]["c"][1]), Spacer(1, 8)])
-                else:
-                    style = (
-                        "before-equation"
-                        if index + 1 < len(values) and is_equation(values[index + 1])
-                        else "body"
-                    )
-                    paragraph = Paragraph(
-                        inline(value),
-                        styles[style],
-                        bulletText="•" if bullet else None,
-                    )
-                    ends_section = (
-                        index + 1 < len(values) and values[index + 1]["t"] == "Header"
-                    )
-                    story.append(
-                        KeepTogether([paragraph]) if ends_section else paragraph
-                    )
-            elif kind == "BulletList":
-                for item in value:
-                    blocks(item, bullet=True)
-            else:
-                raise ValueError("Unsupported block: " + kind)
-
-    with tempfile.TemporaryDirectory(prefix="target-note-") as math_directory:
-        blocks(ast["blocks"])
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        SimpleDocTemplate(
-            str(args.output),
-            pagesize=A4,
-            leftMargin=54,
-            rightMargin=54,
-            topMargin=48,
-            bottomMargin=48,
-            title="Target observability: technical derivation",
-            author="",
-            invariant=1,
-        ).build(story)
-    print(args.output)
+        (build / "TARGET_THEORY.build.log").write_text(result.stdout, encoding="utf-8")
+        if result.returncode:
+            raise SystemExit(result.stdout[-6000:])
+    output = args.output.resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if output != build / "TARGET_THEORY.pdf":
+        shutil.copy2(build / "TARGET_THEORY.pdf", output)
+    print(output)
 
 
 if __name__ == "__main__":
