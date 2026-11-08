@@ -1,23 +1,24 @@
-# Target diagnosis and readout design — development contract
+# Target diagnosis and readout design
 
-This is the D1–D3 development slice of the homological-observability
-upgrade. It implements target diagnosis, minimum additional scalar channels,
-single-record reconstruction, replay, optional target-image exposure explanations,
-and a [Scientific ML dataset and prediction workflow](SCIENTIFIC_ML.md).
-Performance qualification and release packaging remain D4–D5 work. The published version remains 2.0.0; development
-outputs identify themselves as 2.1.0.dev0. No release tag is assigned here.
+Audit whether existing records determine a research target, find the minimum
+additional scalar channels, and reconstruct targets from individual records.
+Requests and results can be saved for replay. Optional explanations connect
+target ambiguity to exposure layers; the
+[Scientific ML tutorial](SCIENTIFIC_ML.md) applies these tools to paired data
+and model predictions.
 
-Baseline: `a5447878344a757094018f8472d805f791ff44cb` on `main`.
-Development branch: `codex/target-design-core`.
-The initial local baseline passed 189 tests on Python 3.12 / SymPy 1.14.0.
+These interfaces require the unreleased 2.1.0.dev0 source. The published 2.0.0
+package does not yet include them.
 
 ## First task: an existing record and a new research target
 
-The DFR support has two triangles (0,1,2) and (3,4,5), connected by the
+The discrete flashing ratchet (DFR) support has two triangles (0,1,2) and (3,4,5), connected by the
 three edges i→i+3. W_ON counts 2→0, W_OFF counts 5→3, and W=W_ON+W_OFF.
 The new target is DeltaW=W_ON−W_OFF. Reverse traversals contribute minus one.
 These cochains retain their physical meaning independently of the chosen
 spanning tree. The cycle rank is four.
+See the [model and data provenance](SCIENTIFIC_ML.md#model-and-data-provenance)
+for the physical model, parameters and references.
 
 From a development source installation, run:
 
@@ -132,15 +133,15 @@ count only if enumeration completed. `fully_searched_through` counts exhaustive
 cardinality levels, with -1 meaning none. A full-pool impossibility precheck
 does not pretend to have enumerated every subset.
 
-`TargetLimits` currently has development defaults: 10,000 subset checks,
+`TargetLimits` defaults to 10,000 subset checks,
 100 returned choices, 100,000 entries per bounded matrix, 4,096 bits per checked
 integer numerator/denominator, 10,000 explanation cycles, and a 30-second
 cooperative deadline shared by the core and optional explanation. Prechecks,
 search, legal-image solving, certificates and serialization have checkpoints.
 The time limit is **not a hard wall-clock timeout**: a single SymPy operation
 cannot be interrupted by it, and intermediate algebraic growth is checked at
-operation boundaries. These are development defaults to be measured in D4,
-not a published scale or latency claim. Exhausting a result cap preserves an
+operation boundaries. These limits bound work; supported input scales and
+latency have yet to be measured. Exhausting a result cap preserves an
 already proved minimum and complete enumeration count; it marks returned ties
 incomplete. Exhausting certificate work preserves an already established rank
 decision. The stop stage/resource is reported as `limit`.
@@ -173,7 +174,7 @@ incomplete core/explanation work, and 2 for input/IO errors.
 a time-limited run can stop at a different checkpoint on another machine. A result
 is an audit record, not an executable decoder trusted without the input checks.
 
-## R-C1 application protocol v1
+## Dataset and prediction protocol v1
 
 The implementation under `applications/` uses a separate protocol v1, independent
 of the core target-request schema. See [the runnable tutorial](SCIENTIFIC_ML.md).
@@ -188,8 +189,8 @@ of the core target-request schema. See [the runnable tutorial](SCIENTIFIC_ML.md)
 
 The adapter rejects duplicate/missing IDs, unexpected IDs, incompatible
 graph/target/scheme/time/split/data identity, invalid numbers and unsupported
-protocol versions. Required negative fixture: predictions with protocol v2
-against dataset v1 must fail before any metric is produced. Integer realized-value
+protocol versions. Predictions with protocol v2 against dataset v1 fail before
+any metric is produced. Integer realized-value
 predictions, real point predictions and conditional means have distinct semantics;
 a mean need not lie on the realized-label lattice (labels 1 and 3 may have mean 2).
 IDs, hidden event counts/lengths, labels and construction provenance are not
@@ -200,20 +201,19 @@ with equal weights. A deterministic point predictor then has exact-match accurac
 at most 1/2 and MAE at least 1. This constructed set is separately identified from
 natural known-Q CTMC samples; the bound is not reported as natural-population risk.
 The CPU tutorial covers generation/loading, audit, design, reconstruct, import
-user predictions, evaluate and replay. Neural-network training is subsequent R-C2.
+user predictions, evaluate and replay. Users train their models separately and
+submit predictions through the adapter.
 
-## Validation and continuation
+## Validation coverage
 
-| Gate | Evidence required |
+| Area | Checks |
 | --- | --- |
-| V1 correctness | Independent rational-rank checks; all DFR subsets; global minimum vs deletion-minimal counterexample; integer witnesses; two illegal-image cases; saturated-kernel regression; endpoint and alternate-tree reconstruction |
-| V2 task value | Existing/restricted-record use case; direct online target and simple-script baselines; actual record/operation differences under stated constraints |
-| V3 paired observations | Same known-Q CTMC paths for every scheme; raw truths match reconstructed targets; full-grid pressure-pair input equality; whole-trajectory splits and no truth leakage |
-| V4 resources/compatibility | Search, certificate and output budgets; measured defaults/scales; earlier API/CLI/schema/replay and frozen paper evidence; clean wheel/sdist installs |
+| Algebra | Independent rational-rank checks; exhaustive DFR subsets; global minimum vs deletion-minimal counterexample; integer witnesses; illegal-image and saturated-kernel regressions; endpoint and alternate-tree reconstruction |
+| Paired observations | Shared paths across schemes; reconstruction against event logs; full-grid pressure-pair equality; whole-trajectory splits and feature separation |
+| Resources and compatibility | Search, certificate and output limits; earlier API/CLI/schema/replay; frozen paper evidence; clean wheel/sdist installs |
 
-The D2 automated regressions also cover empty/fixed-sufficient pools, an
+Automated regressions also cover empty/fixed-sufficient pools, an
 insufficient full pool, direct targets, more than 64 distinct candidates, pure
 endpoint targets, certificate truncation, and independent completion flags.
-D3 supplies the paired dataset/adapter, target-image filtration explanation and
-technical source text. D4 measures the exact candidate and D5 completes the
-technical PDF, reader navigation, migration notes and distribution checks.
+Performance measurements and comparisons with direct accumulation or task-specific
+scripts are still needed to establish practical scale and collection cost.

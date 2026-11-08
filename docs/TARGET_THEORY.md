@@ -1,13 +1,11 @@
-# Target observability: supplementary technical source
+# Target observability: technical derivation
 
-This editable technical note supports the development target/design interfaces
+This technical note supports the target diagnosis and readout design interfaces
 and the Scientific ML application. It extends the software's implementation of
 [Topological History in Stochastic Dynamics](https://doi.org/10.5281/zenodo.23424849).
 The paper supplies the exposure filtration and hidden-history entropy law.
 The target-image, conditional-entropy and measurement-design arguments below
-are explicit corollaries used by the upgrade. The distribution's published paper
-and frozen reproduction baseline retain their original identities. The same-source
-PDF is a D5 deliverable.
+are derived here for these software interfaces.
 
 ## 1. Full cycle group, sufficiency and certificates
 
@@ -192,5 +190,3 @@ no natural-population risk bound is inferred from the balanced construction.
 
 Run `python -W error -m unittest discover -s tests -v` after source installation.
 The [application tutorial](SCIENTIFIC_ML.md) reproduces the fixed-data measurements.
-Broader V1–V4 task-value/resource qualification is D4; this note's PDF and final
-release navigation/distribution qualification are D5.

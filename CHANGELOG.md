@@ -4,7 +4,7 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
-## Unreleased — target tasks (development)
+## Unreleased
 Existing integer readouts can now be audited against a new target, augmented with
 a minimum number of candidate scalar channels, and used to reconstruct legal
 records with endpoint corrections. Adds `analyze_target`, `design_readouts`,
@@ -12,16 +12,13 @@ records with endpoint corrections. Adds `analyze_target`, `design_readouts`,
 schemas and replay bundles. Search reports minimum proofs, tied enumeration,
 returned certificates and output truncation separately.
 
-The [DFR development guide](docs/TARGET_TASKS.md) contains runnable inputs and the
-next implementation gates. The [Scientific ML application](docs/SCIENTIFIC_ML.md)
+The [target task guide](docs/TARGET_TASKS.md) contains runnable examples.
+The [Scientific ML application](docs/SCIENTIFIC_ML.md)
 adds source-bound known-Q DFR trajectories, four paired observation schemes,
 separate natural/pressure evaluation and a versioned user-prediction adapter.
 Optional `explain=True` supplies target-image layers and entropy coefficients
 with independent completion status. The [technical source](docs/TARGET_THEORY.md)
-records the derivations. Deadline tests now use a controlled clock so coarse
-Windows clock resolution does not create false failures. Measured scale guidance
-and release qualification remain in progress.
-The existing paper references and published 2.0.0 citation remain unchanged.
+records the derivations.
 
 ## 2.0.0 — 2026-10-24
 
