@@ -53,7 +53,8 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="homological-observability",
         description=(
-            "Check target observability, design or compare counter configurations, "
+            "Analyze cycle-history observability, diagnose targets, "
+            "design or compare counter configurations, "
             "and construct critical-limit experiments for finite-state models."
         ),
     )

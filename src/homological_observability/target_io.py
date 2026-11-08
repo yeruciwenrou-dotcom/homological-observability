@@ -112,7 +112,7 @@ def render_target_text(document: dict) -> str:
     lines = [
         f"Target task: {document['operation']} [{document['status']}]",
         "Targets: " + ", ".join(t["name"] for t in document["request"]["targets"]),
-        "Scope: exact integer readouts on the full cycle group.",
+        "Scope: exact integer cochains on the full cycle group; raw path records use known endpoints.",
     ]
     if document["operation"] == "design":
         lines.append(

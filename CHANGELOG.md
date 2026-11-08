@@ -20,8 +20,8 @@ Optional `explain=True` supplies target-image layers and entropy coefficients
 with independent completion status. The [technical source](docs/TARGET_THEORY.md)
 records the derivations.
 
-The main guide now starts with target diagnosis and readout design, with
-separate installation instructions for development and published versions.
+The quick start demonstrates target diagnosis and readout design, with separate
+installation instructions for development and published versions.
 Target and DFR reports explain unresolved targets, illegal records and
 unfinished calculations, and identify saved reports for the next step.
 

@@ -4,15 +4,10 @@
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
-**Homological Observability** is research software for studying what finite
-observations retain about a system's accumulated cycle history. Give it a
-transition graph, counter rules and a research target to check whether the
-records determine that target, choose additional counters, and reconstruct
-target values from sufficient records.
-
-It also compares observation schemes, computes asymptotic sampling thresholds,
-and reproduces the paper's finite-model calculations. The scientific ML example
-connects these analyses to paired trajectory data and user-supplied predictions.
+This repository provides **computational tools for homological observability**,
+including exact integer calculations and reproducible finite-model examples.
+Apply it to your own network to identify hidden cycle information and determine
+the sampling requirements for recovering it.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -31,7 +26,7 @@ create uncertainty in the accumulated history.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
-For finite-state Markov jump processes, **the paper establishes an information phase
+For finite-state Markov jump processes, **we establish an information phase
 diagram and sharp sampling thresholds for recovering accumulated cycle
 histories.** The theory quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
@@ -48,8 +43,9 @@ You can use the software to:
 - **[Analyze your own network](#analyze-your-own-network):** provide a transition graph and
   optional integer counter rules to identify hidden cycle differences and
   asymptotic sampling requirements.
-- **[Diagnose and design for a target](#quick-start):** check existing records,
-  find the minimum extra channels within a specified pool, and recover targets.
+- **[Diagnose and design for a target](#quick-start):** determine whether fixed
+  counters and known endpoints suffice, find the minimum extra channels within
+  a specified pool, and recover targets from legal records.
 - **[Evaluate model predictions](docs/SCIENTIFIC_ML.md):** compare predictions
   against exact reconstruction and simple baselines on paired observations.
 - **[Compare counter configurations](#compare-counter-configurations):** determine which choices
