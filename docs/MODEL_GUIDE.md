@@ -402,7 +402,7 @@ walk-level reconstruction is needed.
 ### Run and inspect a critical model
 
 Use the [source directory and environment prepared above](#run-and-inspect-a-model).
-The critical input is `examples/biased_c4_critical.json` in the same archive.
+The critical input is `examples/biased_c4_critical.json` in the same checkout.
 
 ```console
 $ .venv/bin/homological-observability critical examples/biased_c4_critical.json

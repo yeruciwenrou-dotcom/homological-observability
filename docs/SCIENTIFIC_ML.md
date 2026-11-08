@@ -8,8 +8,6 @@ That finding helps you choose between changing the recording scheme, adding a
 channel, or adapting the prediction target and evaluation to the information
 available.
 
-The example uses the package's existing NumPy/SciPy dependencies.
-
 The example uses a **discrete flashing ratchet (DFR)**: a particle moves among
 three positions while an asymmetric potential switches ON and OFF, giving six
 states. This model appears in Roldán and Parrondo's work on dissipation [1] and
@@ -29,6 +27,7 @@ by this package; the supplied predictor is a training-median baseline.
 
 ## Run the complete case
 
+The case uses the package's existing NumPy/SciPy dependencies.
 Follow the [installation instructions](../README.md#install), then run from the
 repository directory. The examples below use its virtual environment; on
 Windows, replace `.venv/bin/python` with `.venv\Scripts\python.exe`.

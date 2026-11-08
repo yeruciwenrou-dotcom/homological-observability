@@ -34,6 +34,9 @@ Run from the repository directory, using the installed environment's command:
 .venv/bin/homological-observability design dfr-design/request.json --format json
 ```
 
+On Windows, replace `.venv/bin/homological-observability` with
+`.venv\Scripts\homological-observability.exe`.
+
 Expected conclusions:
 
 | Input | Established result |
@@ -41,7 +44,11 @@ Expected conclusions:
 | Fixed W; target DeltaW | Insufficient; an integer closed chain preserves W and changes DeltaW by 2 |
 | Fixed W; pool W_ON, W_OFF, S0, S1, S2 | Minimum one additional channel; exactly two ties: W_ON or W_OFF |
 | W=0, W_ON=1; endpoints 0→3 | DeltaW=2 |
-| No fixed readouts; pool W, W_ON, W_OFF, S0, S1, S2 | Minimum two channels for DeltaW; three tied choices |
+
+To design from scratch, copy `examples/dfr_design.json`, move the W entry
+from `model.readouts` into `candidates`, and set `model.readouts` to `[]`.
+Running `design` on that request gives a minimum of two channels, with three
+tied choices: (W, W_ON), (W, W_OFF), and (W_ON, W_OFF).
 
 The two reconstruction formulas are DeltaW=2W_ON−W and DeltaW=W−2W_OFF.
 Even the insufficient W-only record retains parity: DeltaW≡W (mod 2).

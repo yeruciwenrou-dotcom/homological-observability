@@ -59,9 +59,9 @@ standard library and runs XeLaTeX twice for references and bookmarks.
 Use `--tex-bin /path/to/texlive/bin` if XeLaTeX is not on PATH, and
 `--ref <commit-or-tag>` to select the destination of relative documentation
 links. TeX sources and logs are written to `build/target-note/`.
-These tools are only needed to rebuild the PDF; the package includes the
-finished document. Check the rendered pages after changes to content, fonts
-or the TeX environment.
+The repository and source archive include the finished PDF. Ordinary package
+installation requires no TeX tools. Check the rendered pages after changes to
+content, fonts or the TeX environment.
 
 ## Scientific changes
 

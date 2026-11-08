@@ -5,6 +5,7 @@ semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
 ## 2.1.0.dev0
+
 Existing integer readouts can now be audited against a new target, augmented with
 a minimum number of candidate scalar channels, and used to reconstruct legal
 records with endpoint corrections. Adds `analyze_target`, `design_readouts`,
@@ -27,6 +28,11 @@ The quick start demonstrates target diagnosis and readout design, with source
 installation instructions for macOS, Linux and Windows.
 Target and DFR reports explain unresolved targets, illegal records and
 unfinished calculations, and identify saved reports for the next step.
+
+The existing network-analysis, comparison, critical-experiment and
+paper-reproduction workflows retain their 2.0.0 interfaces and formats.
+Target requests and results use independent version 1 schemas; the DFR
+prediction interface has its own versioned format.
 
 ## 2.0.0 — 2026-10-24
 

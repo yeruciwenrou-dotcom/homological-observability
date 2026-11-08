@@ -578,5 +578,10 @@ assert "status: COMPLETE" in terminal_text
 assert "critical-limit experiment" in terminal_text
 ```
 
-There is no critical Markdown renderer. The JSON document is the downstream
-contract, and the compact terminal view is for reading rather than parsing.
+Critical JSON is the downstream contract; the compact terminal view presents
+its main findings for reading.
+
+Target-task dictionaries use `render_target_text(result)` for terminal output.
+`write_target_bundle(result, "new-results")` saves `request.json`, `result.json`
+and `report.txt` in a new directory. The [target guide](TARGET_TASKS.md)
+describes their fields and replay commands.

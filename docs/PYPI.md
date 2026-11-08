@@ -46,6 +46,8 @@ You can use the software to:
 - **[Compare counter configurations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#compare-counter-configurations):** determine which choices
   reveal different or redundant information, with explanatory reports and
   exact integer evidence.
+- **[Construct a critical experiment](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/CRITICAL_EXPERIMENT.md):** use known transition rates to calculate
+  critical path weights, conditional mark laws and Poisson intensities.
 - **[Reproduce the paper](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#reproduce-the-paper-evidence):** regenerate the included finite-model
   calculations and compare them with the reference results.
 
@@ -92,7 +94,12 @@ In the linked guides, use
 `.venv/bin/homological-observability` on Windows, and
 `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
 
-For version 2.0.0, install `homological-observability==2.0.0` in a
+Upgrading from 2.0.0 preserves the existing network-analysis, comparison,
+critical-experiment and paper-reproduction workflows, along with their input
+and result formats. Target tasks add separate request and result formats;
+see the [changelog](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/CHANGELOG.md) for the new capabilities.
+
+To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
 [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
 For upgrades from 1.x, see the
@@ -213,11 +220,11 @@ ready to inspect separately with `analyze`.
 
 ## Exact sampling requests
 
-In this source revision, model and study format 2 accept `"alpha": "1/3"`.
+Model and study format 2 accept `"alpha": "1/3"`.
 This gives an exactly critical fourth layer. A JSON number such as
 `0.3333333333333333` keeps its binary floating-point value and gives a slightly
 positive exponent at that layer. Use the fraction when your intended law is
-exactly one third; no tolerance silently moves numeric inputs onto a threshold.
+exactly one third. Phase classification uses the exact value supplied.
 
 Reports follow the request: structure alone shows hidden information and
 counter relations; an exponent adds phases and entropy contributions; a
