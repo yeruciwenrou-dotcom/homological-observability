@@ -1,7 +1,7 @@
 # Homological Observability
 
 [![PyPI v2.1.0](https://img.shields.io/badge/PyPI-v2.1.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.1.0/)
-[![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
+[![Software DOI: 10.5281/zenodo.24058140](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24058140)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 This repository provides **computational tools for homological observability**,
@@ -510,7 +510,7 @@ When your work uses both, cite them separately.
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.1.0) [Computer
-> software]. https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.1.0
+> software]. https://doi.org/10.5281/zenodo.24058140
 
 The software series is archived at
 [doi:10.5281/zenodo.23329442](https://doi.org/10.5281/zenodo.23329442).
