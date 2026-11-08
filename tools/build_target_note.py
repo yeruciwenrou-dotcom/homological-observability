@@ -20,7 +20,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer
 from svglib.svglib import svg2rlg
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,8 +65,8 @@ def main():
         "body": ParagraphStyle(
             "body",
             fontName="Body",
-            fontSize=9.6,
-            leading=12,
+            fontSize=10,
+            leading=13,
             spaceAfter=6,
             allowWidows=0,
             allowOrphans=0,
@@ -81,9 +81,12 @@ def main():
             keepWithNext=True,
         ),
         "title": ParagraphStyle(
-            "title", fontName="Body-Bold", fontSize=22, leading=28, spaceAfter=9
+            "title", fontName="Body-Bold", fontSize=20, leading=25, spaceAfter=10
         ),
     }
+    styles["before-equation"] = ParagraphStyle(
+        "before-equation", parent=styles["body"], keepWithNext=True
+    )
     width = A4[0] - 108
     inline_cache = {}
 
@@ -94,7 +97,7 @@ def main():
                 math_to_image(
                     "$" + " ".join(tex.split()) + "$",
                     path,
-                    prop=FontProperties(size=9.6),
+                    prop=FontProperties(size=10),
                     dpi=300,
                     format="png",
                 )
@@ -176,28 +179,45 @@ def main():
 
     story = []
 
+    def is_equation(block):
+        return (
+            block["t"] in ("Para", "Plain")
+            and len(block["c"]) == 1
+            and block["c"][0]["t"] == "Math"
+        )
+
     def blocks(values, bullet=False):
-        for block in values:
+        for index, block in enumerate(values):
             kind, value = block["t"], block.get("c")
             if kind == "Header":
-                if value[0] == 2 and inline(value[2]).startswith(("3.", "5.")):
-                    story.append(PageBreak())
+                heading = inline(value[2])
+                if value[0] == 1:
+                    heading = heading.replace(": ", ":<br/>", 1)
                 story.append(
                     Paragraph(
-                        inline(value[2]),
+                        heading,
                         styles["title" if value[0] == 1 else "heading"],
                     )
                 )
             elif kind in ("Para", "Plain"):
-                if len(value) == 1 and value[0]["t"] == "Math":
+                if is_equation(block):
                     story.extend([equation(value[0]["c"][1]), Spacer(1, 8)])
                 else:
+                    style = (
+                        "before-equation"
+                        if index + 1 < len(values) and is_equation(values[index + 1])
+                        else "body"
+                    )
+                    paragraph = Paragraph(
+                        inline(value),
+                        styles[style],
+                        bulletText="•" if bullet else None,
+                    )
+                    ends_section = (
+                        index + 1 < len(values) and values[index + 1]["t"] == "Header"
+                    )
                     story.append(
-                        Paragraph(
-                            inline(value),
-                            styles["body"],
-                            bulletText="•" if bullet else None,
-                        )
+                        KeepTogether([paragraph]) if ends_section else paragraph
                     )
             elif kind == "BulletList":
                 for item in value:
