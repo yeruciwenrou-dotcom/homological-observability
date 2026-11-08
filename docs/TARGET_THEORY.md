@@ -18,12 +18,12 @@ write P:H→Z^k for fixed readouts and F:H→Z^q for the targets.
 
 All targets are determined by P on the full cycle group exactly when
 
-$$
-\ker_{\mathbb Z}P\subseteq\ker_{\mathbb Z}F
+```math
+\ker_{\mathbb{Z}}P\subseteq\ker_{\mathbb{Z}}F
 \quad\Longleftrightarrow\quad
-\mathrm{rank}_{\mathbb Q}P=
-\mathrm{rank}_{\mathbb Q}\begin{bmatrix}P\\F\end{bmatrix}.
-$$
+\mathrm{rank}_{\mathbb{Q}}P=
+\mathrm{rank}_{\mathbb{Q}}\begin{bmatrix}P\\F\end{bmatrix}.
+```
 
 For the forward direction, every rational vector in ker P becomes an integer
 kernel vector after multiplication by a common denominator. Thus F annihilates
