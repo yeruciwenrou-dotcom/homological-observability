@@ -44,9 +44,9 @@ resolution is refined. The local C3 bridge approximation improves along this
 refinement sequence, while the two C4 diametric routes retain equal conditional
 weight.
 
-The TV bounds measure errors in the count-law approximations. Their decrease
-validates the limiting description; it does not mean that history-recovery
-error vanishes at this fixed critical intensity.
+The TV bounds measure errors in the count-law approximations. They decrease
+as the finite laws approach the critical limits. At this fixed critical
+intensity, the limiting conditional mark laws retain history uncertainty.
 
 ## Exact and asymptotic checks
 

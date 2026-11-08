@@ -140,15 +140,15 @@ def sampling_tables(
                 "",
             ]
         lines += [
-            "Entropy coefficients describe asymptotic log(T) growth; zero does not establish finite-time recovery.",
+            "Entropy coefficients describe leading log(T) growth. Critical uncertainty is described by the conditional limit law.",
             "",
         ]
     else:
         lines += [
             (
-                r"A finite $\lambda_m$ is an exposure scale, not a recovery probability or an error bound."
+                r"The finite scale $\lambda_m$ measures exposure at layer $m$. Recovery probabilities also depend on the dynamics and conditional history law."
                 if markdown
-                else "A finite lambda_m is an exposure scale, not a recovery probability or an error bound."
+                else "The finite scale lambda_m measures exposure at layer m. Recovery probabilities also depend on the dynamics and conditional history law."
             ),
             "",
         ]

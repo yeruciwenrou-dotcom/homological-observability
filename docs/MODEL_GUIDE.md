@@ -4,11 +4,17 @@ Choose the input format for the question you want to answer:
 
 | Task | Command | Input |
 | --- | --- | --- |
+| Check or reconstruct a specific target | `target` | [Target request, with an optional individual record](TARGET_TASKS.md#use-your-own-target) |
+| Minimize additional counters for one or more targets | `design` | [Fixed readouts, targets and candidate scalar channels](TARGET_TASKS.md#use-your-own-target) |
 | Analyze one observation configuration | `analyze` | [Graph, readouts, and analysis settings](#topology-analysis-model) |
 | Compare candidate counter configurations | `compare` | [A study with shared conditions and named candidates](#configuration-study) |
 | Construct a rate-dependent critical experiment | `critical` | [Graph, readouts, exact directed rates, and critical settings](#critical-experiment-model) |
 
-All formats use the graph and readout conventions below. Each command checks
+See the [installation instructions](../README.md#install) to set up the commands.
+The [scientific ML guide](SCIENTIFIC_ML.md) describes the separate paired-data
+and prediction-file formats used by the DFR application.
+
+All model formats use the graph and readout conventions below. Each command checks
 the fields required by its own format.
 
 ## From a physical model to an input
@@ -216,11 +222,10 @@ parameters does not extend the computed horizon.
 
 ### Run and inspect a model
 
-This example uses `examples/wedge_c3_c5.json` from the
-[complete source archive](https://zenodo.org/records/23618828/files/homological-observability-2.0.0-source.zip?download=1).
-Download and unpack the archive, then open a terminal in the extracted
-source directory containing `examples/`. Follow the
-[installation instructions](../README.md#install) in that directory.
+This example uses `examples/wedge_c3_c5.json` from a source checkout.
+Follow the [installation instructions](../README.md#install), then work from
+the repository root containing `examples/`. For the archived 2.0.0 source,
+use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
 
 Run the commands below from the same directory. They use the environment
 directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
@@ -253,7 +258,7 @@ assert payload["summary"]["natural_filtration_complete"] is True
 
 The JSON Schema checks document shape, primitive types, required pairs, and
 mutual exclusion of sampling modes. Runtime validation additionally checks
-properties that JSON Schema cannot conveniently establish here, including
+graph and readout properties, including
 connectivity, edge endpoints, undirected duplicates, unique readout names, and
 unknown readout edges.
 
@@ -397,7 +402,7 @@ walk-level reconstruction is needed.
 ### Run and inspect a critical model
 
 Use the [source directory and environment prepared above](#run-and-inspect-a-model).
-The critical input is `examples/biased_c4_critical.json` in the same archive.
+The critical input is `examples/biased_c4_critical.json` in the same checkout.
 
 ```console
 $ .venv/bin/homological-observability critical examples/biased_c4_critical.json
@@ -419,8 +424,8 @@ assert payload["summary"]["critical_total_intensity"] == "5/2"
 ```
 
 `COMPLETE` means the requested layer and its full critical experiment were
-constructed. It does not by itself say that the graph's natural topology
-filtration has ended; read `topology.natural_filtration_complete` separately.
+constructed. Read `topology.natural_filtration_complete` for the separate
+question of whether the graph's exposure filtration has reached full homology.
 A resource ceiling produces `LIMIT_REACHED`, a null catalogue and limit
 experiment, and exit code 1. Invalid input produces the controlled error
 contract and exit code 2.

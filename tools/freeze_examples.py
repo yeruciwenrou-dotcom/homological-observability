@@ -96,6 +96,11 @@ def main(argv: list[str] | None = None) -> int:
                         raise AssertionError("unexpected current example format")
                     original["schema_version"] = 3
                     original["model"]["schema_version"] = 2
+                # Preserve archived prose while comparing scientific fields.
+                for section in ("phase", "limit_experiment"):
+                    for record in (original, current):
+                        if record.get(section) is not None:
+                            record[section].pop("boundary_note", None)
                 if original != current:
                     mismatches.append(path)
             elif (

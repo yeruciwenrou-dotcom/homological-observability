@@ -4,6 +4,39 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## 2.1.0 — 2026-11-09
+
+Existing integer readouts can now be audited against a new target, augmented with
+a minimum number of candidate scalar channels, and used to reconstruct legal
+records with endpoint corrections. Adds `analyze_target`, `design_readouts`,
+`evaluate_target`, the `target` / `design` commands, independent request/result
+schemas and replay bundles. Search reports minimum proofs, tied enumeration,
+returned certificates and output truncation separately.
+
+The [target task guide](docs/TARGET_TASKS.md) contains runnable examples.
+The [Scientific ML application](docs/SCIENTIFIC_ML.md)
+adds DFR trajectories generated with documented rates, four paired observation schemes,
+separate natural/pressure evaluation and a versioned user-prediction adapter.
+Optional `explain=True` supplies target-image layers and entropy coefficients
+with independent completion status. The [technical source](docs/TARGET_THEORY.md)
+records the derivations.
+The same-source [PDF](docs/TARGET_THEORY.pdf), DFR counter diagram and
+[assessment](docs/TARGET_VALIDATION.md) cover reconstruction, comparison
+baselines, record sizes and measured resource limits.
+
+The quick start demonstrates target diagnosis and readout design, with
+installation instructions for macOS, Linux and Windows.
+Target and DFR reports explain unresolved targets, illegal records and
+unfinished calculations, and identify saved reports for the next step.
+Time budgets outside floating-point range return structured input errors.
+Optional explanations check cycle-generator matrix sizes before allocation,
+preserving completed core results when the explanation reaches its budget.
+
+The existing network-analysis, comparison, critical-experiment and
+paper-reproduction workflows retain their 2.0.0 interfaces and formats.
+Target requests and results use independent version 1 schemas; the DFR
+prediction interface has its own versioned format.
+
 ## 2.0.0 — 2026-10-24
 
 - Preserve explicit `Fraction` alpha values in Python and accept integer

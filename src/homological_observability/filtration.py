@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import ceil
-from typing import Iterable
+from typing import Callable, Iterable
 
 import networkx as nx
 from sympy import ImmutableMatrix
@@ -115,6 +115,7 @@ def exposure_filtration(
     *,
     max_layer: int | None = None,
     max_cycles: int | None = None,
+    _matrix_guard: Callable[[int], None] | None = None,
 ) -> tuple[tuple[Cycle, ...], tuple[ImmutableMatrix, ...]]:
     """Construct the exact integer exposure filtration ``L_m``."""
 
@@ -130,6 +131,9 @@ def exposure_filtration(
         max_length=2 * max_layer,
         max_cycles=max_cycles,
     )
+    if _matrix_guard is not None:
+        # The final layer contains every enumerated cycle as a generator column.
+        _matrix_guard(basis.rank * len(cycles))
     coordinates = {cycle: cycle_coordinates(cycle, basis) for cycle in cycles}
     lattices = [zero_lattice(basis.rank) for _ in range(max_layer + 1)]
     for layer in range(2, max_layer + 1):

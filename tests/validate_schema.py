@@ -27,12 +27,19 @@ def main() -> int:
         "critical_experiment": ho.load_critical_experiment_schema(),
         "study": ho.load_study_schema(),
         "comparison": ho.load_comparison_schema(),
+        "target_request": ho.load_target_request_schema(),
+        "target_task": ho.load_target_task_schema(),
     }
     for schema in schemas.values():
         Draft202012Validator.check_schema(schema)
     validators = {
         name: Draft202012Validator(schema) for name, schema in schemas.items()
     }
+
+    for name in ("dfr_target", "dfr_design", "dfr_evaluate"):
+        request = ho.load_target_request(ROOT / "examples" / f"{name}.json")
+        validators["target_request"].validate(request)
+        validators["target_task"].validate(ho.run_target_request(request))
 
     model = load_example("wedge-c3-c5")
     validators["model"].validate(ho.model_to_dict(model))
@@ -119,9 +126,8 @@ def main() -> int:
         ho.analyze_critical_model(public_critical_model)
     )
     validators["critical_experiment"].validate(fresh_critical_document)
-    # The published example remains the original 1.1.0 record. A later software
-    # producer may change its version label while every scientific field stays
-    # exactly equal; no frozen evidence is rewritten to impersonate a new run.
+    # Keep the published 1.1.0 record and compare every scientific field;
+    # producer versions and explanatory prose may differ.
     if public_critical_document["software"]["version"] != "1.1.0":
         raise AssertionError("the public critical example lost its frozen producer")
     if fresh_critical_document["software"]["version"] != ho.__version__:
@@ -130,6 +136,8 @@ def main() -> int:
     fresh_science = copy.deepcopy(fresh_critical_document)
     frozen_science["software"].pop("version")
     fresh_science["software"].pop("version")
+    frozen_science["limit_experiment"].pop("boundary_note")
+    fresh_science["limit_experiment"].pop("boundary_note")
     if frozen_science != fresh_science:
         raise AssertionError("the public critical example's scientific result changed")
     false_limited_document = copy.deepcopy(critical_document)

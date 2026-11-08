@@ -3,7 +3,7 @@
 On a four-state ring, a pair of snapshots at opposite vertices reveals that
 a crossing occurred, but two equally short routes connect those vertices.
 Faster clockwise motion favors one route. An extra cycle counter may resolve
-the remaining history ambiguity even though the snapshots alone cannot.
+the route ambiguity left by the snapshots.
 
 The `critical` task makes these two effects explicit. With a known graph,
 strictly positive directed rates, layer $m$, and intensity $\theta$, it
@@ -21,11 +21,10 @@ requires a separate calculation.
 
 ## Run the example
 
-This example uses `examples/biased_c4_critical.json` from the
-[complete source archive](https://zenodo.org/records/23618828/files/homological-observability-2.0.0-source.zip?download=1).
-Download and unpack the archive, then open a terminal in the extracted
-source directory containing `examples/`. Follow the
-[installation instructions](../README.md#install) in that directory.
+This example uses `examples/biased_c4_critical.json` from a source checkout.
+Follow the [installation instructions](../README.md#install), then work from
+the repository root containing `examples/`. For the archived 2.0.0 source,
+use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
 
 Run the commands below from the same directory. They use the environment
 directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
@@ -116,8 +115,8 @@ $$
 
 The factor of four comes from two clockwise rate factors, each twice its
 counterclockwise counterpart. Equal rates would instead give equal route
-weights. These are conditional path-mark probabilities before applying the
-extra readout, not the final history-recovery probabilities.
+weights. These conditional path-mark probabilities describe the information
+available from the endpoints before the extra readout is applied.
 
 The associated Poisson intensity is
 
@@ -136,9 +135,8 @@ intensity is zero.
 The supplied readout counts signed crossings of $v0\to v1$. After the known
 endpoint correction, it measures the ring's sole integer cycle coordinate.
 The induced readout is injective and the reported `hidden_kernel` is the
-trivial group. Consequently the two route weights above do not imply a
-residual 20% error after using all the observations: the exact side readout
-already determines the accumulated cycle target.
+trivial group. Using the exact side readout therefore determines the accumulated
+cycle target, resolving the route ambiguity present in the endpoint-only law.
 
 Remove the counter to study the ambiguity left by snapshots alone:
 

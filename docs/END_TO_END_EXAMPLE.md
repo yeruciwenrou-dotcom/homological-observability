@@ -167,12 +167,10 @@ $$
 \frac{d_3}{2}\max\bigl(1-\alpha(3-1),0\bigr)=0.
 $$
 
-This zero does not mean that the ambiguity vanishes. At criticality the limit
-can retain nontrivial order-one uncertainty; the coefficient records only the
-leading growth proportional to $\log T$.
-
-These phase labels apply the paper's asymptotic theorem. They do not estimate a
-finite-sample error probability for this graph.
+The logarithmic growth term vanishes at this critical scale. The conditional
+limit experiment describes the remaining order-one uncertainty. These phase
+labels apply the paper's asymptotic theorem; a finite-run error estimate also
+depends on the dynamics and the conditional history law.
 
 ## Compare observation choices
 
@@ -198,7 +196,7 @@ conditions are equivalently $N_T/T^2\to\infty$ and
 $N_T/T^{3/2}\to\infty$. For example, under $\delta=T^{-3/4}$ the
 uninstrumented triangle direction is supercritical, whereas the weighted
 counter's first hidden layer is subcritical. This comparison concerns the
-growth of snapshot requirements; it does not assign a cost to the counters.
+growth of snapshot requirements under the three recording schemes.
 
 Use a comparison study to run these three choices under shared conditions.
 Start from the packaged model, reuse its weighted readout, and add the other

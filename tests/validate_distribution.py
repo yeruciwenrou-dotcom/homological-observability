@@ -141,10 +141,17 @@ def smoke_artifact(
             ):
                 raise AssertionError("upgrade replay has an inconsistent model digest")
             record["software"].pop("version")
-        if old_result["schema_version"] != 2 or current["schema_version"] != 3:
+            # Compare scientific results across revisions of report prose.
+            record["phase"].pop("boundary_note")
+        old_analysis_schema = 2 if upgrade_from == "1.2.1" else 3
+        old_model_schema = 1 if upgrade_from == "1.2.1" else 2
+        if (
+            old_result["schema_version"] != old_analysis_schema
+            or current["schema_version"] != 3
+        ):
             raise AssertionError("unexpected upgrade output format")
         if (
-            old_result["model"]["schema_version"] != 1
+            old_result["model"]["schema_version"] != old_model_schema
             or current["model"]["schema_version"] != 2
         ):
             raise AssertionError("unexpected upgrade model format")
@@ -168,6 +175,66 @@ def smoke_artifact(
     ).stdout.strip()
     if str(ROOT) in location:
         raise AssertionError(f"{label} imported from the repository: {location}")
+
+    # The installed application must carry its fixed data and optional target
+    # explanation modules. Exercise it outside the checkout for both artifacts.
+    dfr_directory = run_directory / "dfr-case"
+    subprocess.run(
+        [
+            str(python),
+            "-m",
+            "homological_observability.applications.dfr",
+            "run",
+            "--output-dir",
+            str(dfr_directory),
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    dfr_case = json.loads((dfr_directory / "case.json").read_text(encoding="utf-8"))
+    for scheme in ("w-on", "all"):
+        record = dfr_case["paired_reconstruction"][scheme]
+        if record["count"] != 64 or record["mismatches"] != 0:
+            raise AssertionError(f"{label} packaged DFR reconstruction failed")
+    if dfr_case["design"]["result"]["minimum_added"] != 1:
+        raise AssertionError(f"{label} packaged DFR design failed")
+    prediction_evaluation = run_directory / "dfr-evaluation.json"
+    subprocess.run(
+        [
+            str(python),
+            "-m",
+            "homological_observability.applications.dfr",
+            "evaluate",
+            str(dfr_directory / "predictions.json"),
+            "--output",
+            str(prediction_evaluation),
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    if (
+        json.loads(prediction_evaluation.read_text(encoding="utf-8"))
+        != dfr_case["natural_prediction_evaluation"]
+    ):
+        raise AssertionError(f"{label} installed prediction replay changed its result")
+    installed_target_schema = subprocess.run(
+        [
+            str(python),
+            "-c",
+            "import json; import homological_observability as h; print(json.dumps(h.load_target_task_schema()))",
+        ],
+        check=True,
+        cwd=run_directory,
+        capture_output=True,
+        text=True,
+    )
+    target_validator = Draft202012Validator(json.loads(installed_target_schema.stdout))
+    for result in (*dfr_case["audits"].values(), dfr_case["design"]):
+        target_validator.validate(result)
 
     # Exercise protection in the installed package, where no checkout results/
     # directory exists. A failed guard must be caught before reference writes.
@@ -410,7 +477,7 @@ def smoke_artifact(
         raise AssertionError(f"{label} reference check did not pass")
     if evidence_dir is not None:
         evidence_dir.mkdir(parents=True, exist_ok=True)
-        name = label + ("-upgrade" if upgrade_from else "-fresh")
+        name = label + (f"-upgrade-{upgrade_from}" if upgrade_from else "-fresh")
         report = {
             **identity,
             "artifact": artifact.name,
@@ -420,6 +487,7 @@ def smoke_artifact(
             "pip_check": "PASS",
             "resolved_packages": resolved.splitlines(),
             "analysis_comparison_export_replay_reproduction": "PASS",
+            "dfr_data_target_design_reconstruction_prediction_replay": "PASS",
         }
         (evidence_dir / (name + ".json")).write_text(
             json.dumps(report, indent=2) + "\n", encoding="utf-8"
@@ -441,7 +509,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--upgrade-from",
-        choices=("1.2.1",),
+        choices=("1.2.1", "2.0.0"),
         help="also verify an in-place wheel upgrade",
     )
     parser.add_argument(

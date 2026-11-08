@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480" role="img" aria-labelledby="title desc">
+  <title id="title">DFR support and target reconstruction</title>
+  <desc id="desc">Two bidirectional three-state cycles are connected by three bidirectional switching edges. W_ON counts 2 to 0 and W_OFF counts 5 to 3 positively. W is their sum and DeltaW their difference. With known endpoints, W plus either cycle counter determines DeltaW.</desc>
+  <defs>
+    <marker id="on" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#007e80"/></marker>
+    <marker id="off" markerWidth="6" markerHeight="6" refX="4" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#aa6211"/></marker>
+  </defs>
+  <rect width="900" height="480" rx="12" fill="#fbfcfe"/>
+  <g font-family="DejaVu Sans, sans-serif" fill="#172536">
+    <text x="34" y="38" font-size="22" font-weight="bold">Two cycle counters, one research target</text>
+    <g fill="none" stroke="#8392a2" stroke-width="2">
+      <path d="M112 145 H216"/><path d="M272 145 H376"/>
+      <path d="M112 325 H216"/><path d="M272 325 H376"/>
+      <path d="M84 174 V296"/><path d="M244 174 V296"/><path d="M404 174 V296"/>
+    </g>
+    <g fill="#8392a2">
+      <path d="M108 145 L118 139 V151 Z M220 145 L210 139 V151 Z M268 145 L278 139 V151 Z M380 145 L370 139 V151 Z"/>
+      <path d="M108 325 L118 319 V331 Z M220 325 L210 319 V331 Z M268 325 L278 319 V331 Z M380 325 L370 319 V331 Z"/>
+      <path d="M84 170 L78 180 H90 Z M84 300 L78 290 H90 Z M244 170 L238 180 H250 Z M244 300 L238 290 H250 Z M404 170 L398 180 H410 Z M404 300 L398 290 H410 Z"/>
+    </g>
+    <path d="M390 127 C345 58 142 58 98 127" fill="none" stroke="#007e80" stroke-width="3" marker-end="url(#on)"/>
+    <path d="M390 343 C345 412 142 412 98 343" fill="none" stroke="#aa6211" stroke-width="3" marker-end="url(#off)"/>
+    <text x="222" y="65" font-size="17" fill="#007e80">W_ON</text>
+    <text x="219" y="411" font-size="17" fill="#aa6211">W_OFF</text>
+    <text x="34" y="123" font-size="14" fill="#007e80">ON</text>
+    <text x="29" y="363" font-size="14" fill="#aa6211">OFF</text>
+    <g font-size="14" fill="#4c5c70">
+      <text x="98" y="241">S₀</text><text x="258" y="241">S₁</text><text x="418" y="241">S₂</text>
+    </g>
+    <g stroke="#007e80" stroke-width="2" fill="#e7f5f3">
+      <circle cx="84" cy="145" r="20"/><circle cx="244" cy="145" r="20"/><circle cx="404" cy="145" r="20"/>
+    </g>
+    <g stroke="#aa6211" stroke-width="2" fill="#fff2df">
+      <circle cx="84" cy="325" r="20"/><circle cx="244" cy="325" r="20"/><circle cx="404" cy="325" r="20"/>
+    </g>
+    <g text-anchor="middle" font-size="18">
+      <text x="84" y="151">0</text><text x="244" y="151">1</text><text x="404" y="151">2</text>
+      <text x="84" y="331">3</text><text x="244" y="331">4</text><text x="404" y="331">5</text>
+    </g>
+    <path d="M480 80 V414" stroke="#d5dce5"/>
+    <g font-size="18">
+      <text x="518" y="115" font-weight="bold">Existing record</text>
+      <text x="518" y="146">W = W_ON + W_OFF</text>
+      <text x="518" y="200" font-weight="bold">Research target</text>
+      <text x="518" y="231">ΔW = W_ON − W_OFF</text>
+      <text x="518" y="285" font-weight="bold">Add either cycle counter</text>
+      <text x="518" y="319" fill="#007e80">ΔW = 2 W_ON − W</text>
+      <text x="518" y="351" fill="#aa6211">ΔW = W − 2 W_OFF</text>
+    </g>
+    <text x="518" y="394" font-size="14">W alone retains parity: ΔW ≡ W (mod 2).</text>
+    <text x="34" y="449" font-size="13">All nine supports are bidirectional. Colored arrows show positive counts; reverse crossings contribute −1.</text>
+    <text x="34" y="469" font-size="13">Sᵢ counts i → i+3 positively. Raw-path reconstruction uses known endpoints and legal integer records.</text>
+  </g>
+</svg>

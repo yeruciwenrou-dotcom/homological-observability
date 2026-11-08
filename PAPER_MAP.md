@@ -43,8 +43,10 @@ Independent checks include:
   including both chorded C6 models and a pure-torsion graph.
 - [Integer-kernel and quotient tests](tests/test_integer_lattice.py), including
   cases where a rational nullspace basis is insufficient.
-- [All 996 connected graph-atlas models](tests/validate_graph_atlas.py), with
-  independent path-pair and readout comparisons.
+- [Graph-atlas validation](tests/validate_graph_atlas.py): tree-choice and
+  full-lattice checks on all 996 connected graphs with at most seven vertices;
+  274 independent path-pair layer checks and 129 integer-readout invariance
+  checks on the applicable subfamilies with at most six vertices.
 - [Phase laws and sampling boundaries](tests/test_phase.py), together with
   [horizon, resource, and CLI checks](tests/test_product_contract.py).
 
@@ -72,6 +74,29 @@ The [comparison guide](docs/COMPARISON_GUIDE.md) shows how to interpret and
 rerun a study. The comparison's evidence concerns the stated computed domain;
 an unfinished exposure filtration leaves later layers open.
 
+## Target diagnosis, design and scientific ML
+
+The software supports full-history analysis and specified integer targets.
+The [target derivation](docs/TARGET_THEORY.md)
+([PDF](docs/TARGET_THEORY.pdf)) is a software-oriented technical supplement to
+the paper. It derives full-group sufficiency, legal-record decoding and minimum
+readout design, then obtains the target-image entropy law from the paper's
+exposure filtration and hidden-history law under the same assumptions.
+
+| Task | Implementation | Evidence and interpretation |
+| --- | --- | --- |
+| Target sufficiency and reconstruction | [target.py](src/homological_observability/target.py) | Rational-rank criterion, integer ambiguity witnesses, legal-image checks and endpoint corrections |
+| Minimum additional channels | [design.py](src/homological_observability/design.py) | Cardinality search over a supplied pool; minimum, ties and certificate completion reported separately |
+| Target exposure layers | [_target_explanation.py](src/homological_observability/_target_explanation.py) | Integer target images and the difference of two hidden-history entropy coefficients |
+| Paired data and model predictions | [DFR application](src/homological_observability/applications/dfr.py) | Generated known-rate trajectories, exact reconstruction and separate natural/pressure evaluations |
+
+The [ML tutorial](docs/SCIENTIFIC_ML.md#model-and-data-provenance) attributes the
+DFR model and parameter setting to their original sources. Its target task,
+paired observation schemes and prediction adapter are software applications
+developed here. The tutorial generates its own trajectories and accepts
+predictions from a separately trained model. The frozen paper calculations
+below have their own reproduction path.
+
 ## Rate-dependent critical experiment
 
 | Paper object | Computation | Implementation |
@@ -91,8 +116,9 @@ contains the stationary law, quotient groups, catalogue, and limit experiment.
 nonreversible weights, repeated-vertex walks, zero marks, torsion, and changes
 of reference geodesic. [Public-interface tests](tests/test_critical_product_contract.py)
 check exact parsing, serialization, API/CLI agreement, and atomic resource
-limits. The output is a critical-limit generative specification; it is not an
-exact posterior at finite $(T,\delta)$ or an unconditional critical MAP solver.
+limits. The output specifies the critical-limit experiment and its conditioning
+rule. Finite-time posteriors and unconditional MAP probabilities require
+evaluation of the corresponding conditional laws.
 
 ## Inputs, outputs, and reproducibility
 
@@ -128,9 +154,10 @@ the committed references unchanged.
 
 ## Evidence boundary
 
-Enumeration and graph-atlas checks support the implementation; they do not
-replace proofs for arbitrary finite graphs. The critical task assumes a known
-exact generator. The frozen cycle examples establish neither a universal
-finite-sample error bound nor extensions to one-way support, multigraphs,
-noisy observations, or unknown models. General theorem statements,
-hypotheses, and proofs remain in the manuscript.
+The manuscript gives the general theorem statements, hypotheses and proofs.
+Enumeration and graph-atlas tests check the implementation on the recorded
+finite graphs; frozen cycle calculations provide reproducible numerical
+references. Their Markov-process interpretation uses positive bidirectional
+support, noiseless regular observations and exact counters. The critical task
+also takes a known exact generator. Other supports or observation protocols
+require their own model and corresponding analysis.

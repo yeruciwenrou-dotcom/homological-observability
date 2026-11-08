@@ -78,3 +78,13 @@ def load_comparison_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load the configuration-comparison result JSON Schema."""
 
     return _versioned_schema("comparison", version, latest=2, previous=1)
+
+
+def load_target_request_schema() -> dict[str, Any]:
+    """Load the target-task request v1 schema."""
+    return _load_schema("target-request.schema.json")
+
+
+def load_target_task_schema() -> dict[str, Any]:
+    """Load the target-task result v1 schema."""
+    return _load_schema("target-task.schema.json")

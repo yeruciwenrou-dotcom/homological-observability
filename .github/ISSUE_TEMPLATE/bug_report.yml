@@ -21,6 +21,8 @@ body:
       options:
         - Python API
         - analyze CLI
+        - target or design CLI
+        - DFR data or prediction evaluation
         - compare or study-example CLI
         - critical CLI
         - example CLI
@@ -32,8 +34,8 @@ body:
   - type: textarea
     id: model
     attributes:
-      label: Minimal model, study, or command
-      description: Paste the smallest JSON model or study, Python call, or terminal command that reproduces the problem.
+      label: Minimal input or command
+      description: Paste the smallest model, target request, study, prediction example, Python call, or terminal command that reproduces the problem.
       render: text
     validations:
       required: true

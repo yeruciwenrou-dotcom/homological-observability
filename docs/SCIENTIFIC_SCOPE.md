@@ -34,6 +34,14 @@ it computes hidden cycle differences, their exposure layers, and asymptotic
 sampling requirements. Exact transition rates are additional inputs for
 constructing the rate-dependent critical experiment.
 
+The [target interfaces](TARGET_TASKS.md) ask a more specific question: do the
+fixed readouts and endpoints determine a chosen integer trajectory quantity?
+They provide an exact decoder or a closed-chain ambiguity witness, and can
+search a supplied pool for the smallest set of additional scalar channels.
+This algebraic decision needs the support and counter rules, without numerical
+rates or cycle enumeration. Optional explanations connect its unresolved
+target directions to the paper's exposure filtration.
+
 ## How local ambiguity accumulates
 
 On a triangle, a direct A → B jump and the route A → C → B differ by one
@@ -57,8 +65,8 @@ $\Delta_{\mathrm{phys}}$, use $T=q_0T_{\mathrm{phys}}$ and
 $\delta=q_0\Delta_{\mathrm{phys}}$. Thus the dimensionless exposure scale is
 $(q_0T_{\mathrm{phys}})(q_0\Delta_{\mathrm{phys}})^{m-1}$; the exact path
 intensities additionally depend on the transition rates. The filtration
-describes an asymptotic ordering of ambiguities, not a hard cutoff on how many
-jumps can occur in a finite window.
+orders ambiguities by their short-time asymptotic contribution. A finite
+window includes paths with arbitrarily many jumps.
 
 An integer side readout $\pi$ represents an additional exact counter, such as
 a signed count across a selected edge or a weighted combination of cycle
@@ -80,6 +88,9 @@ Choose a task according to what you want to vary:
 
 | Task | Inputs to vary | Read from the result |
 | --- | --- | --- |
+| Diagnose a target with `target` | Fixed counters and one or more integer target cochains | Sufficiency, an exact decoder or an ambiguity witness; values for legal sufficient records |
+| Design records with `design` | Fixed counters and admissible candidate channels | Minimum extra scalar channels, alternative choices and reconstruction certificates |
+| Evaluate predictions with the [DFR case](SCIENTIFIC_ML.md) | Observation scheme and user-supplied point predictions | Paired reconstruction, test-set errors, baselines and separate ambiguity-pressure results |
 | Compare network structures with `analyze` | Graph edges, with the observation protocol fixed | Exposure layers and hidden directions; adding an edge can change more than the cycle count |
 | Compare counters with `compare` | Named integer readouts on one shared graph | Information equivalence, strict refinement, incomparable directions, and individually redundant channels |
 | Compare sampling scalings with `analyze` | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Which hidden layers are sparse, critical, or dense, and their leading entropy coefficients |
@@ -90,9 +101,11 @@ changes the hidden directions. The [comparison guide](COMPARISON_GUIDE.md)
 runs several configurations under common conditions and uses exact witnesses
 to distinguish an objective tie from equivalent information. The
 [critical tutorial](CRITICAL_EXPERIMENT.md) separates the effects of rates and
-additional observations. These are model-analysis tasks: their inputs specify
-the graph and measurement rules, with exact rates added for `critical`.
-Measured trajectories are outside these input formats.
+additional observations. The `analyze`, `compare` and `critical` commands take
+model specifications: a graph and measurement rules, with exact rates added
+for `critical`. Target evaluation additionally accepts counter values and
+endpoints from an individual record. The DFR application uses separate dataset
+and prediction formats, described in the [ML tutorial](SCIENTIFIC_ML.md).
 
 The resulting exponents give asymptotic sampling guidance. For example,
 $N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
@@ -129,8 +142,8 @@ they require neither rate magnitudes nor a sampled trajectory.
 A `compare` study fixes the graph, sampling request, and computation limits
 while varying the declared counter configurations. Each counter is an exact
 cumulative integer measurement. The study compares the information supplied by
-those candidates; it does not generate candidate instruments or assign their
-physical costs.
+those candidates. The researcher supplies the candidate instruments and
+assesses their physical costs.
 
 The separate `critical` input adds:
 
@@ -177,9 +190,8 @@ and reduced rational strings.
 Topology analysis and counter comparison determine which ambiguity directions
 exist and when they become exposed, using only the positive bidirectional
 support. The critical task also uses the rate magnitudes to weight those
-directions. If a directed rate vanishes, the static graph filtration can
-include a path witness that the dynamics cannot realize; such a model needs
-a different support calculation.
+directions. A model with vanishing directed rates requires a support calculation
+that follows its allowed transition directions.
 
 ## Evidence classes
 
@@ -194,16 +206,14 @@ Machine-readable results distinguish four kinds of support:
 
 In a topology analysis, `LIMIT_REACHED` means the requested finite enumeration
 was not completed. The result preserves the validated model, homology basis,
-and readout, but it does not expose a partial filtration or phase prediction
-as if it were complete.
+and readout; filtration and phase fields are null.
 
 `PARTIAL_HORIZON` has a different meaning: every requested layer is exact, but
 the exposure lattice has not yet reached the full integral homology lattice.
-The result may therefore describe the chosen finite horizon, but not the
-natural filtration beyond it.
+The result describes that finite horizon; higher layers remain uncomputed.
 
-Comparison relations on a partial horizon have scope `COMPUTED_EXPOSURE`.
-They do not establish equality or containment on uncomputed directions.
+Comparison relations on a partial horizon have scope `COMPUTED_EXPOSURE`,
+restricting their kernel statements to that lattice.
 Candidates with `LIMIT_REACHED` or `ERROR` have no asserted information
 relations, while valid candidates retain their results. The whole study is
 `COMPLETE` only when every candidate is naturally complete; otherwise it is
@@ -223,15 +233,16 @@ unknown graph, transition rates, or hidden states from data is a separate
 inference task. Noisy, adaptive, or irregular observations likewise need an
 observation model beyond the noiseless regular snapshots and exact integer
 counters used here. General trajectory simulation and real-valued measurement
-rules require other tools or extensions to that model.
+rules require other tools or extensions to that model. The DFR application
+includes a simulator for its documented known-rate six-state model and an
+adapter for user predictions. It supports observation design and evaluation
+for scientific ML; users train their own models separately.
 
 Dense, critical, and sparse labels describe limits under a specified sampling
-scaling. They do not classify a finite dataset or provide finite-sample risk
-guarantees or confidence intervals. The critical result gives a limiting
-generative specification and conditioning rule. A general
-posterior at finite $(T,\delta)$ or an unconditional critical MAP probability
-requires further calculation. The generally infinite total-mark probability
-table is not expanded by this task.
+scaling. The critical result gives a limiting generative specification and
+conditioning rule, represented by its component laws. Evaluating a posterior
+at finite $(T,\delta)$ or an unconditional critical MAP probability requires
+the corresponding conditional-law calculation.
 
 For the paper's finite-cycle examples, the checkout includes specialized
 bridge calculations and critical MAP identities. The
@@ -248,6 +259,13 @@ distinction.
 
 ## Scale and resource behavior
 
+Target diagnosis and record reconstruction use exact linear and integer
+algebra. Readout design adds a subset search that can grow combinatorially
+with the candidate pool. The [target limits](TARGET_TASKS.md#exactness-and-guarantees)
+bound that search and its certificates; a stopped run retains only the
+guarantees established before its stop. Target explanations additionally use
+the exposure calculation described below.
+
 Simple-cycle enumeration can grow exponentially. `max_cycles` bounds the
 work required for a complete catalogue. When the bound is
 exceeded, the software returns `LIMIT_REACHED` and identifies complete and
@@ -255,8 +273,8 @@ incomplete components. Users should increase the budget only after considering
 the graph size and the value of a complete enumeration.
 
 Suitability depends on the cycle catalogue and the integer coefficients.
-Vertex count alone does not establish an
-affordable problem size. The [built-in study measurements](COMPARISON_GUIDE.md#resource-use)
+Graphs with the same vertex count can have very different cycle catalogues
+and arithmetic costs. The [built-in study measurements](COMPARISON_GUIDE.md#resource-use)
 provide small-network baselines; use explicit budgets when trying a new
 network.
 

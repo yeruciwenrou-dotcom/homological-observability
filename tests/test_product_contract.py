@@ -33,8 +33,8 @@ class ProductContractTests(unittest.TestCase):
         if ".dev" in ho.__version__:
             # Development builds have their own runtime identity. The citation
             # continues to identify the actual published, archived release.
-            self.assertEqual(citation_version.group(1), "1.2.1")
-            self.assertIn("10.5281/zenodo.23604825", citation)
+            self.assertEqual(citation_version.group(1), "2.0.0")
+            self.assertIn("10.5281/zenodo.23618828", citation)
         else:
             self.assertEqual(citation_version.group(1), ho.__version__)
 
@@ -142,7 +142,7 @@ class ProductContractTests(unittest.TestCase):
         self.assertIn("exact integer", text.lower())
         self.assertIn("asymptotic predictions", text.lower())
         self.assertIn("## Evidence boundary", markdown)
-        self.assertIn("finite-sample error bars", markdown)
+        self.assertIn("model and sampling assumptions", markdown)
 
     def test_analysis_schema_is_bundled_and_tracks_the_document(self) -> None:
         schema = ho.load_analysis_schema()

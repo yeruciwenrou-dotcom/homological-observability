@@ -1,0 +1,6280 @@
+{
+  "protocol": 1,
+  "environment": {
+    "commit": "ea356991bb5824477d320c2e05dd7e3cd48329c0",
+    "source_sha256": "4ea0d50da6f793629ab891d7b1bfe892d22297af86cfc0290a10ebd79ea00ca9",
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "processor": "",
+    "packages": {
+      "sympy": "1.14.0",
+      "networkx": "3.6.1",
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "homological-observability": "2.1.0.dev0"
+    }
+  },
+  "measurement": "Individual resource profiles run in fresh subprocesses. Peak RSS uses Linux VmHWM or resource.ru_maxrss elsewhere, measured before replay and including interpreter/imports. Stages partition coordinate, rank, certificate and optional explanation work; JSON encoding is additional. Each scale point is one run, not a latency guarantee.",
+  "correctness": {
+    "seed": 621108,
+    "oracle": "Fraction rank on incidence and edge cochains; no product cycle basis",
+    "cases": [
+      {
+        "case": "dfr-fixed",
+        "minimum": 1,
+        "ties": 2
+      },
+      {
+        "case": "dfr-zero",
+        "minimum": 2,
+        "ties": 3
+      },
+      {
+        "case": "bridge",
+        "minimum": 1,
+        "ties": 4
+      },
+      {
+        "case": "theta",
+        "minimum": 1,
+        "ties": 2
+      },
+      {
+        "case": "minimal",
+        "minimum": 1,
+        "ties": 4
+      },
+      {
+        "case": "generated-0",
+        "minimum": 1,
+        "ties": 1
+      },
+      {
+        "case": "generated-1",
+        "minimum": 1,
+        "ties": 2
+      },
+      {
+        "case": "generated-2",
+        "minimum": 1,
+        "ties": 3
+      },
+      {
+        "case": "generated-3",
+        "minimum": 4,
+        "ties": 1
+      },
+      {
+        "case": "generated-4",
+        "minimum": 0,
+        "ties": 1
+      },
+      {
+        "case": "generated-5",
+        "minimum": 1,
+        "ties": 1
+      },
+      {
+        "case": "generated-6",
+        "minimum": null,
+        "ties": 0
+      },
+      {
+        "case": "generated-7",
+        "minimum": 3,
+        "ties": 1
+      },
+      {
+        "case": "generated-8",
+        "minimum": 0,
+        "ties": 1
+      },
+      {
+        "case": "generated-9",
+        "minimum": 2,
+        "ties": 10
+      },
+      {
+        "case": "generated-10",
+        "minimum": null,
+        "ties": 0
+      },
+      {
+        "case": "generated-11",
+        "minimum": 2,
+        "ties": 1
+      },
+      {
+        "case": "generated-12",
+        "minimum": 1,
+        "ties": 2
+      },
+      {
+        "case": "generated-13",
+        "minimum": 1,
+        "ties": 4
+      },
+      {
+        "case": "generated-14",
+        "minimum": 1,
+        "ties": 5
+      },
+      {
+        "case": "generated-15",
+        "minimum": null,
+        "ties": 0
+      },
+      {
+        "case": "generated-16",
+        "minimum": 0,
+        "ties": 1
+      },
+      {
+        "case": "generated-17",
+        "minimum": 0,
+        "ties": 1
+      },
+      {
+        "case": "generated-18",
+        "minimum": 3,
+        "ties": 3
+      },
+      {
+        "case": "generated-19",
+        "minimum": 3,
+        "ties": 10
+      },
+      {
+        "case": "generated-20",
+        "minimum": 0,
+        "ties": 1
+      },
+      {
+        "case": "generated-21",
+        "minimum": 2,
+        "ties": 1
+      },
+      {
+        "case": "generated-22",
+        "minimum": 2,
+        "ties": 3
+      },
+      {
+        "case": "generated-23",
+        "minimum": 2,
+        "ties": 6
+      }
+    ],
+    "tree_orders": 2
+  },
+  "baselines": {
+    "cases": [
+      {
+        "case": "dfr-fixed",
+        "minimum": 1,
+        "ties": 2,
+        "fraction_enumeration": {
+          "seconds": [
+            0.0019076780008617789,
+            0.0016255749942502007,
+            0.0016327259945683181
+          ],
+          "median_seconds": 0.0016327259945683181
+        },
+        "product_with_certificates": {
+          "seconds": [
+            0.006148551998194307,
+            0.006396994001988787,
+            0.00788604399713222
+          ],
+          "median_seconds": 0.006396994001988787
+        },
+        "ordered_methods": [
+          {
+            "method": "deletion",
+            "order": "forward",
+            "ids": [
+              "W_OFF"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0030148759979056194,
+              0.0020654740001191385,
+              0.002181328003644012
+            ],
+            "median_seconds": 0.002181328003644012
+          },
+          {
+            "method": "deletion",
+            "order": "reverse",
+            "ids": [
+              "W_ON"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.002107366999553051,
+              0.0020176229954813607,
+              0.002063311003439594
+            ],
+            "median_seconds": 0.002063311003439594
+          },
+          {
+            "method": "deletion",
+            "order": "seeded",
+            "ids": [
+              "W_OFF"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0017589659983059391,
+              0.0018270869986736216,
+              0.001896620997285936
+            ],
+            "median_seconds": 0.0018270869986736216
+          },
+          {
+            "method": "greedy",
+            "order": "forward",
+            "ids": [
+              "W_ON"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.002461206997395493,
+              0.0022622289980063215,
+              0.002181859003030695
+            ],
+            "median_seconds": 0.0022622289980063215
+          },
+          {
+            "method": "greedy",
+            "order": "reverse",
+            "ids": [
+              "W_OFF"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0020042830001330003,
+              0.002231902995845303,
+              0.0020907619982608594
+            ],
+            "median_seconds": 0.0020907619982608594
+          },
+          {
+            "method": "greedy",
+            "order": "seeded",
+            "ids": [
+              "W_ON"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0021104620027472265,
+              0.002271131997986231,
+              0.002490990998921916
+            ],
+            "median_seconds": 0.002271131997986231
+          }
+        ]
+      },
+      {
+        "case": "dfr-zero",
+        "minimum": 2,
+        "ties": 3,
+        "fraction_enumeration": {
+          "seconds": [
+            0.006319907995930407,
+            0.005486408997967374,
+            0.005425737996120006
+          ],
+          "median_seconds": 0.005486408997967374
+        },
+        "product_with_certificates": {
+          "seconds": [
+            0.012905793999379966,
+            0.014481924998108298,
+            0.011308792003546841
+          ],
+          "median_seconds": 0.012905793999379966
+        },
+        "ordered_methods": [
+          {
+            "method": "deletion",
+            "order": "forward",
+            "ids": [
+              "W_ON",
+              "W_OFF"
+            ],
+            "count": 2,
+            "sufficient": true,
+            "seconds": [
+              0.002351613002247177,
+              0.0026518329977989197,
+              0.002523811002902221
+            ],
+            "median_seconds": 0.002523811002902221
+          },
+          {
+            "method": "deletion",
+            "order": "reverse",
+            "ids": [
+              "W",
+              "W_ON"
+            ],
+            "count": 2,
+            "sufficient": true,
+            "seconds": [
+              0.0022442219997174107,
+              0.0022656940054730512,
+              0.0024908519990276545
+            ],
+            "median_seconds": 0.0022656940054730512
+          },
+          {
+            "method": "deletion",
+            "order": "seeded",
+            "ids": [
+              "W_ON",
+              "W_OFF"
+            ],
+            "count": 2,
+            "sufficient": true,
+            "seconds": [
+              0.0023950280010467395,
+              0.002233995997812599,
+              0.0020814079980482347
+            ],
+            "median_seconds": 0.002233995997812599
+          },
+          {
+            "method": "greedy",
+            "order": "forward",
+            "ids": [
+              "W",
+              "W_ON"
+            ],
+            "count": 2,
+            "sufficient": true,
+            "seconds": [
+              0.004251008998835459,
+              0.004537116998108104,
+              0.0038957159995334223
+            ],
+            "median_seconds": 0.004251008998835459
+          },
+          {
+            "method": "greedy",
+            "order": "reverse",
+            "ids": [
+              "S2",
+              "S1",
+              "S0",
+              "W_OFF",
+              "W_ON"
+            ],
+            "count": 5,
+            "sufficient": true,
+            "seconds": [
+              0.00844876700284658,
+              0.00834940899949288,
+              0.008022838999750093
+            ],
+            "median_seconds": 0.00834940899949288
+          },
+          {
+            "method": "greedy",
+            "order": "seeded",
+            "ids": [
+              "W",
+              "W_OFF"
+            ],
+            "count": 2,
+            "sufficient": true,
+            "seconds": [
+              0.004175525005848613,
+              0.00374933700368274,
+              0.003496357996482402
+            ],
+            "median_seconds": 0.00374933700368274
+          }
+        ]
+      },
+      {
+        "case": "direct-target-available",
+        "minimum": 1,
+        "ties": 3,
+        "fraction_enumeration": {
+          "seconds": [
+            0.002079184996546246,
+            0.001955218998773489,
+            0.0018320149974897504
+          ],
+          "median_seconds": 0.001955218998773489
+        },
+        "product_with_certificates": {
+          "seconds": [
+            0.00846888699743431,
+            0.007733885002380703,
+            0.007580135999887716
+          ],
+          "median_seconds": 0.007733885002380703
+        },
+        "ordered_methods": [
+          {
+            "method": "deletion",
+            "order": "forward",
+            "ids": [
+              "direct-DeltaW"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0027847420060425065,
+              0.0030586819993914105,
+              0.002567086005001329
+            ],
+            "median_seconds": 0.0027847420060425065
+          },
+          {
+            "method": "deletion",
+            "order": "reverse",
+            "ids": [
+              "W_ON"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.00320767499943031,
+              0.002936298005806748,
+              0.0025780619980650954
+            ],
+            "median_seconds": 0.002936298005806748
+          },
+          {
+            "method": "deletion",
+            "order": "seeded",
+            "ids": [
+              "W_OFF"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0023888590003480203,
+              0.0024225500019383617,
+              0.002510360995074734
+            ],
+            "median_seconds": 0.0024225500019383617
+          },
+          {
+            "method": "greedy",
+            "order": "forward",
+            "ids": [
+              "W_ON"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0024705609976081178,
+              0.002410872002656106,
+              0.0024734260005061515
+            ],
+            "median_seconds": 0.0024705609976081178
+          },
+          {
+            "method": "greedy",
+            "order": "reverse",
+            "ids": [
+              "direct-DeltaW"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0026250530063407496,
+              0.0031517410025116988,
+              0.002861676999600604
+            ],
+            "median_seconds": 0.002861676999600604
+          },
+          {
+            "method": "greedy",
+            "order": "seeded",
+            "ids": [
+              "W_ON"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0028244109998922795,
+              0.0026848619963857345,
+              0.0025267960008932278
+            ],
+            "median_seconds": 0.0026848619963857345
+          }
+        ]
+      },
+      {
+        "case": "deletion-order-example",
+        "minimum": 1,
+        "ties": 1,
+        "fraction_enumeration": {
+          "seconds": [
+            0.0004168439991190098,
+            0.0008724470026209019,
+            0.00040637900383444503
+          ],
+          "median_seconds": 0.0004168439991190098
+        },
+        "product_with_certificates": {
+          "seconds": [
+            0.004429025000717957,
+            0.002489459002390504,
+            0.00206701600109227
+          ],
+          "median_seconds": 0.002489459002390504
+        },
+        "ordered_methods": [
+          {
+            "method": "deletion",
+            "order": "forward",
+            "ids": [
+              "x"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0005372550003812648,
+              0.00042424599814694375,
+              0.0005250370013527572
+            ],
+            "median_seconds": 0.0005250370013527572
+          },
+          {
+            "method": "deletion",
+            "order": "reverse",
+            "ids": [
+              "x+y",
+              "y"
+            ],
+            "count": 2,
+            "sufficient": true,
+            "seconds": [
+              0.000519398003234528,
+              0.0007309349966817535,
+              0.0004963539977325127
+            ],
+            "median_seconds": 0.000519398003234528
+          },
+          {
+            "method": "deletion",
+            "order": "seeded",
+            "ids": [
+              "x"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0004902239961666055,
+              0.0006279010049183853,
+              0.0005558830016525462
+            ],
+            "median_seconds": 0.0005558830016525462
+          },
+          {
+            "method": "greedy",
+            "order": "forward",
+            "ids": [
+              "x"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0006551010010298342,
+              0.0006281809983192943,
+              0.0006063979963073507
+            ],
+            "median_seconds": 0.0006281809983192943
+          },
+          {
+            "method": "greedy",
+            "order": "reverse",
+            "ids": [
+              "x"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0008715250005479902,
+              0.0009415399981662631,
+              0.0008865380004863255
+            ],
+            "median_seconds": 0.0008865380004863255
+          },
+          {
+            "method": "greedy",
+            "order": "seeded",
+            "ids": [
+              "x"
+            ],
+            "count": 1,
+            "sufficient": true,
+            "seconds": [
+              0.0006265989941312,
+              0.0008054669960984029,
+              0.0008754110021982342
+            ],
+            "median_seconds": 0.0008054669960984029
+          }
+        ]
+      }
+    ],
+    "existing_compare": {
+      "timing": {
+        "seconds": [
+          0.0343479080038378,
+          0.029996713004948106,
+          0.029807924998749513
+        ],
+        "median_seconds": 0.029996713004948106
+      },
+      "status": "COMPLETE",
+      "result": {
+        "schema_name": "homological-observability.comparison",
+        "schema_version": 2,
+        "artifact_role": "configuration-comparison",
+        "status": "COMPLETE",
+        "producer": {
+          "name": "homological-observability",
+          "version": "2.1.0.dev0",
+          "code_sha256": "4df7b273ec9413134726789132c9c967ae6cad8ff2252e723102b6b57e73a612",
+          "source_commit": null,
+          "environment": {
+            "python": "3.12.14",
+            "implementation": "CPython",
+            "platform": "Linux",
+            "machine": "x86_64",
+            "dependencies": {
+              "sympy": "1.14.0",
+              "networkx": "3.6.1",
+              "numpy": "2.3.5",
+              "scipy": "1.17.0",
+              "mpmath": "1.3.0"
+            }
+          }
+        },
+        "study": {
+          "schema_version": 2,
+          "name": "DFR target audit",
+          "question": "Does W determine DeltaW?",
+          "model": {
+            "schema_version": 2,
+            "name": "DFR known-Q research application",
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ]
+          },
+          "analysis": {
+            "max_cycles": 10000
+          },
+          "configurations": [
+            {
+              "id": "p",
+              "label": "W",
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "pf",
+              "label": "W and target",
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                },
+                {
+                  "name": "DeltaW",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "study_sha256": "afbd86bfc5e51ec1bdfdedb7017f7838955cf8de63837afd7ce34cbb8a8c0c6c",
+        "shared_conditions": {
+          "model": {
+            "schema_version": 2,
+            "name": "DFR known-Q research application",
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ]
+          },
+          "analysis": {
+            "max_cycles": 10000
+          },
+          "reverse_tree_order": false,
+          "coordinates": "default spanning-tree order",
+          "observation_contract": "One supplied connected simple support graph with a shared regular noiseless snapshot protocol and sampling conditions. Configurations vary the exact cumulative integer counter rules.",
+          "information_contract": "Relations compare kernels on the declared common integer cycle lattice. Equivalent information is decoded on legal readout images; an ambient integer inverse is not required."
+        },
+        "rows": [
+          {
+            "id": "p",
+            "label": "W",
+            "channels": 1,
+            "status": "COMPLETE",
+            "error": null,
+            "recovery": null,
+            "scope": "FULL_HOMOLOGY",
+            "computed_max_layer": 3,
+            "natural_complete": true,
+            "first_hidden_layer": 2,
+            "computed_hidden_rank": 3,
+            "entropy_log_t_coefficient": null,
+            "visible_torsion": {},
+            "hidden_edge_witnesses": [
+              {
+                "cycle_coordinates": [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                "edge_chain": [
+                  {
+                    "edge": [
+                      "0",
+                      "1"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "0",
+                      "3"
+                    ],
+                    "coefficient": 1
+                  },
+                  {
+                    "edge": [
+                      "1",
+                      "4"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "4"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              },
+              {
+                "cycle_coordinates": [
+                  0,
+                  0,
+                  1,
+                  0
+                ],
+                "edge_chain": [
+                  {
+                    "edge": [
+                      "0",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "0",
+                      "3"
+                    ],
+                    "coefficient": 1
+                  },
+                  {
+                    "edge": [
+                      "2",
+                      "5"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              },
+              {
+                "cycle_coordinates": [
+                  -1,
+                  0,
+                  0,
+                  1
+                ],
+                "edge_chain": [
+                  {
+                    "edge": [
+                      "1",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "1",
+                      "4"
+                    ],
+                    "coefficient": 1
+                  },
+                  {
+                    "edge": [
+                      "2",
+                      "5"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "4",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              }
+            ],
+            "redundant_channels": [],
+            "explanations": [
+              "3 independent hidden integer direction(s) remain in the full integer cycle group; edge-chain witnesses are included.",
+              "The first hidden direction appears at layer 2 within the computed filtration."
+            ]
+          },
+          {
+            "id": "pf",
+            "label": "W and target",
+            "channels": 2,
+            "status": "COMPLETE",
+            "error": null,
+            "recovery": null,
+            "scope": "FULL_HOMOLOGY",
+            "computed_max_layer": 3,
+            "natural_complete": true,
+            "first_hidden_layer": 2,
+            "computed_hidden_rank": 2,
+            "entropy_log_t_coefficient": null,
+            "visible_torsion": {},
+            "hidden_edge_witnesses": [
+              {
+                "cycle_coordinates": [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                "edge_chain": [
+                  {
+                    "edge": [
+                      "0",
+                      "1"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "0",
+                      "3"
+                    ],
+                    "coefficient": 1
+                  },
+                  {
+                    "edge": [
+                      "1",
+                      "4"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "4"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              },
+              {
+                "cycle_coordinates": [
+                  -1,
+                  0,
+                  0,
+                  1
+                ],
+                "edge_chain": [
+                  {
+                    "edge": [
+                      "1",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "1",
+                      "4"
+                    ],
+                    "coefficient": 1
+                  },
+                  {
+                    "edge": [
+                      "2",
+                      "5"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "4",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              }
+            ],
+            "redundant_channels": [],
+            "explanations": [
+              "2 independent hidden integer direction(s) remain in the full integer cycle group; edge-chain witnesses are included.",
+              "The first hidden direction appears at layer 2 within the computed filtration."
+            ]
+          }
+        ],
+        "results": {
+          "p": {
+            "schema_name": "homological-observability.analysis",
+            "schema_version": 3,
+            "software": {
+              "name": "homological-observability",
+              "version": "2.1.0.dev0"
+            },
+            "artifact_role": "fresh-analysis",
+            "status": "COMPLETE",
+            "evidence_categories": [
+              "EXACT_INTEGER",
+              "EXACT_COMBINATORIAL",
+              "ASYMPTOTIC_THEOREM"
+            ],
+            "normalized_model_sha256": "3da1b8be06a25a2ee6f2140c1dc084db02435150624ac6d7a9e32b91828e21ac",
+            "model": {
+              "schema_version": 2,
+              "name": "DFR known-Q research application/p",
+              "vertices": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                }
+              ],
+              "analysis": {
+                "max_cycles": 10000
+              }
+            },
+            "summary": {
+              "homology_rank": 4,
+              "requested_max_layer": 3,
+              "natural_max_layer": 3,
+              "computed_max_layer": 3,
+              "requested_horizon_complete": true,
+              "natural_filtration_complete": true,
+              "cycle_count": 14,
+              "first_nonzero_exposure_layer": 2,
+              "first_nonzero_visible_layer": 2,
+              "first_nonzero_hidden_layer": 2
+            },
+            "homology": {
+              "rank": 4,
+              "edge_orientation": "lexicographically-smaller vertex to larger vertex",
+              "tree_edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ]
+              ],
+              "chord_edges": [
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "fundamental_cycle_matrix": {
+                "rows": 9,
+                "columns": 4,
+                "data": [
+                  [
+                    1,
+                    -1,
+                    0,
+                    1
+                  ],
+                  [
+                    -1,
+                    0,
+                    -1,
+                    -1
+                  ],
+                  [
+                    0,
+                    1,
+                    1,
+                    0
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    -1,
+                    0,
+                    1
+                  ],
+                  [
+                    0,
+                    0,
+                    -1,
+                    -1
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    1
+                  ]
+                ]
+              },
+              "readout_names": [
+                "W"
+              ],
+              "readout_matrix": {
+                "rows": 1,
+                "columns": 4,
+                "data": [
+                  [
+                    1,
+                    0,
+                    0,
+                    1
+                  ]
+                ]
+              },
+              "coordinate_warning": "Basis matrices depend on the deterministic spanning-tree convention; ranks and quotient invariants are the basis-independent public results.",
+              "evidence_category": "EXACT_INTEGER"
+            },
+            "filtration": {
+              "cycles": [
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "2"
+                  ],
+                  "length": 3
+                },
+                {
+                  "vertices": [
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  "length": 3
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "3"
+                  ],
+                  "length": 4
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "5",
+                    "3"
+                  ],
+                  "length": 4
+                },
+                {
+                  "vertices": [
+                    "1",
+                    "2",
+                    "5",
+                    "4"
+                  ],
+                  "length": 4
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "2",
+                    "5",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "5",
+                    "2"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "5",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "1",
+                    "4",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "5",
+                    "4",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "1",
+                    "2",
+                    "5",
+                    "3",
+                    "4"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "2",
+                    "5",
+                    "4",
+                    "3"
+                  ],
+                  "length": 6
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "3",
+                    "5",
+                    "2"
+                  ],
+                  "length": 6
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "1",
+                    "4",
+                    "5",
+                    "3"
+                  ],
+                  "length": 6
+                }
+              ],
+              "layers": [
+                {
+                  "layer": 0,
+                  "maximum_cycle_length": 0,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 1,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 1,
+                      "columns": 0,
+                      "data": [
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                },
+                {
+                  "layer": 1,
+                  "maximum_cycle_length": 2,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 1,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 1,
+                      "columns": 0,
+                      "data": [
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                },
+                {
+                  "layer": 2,
+                  "maximum_cycle_length": 4,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 4,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 4,
+                      "data": [
+                        [
+                          1,
+                          0,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 4,
+                      "torsion_factors": [],
+                      "finite_order": null,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 1,
+                    "rank": 1,
+                    "basis_columns": {
+                      "rows": 1,
+                      "columns": 1,
+                      "data": [
+                        [
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 1,
+                      "torsion_factors": [],
+                      "finite_order": null,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 3,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 3,
+                      "data": [
+                        [
+                          0,
+                          0,
+                          -1
+                        ],
+                        [
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 3,
+                      "torsion_factors": [],
+                      "finite_order": null,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                },
+                {
+                  "layer": 3,
+                  "maximum_cycle_length": 6,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 4,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 4,
+                      "data": [
+                        [
+                          1,
+                          0,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 0,
+                      "torsion_factors": [],
+                      "finite_order": 1,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 1,
+                    "rank": 1,
+                    "basis_columns": {
+                      "rows": 1,
+                      "columns": 1,
+                      "data": [
+                        [
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 0,
+                      "torsion_factors": [],
+                      "finite_order": 1,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 3,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 3,
+                      "data": [
+                        [
+                          0,
+                          0,
+                          -1
+                        ],
+                        [
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 0,
+                      "torsion_factors": [],
+                      "finite_order": 1,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                }
+              ],
+              "evidence_categories": [
+                "EXACT_COMBINATORIAL",
+                "EXACT_INTEGER"
+              ]
+            },
+            "phase": {
+              "interpretation": "paper-derived asymptotic prediction",
+              "alpha": null,
+              "observation_time": null,
+              "sampling_interval": null,
+              "entropy_log_t_coefficient": null,
+              "layers": [
+                {
+                  "layer": 2,
+                  "hidden_free_rank": 3,
+                  "critical_alpha": {
+                    "numerator": 1,
+                    "denominator": 1
+                  },
+                  "snapshot_budget_exponent": {
+                    "numerator": 2,
+                    "denominator": 1
+                  },
+                  "scaling_exponent": null,
+                  "regime": null,
+                  "lambda": null,
+                  "entropy_log_t_coefficient": null
+                },
+                {
+                  "layer": 3,
+                  "hidden_free_rank": 0,
+                  "critical_alpha": {
+                    "numerator": 1,
+                    "denominator": 2
+                  },
+                  "snapshot_budget_exponent": {
+                    "numerator": 3,
+                    "denominator": 2
+                  },
+                  "scaling_exponent": null,
+                  "regime": null,
+                  "lambda": null,
+                  "entropy_log_t_coefficient": null
+                }
+              ],
+              "evidence_category": "ASYMPTOTIC_THEOREM",
+              "boundary_note": "These values apply the paper's asymptotic law; they are not finite-sample error bars or confidence guarantees."
+            },
+            "limit": null
+          },
+          "pf": {
+            "schema_name": "homological-observability.analysis",
+            "schema_version": 3,
+            "software": {
+              "name": "homological-observability",
+              "version": "2.1.0.dev0"
+            },
+            "artifact_role": "fresh-analysis",
+            "status": "COMPLETE",
+            "evidence_categories": [
+              "EXACT_INTEGER",
+              "EXACT_COMBINATORIAL",
+              "ASYMPTOTIC_THEOREM"
+            ],
+            "normalized_model_sha256": "7c6c0d04838f0d49d11c114f50d9c83cc27474c673da30872687c681b06dddfc",
+            "model": {
+              "schema_version": 2,
+              "name": "DFR known-Q research application/pf",
+              "vertices": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                },
+                {
+                  "name": "DeltaW",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": 1
+                    }
+                  ]
+                }
+              ],
+              "analysis": {
+                "max_cycles": 10000
+              }
+            },
+            "summary": {
+              "homology_rank": 4,
+              "requested_max_layer": 3,
+              "natural_max_layer": 3,
+              "computed_max_layer": 3,
+              "requested_horizon_complete": true,
+              "natural_filtration_complete": true,
+              "cycle_count": 14,
+              "first_nonzero_exposure_layer": 2,
+              "first_nonzero_visible_layer": 2,
+              "first_nonzero_hidden_layer": 2
+            },
+            "homology": {
+              "rank": 4,
+              "edge_orientation": "lexicographically-smaller vertex to larger vertex",
+              "tree_edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ]
+              ],
+              "chord_edges": [
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "fundamental_cycle_matrix": {
+                "rows": 9,
+                "columns": 4,
+                "data": [
+                  [
+                    1,
+                    -1,
+                    0,
+                    1
+                  ],
+                  [
+                    -1,
+                    0,
+                    -1,
+                    -1
+                  ],
+                  [
+                    0,
+                    1,
+                    1,
+                    0
+                  ],
+                  [
+                    1,
+                    0,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    -1,
+                    0,
+                    1
+                  ],
+                  [
+                    0,
+                    0,
+                    -1,
+                    -1
+                  ],
+                  [
+                    0,
+                    1,
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0,
+                    0,
+                    1
+                  ]
+                ]
+              },
+              "readout_names": [
+                "W",
+                "DeltaW"
+              ],
+              "readout_matrix": {
+                "rows": 2,
+                "columns": 4,
+                "data": [
+                  [
+                    1,
+                    0,
+                    0,
+                    1
+                  ],
+                  [
+                    1,
+                    0,
+                    2,
+                    1
+                  ]
+                ]
+              },
+              "coordinate_warning": "Basis matrices depend on the deterministic spanning-tree convention; ranks and quotient invariants are the basis-independent public results.",
+              "evidence_category": "EXACT_INTEGER"
+            },
+            "filtration": {
+              "cycles": [
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "2"
+                  ],
+                  "length": 3
+                },
+                {
+                  "vertices": [
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  "length": 3
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "3"
+                  ],
+                  "length": 4
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "5",
+                    "3"
+                  ],
+                  "length": 4
+                },
+                {
+                  "vertices": [
+                    "1",
+                    "2",
+                    "5",
+                    "4"
+                  ],
+                  "length": 4
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "2",
+                    "5",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "5",
+                    "2"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "5",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "1",
+                    "4",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "5",
+                    "4",
+                    "3"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "1",
+                    "2",
+                    "5",
+                    "3",
+                    "4"
+                  ],
+                  "length": 5
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "2",
+                    "5",
+                    "4",
+                    "3"
+                  ],
+                  "length": 6
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "1",
+                    "4",
+                    "3",
+                    "5",
+                    "2"
+                  ],
+                  "length": 6
+                },
+                {
+                  "vertices": [
+                    "0",
+                    "2",
+                    "1",
+                    "4",
+                    "5",
+                    "3"
+                  ],
+                  "length": 6
+                }
+              ],
+              "layers": [
+                {
+                  "layer": 0,
+                  "maximum_cycle_length": 0,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 2,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 2,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                },
+                {
+                  "layer": 1,
+                  "maximum_cycle_length": 2,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 2,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 2,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 0,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 0,
+                      "data": [
+                        [],
+                        [],
+                        [],
+                        []
+                      ]
+                    },
+                    "graded_quotient": null,
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                },
+                {
+                  "layer": 2,
+                  "maximum_cycle_length": 4,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 4,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 4,
+                      "data": [
+                        [
+                          1,
+                          0,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 4,
+                      "torsion_factors": [],
+                      "finite_order": null,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 2,
+                    "rank": 2,
+                    "basis_columns": {
+                      "rows": 2,
+                      "columns": 2,
+                      "data": [
+                        [
+                          2,
+                          1
+                        ],
+                        [
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 2,
+                      "torsion_factors": [],
+                      "finite_order": null,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 2,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 2,
+                      "data": [
+                        [
+                          0,
+                          -1
+                        ],
+                        [
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 2,
+                      "torsion_factors": [],
+                      "finite_order": null,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                },
+                {
+                  "layer": 3,
+                  "maximum_cycle_length": 6,
+                  "exposure": {
+                    "ambient_rank": 4,
+                    "rank": 4,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 4,
+                      "data": [
+                        [
+                          1,
+                          0,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1,
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0,
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 0,
+                      "torsion_factors": [],
+                      "finite_order": 1,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "visible": {
+                    "ambient_rank": 2,
+                    "rank": 2,
+                    "basis_columns": {
+                      "rows": 2,
+                      "columns": 2,
+                      "data": [
+                        [
+                          2,
+                          1
+                        ],
+                        [
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 0,
+                      "torsion_factors": [],
+                      "finite_order": 1,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  },
+                  "hidden": {
+                    "ambient_rank": 4,
+                    "rank": 2,
+                    "basis_columns": {
+                      "rows": 4,
+                      "columns": 2,
+                      "data": [
+                        [
+                          0,
+                          -1
+                        ],
+                        [
+                          1,
+                          0
+                        ],
+                        [
+                          0,
+                          0
+                        ],
+                        [
+                          0,
+                          1
+                        ]
+                      ]
+                    },
+                    "graded_quotient": {
+                      "free_rank": 0,
+                      "torsion_factors": [],
+                      "finite_order": 1,
+                      "evidence_category": "EXACT_INTEGER"
+                    },
+                    "evidence_category": "EXACT_INTEGER"
+                  }
+                }
+              ],
+              "evidence_categories": [
+                "EXACT_COMBINATORIAL",
+                "EXACT_INTEGER"
+              ]
+            },
+            "phase": {
+              "interpretation": "paper-derived asymptotic prediction",
+              "alpha": null,
+              "observation_time": null,
+              "sampling_interval": null,
+              "entropy_log_t_coefficient": null,
+              "layers": [
+                {
+                  "layer": 2,
+                  "hidden_free_rank": 2,
+                  "critical_alpha": {
+                    "numerator": 1,
+                    "denominator": 1
+                  },
+                  "snapshot_budget_exponent": {
+                    "numerator": 2,
+                    "denominator": 1
+                  },
+                  "scaling_exponent": null,
+                  "regime": null,
+                  "lambda": null,
+                  "entropy_log_t_coefficient": null
+                },
+                {
+                  "layer": 3,
+                  "hidden_free_rank": 0,
+                  "critical_alpha": {
+                    "numerator": 1,
+                    "denominator": 2
+                  },
+                  "snapshot_budget_exponent": {
+                    "numerator": 3,
+                    "denominator": 2
+                  },
+                  "scaling_exponent": null,
+                  "regime": null,
+                  "lambda": null,
+                  "entropy_log_t_coefficient": null
+                }
+              ],
+              "evidence_category": "ASYMPTOTIC_THEOREM",
+              "boundary_note": "These values apply the paper's asymptotic law; they are not finite-sample error bars or confidence guarantees."
+            },
+            "limit": null
+          }
+        },
+        "relations": [
+          {
+            "left": "p",
+            "right": "pf",
+            "relation": "RIGHT_REFINES_LEFT",
+            "scope": "FULL_HOMOLOGY",
+            "computed_max_layer": 3,
+            "left_kernel_in_right": {
+              "included": false,
+              "coordinates": null
+            },
+            "right_kernel_in_left": {
+              "included": true,
+              "coordinates": {
+                "rows": 3,
+                "columns": 2,
+                "data": [
+                  [
+                    1,
+                    0
+                  ],
+                  [
+                    0,
+                    0
+                  ],
+                  [
+                    0,
+                    1
+                  ]
+                ]
+              }
+            },
+            "left_not_right_witness": {
+              "cycle_coordinates": [
+                0,
+                0,
+                1,
+                0
+              ],
+              "edge_chain": [
+                {
+                  "edge": [
+                    "0",
+                    "2"
+                  ],
+                  "coefficient": -1
+                },
+                {
+                  "edge": [
+                    "0",
+                    "3"
+                  ],
+                  "coefficient": 1
+                },
+                {
+                  "edge": [
+                    "2",
+                    "5"
+                  ],
+                  "coefficient": -1
+                },
+                {
+                  "edge": [
+                    "3",
+                    "5"
+                  ],
+                  "coefficient": 1
+                }
+              ],
+              "left_readout": [
+                0
+              ],
+              "right_readout": [
+                0,
+                2
+              ]
+            },
+            "right_not_left_witness": null,
+            "metric_comparison": {
+              "first_hidden_layer": "TIED",
+              "hidden_rank_tied": false,
+              "entropy_coefficient_tied": null,
+              "channel_count_difference": -1
+            },
+            "explanations": [
+              "The right configuration strictly refines the left on this scope: its hidden lattice is strictly smaller. The left-not-right witness is invisible to the left and distinguished by the right.",
+              "The first-hidden-layer objective is tied. An objective tie alone does not imply information equivalence."
+            ]
+          }
+        ],
+        "explanations": [
+          "Compared 2 configuration(s): 2 naturally complete, 0 limited to the requested horizon, 0 resource-limited, and 0 failed.",
+          "Compare the scoped information relations and their witnesses alongside the objective summaries; scalar ties do not imply equivalent information.",
+          "Channel counts describe the supplied cumulative counters. They do not establish equal hardware cost or a universal best design.",
+          "Entropy coefficients are asymptotic log(T) terms. A zero value does not establish zero uncertainty or finite-time recovery.",
+          "PARTIAL_HORIZON conclusions cover computed exposure only. LIMIT_REACHED and ERROR candidates carry no missing-layer or information-relation conclusion."
+        ]
+      }
+    },
+    "target_diagnosis": {
+      "timing": {
+        "seconds": [
+          0.0022246329972404055,
+          0.0025043320056283846,
+          0.0024617579983896576
+        ],
+        "median_seconds": 0.0024617579983896576
+      },
+      "sufficient": false
+    },
+    "timing_scope": "Fraction scripts return ranks/IDs; product design also builds coordinates, certificates, replay metadata and statuses. Timings do not imply equal output responsibilities."
+  },
+  "records": {
+    "dataset_id": "e6bf08002c813b7a0edcec4817c8f84d2b3db5f6bd18112d07e47704a1d3387c",
+    "observations": {
+      "w": {
+        "trajectory_count": 64,
+        "scalar_count": 64,
+        "int64_readout_bytes": 512,
+        "json_bytes_with_snapshots_and_ids": 18885,
+        "encoding": {
+          "seconds": [
+            0.00014580900460714474,
+            0.0001254379967576824,
+            0.00012540800526039675
+          ],
+          "median_seconds": 0.0001254379967576824
+        }
+      },
+      "w-on": {
+        "trajectory_count": 64,
+        "scalar_count": 128,
+        "int64_readout_bytes": 1024,
+        "json_bytes_with_snapshots_and_ids": 19466,
+        "encoding": {
+          "seconds": [
+            0.00012940399756189436,
+            0.00012851200153818354,
+            0.0001286429978790693
+          ],
+          "median_seconds": 0.0001286429978790693
+        }
+      },
+      "all": {
+        "trajectory_count": 64,
+        "scalar_count": 384,
+        "int64_readout_bytes": 3072,
+        "json_bytes_with_snapshots_and_ids": 21492,
+        "encoding": {
+          "seconds": [
+            0.00016759099526097998,
+            0.0002228840021416545,
+            0.00015683499805163592
+          ],
+          "median_seconds": 0.00016759099526097998
+        }
+      }
+    },
+    "event_accumulation": {
+      "direct-target": {
+        "channels": 1,
+        "seconds": [
+          0.00015704499674029648,
+          9.54630013438873e-05,
+          9.83179998002015e-05
+        ],
+        "median_seconds": 9.83179998002015e-05
+      },
+      "w-on": {
+        "channels": 2,
+        "seconds": [
+          0.0001742510066833347,
+          0.00017574299999978393,
+          0.00019910900300601497
+        ],
+        "median_seconds": 0.00017574299999978393
+      },
+      "all": {
+        "channels": 6,
+        "seconds": [
+          0.0005076509987702593,
+          0.0005331790016498417,
+          0.0005079910042695701
+        ],
+        "median_seconds": 0.0005079910042695701
+      }
+    },
+    "same_count_alternative": {
+      "channels": [
+        "W",
+        "S0"
+      ],
+      "sufficient": false,
+      "pressure_inputs_equal": true,
+      "pressure_targets": [
+        0,
+        2
+      ]
+    },
+    "application_seconds": {
+      "seconds": [
+        0.5300176550008473
+      ],
+      "median_seconds": 0.5300176550008473
+    },
+    "application": {
+      "schema_name": "homological-observability.dfr-case",
+      "protocol_version": 1,
+      "dataset_id": "e6bf08002c813b7a0edcec4817c8f84d2b3db5f6bd18112d07e47704a1d3387c",
+      "audits": {
+        "snapshots": {
+          "schema_name": "homological-observability.target-task",
+          "schema_version": 1,
+          "software": {
+            "name": "homological-observability",
+            "version": "2.1.0.dev0"
+          },
+          "operation": "analyze",
+          "request": {
+            "schema_version": 1,
+            "operation": "analyze",
+            "model": {
+              "schema_version": 2,
+              "name": "DFR known-Q research application",
+              "vertices": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "readouts": [],
+              "analysis": {
+                "observation_time": 2.5,
+                "sampling_interval": 0.05102040816326531
+              }
+            },
+            "targets": [
+              {
+                "name": "DeltaW",
+                "coefficients": [
+                  {
+                    "edge": [
+                      "0",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              }
+            ],
+            "candidates": [],
+            "limits": {
+              "max_subsets": 10000,
+              "max_solutions": 100,
+              "max_matrix_entries": 100000,
+              "max_integer_bits": 4096,
+              "max_seconds": 30.0,
+              "max_explanation_cycles": 10000
+            },
+            "reverse_tree_order": false,
+            "record": null,
+            "explain": true
+          },
+          "request_sha256": "1a50d6704a7161d61c4cca84a942c16f9ebedececa87555eae843ca6b20e8beb",
+          "status": "COMPLETE",
+          "limit": null,
+          "basis": {
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "tree_edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ]
+            ],
+            "chord_edges": [
+              [
+                "1",
+                "2"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "cycles": {
+              "rows": 9,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            },
+            "readouts": {
+              "rows": 0,
+              "columns": 4,
+              "data": []
+            },
+            "targets": {
+              "rows": 1,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  2,
+                  1
+                ]
+              ]
+            }
+          },
+          "result": {
+            "sufficient": false,
+            "rank_readouts": 0,
+            "rank_joint": 1,
+            "certificate": {
+              "kind": "ambiguity",
+              "cycle_coordinates": {
+                "rows": 4,
+                "columns": 1,
+                "data": [
+                  [
+                    1
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ]
+                ]
+              },
+              "edge_chain": {
+                "rows": 9,
+                "columns": 1,
+                "data": [
+                  [
+                    1
+                  ],
+                  [
+                    -1
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    1
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ]
+                ]
+              },
+              "target_change": {
+                "rows": 1,
+                "columns": 1,
+                "data": [
+                  [
+                    1
+                  ]
+                ]
+              }
+            },
+            "certificate_complete": true
+          },
+          "explanation_status": "COMPLETE",
+          "explanation": {
+            "scope": "fixed_readouts",
+            "requested_max_layer": 3,
+            "natural_filtration_complete": true,
+            "layers": [
+              {
+                "layer": 0,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 1,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 2,
+                "target_image_rank": 1,
+                "graded_target_rank": 1,
+                "hidden_rank": 4,
+                "joint_hidden_rank": 3,
+                "critical_alpha": "1",
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4595509823847445/36028797018963968"
+              },
+              {
+                "layer": 3,
+                "target_image_rank": 1,
+                "graded_target_rank": 0,
+                "hidden_rank": 4,
+                "joint_hidden_rank": 3,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4223742108215674994724526605605/649037107316853453566312041152512"
+              }
+            ],
+            "target_entropy_log_t_coefficient": null,
+            "prefix_entropy_log_t_coefficient": null,
+            "limit": null
+          }
+        },
+        "w": {
+          "schema_name": "homological-observability.target-task",
+          "schema_version": 1,
+          "software": {
+            "name": "homological-observability",
+            "version": "2.1.0.dev0"
+          },
+          "operation": "analyze",
+          "request": {
+            "schema_version": 1,
+            "operation": "analyze",
+            "model": {
+              "schema_version": 2,
+              "name": "DFR known-Q research application",
+              "vertices": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                }
+              ],
+              "analysis": {
+                "observation_time": 2.5,
+                "sampling_interval": 0.05102040816326531
+              }
+            },
+            "targets": [
+              {
+                "name": "DeltaW",
+                "coefficients": [
+                  {
+                    "edge": [
+                      "0",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              }
+            ],
+            "candidates": [],
+            "limits": {
+              "max_subsets": 10000,
+              "max_solutions": 100,
+              "max_matrix_entries": 100000,
+              "max_integer_bits": 4096,
+              "max_seconds": 30.0,
+              "max_explanation_cycles": 10000
+            },
+            "reverse_tree_order": false,
+            "record": null,
+            "explain": true
+          },
+          "request_sha256": "05a1dcc39a4188f44401fbd1e680f90a3799880d8c3b00e7f0db7aeb654b0262",
+          "status": "COMPLETE",
+          "limit": null,
+          "basis": {
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "tree_edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ]
+            ],
+            "chord_edges": [
+              [
+                "1",
+                "2"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "cycles": {
+              "rows": 9,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            },
+            "readouts": {
+              "rows": 1,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            },
+            "targets": {
+              "rows": 1,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  2,
+                  1
+                ]
+              ]
+            }
+          },
+          "result": {
+            "sufficient": false,
+            "rank_readouts": 1,
+            "rank_joint": 2,
+            "certificate": {
+              "kind": "ambiguity",
+              "cycle_coordinates": {
+                "rows": 4,
+                "columns": 1,
+                "data": [
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    1
+                  ],
+                  [
+                    0
+                  ]
+                ]
+              },
+              "edge_chain": {
+                "rows": 9,
+                "columns": 1,
+                "data": [
+                  [
+                    0
+                  ],
+                  [
+                    -1
+                  ],
+                  [
+                    1
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    -1
+                  ],
+                  [
+                    0
+                  ],
+                  [
+                    1
+                  ],
+                  [
+                    0
+                  ]
+                ]
+              },
+              "target_change": {
+                "rows": 1,
+                "columns": 1,
+                "data": [
+                  [
+                    2
+                  ]
+                ]
+              }
+            },
+            "certificate_complete": true
+          },
+          "explanation_status": "COMPLETE",
+          "explanation": {
+            "scope": "fixed_readouts",
+            "requested_max_layer": 3,
+            "natural_filtration_complete": true,
+            "layers": [
+              {
+                "layer": 0,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 1,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 2,
+                "target_image_rank": 1,
+                "graded_target_rank": 1,
+                "hidden_rank": 3,
+                "joint_hidden_rank": 2,
+                "critical_alpha": "1",
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4595509823847445/36028797018963968"
+              },
+              {
+                "layer": 3,
+                "target_image_rank": 1,
+                "graded_target_rank": 0,
+                "hidden_rank": 3,
+                "joint_hidden_rank": 2,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4223742108215674994724526605605/649037107316853453566312041152512"
+              }
+            ],
+            "target_entropy_log_t_coefficient": null,
+            "prefix_entropy_log_t_coefficient": null,
+            "limit": null
+          }
+        },
+        "w-on": {
+          "schema_name": "homological-observability.target-task",
+          "schema_version": 1,
+          "software": {
+            "name": "homological-observability",
+            "version": "2.1.0.dev0"
+          },
+          "operation": "analyze",
+          "request": {
+            "schema_version": 1,
+            "operation": "analyze",
+            "model": {
+              "schema_version": 2,
+              "name": "DFR known-Q research application",
+              "vertices": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                },
+                {
+                  "name": "W_ON",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                }
+              ],
+              "analysis": {
+                "observation_time": 2.5,
+                "sampling_interval": 0.05102040816326531
+              }
+            },
+            "targets": [
+              {
+                "name": "DeltaW",
+                "coefficients": [
+                  {
+                    "edge": [
+                      "0",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              }
+            ],
+            "candidates": [],
+            "limits": {
+              "max_subsets": 10000,
+              "max_solutions": 100,
+              "max_matrix_entries": 100000,
+              "max_integer_bits": 4096,
+              "max_seconds": 30.0,
+              "max_explanation_cycles": 10000
+            },
+            "reverse_tree_order": false,
+            "record": null,
+            "explain": true
+          },
+          "request_sha256": "5610f3592b2e924f26ec1bd1efc0864b9158d717d4712d229fc10864f982cf3e",
+          "status": "COMPLETE",
+          "limit": null,
+          "basis": {
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "tree_edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ]
+            ],
+            "chord_edges": [
+              [
+                "1",
+                "2"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "cycles": {
+              "rows": 9,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            },
+            "readouts": {
+              "rows": 2,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0,
+                  1,
+                  1
+                ]
+              ]
+            },
+            "targets": {
+              "rows": 1,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  2,
+                  1
+                ]
+              ]
+            }
+          },
+          "result": {
+            "sufficient": true,
+            "rank_readouts": 2,
+            "rank_joint": 2,
+            "certificate": {
+              "kind": "decoder",
+              "decoder": {
+                "rows": 1,
+                "columns": 2,
+                "data": [
+                  [
+                    "-1",
+                    "2"
+                  ]
+                ]
+              },
+              "domain": "integer_image_of_readouts"
+            },
+            "certificate_complete": true
+          },
+          "explanation_status": "COMPLETE",
+          "explanation": {
+            "scope": "fixed_readouts",
+            "requested_max_layer": 3,
+            "natural_filtration_complete": true,
+            "layers": [
+              {
+                "layer": 0,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 1,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 2,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 2,
+                "joint_hidden_rank": 2,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4595509823847445/36028797018963968"
+              },
+              {
+                "layer": 3,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 2,
+                "joint_hidden_rank": 2,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4223742108215674994724526605605/649037107316853453566312041152512"
+              }
+            ],
+            "target_entropy_log_t_coefficient": null,
+            "prefix_entropy_log_t_coefficient": null,
+            "limit": null
+          }
+        },
+        "all": {
+          "schema_name": "homological-observability.target-task",
+          "schema_version": 1,
+          "software": {
+            "name": "homological-observability",
+            "version": "2.1.0.dev0"
+          },
+          "operation": "analyze",
+          "request": {
+            "schema_version": 1,
+            "operation": "analyze",
+            "model": {
+              "schema_version": 2,
+              "name": "DFR known-Q research application",
+              "vertices": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+              ],
+              "edges": [
+                [
+                  "0",
+                  "1"
+                ],
+                [
+                  "0",
+                  "2"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "2"
+                ],
+                [
+                  "1",
+                  "4"
+                ],
+                [
+                  "2",
+                  "5"
+                ],
+                [
+                  "3",
+                  "4"
+                ],
+                [
+                  "3",
+                  "5"
+                ],
+                [
+                  "4",
+                  "5"
+                ]
+              ],
+              "readouts": [
+                {
+                  "name": "W",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    },
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                },
+                {
+                  "name": "W_ON",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "2"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                },
+                {
+                  "name": "W_OFF",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "3",
+                        "5"
+                      ],
+                      "coefficient": -1
+                    }
+                  ]
+                },
+                {
+                  "name": "S0",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "0",
+                        "3"
+                      ],
+                      "coefficient": 1
+                    }
+                  ]
+                },
+                {
+                  "name": "S1",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "1",
+                        "4"
+                      ],
+                      "coefficient": 1
+                    }
+                  ]
+                },
+                {
+                  "name": "S2",
+                  "coefficients": [
+                    {
+                      "edge": [
+                        "2",
+                        "5"
+                      ],
+                      "coefficient": 1
+                    }
+                  ]
+                }
+              ],
+              "analysis": {
+                "observation_time": 2.5,
+                "sampling_interval": 0.05102040816326531
+              }
+            },
+            "targets": [
+              {
+                "name": "DeltaW",
+                "coefficients": [
+                  {
+                    "edge": [
+                      "0",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "5"
+                    ],
+                    "coefficient": 1
+                  }
+                ]
+              }
+            ],
+            "candidates": [],
+            "limits": {
+              "max_subsets": 10000,
+              "max_solutions": 100,
+              "max_matrix_entries": 100000,
+              "max_integer_bits": 4096,
+              "max_seconds": 30.0,
+              "max_explanation_cycles": 10000
+            },
+            "reverse_tree_order": false,
+            "record": null,
+            "explain": true
+          },
+          "request_sha256": "db68a6c71c80810f7bb1c0ee1f986ad10d4b786688ea628c4f66f29553dfacdd",
+          "status": "COMPLETE",
+          "limit": null,
+          "basis": {
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "tree_edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ]
+            ],
+            "chord_edges": [
+              [
+                "1",
+                "2"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "cycles": {
+              "rows": 9,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  -1,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  1,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  -1,
+                  -1
+                ],
+                [
+                  0,
+                  1,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  1
+                ]
+              ]
+            },
+            "readouts": {
+              "rows": 6,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  0,
+                  1
+                ],
+                [
+                  1,
+                  0,
+                  1,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  -1,
+                  0
+                ],
+                [
+                  0,
+                  1,
+                  1,
+                  0
+                ],
+                [
+                  0,
+                  -1,
+                  0,
+                  1
+                ],
+                [
+                  0,
+                  0,
+                  -1,
+                  -1
+                ]
+              ]
+            },
+            "targets": {
+              "rows": 1,
+              "columns": 4,
+              "data": [
+                [
+                  1,
+                  0,
+                  2,
+                  1
+                ]
+              ]
+            }
+          },
+          "result": {
+            "sufficient": true,
+            "rank_readouts": 4,
+            "rank_joint": 4,
+            "certificate": {
+              "kind": "decoder",
+              "decoder": {
+                "rows": 1,
+                "columns": 6,
+                "data": [
+                  [
+                    "-1",
+                    "2",
+                    "0",
+                    "0",
+                    "0",
+                    "0"
+                  ]
+                ]
+              },
+              "domain": "integer_image_of_readouts"
+            },
+            "certificate_complete": true
+          },
+          "explanation_status": "COMPLETE",
+          "explanation": {
+            "scope": "fixed_readouts",
+            "requested_max_layer": 3,
+            "natural_filtration_complete": true,
+            "layers": [
+              {
+                "layer": 0,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 1,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": null
+              },
+              {
+                "layer": 2,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4595509823847445/36028797018963968"
+              },
+              {
+                "layer": 3,
+                "target_image_rank": 0,
+                "graded_target_rank": 0,
+                "hidden_rank": 0,
+                "joint_hidden_rank": 0,
+                "critical_alpha": null,
+                "entropy_log_t_contribution": null,
+                "finite_exposure_scale": "4223742108215674994724526605605/649037107316853453566312041152512"
+              }
+            ],
+            "target_entropy_log_t_coefficient": null,
+            "prefix_entropy_log_t_coefficient": null,
+            "limit": null
+          }
+        }
+      },
+      "design": {
+        "schema_name": "homological-observability.target-task",
+        "schema_version": 1,
+        "software": {
+          "name": "homological-observability",
+          "version": "2.1.0.dev0"
+        },
+        "operation": "design",
+        "request": {
+          "schema_version": 1,
+          "operation": "design",
+          "model": {
+            "schema_version": 2,
+            "name": "DFR known-Q research application",
+            "vertices": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "edges": [
+              [
+                "0",
+                "1"
+              ],
+              [
+                "0",
+                "2"
+              ],
+              [
+                "0",
+                "3"
+              ],
+              [
+                "1",
+                "2"
+              ],
+              [
+                "1",
+                "4"
+              ],
+              [
+                "2",
+                "5"
+              ],
+              [
+                "3",
+                "4"
+              ],
+              [
+                "3",
+                "5"
+              ],
+              [
+                "4",
+                "5"
+              ]
+            ],
+            "readouts": [
+              {
+                "name": "W",
+                "coefficients": [
+                  {
+                    "edge": [
+                      "0",
+                      "2"
+                    ],
+                    "coefficient": -1
+                  },
+                  {
+                    "edge": [
+                      "3",
+                      "5"
+                    ],
+                    "coefficient": -1
+                  }
+                ]
+              }
+            ],
+            "analysis": {
+              "observation_time": 2.5,
+              "sampling_interval": 0.05102040816326531
+            }
+          },
+          "targets": [
+            {
+              "name": "DeltaW",
+              "coefficients": [
+                {
+                  "edge": [
+                    "0",
+                    "2"
+                  ],
+                  "coefficient": -1
+                },
+                {
+                  "edge": [
+                    "3",
+                    "5"
+                  ],
+                  "coefficient": 1
+                }
+              ]
+            }
+          ],
+          "candidates": [
+            {
+              "name": "W_ON",
+              "coefficients": [
+                {
+                  "edge": [
+                    "0",
+                    "2"
+                  ],
+                  "coefficient": -1
+                }
+              ]
+            },
+            {
+              "name": "W_OFF",
+              "coefficients": [
+                {
+                  "edge": [
+                    "3",
+                    "5"
+                  ],
+                  "coefficient": -1
+                }
+              ]
+            },
+            {
+              "name": "S0",
+              "coefficients": [
+                {
+                  "edge": [
+                    "0",
+                    "3"
+                  ],
+                  "coefficient": 1
+                }
+              ]
+            },
+            {
+              "name": "S1",
+              "coefficients": [
+                {
+                  "edge": [
+                    "1",
+                    "4"
+                  ],
+                  "coefficient": 1
+                }
+              ]
+            },
+            {
+              "name": "S2",
+              "coefficients": [
+                {
+                  "edge": [
+                    "2",
+                    "5"
+                  ],
+                  "coefficient": 1
+                }
+              ]
+            }
+          ],
+          "limits": {
+            "max_subsets": 10000,
+            "max_solutions": 100,
+            "max_matrix_entries": 100000,
+            "max_integer_bits": 4096,
+            "max_seconds": 30.0,
+            "max_explanation_cycles": 10000
+          },
+          "reverse_tree_order": false,
+          "record": null,
+          "explain": true
+        },
+        "request_sha256": "3b654763fdd1d2b60c013656b15186618de307578c519459036840c61c362a7b",
+        "status": "COMPLETE",
+        "limit": null,
+        "basis": {
+          "vertices": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "edges": [
+            [
+              "0",
+              "1"
+            ],
+            [
+              "0",
+              "2"
+            ],
+            [
+              "0",
+              "3"
+            ],
+            [
+              "1",
+              "2"
+            ],
+            [
+              "1",
+              "4"
+            ],
+            [
+              "2",
+              "5"
+            ],
+            [
+              "3",
+              "4"
+            ],
+            [
+              "3",
+              "5"
+            ],
+            [
+              "4",
+              "5"
+            ]
+          ],
+          "tree_edges": [
+            [
+              "0",
+              "1"
+            ],
+            [
+              "0",
+              "2"
+            ],
+            [
+              "0",
+              "3"
+            ],
+            [
+              "1",
+              "4"
+            ],
+            [
+              "2",
+              "5"
+            ]
+          ],
+          "chord_edges": [
+            [
+              "1",
+              "2"
+            ],
+            [
+              "3",
+              "4"
+            ],
+            [
+              "3",
+              "5"
+            ],
+            [
+              "4",
+              "5"
+            ]
+          ],
+          "cycles": {
+            "rows": 9,
+            "columns": 4,
+            "data": [
+              [
+                1,
+                -1,
+                0,
+                1
+              ],
+              [
+                -1,
+                0,
+                -1,
+                -1
+              ],
+              [
+                0,
+                1,
+                1,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0,
+                1
+              ],
+              [
+                0,
+                0,
+                -1,
+                -1
+              ],
+              [
+                0,
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                1
+              ]
+            ]
+          },
+          "readouts": {
+            "rows": 1,
+            "columns": 4,
+            "data": [
+              [
+                1,
+                0,
+                0,
+                1
+              ]
+            ]
+          },
+          "targets": {
+            "rows": 1,
+            "columns": 4,
+            "data": [
+              [
+                1,
+                0,
+                2,
+                1
+              ]
+            ]
+          }
+        },
+        "result": {
+          "feasible": true,
+          "fixed_count": 1,
+          "candidate_count": 5,
+          "minimum_added": 1,
+          "minimum_total": 2,
+          "lower_bound_added": 1,
+          "upper_bound_added": 1,
+          "minimum_proven": true,
+          "enumeration_complete": true,
+          "ties_complete": true,
+          "certificates_complete": true,
+          "output_truncated": false,
+          "ties_found": 2,
+          "subsets_examined": 5,
+          "fully_searched_through": 1,
+          "solutions": [
+            {
+              "added_ids": [
+                "W_ON"
+              ],
+              "added_count": 1,
+              "total_count": 2,
+              "readout_ids": [
+                "W",
+                "W_ON"
+              ],
+              "certificate": {
+                "kind": "decoder",
+                "decoder": {
+                  "rows": 1,
+                  "columns": 2,
+                  "data": [
+                    [
+                      "-1",
+                      "2"
+                    ]
+                  ]
+                },
+                "domain": "integer_image_of_readouts"
+              }
+            },
+            {
+              "added_ids": [
+                "W_OFF"
+              ],
+              "added_count": 1,
+              "total_count": 2,
+              "readout_ids": [
+                "W",
+                "W_OFF"
+              ],
+              "certificate": {
+                "kind": "decoder",
+                "decoder": {
+                  "rows": 1,
+                  "columns": 2,
+                  "data": [
+                    [
+                      "1",
+                      "-2"
+                    ]
+                  ]
+                },
+                "domain": "integer_image_of_readouts"
+              }
+            }
+          ]
+        },
+        "explanation_status": "COMPLETE",
+        "explanation": {
+          "scope": "fixed_readouts",
+          "requested_max_layer": 3,
+          "natural_filtration_complete": true,
+          "layers": [
+            {
+              "layer": 0,
+              "target_image_rank": 0,
+              "graded_target_rank": 0,
+              "hidden_rank": 0,
+              "joint_hidden_rank": 0,
+              "critical_alpha": null,
+              "entropy_log_t_contribution": null,
+              "finite_exposure_scale": null
+            },
+            {
+              "layer": 1,
+              "target_image_rank": 0,
+              "graded_target_rank": 0,
+              "hidden_rank": 0,
+              "joint_hidden_rank": 0,
+              "critical_alpha": null,
+              "entropy_log_t_contribution": null,
+              "finite_exposure_scale": null
+            },
+            {
+              "layer": 2,
+              "target_image_rank": 1,
+              "graded_target_rank": 1,
+              "hidden_rank": 3,
+              "joint_hidden_rank": 2,
+              "critical_alpha": "1",
+              "entropy_log_t_contribution": null,
+              "finite_exposure_scale": "4595509823847445/36028797018963968"
+            },
+            {
+              "layer": 3,
+              "target_image_rank": 1,
+              "graded_target_rank": 0,
+              "hidden_rank": 3,
+              "joint_hidden_rank": 2,
+              "critical_alpha": null,
+              "entropy_log_t_contribution": null,
+              "finite_exposure_scale": "4223742108215674994724526605605/649037107316853453566312041152512"
+            }
+          ],
+          "target_entropy_log_t_coefficient": null,
+          "prefix_entropy_log_t_coefficient": null,
+          "limit": null
+        }
+      },
+      "paired_reconstruction": {
+        "snapshots": {
+          "count": 0,
+          "mismatches": 0,
+          "records": []
+        },
+        "w": {
+          "count": 0,
+          "mismatches": 0,
+          "records": []
+        },
+        "w-on": {
+          "count": 64,
+          "mismatches": 0,
+          "records": [
+            {
+              "trajectory_id": "83419aa3696183025dacc8bd",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "52f1a4ca792c5ffb6d0e453c",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "1b30471a556fb70a3df09975",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "9fa15f2d4361923919d56616",
+              "target": 2,
+              "truth": 2
+            },
+            {
+              "trajectory_id": "00da08e29c884ace1e5a4160",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "45847ed2e64f54c3c29c5bcf",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "cc74ca9090ab3d0a056e075c",
+              "target": 2,
+              "truth": 2
+            },
+            {
+              "trajectory_id": "d051aa343648567c6ba35a2c",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "140442aa894159e0aa173319",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "f3ce2688a76ccbcb4233acb4",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "1b6d41bbfa0dc8ee4cf09a4c",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "9a96f215cc570d5cbc28d18a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "6143787c38da4881df66f8dc",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "41e152b9013fbbac44be7e20",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "01704a13067ba633eca43b0a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "0df3eb7ed725afedb137f427",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "b864ddef5f703ab6bb77b65f",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "5dcd11652db3afb914fdd660",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "8f6ffd1ecf7eac062fbaddd7",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "8bc1af7611f366519e77c70a",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "e163f9b92d5cb3f551bc9cf5",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "6da0218731102b9bfa952cc8",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "da5dca901dab6da95e5b0f4a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "fb5f4ab92289b4a6331a3e9e",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "e4fd39911109008aabea8967",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "47f7bae9d2c0fcba9f7d358c",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "750be1a35a829d1a3e426d82",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "952d0e52e4c04b4d513711b5",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "d236b87ec238406544e22a86",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "9e791e8bf55a8dc9bac71a07",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "68abd830967f4c3971aa19f5",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "c244c03e61ba5e44d273b6c7",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "67b63d62f67cb63831001c43",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "a6a70dfe6481093fa0a95139",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "bf6a89d77aa7052f1964bdad",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "a68d551d36853ea5891e1bc8",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "e6d2777cbf7f53f76c196ea8",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "a17bad3703e557ee311e41f0",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "0585b8a395dd6a1ed858ba54",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "f136a843fe8272f389c3440f",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "5b900b75e36a4879789429ed",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "0eb51f99f74010d4ad9a2777",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "17166b30ed58c36b906e8d77",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "c707e4279c4553d0c3533d89",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "1755d4cf2d3cef3b0febc3bb",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "59e888edff8ee65900b97035",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "89d0416b1b44290f4bc550bc",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "36e6fb180633b7def0c7e1a9",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "6584104eae3b4f49347679be",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "8b1dc3500962043a93590f82",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "d342eb8f76921a1a9a0b8422",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "c99a4a425aa6c5202c4c45ad",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "153a5f5f08c71a6d1748ae42",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "e0abbbf08f26eac95b210409",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "7989e4e6d0dd0ff34a40efee",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "98ca12bdb617798c98677853",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "d215d0b5e1be7e85b4bf198d",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "6cb33a6486acaf9fd1f22f93",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "9cd8a058994f7d2d94f4272f",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "1cee7337e25451c53960ec16",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "c5c4798bd5e4fd4dbb8e86bc",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "4221e67442ae31c4207ab227",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "7ffea7ae6c2ff5b1ff81029a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "a11916739ec7f1127a23c0fd",
+              "target": 0,
+              "truth": 0
+            }
+          ]
+        },
+        "all": {
+          "count": 64,
+          "mismatches": 0,
+          "records": [
+            {
+              "trajectory_id": "83419aa3696183025dacc8bd",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "52f1a4ca792c5ffb6d0e453c",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "1b30471a556fb70a3df09975",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "9fa15f2d4361923919d56616",
+              "target": 2,
+              "truth": 2
+            },
+            {
+              "trajectory_id": "00da08e29c884ace1e5a4160",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "45847ed2e64f54c3c29c5bcf",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "cc74ca9090ab3d0a056e075c",
+              "target": 2,
+              "truth": 2
+            },
+            {
+              "trajectory_id": "d051aa343648567c6ba35a2c",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "140442aa894159e0aa173319",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "f3ce2688a76ccbcb4233acb4",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "1b6d41bbfa0dc8ee4cf09a4c",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "9a96f215cc570d5cbc28d18a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "6143787c38da4881df66f8dc",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "41e152b9013fbbac44be7e20",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "01704a13067ba633eca43b0a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "0df3eb7ed725afedb137f427",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "b864ddef5f703ab6bb77b65f",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "5dcd11652db3afb914fdd660",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "8f6ffd1ecf7eac062fbaddd7",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "8bc1af7611f366519e77c70a",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "e163f9b92d5cb3f551bc9cf5",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "6da0218731102b9bfa952cc8",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "da5dca901dab6da95e5b0f4a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "fb5f4ab92289b4a6331a3e9e",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "e4fd39911109008aabea8967",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "47f7bae9d2c0fcba9f7d358c",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "750be1a35a829d1a3e426d82",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "952d0e52e4c04b4d513711b5",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "d236b87ec238406544e22a86",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "9e791e8bf55a8dc9bac71a07",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "68abd830967f4c3971aa19f5",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "c244c03e61ba5e44d273b6c7",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "67b63d62f67cb63831001c43",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "a6a70dfe6481093fa0a95139",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "bf6a89d77aa7052f1964bdad",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "a68d551d36853ea5891e1bc8",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "e6d2777cbf7f53f76c196ea8",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "a17bad3703e557ee311e41f0",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "0585b8a395dd6a1ed858ba54",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "f136a843fe8272f389c3440f",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "5b900b75e36a4879789429ed",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "0eb51f99f74010d4ad9a2777",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "17166b30ed58c36b906e8d77",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "c707e4279c4553d0c3533d89",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "1755d4cf2d3cef3b0febc3bb",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "59e888edff8ee65900b97035",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "89d0416b1b44290f4bc550bc",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "36e6fb180633b7def0c7e1a9",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "6584104eae3b4f49347679be",
+              "target": -1,
+              "truth": -1
+            },
+            {
+              "trajectory_id": "8b1dc3500962043a93590f82",
+              "target": -2,
+              "truth": -2
+            },
+            {
+              "trajectory_id": "d342eb8f76921a1a9a0b8422",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "c99a4a425aa6c5202c4c45ad",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "153a5f5f08c71a6d1748ae42",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "e0abbbf08f26eac95b210409",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "7989e4e6d0dd0ff34a40efee",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "98ca12bdb617798c98677853",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "d215d0b5e1be7e85b4bf198d",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "6cb33a6486acaf9fd1f22f93",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "9cd8a058994f7d2d94f4272f",
+              "target": 1,
+              "truth": 1
+            },
+            {
+              "trajectory_id": "1cee7337e25451c53960ec16",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "c5c4798bd5e4fd4dbb8e86bc",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "4221e67442ae31c4207ab227",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "7ffea7ae6c2ff5b1ff81029a",
+              "target": 0,
+              "truth": 0
+            },
+            {
+              "trajectory_id": "a11916739ec7f1127a23c0fd",
+              "target": 0,
+              "truth": 0
+            }
+          ]
+        }
+      },
+      "natural_prediction_evaluation": {
+        "schema_name": "homological-observability.dfr-evaluation",
+        "protocol_version": 1,
+        "dataset_id": "e6bf08002c813b7a0edcec4817c8f84d2b3db5f6bd18112d07e47704a1d3387c",
+        "scheme_id": "w",
+        "split": "test",
+        "cohort": "natural",
+        "target_name": "DeltaW",
+        "task_id": "9a2c92e4861d7a63037204ef4d3b43d801a1f1fa4863e9b2f1a0568b4f7da316",
+        "prediction_semantics": "integer_realized",
+        "rounding": null,
+        "exact_match_definition": "numeric equality to the integer realized target; conditional means have no raw exact-match score",
+        "raw": {
+          "count": 13,
+          "mae": 0.46153846153846156,
+          "exact_match_accuracy": 0.5384615384615384
+        },
+        "postprocessed": null,
+        "label_distribution": {
+          "-1": 3,
+          "0": 7,
+          "1": 3
+        },
+        "zero_fraction": 0.5384615384615384,
+        "training_median_baseline": {
+          "value": 0,
+          "fit_split": "natural/train",
+          "count": 13,
+          "mae": 0.46153846153846156,
+          "exact_match_accuracy": 0.5384615384615384
+        },
+        "zero_baseline": {
+          "count": 13,
+          "mae": 0.46153846153846156,
+          "exact_match_accuracy": 0.5384615384615384
+        },
+        "structurally_determined": false,
+        "exact_reconstruction": null,
+        "identical_visible_input_consistency": true,
+        "pressure_bound": null,
+        "records": [
+          {
+            "trajectory_id": "00da08e29c884ace1e5a4160",
+            "truth": 1,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "01704a13067ba633eca43b0a",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "b864ddef5f703ab6bb77b65f",
+            "truth": -1,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "fb5f4ab92289b4a6331a3e9e",
+            "truth": -1,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "952d0e52e4c04b4d513711b5",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "68abd830967f4c3971aa19f5",
+            "truth": -1,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "e6d2777cbf7f53f76c196ea8",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "1755d4cf2d3cef3b0febc3bb",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "89d0416b1b44290f4bc550bc",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "36e6fb180633b7def0c7e1a9",
+            "truth": 1,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "d215d0b5e1be7e85b4bf198d",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "9cd8a058994f7d2d94f4272f",
+            "truth": 1,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "1cee7337e25451c53960ec16",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          }
+        ]
+      },
+      "pressure_prediction_evaluation": {
+        "schema_name": "homological-observability.dfr-evaluation",
+        "protocol_version": 1,
+        "dataset_id": "e6bf08002c813b7a0edcec4817c8f84d2b3db5f6bd18112d07e47704a1d3387c",
+        "scheme_id": "w",
+        "split": "pressure",
+        "cohort": "pressure",
+        "target_name": "DeltaW",
+        "task_id": "971e89f95504824a88d711181864488a94a5224a6b011c8074a28c7a9cdfccd1",
+        "prediction_semantics": "integer_realized",
+        "rounding": null,
+        "exact_match_definition": "numeric equality to the integer realized target; conditional means have no raw exact-match score",
+        "raw": {
+          "count": 2,
+          "mae": 1.0,
+          "exact_match_accuracy": 0.5
+        },
+        "postprocessed": null,
+        "label_distribution": {
+          "0": 1,
+          "2": 1
+        },
+        "zero_fraction": 0.5,
+        "training_median_baseline": {
+          "value": 0,
+          "fit_split": "natural/train",
+          "count": 2,
+          "mae": 1.0,
+          "exact_match_accuracy": 0.5
+        },
+        "zero_baseline": {
+          "count": 2,
+          "mae": 1.0,
+          "exact_match_accuracy": 0.5
+        },
+        "structurally_determined": false,
+        "exact_reconstruction": null,
+        "identical_visible_input_consistency": true,
+        "pressure_bound": {
+          "population": "constructed_equal_weight_pair",
+          "deterministic_input_consistency": true,
+          "applicable_to_submitted_point_values": true,
+          "mae_lower_bound": 1.0,
+          "exact_match_upper_bound": 0.5
+        },
+        "records": [
+          {
+            "trajectory_id": "a79838d30903576c549c149e",
+            "truth": 0,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          },
+          {
+            "trajectory_id": "e957cf6a9cbc473b1d27d2f1",
+            "truth": 2,
+            "prediction": 0,
+            "postprocessed_prediction": null,
+            "exact_reconstruction": null
+          }
+        ]
+      },
+      "prediction_template": {
+        "schema_name": "homological-observability.dfr-predictions",
+        "protocol_version": 1,
+        "dataset_id": "e6bf08002c813b7a0edcec4817c8f84d2b3db5f6bd18112d07e47704a1d3387c",
+        "scheme_id": "w",
+        "split": "test",
+        "cohort": "natural",
+        "target_name": "DeltaW",
+        "task_id": "9a2c92e4861d7a63037204ef4d3b43d801a1f1fa4863e9b2f1a0568b4f7da316",
+        "semantics": "integer_realized",
+        "rounding": null,
+        "predictions": [
+          {
+            "trajectory_id": "00da08e29c884ace1e5a4160",
+            "value": 0
+          },
+          {
+            "trajectory_id": "01704a13067ba633eca43b0a",
+            "value": 0
+          },
+          {
+            "trajectory_id": "b864ddef5f703ab6bb77b65f",
+            "value": 0
+          },
+          {
+            "trajectory_id": "fb5f4ab92289b4a6331a3e9e",
+            "value": 0
+          },
+          {
+            "trajectory_id": "952d0e52e4c04b4d513711b5",
+            "value": 0
+          },
+          {
+            "trajectory_id": "68abd830967f4c3971aa19f5",
+            "value": 0
+          },
+          {
+            "trajectory_id": "e6d2777cbf7f53f76c196ea8",
+            "value": 0
+          },
+          {
+            "trajectory_id": "1755d4cf2d3cef3b0febc3bb",
+            "value": 0
+          },
+          {
+            "trajectory_id": "89d0416b1b44290f4bc550bc",
+            "value": 0
+          },
+          {
+            "trajectory_id": "36e6fb180633b7def0c7e1a9",
+            "value": 0
+          },
+          {
+            "trajectory_id": "d215d0b5e1be7e85b4bf198d",
+            "value": 0
+          },
+          {
+            "trajectory_id": "9cd8a058994f7d2d94f4272f",
+            "value": 0
+          },
+          {
+            "trajectory_id": "1cee7337e25451c53960ec16",
+            "value": 0
+          }
+        ]
+      }
+    },
+    "scope": "Fixed 64 natural trajectories; identical snapshots and IDs. int64 is a declared representation, JSON sizes are measured. Event accumulation excludes simulation and snapshots. No physical acquisition cost or training improvement is inferred."
+  },
+  "scale": [
+    {
+      "case": "small-2-4-1",
+      "constructed": true,
+      "cycle_rank": 2,
+      "candidate_count": 4,
+      "target_count": 1,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.021889502997510135,
+      "stages_seconds": {
+        "coordinates": 0.0015068700013216585,
+        "precheck": 0.018489983995095827,
+        "search": 0.00037776699900859967,
+        "certificates": 0.0010896530075115152,
+        "json_encoding": 5.909999890718609e-05
+      },
+      "peak_process_rss_bytes": 129921024,
+      "json_bytes": 2447,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 1,
+      "minimum_proven": true,
+      "subsets": 4,
+      "ties": 2,
+      "returned": 2,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "small-4-8-2",
+      "constructed": true,
+      "cycle_rank": 4,
+      "candidate_count": 8,
+      "target_count": 2,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.03812118899804773,
+      "stages_seconds": {
+        "coordinates": 0.0025803519965847954,
+        "precheck": 0.018087457996443845,
+        "search": 0.013505709001037758,
+        "certificates": 0.0026819840059033595,
+        "json_encoding": 8.421599341090769e-05
+      },
+      "peak_process_rss_bytes": 129970176,
+      "json_bytes": 3815,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 2,
+      "minimum_proven": true,
+      "subsets": 36,
+      "ties": 4,
+      "returned": 4,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "medium-8-12-2",
+      "constructed": true,
+      "cycle_rank": 8,
+      "candidate_count": 12,
+      "target_count": 2,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.08273710100183962,
+      "stages_seconds": {
+        "coordinates": 0.0042505330056883395,
+        "precheck": 0.01975653599947691,
+        "search": 0.05305475501518231,
+        "certificates": 0.0030074220048845746,
+        "json_encoding": 0.00014117099635768682
+      },
+      "peak_process_rss_bytes": 130002944,
+      "json_bytes": 5082,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 2,
+      "minimum_proven": true,
+      "subsets": 78,
+      "ties": 4,
+      "returned": 4,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "search-8-12-4",
+      "constructed": true,
+      "cycle_rank": 8,
+      "candidate_count": 12,
+      "target_count": 4,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.8865655230038101,
+      "stages_seconds": {
+        "coordinates": 0.004816300002858043,
+        "precheck": 0.015652701993531082,
+        "search": 0.830894325110421,
+        "certificates": 0.012352332996670157,
+        "json_encoding": 0.000311937001242768
+      },
+      "peak_process_rss_bytes": 130129920,
+      "json_bytes": 9836,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 4,
+      "minimum_proven": true,
+      "subsets": 793,
+      "ties": 16,
+      "returned": 16,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "large-16-16-4",
+      "constructed": true,
+      "cycle_rank": 16,
+      "candidate_count": 16,
+      "target_count": 4,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 5.927821608005615,
+      "stages_seconds": {
+        "coordinates": 0.01271212899882812,
+        "precheck": 0.020097450993489474,
+        "search": 5.762842613963585,
+        "certificates": 0.005203924003581051,
+        "json_encoding": 0.00034153100568801165
+      },
+      "peak_process_rss_bytes": 130154496,
+      "json_bytes": 7579,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 4,
+      "minimum_proven": true,
+      "subsets": 2516,
+      "ties": 1,
+      "returned": 1,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "bounded-16-16-4",
+      "constructed": true,
+      "cycle_rank": 16,
+      "candidate_count": 16,
+      "target_count": 4,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 2.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 2.00130124399584,
+      "stages_seconds": {
+        "coordinates": 0.011511747004988138,
+        "precheck": 0.020033431006595492,
+        "search": 1.9299716920722858,
+        "certificates": 3.455003025010228e-06,
+        "json_encoding": 0.0002541409994591959
+      },
+      "peak_process_rss_bytes": 130158592,
+      "json_bytes": 7467,
+      "status": "LIMIT_REACHED",
+      "limit": {
+        "stage": "search",
+        "resource": "cooperative_seconds"
+      },
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 4,
+      "minimum_proven": true,
+      "subsets": 967,
+      "ties": 1,
+      "returned": 1,
+      "ties_complete": false,
+      "certificates_complete": false,
+      "replay_equal": null
+    },
+    {
+      "case": "subset-cap",
+      "constructed": true,
+      "cycle_rank": 4,
+      "candidate_count": 8,
+      "target_count": 2,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 2,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.019707223000295926,
+      "stages_seconds": {
+        "coordinates": 0.0029628560005221516,
+        "precheck": 0.01566472200647695,
+        "search": 0.0004432400019140914,
+        "json_encoding": 8.104000153252855e-05
+      },
+      "peak_process_rss_bytes": 130035712,
+      "json_bytes": 2885,
+      "status": "LIMIT_REACHED",
+      "limit": {
+        "stage": "search",
+        "resource": "subsets"
+      },
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": null,
+      "minimum_proven": false,
+      "subsets": 2,
+      "ties": 0,
+      "returned": 0,
+      "ties_complete": false,
+      "certificates_complete": false,
+      "replay_equal": true
+    },
+    {
+      "case": "output-cap",
+      "constructed": true,
+      "cycle_rank": 2,
+      "candidate_count": 8,
+      "target_count": 1,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 1,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.023452378998626955,
+      "stages_seconds": {
+        "coordinates": 0.0020190310024190694,
+        "precheck": 0.01953610700002173,
+        "search": 0.0005784650056739338,
+        "certificates": 0.0007490709976991639,
+        "json_encoding": 6.308499723672867e-05
+      },
+      "peak_process_rss_bytes": 129925120,
+      "json_bytes": 2604,
+      "status": "LIMIT_REACHED",
+      "limit": {
+        "stage": "serialization",
+        "resource": "solutions"
+      },
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 1,
+      "minimum_proven": true,
+      "subsets": 8,
+      "ties": 4,
+      "returned": 1,
+      "ties_complete": false,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "matrix-cap",
+      "constructed": true,
+      "cycle_rank": 192,
+      "candidate_count": 192,
+      "target_count": 1,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.003618975999415852,
+      "stages_seconds": {
+        "coordinates": 1.5953999536577612e-05,
+        "json_encoding": 0.000383403996238485
+      },
+      "peak_process_rss_bytes": 129089536,
+      "json_bytes": 29640,
+      "status": "LIMIT_REACHED",
+      "limit": {
+        "stage": "precheck",
+        "resource": "matrix_entries"
+      },
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": null,
+      "minimum_proven": false,
+      "subsets": 0,
+      "ties": 0,
+      "returned": 0,
+      "ties_complete": false,
+      "certificates_complete": false,
+      "replay_equal": true
+    },
+    {
+      "case": "integer-1024",
+      "constructed": true,
+      "cycle_rank": 2,
+      "candidate_count": 4,
+      "target_count": 1,
+      "integer_bits": 1024,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.018283263001649175,
+      "stages_seconds": {
+        "coordinates": 0.0015195039959507994,
+        "precheck": 0.01471930000843713,
+        "search": 0.0003911059975507669,
+        "certificates": 0.001246394996996969,
+        "json_encoding": 6.799199763918296e-05
+      },
+      "peak_process_rss_bytes": 129916928,
+      "json_bytes": 4289,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "NOT_REQUESTED",
+      "minimum": 1,
+      "minimum_proven": true,
+      "subsets": 4,
+      "ties": 2,
+      "returned": 2,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "explanation",
+      "constructed": true,
+      "cycle_rank": 4,
+      "candidate_count": 8,
+      "target_count": 2,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 10000
+      },
+      "seconds": 0.05278389700106345,
+      "stages_seconds": {
+        "coordinates": 0.0026324589998694137,
+        "precheck": 0.023286449992156122,
+        "search": 0.014406837995920796,
+        "certificates": 0.00269091701193247,
+        "explanation": 0.008364758999960031,
+        "json_encoding": 0.00012128100206609815
+      },
+      "peak_process_rss_bytes": 130039808,
+      "json_bytes": 5073,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "COMPLETE",
+      "minimum": 2,
+      "minimum_proven": true,
+      "subsets": 36,
+      "ties": 4,
+      "returned": 4,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    },
+    {
+      "case": "explanation-cap",
+      "constructed": true,
+      "cycle_rank": 4,
+      "candidate_count": 8,
+      "target_count": 2,
+      "integer_bits": 1,
+      "limits": {
+        "max_subsets": 10000,
+        "max_solutions": 100,
+        "max_matrix_entries": 100000,
+        "max_integer_bits": 4096,
+        "max_seconds": 30.0,
+        "max_explanation_cycles": 1
+      },
+      "seconds": 0.0551156430010451,
+      "stages_seconds": {
+        "coordinates": 0.005483351000293624,
+        "precheck": 0.029650851000042167,
+        "search": 0.01468865001515951,
+        "certificates": 0.0024896529939724132,
+        "explanation": 0.0013916299940319732,
+        "json_encoding": 9.375999798066914e-05
+      },
+      "peak_process_rss_bytes": 130002944,
+      "json_bytes": 4021,
+      "status": "COMPLETE",
+      "limit": null,
+      "explanation_status": "LIMIT_REACHED",
+      "minimum": 2,
+      "minimum_proven": true,
+      "subsets": 36,
+      "ties": 4,
+      "returned": 4,
+      "ties_complete": true,
+      "certificates_complete": true,
+      "replay_equal": true
+    }
+  ]
+}

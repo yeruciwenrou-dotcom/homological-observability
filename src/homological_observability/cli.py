@@ -26,6 +26,13 @@ from .examples import examples_to_dict, load_example
 from .model import load_model
 from .reproduction import ReproductionMismatch, run_reproduction
 from .serialization import ArtifactRole, render_json, render_text
+from .target_io import (
+    load_target_request,
+    render_target_text,
+    run_target_request,
+    target_json,
+    write_target_bundle,
+)
 from .version import __version__
 
 EXIT_SUCCESS = 0
@@ -46,7 +53,8 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="homological-observability",
         description=(
-            "Analyze cycle-history observability, compare counter configurations, "
+            "Analyze cycle-history observability, diagnose targets, "
+            "design or compare counter configurations, "
             "and construct critical-limit experiments for finite-state models."
         ),
     )
@@ -74,6 +82,31 @@ def _build_parser() -> argparse.ArgumentParser:
         help="use the alternate deterministic spanning tree (for coordinate checks)",
     )
     _add_format(analyze_parser)
+
+    for command, help_text in (
+        ("target", "diagnose target sufficiency or decode one exact record"),
+        ("design", "find minimum additional scalar readouts for a target"),
+    ):
+        target_parser = commands.add_parser(
+            command,
+            help=help_text,
+            description=help_text.capitalize()
+            + ". Uses exact integer edge counters on a known graph.",
+            epilog=(
+                "Guide: docs/TARGET_TASKS.md. "
+                f"From a source checkout: homological-observability {command} "
+                f"examples/dfr_{command}.json --output-dir {command}-results"
+            ),
+        )
+        target_parser.add_argument(
+            "request", type=Path, help="path to a target-task request JSON"
+        )
+        target_parser.add_argument(
+            "--output-dir",
+            type=Path,
+            help="save input, result and report in a new directory",
+        )
+        _add_format(target_parser)
 
     study_parser = commands.add_parser(
         "study-example",
@@ -235,6 +268,33 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if arguments.command == "examples":
             return _run_examples(arguments.format)
+        if arguments.command in ("target", "design"):
+            request = load_target_request(arguments.request)
+            is_design = request["operation"] == "design"
+            if is_design != (arguments.command == "design"):
+                raise ValueError(
+                    "use design for design requests and target for analyze/evaluate requests"
+                )
+            if arguments.output_dir is not None and arguments.output_dir.exists():
+                raise ValueError(
+                    "output directory already exists; choose a new directory"
+                )
+            document = run_target_request(request)
+            if arguments.output_dir is not None:
+                write_target_bundle(document, arguments.output_dir)
+            sys.stdout.write(
+                target_json(document)
+                if arguments.format == "json"
+                else render_target_text(document)
+            )
+            if arguments.format == "text" and arguments.output_dir is not None:
+                print(f"Report: {arguments.output_dir / 'report.txt'}")
+            return (
+                EXIT_SUCCESS
+                if document["status"] == "COMPLETE"
+                and document["explanation_status"] in ("COMPLETE", "NOT_REQUESTED")
+                else EXIT_INCOMPLETE
+            )
         if arguments.command == "example":
             return _run_analysis(
                 load_example(arguments.name),

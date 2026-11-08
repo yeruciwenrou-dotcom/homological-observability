@@ -232,8 +232,8 @@ def analysis_to_dict(
             ],
             "evidence_category": EvidenceCategory.ASYMPTOTIC_THEOREM.value,
             "boundary_note": (
-                "These values apply the paper's asymptotic law; they are not "
-                "finite-sample error bars or confidence guarantees."
+                "These values apply the paper's asymptotic law. Finite-run error "
+                "analysis also depends on the dynamics and observation protocol."
             ),
         }
         evidence_categories = [
@@ -507,8 +507,8 @@ def render_markdown(
             "## Evidence boundary",
             "",
             "The filtration uses exact integer lattice operations and finite cycle "
-            "enumeration. Phase labels apply the paper's asymptotic theorem; they "
-            "are not finite-sample error bars or confidence guarantees.",
+            "enumeration. Phase labels apply the paper's asymptotic theorem "
+            "under the stated model and sampling assumptions.",
         ]
     )
     return "\n".join(lines) + "\n"

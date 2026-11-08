@@ -81,14 +81,14 @@ the positive result rounds to zero; the corresponding bridge can still exist.
 
 For $\delta>1$, evaluation retains the exponentially scaled general-order
 Bessel functions. This branch requires a resolvable nonzero endpoint sum.
-It does not cover every large-ring rare endpoint: for example, the diametric
-1000-ring bridge is supported at $\delta=1$ but explicitly rejected just
-above it. The 1000-ring values at $\delta=1/4$, $0.3$, and $1$ agree with
+For example, the diametric 1000-ring bridge is supported at $\delta=1$
+and rejected just above it because the Bessel endpoint sum is unresolved. The 1000-ring values at $\delta=1/4$, $0.3$, and $1$ agree with
 independent high-precision ratios.
 A conditional result outside the nonzero float range raises `ValueError`.
 The winding sum retains the supplied cutoff (expanded by the existing
-scale heuristic); these floating evaluations are not certified intervals for
-all truncation and rounding errors.
+scale heuristic). These functions return floating-point estimates; the
+count-TV functions above return intervals that enclose truncation and rounding
+error.
 
 Endpoint representatives are reduced modulo `n`. For bridge probabilities,
 the winding coordinate is adjusted at the same time to preserve the lifted

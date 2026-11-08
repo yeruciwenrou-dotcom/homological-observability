@@ -5,6 +5,8 @@ for your task:
 
 | Task | Python result | JSON contract |
 | --- | --- | --- |
+| `target` / `design` | Target-task dictionary | [Target task document](#target-task-document) |
+| DFR application | Case or evaluation dictionary | [Dataset and prediction protocol](TARGET_TASKS.md#dataset-and-prediction-protocol-v1) |
 | `analyze` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
 | `compare` | Comparison dictionary | [Configuration comparison document](#configuration-comparison-document) |
 | `critical` | Immutable `CriticalExperimentResult` | [Critical experiment document](#critical-experiment-document) |
@@ -13,6 +15,26 @@ JSON is the format for downstream processing. Terminal text and the topology
 and comparison Markdown reports are intended for reading. Shared references below
 cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas), and
 [renderers](#renderers).
+
+## Target task document
+
+`analyze_target`, `design_readouts` and `evaluate_target` use independent v1
+request and result formats.
+See [target JSON and replay](TARGET_TASKS.md#json-and-replay) for their fields.
+Existing analysis, comparison and critical formats retain their versions.
+
+Read `result` for the scientific conclusion and `status` for computational
+completion. An insufficient target or an illegal record can be a completed
+diagnosis. A stopped search can retain a proved minimum without returning all
+tied choices or finishing all certificates. Optional `explanation_status`
+separately reports exposure-layer completeness; it does not replace the
+full-cycle-group target decision.
+
+Text reports state the established conclusion, any unfinished work and the
+replay identity. `result.json` retains exact matrices, integer witnesses,
+rational decoders and scale values. Decimal exposure scales in text are
+approximations for reading. A saved bundle also includes `request.json` and
+`report.txt`; each bundle is written to a new directory.
 
 ## Analysis document
 
@@ -25,8 +47,8 @@ below. [Comparison](#configuration-comparison-document) and
 For a first reading, check `status` and the completeness fields before using
 `summary.first_nonzero_hidden_layer` to locate the earliest unresolved cycle
 direction. Then inspect `filtration` for the integer relations and `phase`
-for their sampling interpretation. `COMPLETE` certifies the calculation, not
-perfect observability. A zero leading entropy coefficient can coexist with
+for their sampling interpretation. `COMPLETE` certifies that the requested
+calculation reached the full cycle lattice. A zero leading entropy coefficient can coexist with
 finite critical ambiguity, as the [wedge example](END_TO_END_EXAMPLE.md) shows.
 
 An analysis document has the following identity fields. The version shown
@@ -198,8 +220,8 @@ finite-scale exposure are rounded to float after exact input arithmetic.
 An unrepresentable nonzero result produces the existing controlled error
 document and exit code 2, consistently with text output.
 
-The phase object always carries a boundary note stating that these are
-paper-derived asymptotic predictions, not finite-sample guarantees.
+The phase object's boundary note identifies the paper's asymptotic law and
+the role of the dynamics and observations in finite-run error analysis.
 
 ## Configuration comparison document
 
@@ -325,14 +347,12 @@ basis-independent content.
 
 `COMPLETE` means the requested one-layer topology, full path catalogue at
 length $m$, exact stationary law, and marked-Poisson specification were all
-constructed. It does not imply `natural_filtration_complete: true`; that flag
-separately records whether the exposure filtration has reached all integral
-homology directions.
+constructed. The separate `natural_filtration_complete` flag records whether
+the exposure filtration has reached all integral homology directions.
 
 `LIMIT_REACHED` is atomic. `groups`, `stationary_law`, `catalogue`, and
 `limit_experiment` are all `null`, while `limit` names the resource and the
-complete and incomplete components. The document does not expose a truncated
-catalogue as a completed experiment.
+complete and incomplete components.
 
 The resource contract separates admission estimates from exact result limits.
 The directed-path preflight stops once it can certify that `max_paths` is
@@ -358,12 +378,13 @@ complete normalized model and hash even in `LIMIT_REACHED` output.
 Within `limit_experiment`, zero marks are excluded from the common-endpoint
 Lévy measure and retained in each conditional critical-endpoint mark law. The
 object records independent limit components and the rule for conditioning a
-total-mark law on an observed visible residue. It deliberately does not expand
-the generally infinite total-mark probability table.
+total-mark law on an observed visible residue. This component representation
+specifies the generally infinite total-mark law compactly.
 
-Every complete critical document states its scientific boundary: the object
-is a theorem-derived critical-limit generative specification, not an exact
-posterior at finite $(T,\delta)$ or an unconditional critical MAP solver. See the
+Every complete critical document identifies the object as a theorem-derived
+critical-limit generative specification. Finite-time posteriors and
+unconditional MAP probabilities require evaluation of the corresponding
+conditional laws. See the
 [biased C4 example](CRITICAL_EXPERIMENT.md) for a complete example.
 
 ## Shared formats and process behavior
@@ -437,6 +458,7 @@ levels.
 | `analyze` / `example` | `COMPLETE` or `PARTIAL_HORIZON` | `LIMIT_REACHED` |
 | `compare` | Every candidate is `COMPLETE` | Comparison is `INCOMPLETE`: at least one candidate is partial, limited, or in error |
 | `critical` | Requested critical experiment is `COMPLETE` | `LIMIT_REACHED` |
+| `target` / `design` | Core is `COMPLETE`; explanation is `COMPLETE` or `NOT_REQUESTED` | Core or requested explanation is incomplete |
 | `reproduce` | Calculation checks passed; reference comparison is reported separately | Reference evidence mismatched |
 
 Exit `2` reports CLI usage, file, JSON, validation, or controlled execution
@@ -463,6 +485,8 @@ installed package:
 | Controlled error | `load_error_schema()` | [`error.schema.json`](../src/homological_observability/schemas/error.schema.json) |
 | Critical model input | `load_critical_model_schema()` | [`critical-model.schema.json`](../src/homological_observability/schemas/critical-model.schema.json) |
 | Critical experiment result | `load_critical_experiment_schema()` | [`critical-experiment.schema.json`](../src/homological_observability/schemas/critical-experiment.schema.json) |
+| Target request | `load_target_request_schema()` | [`target-request.schema.json`](../src/homological_observability/schemas/target-request.schema.json) |
+| Target result | `load_target_task_schema()` | [`target-task.schema.json`](../src/homological_observability/schemas/target-task.schema.json) |
 
 Each loader returns a fresh dictionary, so callers can construct a validator or
 adapt a local copy without mutating package state.
@@ -551,8 +575,13 @@ terminal_text = ho.render_critical_text(result)
 
 assert json_text.endswith("\n")
 assert "status: COMPLETE" in terminal_text
-assert "finite-sample posterior" in terminal_text
+assert "critical-limit experiment" in terminal_text
 ```
 
-There is no critical Markdown renderer. The JSON document is the downstream
-contract, and the compact terminal view is for reading rather than parsing.
+Critical JSON is the downstream contract; the compact terminal view presents
+its main findings for reading.
+
+Target-task dictionaries use `render_target_text(result)` for terminal output.
+`write_target_bundle(result, "new-results")` saves `request.json`, `result.json`
+and `report.txt` in a new directory. The [target guide](TARGET_TASKS.md)
+describes their fields and replay commands.

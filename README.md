@@ -1,6 +1,6 @@
 # Homological Observability
 
-[![PyPI v2.0.0](https://img.shields.io/badge/PyPI-v2.0.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.0.0/)
+[![PyPI v2.1.0](https://img.shields.io/badge/PyPI-v2.1.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.1.0/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
@@ -8,6 +8,23 @@ This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Apply it to your own network to identify hidden cycle information and determine
 the sampling requirements for recovering it.
+
+[Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
+[Physical interpretation](#physical-interpretation) · [Documentation](#documentation-and-feedback)
+
+## Choose a task
+
+| Your research question | Start here |
+| --- | --- |
+| What does finite temporal resolution hide about physical motion? | [Physical interpretation](#physical-interpretation) |
+| Which cycle information is hidden, and what are the asymptotic sampling requirements? | [Network analysis](#analyze-your-own-network) |
+| Which counter configurations reveal different or redundant information? | [Counter comparison](#compare-counter-configurations) |
+| Do my counters and known endpoints determine a target? Which extra channels would suffice? | [Target analysis and readout design](docs/TARGET_TASKS.md) |
+| Do my model's inputs determine the trajectory target, and how can I evaluate its predictions? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Guide](docs/SCIENTIFIC_ML.md) |
+| What critical-limit experiment follows from my graph, rates and counters? | [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
+| How can I reproduce the paper's finite-model calculations? | [Paper reproduction](#reproduce-the-paper-evidence) |
+
+## Physical interpretation
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -34,21 +51,6 @@ determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
 under detailed balance.
 
-[Physical interpretation](docs/SCIENTIFIC_SCOPE.md) ·
-[Install and try](#install) · [Your network](#analyze-your-own-network) ·
-[Reproduce](#reproduce-the-paper-evidence) · [Cite](#citation-and-license)
-
-You can use the software to:
-
-- **[Analyze your own network](#analyze-your-own-network):** provide a transition graph and
-  optional integer counter rules to identify hidden cycle differences and
-  asymptotic sampling requirements.
-- **[Compare counter configurations](#quick-start):** determine which choices
-  reveal different or redundant information, with explanatory reports and
-  exact integer evidence.
-- **[Reproduce the paper](#reproduce-the-paper-evidence):** regenerate the included finite-model
-  calculations and compare them with the reference results.
-
 The supported graph is finite, connected, and simple, with positive
 transition-rate support in both directions on every edge. The recording
 protocol uses regular noiseless state snapshots and optional exact counters.
@@ -56,29 +58,34 @@ protocol uses regular noiseless state snapshots and optional exact counters.
 [critical experiment](docs/CRITICAL_EXPERIMENT.md) uses exact positive rates to
 compute path weights and limiting mark distributions.
 
-[Python API](#python-api) · [Scientific scope](#scope-and-interpretation) ·
-[Documentation](#documentation-and-feedback)
+See [Scope and interpretation](#scope-and-interpretation) for result meanings
+and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumptions.
 
 ## Install
 
-Version **2.0.0** supports exact rational sampling exponents and organizes
-reports around the sampling request. For upgrades from 1.x, see the
-[format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+Version: **2.1.0**.
 
-Use Python 3.11–3.13. In your working directory, create a virtual environment
-and install the package from PyPI. On macOS or Linux:
+Use Python 3.11–3.13. Clone the versioned repository for its examples and
+install the package in a virtual environment. On macOS or Linux:
 
 ```bash
+git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
 python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability==2.0.0
+.venv/bin/python -m pip install --upgrade homological-observability==2.1.0
 ```
+
+If you already have this checkout, start with the virtual-environment step
+from its root directory.
 
 <details>
 <summary>Windows PowerShell</summary>
 
 ```powershell
+git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability==2.0.0
+.venv\Scripts\python.exe -m pip install --upgrade homological-observability==2.1.0
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -87,13 +94,86 @@ Python 3.11 or 3.13 can be selected in place of 3.12.
 
 These commands use the virtual environment directly, so activation is optional.
 Installation needs internet access; examples and reference data are included
-in the package.
-The commands below run from this directory. In the linked guides, use
+in the package. Run the commands below from the repository directory.
+In the linked guides, use
 `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability` on Windows, and
 `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
 
+Upgrading from 2.0.0 preserves the existing network-analysis, comparison,
+critical-experiment and paper-reproduction workflows, along with their input
+and result formats. Target tasks add separate request and result formats;
+see the [changelog](CHANGELOG.md) for the new capabilities.
+
+To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
+separate environment and follow its
+[versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
+For upgrades from 1.x, see the
+[format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+
 ## Quick start
+
+### Target analysis and scientific ML
+
+This example shows how to check whether observations determine an integer
+trajectory target before training a predictor, choose additional counters,
+and evaluate predictions on the same paths. It uses a known finite-state
+model. For network analysis and sampling questions, start with the
+[counter-comparison example](#compare-counter-configurations).
+
+Suppose your simulator records total signed circulation **W**, and your new
+question concerns the difference **DeltaW** between circulation while a potential
+is ON and OFF. Can the existing data answer that question? If not, what is the
+smallest change to the recording scheme?
+
+The six-state discrete flashing ratchet (DFR) example answers this on a shared
+set of trajectories. Its [model and data sources](docs/SCIENTIFIC_ML.md#model-and-data-provenance)
+are documented in the scientific ML guide. Run the complete CPU case:
+
+```bash
+.venv/bin/python -m homological_observability.applications.dfr run --output-dir dfr-case
+```
+
+Open **`dfr-case/report.txt`**. It reports:
+
+| Recorded information | Can it determine DeltaW? | Next step |
+| --- | --- | --- |
+| Snapshots and W | No: distinct histories can share the same record | Add a counter for W_ON or W_OFF |
+| Snapshots, W and W_ON | Yes: DeltaW = 2 W_ON − W | Reconstruct from the recorded values |
+| Snapshots, W and W_OFF | Yes: DeltaW = W − 2 W_OFF | An equally small alternative |
+
+The search proves that **one extra scalar channel is sufficient and necessary
+within the supplied pool**. On the bundled dataset, each sufficient scheme
+evaluated by the case reconstructs all 64 trajectories with zero mismatch.
+This diagnosis helps choose the next experiment: add the missing count to
+future collection, replay available full event logs to obtain it, or choose a
+prediction target and evaluation suited to the existing records.
+
+The case saves `case.json` with the structural evidence and evaluations, plus
+`predictions.json` with training-median predictions for the 13-path natural test
+split. Replay that evaluation with:
+
+```bash
+.venv/bin/python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
+```
+
+Use the [scientific ML guide](docs/SCIENTIFIC_ML.md) to supply your model's
+predictions and compare observation schemes on the same paths. A separate
+constructed ambiguity pair tests what identical visible inputs can leave
+unresolved; its scores are reported separately from naturally sampled data.
+
+To inspect the diagnosis and design without running the dataset case:
+
+```bash
+.venv/bin/homological-observability target examples/dfr_target.json
+.venv/bin/homological-observability design examples/dfr_design.json --output-dir dfr-design
+```
+
+The [target guide](docs/TARGET_TASKS.md#use-your-own-target) shows how to use your
+own graph, fixed records, targets and candidate channels. Each output directory
+must be new so that earlier results remain available for comparison and replay.
+
+## Compare counter configurations
 
 Suppose your model has a four-state ring and a seven-state ring joined by a
 bridge. State snapshots leave some circulation between observations unknown.
@@ -105,7 +185,7 @@ ring $y$. A forward crossing adds one and a reverse crossing subtracts one.
 The built-in study compares these choices with snapshots alone and with
 weighted combinations of the same counters.
 
-### Compare counter configurations
+### Run the bridge study
 
 Create the study input, then run it into a new results directory:
 
@@ -163,106 +243,13 @@ Keep the results directory to share or repeat the study. Its `README.md`
 gives the replay command, `study.json` holds the input, and `comparison.json`
 retains the full structured evidence. Each run uses a new output directory.
 
-## Reproduce the paper evidence
-
-Start with [Install](#install) in a new working directory; the package includes
-the models and reference data needed here. Then regenerate the finite-cycle
-calculations and compare them with the packaged references:
-
-```bash
-.venv/bin/homological-observability reproduce --check --output-dir generated_results
-```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
-```
-
-</details>
-
-Successful verification prints:
-
-```text
-PASS: all calculation checks completed
-PASS: generated tables agree with frozen reference results
-```
-
-| Result in `generated_results/` | What to read |
-| --- | --- |
-| `REPORT.md` | Scientific summary and interpretation of the checks |
-| `companion_summary.png` | Summary figure |
-| `selected_appendix_checks.csv`, `critical_kernel_results.csv` | Numerical tables for further inspection |
-
-The calculations
-cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
-identity, and reciprocal-lattice peak suppression. Reference acceptance uses
-documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
-describes how results and file identities are compared.
-
-<details>
-<summary>Verify a source checkout or explore finite-ring bridges</summary>
-
-### Full verification from source
-
-For the archived source, download and unpack
-`homological-observability-2.0.0-source.zip` from
-[Zenodo](https://zenodo.org/records/23618828), then open a terminal in the
-extracted `homological-observability-2.0.0` directory. The archive includes
-the code, documentation, tests, pinned dependencies, and reference results.
-
-You can also clone the release and enter its source directory:
-
-```bash
-git clone --branch v2.0.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-```
-
-Then run:
-
-```bash
-python3 quickstart.py
-```
-
-On Windows:
-
-```powershell
-py -3.12 quickstart.py
-```
-
-The script installs pinned dependencies, runs the reader-side test suite,
-and reproduces the frozen paper calculations. It manages the repository's
-`.venv`, reusing it for the same Python version and recreating it when the
-interpreter's major or minor version changes. Keep any separately managed
-environment in another directory. Installation needs internet access.
-Fresh outputs are kept separate from the reference files in `results/`.
-
-### Finite-ring bridges
-
-To inspect winding probabilities between opposite-vertex snapshots on a
-symmetric four-state ring, run from the source directory:
-
-```bash
-.venv/bin/python explore_cycles.py --cycle 4 --residue 2 --delta 0.1
-```
-
-On Windows:
-
-```powershell
-.venv\Scripts\python.exe explore_cycles.py --cycle 4 --residue 2 --delta 0.1
-```
-
-The two shortest routes have equal weight. The table also reports the
-probability mass covered by the displayed range.
-
-</details>
-
 ## Analyze your own network
 
 Use `analyze` for a single observation scheme, or `compare` for a study of
 several counter configurations. Both take a graph and optional counter rules;
-sampling parameters are optional.
+sampling parameters are optional. For a specific trajectory target, use
+[`target` and `design`](docs/TARGET_TASKS.md#use-your-own-target) with the same
+graph and cochain conventions.
 
 ### Analyze one configuration
 
@@ -326,19 +313,6 @@ exhausted limit; `PARTIAL_HORIZON` restricts conclusions to the computed
 layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
 explains how to continue each calculation.
 
-## Exact sampling requests
-
-In this source revision, model and study format 2 accept `"alpha": "1/3"`.
-This gives an exactly critical fourth layer. A JSON number such as
-`0.3333333333333333` keeps its binary floating-point value and gives a slightly
-positive exponent at that layer. Use the fraction when your intended law is
-exactly one third; no tolerance silently moves numeric inputs onto a threshold.
-
-Reports follow the request: structure alone shows hidden information and
-counter relations; an exponent adds phases and entropy contributions; a
-finite observation time and interval add exposure scales with each hidden
-graded quotient. Each result states which layers were computed.
-
 ## Python API
 
 Run this example with `.venv/bin/python` on macOS/Linux or
@@ -355,9 +329,19 @@ print(ho.render_comparison_text(comparison))
 
 Use `ho.load_study("my-study.json")` for a saved study. To work with one
 configuration, use `ho.load_model(path)` and `ho.analyze_model(model)`.
-The [comparison guide](docs/COMPARISON_GUIDE.md) covers editable Python inputs
-and saving study bundles; the [output guide](docs/OUTPUT_CONTRACT.md) describes
-the result objects and renderers.
+
+| Task | Python entry points and guide |
+| --- | --- |
+| Analyze a network | `ho.analyze_model` · [Model inputs](docs/MODEL_GUIDE.md) |
+| Compare counter configurations | `ho.compare_configurations` · [Comparison studies](docs/COMPARISON_GUIDE.md) |
+| Diagnose a target, choose counters or reconstruct a legal record | `ho.analyze_target`, `ho.design_readouts`, `ho.evaluate_target` · [Target interfaces](docs/TARGET_TASKS.md#three-calculation-interfaces) |
+| Construct a critical-limit experiment with known rates | `ho.analyze_critical_model` · [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
+| Load paired DFR observations and evaluate predictions | `homological_observability.applications.dfr` · [Prediction example](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
+
+The guides include editable inputs and result handling. The
+[output guide](docs/OUTPUT_CONTRACT.md) describes network, comparison and
+critical-experiment results; the [target guide](docs/TARGET_TASKS.md#json-and-replay)
+covers target requests, results and replay.
 
 ## Scope and interpretation
 
@@ -376,10 +360,114 @@ assumptions, and interpretation of each type of result.
 The [paper map](PAPER_MAP.md) connects implemented objects to the theoretical
 results and the reproduced finite-model calculations.
 
+### Exact sampling requests
+
+Model and study format 2 accept `"alpha": "1/3"`.
+This gives an exactly critical fourth layer. A JSON number such as
+`0.3333333333333333` keeps its binary floating-point value and gives a slightly
+positive exponent at that layer. Use the fraction when your intended law is
+exactly one third. Phase classification uses the exact value supplied.
+
+Reports follow the request: structure alone shows hidden information and
+counter relations; an exponent adds phases and entropy contributions; a
+finite observation time and interval add exposure scales with each hidden
+graded quotient. Each result states which layers were computed.
+
+## Reproduce the paper evidence
+
+Start with [Install](#install) in a new working directory; the package includes
+the models and reference data needed here. Then regenerate the finite-cycle
+calculations and compare them with the packaged references:
+
+```bash
+.venv/bin/homological-observability reproduce --check --output-dir generated_results
+```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
+```
+
+</details>
+
+Successful verification prints:
+
+```text
+PASS: all calculation checks completed
+PASS: generated tables agree with frozen reference results
+```
+
+| Result in `generated_results/` | What to read |
+| --- | --- |
+| `REPORT.md` | Scientific summary and interpretation of the checks |
+| `companion_summary.png` | Summary figure |
+| `selected_appendix_checks.csv`, `critical_kernel_results.csv` | Numerical tables for further inspection |
+
+The calculations
+cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
+identity, and reciprocal-lattice peak suppression. Reference acceptance uses
+documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
+describes how results and file identities are compared.
+
+<details>
+<summary>Verify a source checkout or explore finite-ring bridges</summary>
+
+### Full verification from source
+
+From the checkout prepared in [Install](#install), run:
+
+```bash
+python3 quickstart.py
+```
+
+On Windows:
+
+```powershell
+py -3.12 quickstart.py
+```
+
+The script installs pinned dependencies, runs the reader-side test suite,
+and reproduces the frozen paper calculations. It manages the repository's
+`.venv`, reusing it for the same Python version and recreating it when the
+interpreter's major or minor version changes. Keep any separately managed
+environment in another directory. Installation needs internet access.
+Fresh outputs are kept separate from the reference files in `results/`.
+
+For historical reproduction, the
+[2.0.0 source archive](https://zenodo.org/records/23618828) includes that
+release's code, documentation, tests, dependency pins and reference results.
+Unpack `homological-observability-2.0.0-source.zip` into a separate directory
+and run the same script from its root.
+
+### Finite-ring bridges
+
+To inspect winding probabilities between opposite-vertex snapshots on a
+symmetric four-state ring, run from the source directory:
+
+```bash
+.venv/bin/python explore_cycles.py --cycle 4 --residue 2 --delta 0.1
+```
+
+On Windows:
+
+```powershell
+.venv\Scripts\python.exe explore_cycles.py --cycle 4 --residue 2 --delta 0.1
+```
+
+The two shortest routes have equal weight. The table also reports the
+probability mass covered by the displayed range.
+
+</details>
+
 ## Documentation and feedback
 
 | Your next task | Guide |
 | --- | --- |
+| Audit a target and choose additional counters | [Target tasks](docs/TARGET_TASKS.md) |
+| Evaluate ML predictions on paired DFR observations | [Scientific ML application](docs/SCIENTIFIC_ML.md) |
+| Check target derivations and measured scope | [Technical note](docs/TARGET_THEORY.md) · [PDF](docs/TARGET_THEORY.pdf) · [Assessment](docs/TARGET_VALIDATION.md) |
 | Compare counters and understand their differences | [Comparison studies](docs/COMPARISON_GUIDE.md) |
 | Prepare a model or study | [Input fields and physical modeling](docs/MODEL_GUIDE.md) |
 | Understand integer layers, parity, and sampling requirements | [Worked two-loop example](docs/END_TO_END_EXAMPLE.md) |
@@ -421,11 +509,13 @@ When your work uses both, cite them separately.
 ### Software
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.0.0) [Computer
-> software]. Zenodo. https://doi.org/10.5281/zenodo.23618828
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.1.0) [Computer
+> software]. https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.1.0
 
-Record the software version used and, for a source checkout, the exact Git
-commit. GitHub's citation menu and
+The software series is archived at
+[doi:10.5281/zenodo.23329442](https://doi.org/10.5281/zenodo.23329442).
+Include the version used in your software citation.
+GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.

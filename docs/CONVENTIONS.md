@@ -140,9 +140,8 @@ $$
 \mathrm{rank}\frac{K_m}{K_{m-1}}.
 $$
 
-Torsion is not determined by this rank identity and must be retained
-separately. No bare symbol $J$ is used for the visible image because the paper
-reserves related notation for a shifted low-layer object.
+Smith factors retain the torsion information alongside this rank identity.
+The visible image is written explicitly as $\pi(L_m)$.
 
 ## Information relations between configurations
 
@@ -172,8 +171,8 @@ Edge-chain witnesses use the canonical graph orientation.
 
 Equivalent configurations may have different integer image lattices. For
 example, $x$ and $2x$ carry the same information under exact measurement:
-decoding $x$ from $2x$ is defined on the legal image $2\mathbb Z$. It does not
-require an integer inverse on every ambient output value. For open histories,
+decoding $x$ from $2x$ is defined on the legal image $2\mathbb Z$ by division
+by two. For open histories,
 the common endpoint-reference correction gives the same comparison of cycle
 differences.
 
@@ -246,7 +245,7 @@ $$
 $$
 
 `DENSE` means that path alternatives at this layer accumulate in the specified
-limit; it does not describe graph density. `SPARSE` means that their exposure
+limit. `SPARSE` means that their exposure
 vanishes. Recovery of the natural quotient is assured in the sparse limit;
 the dense-limit strong converse requires $d_m>0$. At criticality, the
 conditional experiment carries information beyond this logarithmic entropy
@@ -263,9 +262,9 @@ $$
 \lambda_m=T\delta^{m-1}.
 $$
 
-It does not assign an asymptotic regime from that finite pair. Both
-interpretations are labeled `ASYMPTOTIC_THEOREM`: they apply the paper's phase
-law and are not empirical uncertainty estimates.
+For this finite pair, the regime fields remain unset. Both interpretations
+are labeled `ASYMPTOTIC_THEOREM` because their formulas come from the paper's
+asymptotic phase law.
 
 ## Critical-layer rates and marks
 
@@ -320,9 +319,8 @@ the implementation separates two mechanisms:
 
 Each path contribution has exact intensity $\theta p(x)W(\gamma)$ before
 aggregation. The complete object is a theorem-derived
-critical-limit generative specification. It is not an exact posterior at
-finite $(T,\delta)$, a trajectory simulation, or an unconditional
-critical MAP solver.
+critical-limit generative specification, comprising the component laws and
+the rule for conditioning their total mark on the observed readout.
 
 ## Invariant versus coordinate-dependent output
 
@@ -340,8 +338,7 @@ Treat the following as public invariant content:
 
 Tree edges, chord edges, fundamental-cycle matrices, readout matrices, and
 lattice basis columns are auditable coordinates. They are included so a
-researcher can reconstruct the calculation, not because their entries are
-canonical under every valid basis choice.
+researcher can reconstruct the calculation in the stated basis.
 
 `analyze` and `compare` accept `--reverse-tree-order` to choose another
 deterministic spanning tree. Comparison candidates always share the chosen

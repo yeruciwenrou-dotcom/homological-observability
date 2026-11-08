@@ -95,7 +95,15 @@ jobs:
           python -m build --no-isolation --outdir "$RUNNER_TEMP/minimum-dist"
           python -m twine check --strict "$RUNNER_TEMP"/minimum-dist/*
       - name: Build and test wheel and sdist outside the repository
-        run: python tests/validate_distribution.py
+        run: python tests/validate_distribution.py --upgrade-from 2.0.0 --evidence-dir candidate-install-evidence
+      - name: Save candidate installation evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: candidate-install-evidence
+          path: candidate-install-evidence/
+          if-no-files-found: warn
+          retention-days: 30
 
   public-dependencies:
     runs-on: ${{ matrix.os }}
