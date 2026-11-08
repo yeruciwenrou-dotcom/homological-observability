@@ -244,7 +244,8 @@ cycle enumeration can grow exponentially.
 
 When interpreting a result near a critical threshold, check the
 [sampling parameter rules](MODEL_GUIDE.md#analysis-settings). Phase labels
-use the exact binary value stored in `alpha`; for example, the floating-point
+use the supplied rational alpha or the exact binary value of a numeric alpha;
+for example, the floating-point
 value nearest $1/3$ lies below that exact threshold. A very small positive
 entropy coefficient can therefore be meaningful.
 

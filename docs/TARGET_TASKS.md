@@ -67,7 +67,7 @@ carry different information. Let C_ON be the cycle 0→1→2→0 and C_OFF the c
 | W and W_ON | C_ON − C_OFF | C_OFF |
 
 These are two incomparable pairs on the full cycle group. Connecting the loops
-by a bridge traversed in opposite directions realizes their signed difference
+by a switching edge traversed in opposite directions realizes their signed difference
 as a closed walk without changing the counter values. Once W is fixed, adding
 either cycle counter determines both and gives the same information for DeltaW.
 
@@ -165,7 +165,8 @@ DP=F, valid on the integer image P(H). An insufficient certificate records an
 integer cycle z, its oriented edge chain, and Fz≠0 with Pz=0.
 
 Decoding checks every integer-image constraint using a verified Smith
-decomposition. P=2x, F=x permits D=p/2 only for even p. P=2I2, F=(1,1), p=(1,1)
+decomposition. P(x)=2x, F(x)=x permits decoding x=p/2 only for even p.
+P=2I2, F=(1,1), p=(1,1)
 is illegal even though the rational formula gives the integer 1. P(x)=(2x,4x),
 p=(2,5) is inconsistent and is also rejected. Illegal records yield
 `legal_record=false`, `target_values=null`; insufficient legal records also yield
@@ -174,9 +175,10 @@ no target value. They are completed diagnoses, not computational failures.
 For legal p, any integer preimage c0 gives the target ambiguity set
 F(c0)+F(ker_Z P). The exact ambiguity image requires a saturated integer kernel;
 clearing denominators of rational-nullspace columns separately can miss lattice
-points. For P=(2,1,1), F=(0,1,0), the true image is Z, not 2Z. The general public
-coset presentation is deferred; the DFR parity explanation and this regression
-are included. Target-image exposure layers and their entropy interpretation are implemented
+points. For P=(2,1,1), F=(0,1,0), the true image is Z, not 2Z. The result format
+provides ambiguity witnesses and target-image layers; it does not expose a
+general target-coset object. The DFR example illustrates the retained parity.
+Target-image exposure layers and their entropy interpretation are available
 with `explain=True`. The [technical source](TARGET_THEORY.md) derives them using
 the original paper's assumptions separately from this algebra.
 

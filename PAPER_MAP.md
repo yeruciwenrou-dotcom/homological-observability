@@ -43,8 +43,10 @@ Independent checks include:
   including both chorded C6 models and a pure-torsion graph.
 - [Integer-kernel and quotient tests](tests/test_integer_lattice.py), including
   cases where a rational nullspace basis is insufficient.
-- [All 996 connected graph-atlas models](tests/validate_graph_atlas.py), with
-  independent path-pair and readout comparisons.
+- [Graph-atlas validation](tests/validate_graph_atlas.py): tree-choice and
+  full-lattice checks on all 996 connected graphs with at most seven vertices;
+  274 independent path-pair layer checks and 129 integer-readout invariance
+  checks on the applicable subfamilies with at most six vertices.
 - [Phase laws and sampling boundaries](tests/test_phase.py), together with
   [horizon, resource, and CLI checks](tests/test_product_contract.py).
 
@@ -76,8 +78,10 @@ an unfinished exposure filtration leaves later layers open.
 
 The development version extends the software from full-history analysis to
 specified integer targets. The [target derivation](docs/TARGET_THEORY.md)
-separates exact full-group sufficiency and legal-record decoding from the
-target-image entropy law obtained using the paper's filtration and assumptions.
+([PDF](docs/TARGET_THEORY.pdf)) is a software-oriented technical supplement to
+the paper. It derives full-group sufficiency, legal-record decoding and minimum
+readout design, then obtains the target-image entropy law from the paper's
+exposure filtration and hidden-history law under the same assumptions.
 
 | Task | Implementation | Evidence and interpretation |
 | --- | --- | --- |

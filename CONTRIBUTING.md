@@ -48,12 +48,13 @@ internet access for build tools and dependencies. CI runs these checks on
 each pull request.
 
 The [target-task assessment](docs/TARGET_VALIDATION.md) can be repeated with
-`python tools/assess_target_tasks.py --output-dir target-assessment` in this
+`.venv/bin/python tools/assess_target_tasks.py --output-dir target-assessment` in this
 environment. Use a new output directory for each run.
 
 The technical PDF is generated from `docs/TARGET_THEORY.md`. To rebuild it,
 install Pandoc and the optional documentation dependencies `reportlab>=4,<5`
-and `svglib>=2,<3`, then run `python tools/build_target_note.py`. Matplotlib
+and `svglib>=2,<3` into the same environment, then run
+`.venv/bin/python tools/build_target_note.py`. Matplotlib
 supplies the fonts and vector equations. These extra tools are only needed
 to build the PDF, not to run the package.
 

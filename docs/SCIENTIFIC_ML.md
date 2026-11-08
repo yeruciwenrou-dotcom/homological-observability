@@ -17,7 +17,9 @@ Here the question is whether recorded observations determine
 W_ON counts 2→0, W_OFF counts 5→3, and reverse crossings subtract one; W is
 their sum. The target, paired counter schemes and observability analysis are
 defined by this application. Its theoretical basis is
-[homological observability](TARGET_THEORY.md). All trajectories are generated
+[homological observability](SCIENTIFIC_SCOPE.md); the
+[technical supplement](TARGET_THEORY.md) derives the target-specific results.
+All trajectories are generated
 by this package; the supplied predictor is a training-median baseline.
 
 ## Run the complete case
@@ -161,8 +163,11 @@ V, b and r all equal to 1, its row-generator has, for distinct i,j in {0,1,2},
 
 $$
 Q_{ij}=e^{-(j-i)/2},\quad Q_{i+3,j+3}=1,\quad
-Q_{i,i+3}=Q_{i+3,i}=1,\quad Q_{ii}=-\sum_{j\ne i}Q_{ij}.
+Q_{i,i+3}=Q_{i+3,i}=1.
 $$
+
+All other off-diagonal entries are zero. For every state $a\in\{0,\ldots,5\}$,
+the diagonal is $Q_{aa}=-\sum_{b\ne a}Q_{ab}$, so each row sums to zero.
 
 The rates follow Appendix J of [2], with the source implementation pinned in
 [3]. We use its regular-grid setting: 50 noise-free observations over [0, 2.5]
