@@ -4,7 +4,7 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
-## 2.1.0.dev0
+## 2.1.0 — 2026-11-09
 
 Existing integer readouts can now be audited against a new target, augmented with
 a minimum number of candidate scalar channels, and used to reconstruct legal
@@ -24,7 +24,7 @@ The same-source [PDF](docs/TARGET_THEORY.pdf), DFR counter diagram and
 [assessment](docs/TARGET_VALIDATION.md) cover reconstruction, comparison
 baselines, record sizes and measured resource limits.
 
-The quick start demonstrates target diagnosis and readout design, with source
+The quick start demonstrates target diagnosis and readout design, with
 installation instructions for macOS, Linux and Windows.
 Target and DFR reports explain unresolved targets, illegal records and
 unfinished calculations, and identify saved reports for the next step.

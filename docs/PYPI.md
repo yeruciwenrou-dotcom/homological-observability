@@ -20,7 +20,7 @@ two snapshots. Both routes produce the same endpoints, while their difference
 is one circulation around the triangle. Repeated unresolved circulations
 create uncertainty in the accumulated history.
 
-![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](https://raw.githubusercontent.com/yeruciwenrou-dotcom/homological-observability/v2.0.0/docs/snapshot_ambiguity.svg)
+![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](https://raw.githubusercontent.com/yeruciwenrou-dotcom/homological-observability/v2.1.0/docs/snapshot_ambiguity.svg)
 
 For finite-state Markov jump processes, **we establish an information phase
 diagram and sharp sampling thresholds for recovering accumulated cycle
@@ -30,46 +30,46 @@ determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
 under detailed balance.
 
-[Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#reproduce-the-paper-evidence) ·
-[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#citation-and-license)
+[Reproduce the calculations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#reproduce-the-paper-evidence) ·
+[Cite](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#citation-and-license)
 
 You can use the software to:
 
-- **[Analyze your own network](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#analyze-your-own-network):** provide a transition graph and
+- **[Analyze your own network](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#analyze-your-own-network):** provide a transition graph and
   optional integer counter rules to identify hidden cycle differences and
   asymptotic sampling requirements.
-- **[Diagnose and design for a target](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/TARGET_TASKS.md):** determine whether fixed
+- **[Diagnose and design for a target](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/TARGET_TASKS.md):** determine whether fixed
   counters and known endpoints suffice, find the minimum extra channels within
   a specified pool, and recover targets from legal records.
-- **[Evaluate model predictions](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/SCIENTIFIC_ML.md):** compare predictions
+- **[Evaluate model predictions](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/SCIENTIFIC_ML.md):** compare predictions
   against exact reconstruction and simple baselines on paired observations.
-- **[Compare counter configurations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#compare-counter-configurations):** determine which choices
+- **[Compare counter configurations](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#compare-counter-configurations):** determine which choices
   reveal different or redundant information, with explanatory reports and
   exact integer evidence.
-- **[Construct a critical experiment](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/CRITICAL_EXPERIMENT.md):** use known transition rates to calculate
+- **[Construct a critical experiment](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/CRITICAL_EXPERIMENT.md):** use known transition rates to calculate
   critical path weights, conditional mark laws and Poisson intensities.
-- **[Reproduce the paper](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#reproduce-the-paper-evidence):** regenerate the included finite-model
+- **[Reproduce the paper](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#reproduce-the-paper-evidence):** regenerate the included finite-model
   calculations and compare them with the reference results.
 
 The graph must be finite, connected, and simple, with positive transition-rate
 support in both directions. The recording protocol uses regular noiseless
 state snapshots and optional exact counters. **Network and counter analyses
 need no rate values.** The
-[critical experiment](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/CRITICAL_EXPERIMENT.md) uses exact positive rates to
+[critical experiment](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/CRITICAL_EXPERIMENT.md) uses exact positive rates to
 compute path weights and limiting mark distributions.
 
 ## Install
 
-Version: **2.1.0.dev0**.
+Version: **2.1.0**.
 
-Use Python 3.11–3.13. Clone the repository and install it in a virtual
-environment. On macOS or Linux:
+Use Python 3.11–3.13. Clone the versioned repository for its examples and
+install the package in a virtual environment. On macOS or Linux:
 
 ```bash
-git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 python3 -m venv .venv
-.venv/bin/python -m pip install -e .
+.venv/bin/python -m pip install --upgrade homological-observability==2.1.0
 ```
 
 If you already have this checkout, start with the virtual-environment step
@@ -78,10 +78,10 @@ from its root directory.
 On Windows PowerShell:
 
 ```powershell
-git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install -e .
+.venv\Scripts\python.exe -m pip install --upgrade homological-observability==2.1.0
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -97,19 +97,19 @@ In the linked guides, use
 Upgrading from 2.0.0 preserves the existing network-analysis, comparison,
 critical-experiment and paper-reproduction workflows, along with their input
 and result formats. Target tasks add separate request and result formats;
-see the [changelog](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/CHANGELOG.md) for the new capabilities.
+see the [changelog](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/CHANGELOG.md) for the new capabilities.
 
 To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
 [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
 For upgrades from 1.x, see the
-[format and API changes](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+[format and API changes](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/OUTPUT_CONTRACT.md#reading-earlier-records).
 
 ## Try target diagnosis and observation design
 
 The discrete flashing ratchet example asks whether total circulation W determines
 the difference DeltaW between ON and OFF circulation. Its
-[model and parameter sources](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/SCIENTIFIC_ML.md#model-and-data-provenance)
+[model and parameter sources](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/SCIENTIFIC_ML.md#model-and-data-provenance)
 are documented in the scientific ML guide. Run the bundled CPU case:
 
 ```bash
@@ -130,12 +130,12 @@ The diagnosis helps choose between adding a counter to future collection,
 replaying complete event logs, or adapting the prediction target and evaluation
 to the available records.
 
-The [scientific ML tutorial](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/SCIENTIFIC_ML.md) explains the model's
+The [scientific ML tutorial](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/SCIENTIFIC_ML.md) explains the model's
 sources, paired observation schemes and prediction interface. Users can train
 models separately and submit point predictions for evaluation. The supplied
 predictor is a training-median baseline.
 
-Use the [target guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/TARGET_TASKS.md) to define your own graph,
+Use the [target guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/TARGET_TASKS.md) to define your own graph,
 fixed counters, targets and candidate channels. Saved requests, results and
 reports support inspection and replay.
 
@@ -166,7 +166,7 @@ hidden direction. The study also shows that a weighted counter can tie a
 scalar objective without retaining the same information, and that a
 proportional extra channel is redundant.
 
-The [worked comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/COMPARISON_GUIDE.md)
+The [worked comparison](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/COMPARISON_GUIDE.md)
 explains the hidden layers and the example's sampling law. `COMPLETE` records
 the scope of the calculation; the report describes the remaining ambiguity.
 The bundle contains structured results, exact witnesses, the input, and replay
@@ -188,13 +188,13 @@ and `generated_results/companion_summary.png`. Successful verification prints
 The output directory also contains the numerical CSV tables.
 For pinned dependencies
 and the reader-side test suite, follow the
-[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#full-verification-from-source).
+[reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#full-verification-from-source).
 
 ## Analyze your own network
 
 For one observation scheme, prepare `my-model.json` with your graph, optional
 counter rules, and any sampling parameters. The
-[model input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/MODEL_GUIDE.md)
+[model input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/MODEL_GUIDE.md)
 explains the fields and includes a complete example. Run:
 
 ```bash
@@ -212,8 +212,8 @@ enumeration budget, then run:
 .venv/bin/homological-observability compare my-study.json --output-dir my-results
 ```
 
-The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
-walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/MODEL_GUIDE.md)
+The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
+walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/MODEL_GUIDE.md)
 describes signed edge increments, sampling units, validation, and resource
 limits. Every exported study also includes a model file for each candidate,
 ready to inspect separately with `analyze`.
@@ -244,7 +244,7 @@ print(ho.render_comparison_text(comparison))
 ```
 
 Use `ho.load_study("my-study.json")` for your own study. The
-[output guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/OUTPUT_CONTRACT.md)
+[output guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/OUTPUT_CONTRACT.md)
 describes structured results and renderers, including single-configuration
 analysis and rate-dependent critical experiments.
 
@@ -257,26 +257,26 @@ interval for a specified finite-run error tolerance requires additional risk
 analysis. Cycle enumeration can grow exponentially; use computation budgets
 and check the reported completeness of each result.
 
-- [Overview and first study](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md)
-- [Scientific assumptions and research uses](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/SCIENTIFIC_SCOPE.md)
-- [Integer layers and sampling: a worked two-loop example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/END_TO_END_EXAMPLE.md)
-- [Rate-dependent critical experiments](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/docs/CRITICAL_EXPERIMENT.md)
-- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/CHANGELOG.md)
+- [Overview and first study](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md)
+- [Scientific assumptions and research uses](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/SCIENTIFIC_SCOPE.md)
+- [Integer layers and sampling: a worked two-loop example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/END_TO_END_EXAMPLE.md)
+- [Rate-dependent critical experiments](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/CRITICAL_EXPERIMENT.md)
+- [Changes by version](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/CHANGELOG.md)
 - [Report an issue](https://github.com/yeruciwenrou-dotcom/homological-observability/issues)
 
 ## Theory and citation
 
-The [paper map](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/PAPER_MAP.md)
+The [paper map](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/PAPER_MAP.md)
 connects the software's calculations to the theoretical results and paper evidence.
 
 Cite the paper for theoretical results and the software for computations.
 When your work uses both, cite them separately. The
-[citation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/feat/target-observability/README.md#citation-and-license)
+[citation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#citation-and-license)
 provides the full paper and software references and a copyable paper BibTeX entry.
-The published 2.0.0 software archive is
-[doi:10.5281/zenodo.23618828](https://doi.org/10.5281/zenodo.23618828).
-When using this checkout, record `2.1.0.dev0` and the exact Git commit alongside
-the software citation.
+The [2.1.0 release](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.1.0)
+identifies this version. The software series is archived at
+[doi:10.5281/zenodo.23329442](https://doi.org/10.5281/zenodo.23329442).
+Include the version used in your software citation.
 
 Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 

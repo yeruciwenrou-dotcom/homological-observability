@@ -1,6 +1,6 @@
 # Homological Observability
 
-[![PyPI v2.0.0](https://img.shields.io/badge/PyPI-v2.0.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.0.0/)
+[![PyPI v2.1.0](https://img.shields.io/badge/PyPI-v2.1.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.1.0/)
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
@@ -63,16 +63,16 @@ and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumption
 
 ## Install
 
-Version: **2.1.0.dev0**.
+Version: **2.1.0**.
 
-Use Python 3.11–3.13. Clone the repository and install it in a virtual
-environment. On macOS or Linux:
+Use Python 3.11–3.13. Clone the versioned repository for its examples and
+install the package in a virtual environment. On macOS or Linux:
 
 ```bash
-git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 python3 -m venv .venv
-.venv/bin/python -m pip install -e .
+.venv/bin/python -m pip install --upgrade homological-observability==2.1.0
 ```
 
 If you already have this checkout, start with the virtual-environment step
@@ -82,10 +82,10 @@ from its root directory.
 <summary>Windows PowerShell</summary>
 
 ```powershell
-git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install -e .
+.venv\Scripts\python.exe -m pip install --upgrade homological-observability==2.1.0
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -509,11 +509,12 @@ When your work uses both, cite them separately.
 ### Software
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.0.0) [Computer
-> software]. Zenodo. https://doi.org/10.5281/zenodo.23618828
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.1.0) [Computer
+> software]. https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.1.0
 
-This citation identifies the archived 2.0.0 release. When using this checkout,
-record `2.1.0.dev0` and the exact Git commit alongside the software citation.
+The software series is archived at
+[doi:10.5281/zenodo.23329442](https://doi.org/10.5281/zenodo.23329442).
+Include the version used in your software citation.
 GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
