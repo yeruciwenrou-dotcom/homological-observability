@@ -99,6 +99,10 @@
         "max_seconds": {
           "type": "number",
           "exclusiveMinimum": 0
+        },
+        "max_explanation_cycles": {
+          "type": "integer",
+          "minimum": 1
         }
       },
       "required": []
@@ -193,6 +197,9 @@
           "type": "null"
         }
       ]
+    },
+    "explain": {
+      "type": "boolean"
     }
   },
   "required": [
@@ -295,6 +302,9 @@
                 }
               }
             ]
+          },
+          "explain": {
+            "const": false
           }
         }
       },

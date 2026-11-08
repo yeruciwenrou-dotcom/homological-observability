@@ -73,6 +73,7 @@ where = ["src"]
 [tool.setuptools.package-data]
 homological_observability = [
   "data/examples/*.json",
+  "data/dfr/*.json",
   "data/studies/*.json",
   "data/reference/*.csv",
   "schemas/*.json",

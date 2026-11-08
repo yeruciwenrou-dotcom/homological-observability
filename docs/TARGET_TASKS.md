@@ -1,10 +1,10 @@
 # Target diagnosis and readout design — development contract
 
-This is the D1 specification and D2 working slice of the homological-observability
+This is the D1–D3 development slice of the homological-observability
 upgrade. It implements target diagnosis, minimum additional scalar channels,
-single-record reconstruction, and replay. The scientific-ML dataset and prediction
-adapter, exposure explanation, performance qualification and release packaging
-remain the subsequent D3–D5 work. The published version remains 2.0.0; development
+single-record reconstruction, replay, optional target-image exposure explanations,
+and a [Scientific ML dataset and prediction workflow](SCIENTIFIC_ML.md).
+Performance qualification and release packaging remain D4–D5 work. The published version remains 2.0.0; development
 outputs identify themselves as 2.1.0.dev0. No release tag is assigned here.
 
 Baseline: `a5447878344a757094018f8472d805f791ff44cb` on `main`.
@@ -65,8 +65,8 @@ assert ho.run_target_request(design["request"]) == design
 The direct signatures are:
 
 ```text
-analyze_target(model, targets, *, limits=None, reverse_tree_order=False) -> dict
-design_readouts(model, targets, candidates, *, limits=None, reverse_tree_order=False) -> dict
+analyze_target(model, targets, *, limits=None, reverse_tree_order=False, explain=False) -> dict
+design_readouts(model, targets, candidates, *, limits=None, reverse_tree_order=False, explain=False) -> dict
 evaluate_target(model, targets, record, *, record_kind="raw", start=None,
                 end=None, limits=None, reverse_tree_order=False) -> dict
 ```
@@ -89,9 +89,10 @@ accepts already corrected records, forbids endpoints, and returns the cycle
 target in the selected tree convention. It does not silently return a raw target.
 
 Input validation rejects targets/candidates on unknown edges before algebra.
-Neither calculation invokes a simple-cycle enumeration or an exposure filtration.
-The model's `max_cycles` and `max_layer` apply to the older analysis task and do
-not discard a target certificate. The source modules are `target.py`, `design.py`,
+The default core calculations do not enumerate simple cycles. Optional
+`explain=True` on analyze/design adds a separately bounded exposure explanation
+after the core result; `max_cycles` and `max_layer` apply to that explanation
+without discarding a target certificate. The source modules are `target.py`, `design.py`,
 `_target_common.py`, and `target_io.py`; existing graph and integer-lattice modules
 remain the common backend.
 
@@ -115,8 +116,9 @@ F(c0)+F(ker_Z P). The exact ambiguity image requires a saturated integer kernel;
 clearing denominators of rational-nullspace columns separately can miss lattice
 points. For P=(2,1,1), F=(0,1,0), the true image is Z, not 2Z. The general public
 coset presentation is deferred; the DFR parity explanation and this regression
-are included. Target-image exposure layers and their entropy interpretation are
-D3 work, using the original paper's assumptions separately from this algebra.
+are included. Target-image exposure layers and their entropy interpretation are implemented
+with `explain=True`. The [technical source](TARGET_THEORY.md) derives them using
+the original paper's assumptions separately from this algebra.
 
 Design first checks P0 and the entire pool, then searches increasing subset
 cardinality. Exhausting smaller sizes and finding one solution proves the
@@ -132,7 +134,8 @@ does not pretend to have enumerated every subset.
 
 `TargetLimits` currently has development defaults: 10,000 subset checks,
 100 returned choices, 100,000 entries per bounded matrix, 4,096 bits per checked
-integer numerator/denominator, and a 30-second cooperative deadline. Prechecks,
+integer numerator/denominator, 10,000 explanation cycles, and a 30-second
+cooperative deadline shared by the core and optional explanation. Prechecks,
 search, legal-image solving, certificates and serialization have checkpoints.
 The time limit is **not a hard wall-clock timeout**: a single SymPy operation
 cannot be interrupted by it, and intermediate algebraic growth is checked at
@@ -148,7 +151,7 @@ The independent request and result schemas are both v1:
 `load_target_request_schema()` and `load_target_task_schema()`. Existing schemas
 retain their versions and semantics. Requests contain `schema_version`,
 `operation` (`analyze`, `design`, `evaluate`), `model`, `targets`, and optional
-`candidates`, `limits`, `reverse_tree_order`, `record`. The `target` CLI handles
+`candidates`, `limits`, `reverse_tree_order`, `record`, `explain`. The `target` CLI handles
 analyze/evaluate; `design` handles design. Unknown fields and command/task
 mismatches are errors. JSON uses the existing model's cochain convention.
 
@@ -156,9 +159,13 @@ Results embed the normalized request and its SHA-256, producer version, explicit
 matrix dimensions (including empty matrices), coordinate basis, calculation
 result, and stop status. Rational decoder entries are exact strings. `COMPLETE`
 means the requested core calculation and returned certificates are complete;
-`LIMIT_REACHED` preserves completed guarantees. Exposure explanation is explicitly
-`NOT_REQUESTED`, independently of core status. CLI exit codes retain the existing
-convention: 0 complete, 1 resource-limited, 2 input/IO error.
+`LIMIT_REACHED` preserves completed guarantees. Independent `explanation_status`
+is `NOT_REQUESTED`, `UNAVAILABLE` (no core basis), `COMPLETE`, `PARTIAL_HORIZON`,
+or `LIMIT_REACHED`. The nullable `explanation` holds fixed-readout target-image
+ranks, graded increments, critical alpha, exact rational coefficient/scale strings
+and its own stop resource. A global coefficient requires a complete natural
+filtration. CLI exit codes are 0 when all requested work is complete, 1 for
+incomplete core/explanation work, and 2 for input/IO errors.
 
 `--output-dir` / `write_target_bundle` writes `request.json`, `result.json` and
 `report.txt` to a new directory. Existing directories are rejected. Replay via
@@ -166,11 +173,10 @@ convention: 0 complete, 1 resource-limited, 2 input/IO error.
 a time-limited run can stop at a different checkpoint on another machine. A result
 is an audit record, not an executable decoder trusted without the input checks.
 
-## R-C1 protocol fixed for D3
+## R-C1 application protocol v1
 
-The data/adapter implementation will use a separate protocol v1, independent of
-the core target-request schema. The following contract is fixed for that work;
-the adapter is not implemented by this D2 slice.
+The implementation under `applications/` uses a separate protocol v1, independent
+of the core target-request schema. See [the runnable tutorial](SCIENTIFIC_ML.md).
 
 | Object | Required fields and semantics |
 | --- | --- |
@@ -180,7 +186,7 @@ the adapter is not implemented by this D2 slice.
 | Predictions | Protocol version, exact task/data identity hashes, scheme, target, split, trajectory IDs, finite prediction values, declared semantics and optional declared rounding rule |
 | Evaluation | Original and postprocessed predictions; MAE on continuous point values; exact-match convention stated explicitly; label distribution, zero fraction and simple constant baseline; precise sample count |
 
-The adapter will reject duplicate/missing IDs, unexpected IDs, incompatible
+The adapter rejects duplicate/missing IDs, unexpected IDs, incompatible
 graph/target/scheme/time/split/data identity, invalid numbers and unsupported
 protocol versions. Required negative fixture: predictions with protocol v2
 against dataset v1 must fail before any metric is produced. Integer realized-value
@@ -193,7 +199,7 @@ The balanced ambiguity pressure set has equal visible inputs and labels 0 and 2
 with equal weights. A deterministic point predictor then has exact-match accuracy
 at most 1/2 and MAE at least 1. This constructed set is separately identified from
 natural known-Q CTMC samples; the bound is not reported as natural-population risk.
-The required CPU tutorial will generate/load, audit, design, reconstruct, import
+The CPU tutorial covers generation/loading, audit, design, reconstruct, import
 user predictions, evaluate and replay. Neural-network training is subsequent R-C2.
 
 ## Validation and continuation
@@ -208,6 +214,6 @@ user predictions, evaluate and replay. Neural-network training is subsequent R-C
 The D2 automated regressions also cover empty/fixed-sufficient pools, an
 insufficient full pool, direct targets, more than 64 distinct candidates, pure
 endpoint targets, certificate truncation, and independent completion flags.
-D3 adds the actual dataset/adapter, target-image filtration explanation and
+D3 supplies the paired dataset/adapter, target-image filtration explanation and
 technical source text. D4 measures the exact candidate and D5 completes the
 technical PDF, reader navigation, migration notes and distribution checks.

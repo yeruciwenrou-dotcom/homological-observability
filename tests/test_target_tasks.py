@@ -400,11 +400,21 @@ class TargetBoundaryTests(unittest.TestCase):
         for limits, resource in [
             (ho.TargetLimits(max_matrix_entries=1), "matrix_entries"),
             (ho.TargetLimits(max_integer_bits=1), "integer_bits"),
-            (ho.TargetLimits(max_seconds=1e-15), "cooperative_seconds"),
         ]:
             document = ho.analyze_target(model, target, limits=limits)
             self.assertIsNone(document["result"]["sufficient"])
             self.assertEqual(document["limit"]["resource"], resource)
+        # The Windows monotonic clock can return the same reading during this
+        # tiny calculation. Test elapsed-time behavior with a controlled clock.
+        with mock.patch(
+            "homological_observability._target_common.time.monotonic",
+            side_effect=itertools.count(0, 2),
+        ):
+            document = ho.analyze_target(
+                model, target, limits=ho.TargetLimits(max_seconds=1)
+            )
+        self.assertIsNone(document["result"]["sufficient"])
+        self.assertEqual(document["limit"]["resource"], "cooperative_seconds")
 
     def test_bad_cochains_candidates_records_and_limits(self):
         model, targets, pool = dfr()
@@ -447,9 +457,17 @@ class TargetContractTests(unittest.TestCase):
             ho.TargetLimits(max_subsets=1),
             ho.TargetLimits(max_solutions=1),
             ho.TargetLimits(max_matrix_entries=1),
-            ho.TargetLimits(max_seconds=1e-15),
         ]:
             documents.append(ho.design_readouts(model, targets, pool, limits=limits))
+        with mock.patch(
+            "homological_observability._target_common.time.monotonic",
+            side_effect=itertools.count(0, 2),
+        ):
+            documents.append(
+                ho.design_readouts(
+                    model, targets, pool, limits=ho.TargetLimits(max_seconds=1)
+                )
+            )
         for document in documents:
             request_validator.validate(document["request"])
             validator.validate(document)

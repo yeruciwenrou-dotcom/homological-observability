@@ -19,6 +19,7 @@ from ._target_common import (
     validate_call,
     validate_readouts,
 )
+from ._target_explanation import attach_explanation
 from .model import GraphModel, IntegerReadout
 from .target import _certificate
 
@@ -30,6 +31,7 @@ def design_readouts(
     *,
     limits: TargetLimits | None = None,
     reverse_tree_order: bool = False,
+    explain: bool = False,
 ) -> dict:
     """Keep model.readouts fixed and minimize the number of added channels.
 
@@ -43,7 +45,13 @@ def design_readouts(
     if {r.name for r in candidates} & {r.name for r in model.readouts}:
         raise ValueError("candidate IDs must differ from fixed readout names")
     document = new_document(
-        "design", model, targets, candidates, limits, reverse_tree_order
+        "design",
+        model,
+        targets,
+        candidates,
+        limits,
+        reverse_tree_order,
+        explain=explain,
     )
     result = {
         "feasible": None,
@@ -66,6 +74,7 @@ def design_readouts(
     document["result"] = result
     budget = Budget(limits)
     selected = []
+    basis = None
     try:
         basis, p, pool, f = prepare(
             model, targets, candidates, budget, reverse_tree_order
@@ -155,4 +164,6 @@ def design_readouts(
     )
     if result["output_truncated"] and document["limit"] is None:
         mark_limited(document, TaskLimit("serialization", "solutions"))
+    if explain:
+        attach_explanation(document, model, budget, basis)
     return document

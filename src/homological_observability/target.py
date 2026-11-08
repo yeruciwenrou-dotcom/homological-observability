@@ -21,6 +21,7 @@ from ._target_common import (
     sufficiency,
     validate_call,
 )
+from ._target_explanation import attach_explanation
 from .homology import chain_from_walk
 from .integer_lattice import integer_kernel
 from .model import GraphModel, IntegerReadout
@@ -67,14 +68,18 @@ def analyze_target(
     *,
     limits: TargetLimits | None = None,
     reverse_tree_order: bool = False,
+    explain: bool = False,
 ) -> dict:
     """Decide whether the model's fixed readouts determine every target.
 
     Returns an exact rational decoder or an integer closed-chain witness.
-    Simple-cycle enumeration and model filtration limits are not involved.
+    The default core task does not enumerate cycles. ``explain=True`` adds a
+    separately bounded target-image filtration after the core certificate.
     """
     targets, limits = validate_call(model, targets, limits, reverse_tree_order)
-    document = new_document("analyze", model, targets, (), limits, reverse_tree_order)
+    document = new_document(
+        "analyze", model, targets, (), limits, reverse_tree_order, explain=explain
+    )
     result = {
         "sufficient": None,
         "rank_readouts": None,
@@ -84,6 +89,7 @@ def analyze_target(
     }
     document["result"] = result
     budget = Budget(limits)
+    basis = None
     try:
         basis, p, _, f = prepare(model, targets, (), budget, reverse_tree_order)
         document["basis"] = basis_document(basis, p, f)
@@ -96,6 +102,8 @@ def analyze_target(
         budget.check("serialization")
     except TaskLimit as error:
         mark_limited(document, error)
+    if explain:
+        attach_explanation(document, model, budget, basis)
     return document
 
 

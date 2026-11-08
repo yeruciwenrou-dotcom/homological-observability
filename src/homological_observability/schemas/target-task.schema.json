@@ -133,6 +133,10 @@
             "max_seconds": {
               "type": "number",
               "exclusiveMinimum": 0
+            },
+            "max_explanation_cycles": {
+              "type": "integer",
+              "minimum": 1
             }
           },
           "required": []
@@ -227,6 +231,9 @@
               "type": "null"
             }
           ]
+        },
+        "explain": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -329,6 +336,9 @@
                     }
                   }
                 ]
+              },
+              "explain": {
+                "const": false
               }
             }
           },
@@ -456,7 +466,158 @@
       "type": "object"
     },
     "explanation_status": {
-      "const": "NOT_REQUESTED"
+      "enum": [
+        "NOT_REQUESTED",
+        "UNAVAILABLE",
+        "COMPLETE",
+        "PARTIAL_HORIZON",
+        "LIMIT_REACHED"
+      ]
+    },
+    "explanation": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "scope": {
+              "const": "fixed_readouts"
+            },
+            "requested_max_layer": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "natural_filtration_complete": {
+              "type": "boolean"
+            },
+            "layers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "layer": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "target_image_rank": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "graded_target_rank": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "hidden_rank": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "joint_hidden_rank": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "critical_alpha": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[0-9]+(/[1-9][0-9]*)?$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "entropy_log_t_contribution": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[0-9]+(/[1-9][0-9]*)?$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "finite_exposure_scale": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[0-9]+(/[1-9][0-9]*)?$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "layer",
+                  "target_image_rank",
+                  "graded_target_rank",
+                  "hidden_rank",
+                  "joint_hidden_rank",
+                  "critical_alpha",
+                  "entropy_log_t_contribution",
+                  "finite_exposure_scale"
+                ]
+              }
+            },
+            "target_entropy_log_t_coefficient": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9]+(/[1-9][0-9]*)?$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "prefix_entropy_log_t_coefficient": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9]+(/[1-9][0-9]*)?$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "limit": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "resource": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "resource"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "scope",
+            "requested_max_layer",
+            "natural_filtration_complete",
+            "layers",
+            "target_entropy_log_t_coefficient",
+            "prefix_entropy_log_t_coefficient",
+            "limit"
+          ]
+        }
+      ]
     }
   },
   "required": [
@@ -470,7 +631,8 @@
     "limit",
     "basis",
     "result",
-    "explanation_status"
+    "explanation_status",
+    "explanation"
   ],
   "allOf": [
     {
@@ -1286,6 +1448,151 @@
               "stage",
               "resource"
             ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "explanation_status": {
+            "const": "NOT_REQUESTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "explanation": {
+            "type": "null"
+          },
+          "request": {
+            "properties": {
+              "explain": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "explanation_status": {
+            "const": "UNAVAILABLE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "explanation": {
+            "type": "null"
+          },
+          "request": {
+            "properties": {
+              "explain": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "explanation_status": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "explanation": {
+            "type": "object",
+            "properties": {
+              "natural_filtration_complete": {
+                "const": true
+              },
+              "limit": {
+                "type": "null"
+              }
+            }
+          },
+          "request": {
+            "properties": {
+              "explain": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "explanation_status": {
+            "const": "PARTIAL_HORIZON"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "explanation": {
+            "type": "object",
+            "properties": {
+              "natural_filtration_complete": {
+                "const": false
+              },
+              "limit": {
+                "type": "null"
+              },
+              "target_entropy_log_t_coefficient": {
+                "const": null
+              }
+            }
+          },
+          "request": {
+            "properties": {
+              "explain": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "explanation_status": {
+            "const": "LIMIT_REACHED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "explanation": {
+            "type": "object",
+            "properties": {
+              "natural_filtration_complete": {
+                "const": false
+              },
+              "limit": {
+                "type": "object"
+              },
+              "target_entropy_log_t_coefficient": {
+                "const": null
+              }
+            }
+          },
+          "request": {
+            "properties": {
+              "explain": {
+                "const": true
+              }
+            }
           }
         }
       }

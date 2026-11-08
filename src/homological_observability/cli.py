@@ -276,7 +276,12 @@ def main(argv: list[str] | None = None) -> int:
                 if arguments.format == "json"
                 else render_target_text(document)
             )
-            return EXIT_SUCCESS if document["status"] == "COMPLETE" else EXIT_INCOMPLETE
+            return (
+                EXIT_SUCCESS
+                if document["status"] == "COMPLETE"
+                and document["explanation_status"] in ("COMPLETE", "NOT_REQUESTED")
+                else EXIT_INCOMPLETE
+            )
         if arguments.command == "example":
             return _run_analysis(
                 load_example(arguments.name),

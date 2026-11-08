@@ -26,6 +26,7 @@ def _parse_request(document):
             "limits",
             "reverse_tree_order",
             "record",
+            "explain",
         },
         label="target request",
     )
@@ -56,6 +57,11 @@ def _parse_request(document):
     if type(reverse) is not bool:
         raise TypeError("reverse_tree_order must be boolean")
     record = root.get("record")
+    explain = root.get("explain", False)
+    if type(explain) is not bool:
+        raise TypeError("explain must be boolean")
+    if operation == "evaluate" and explain:
+        raise ValueError("evaluate does not compute exposure explanations; use analyze")
     if operation == "evaluate":
         record = _object(record, label="record")
         _reject_unknown_fields(
@@ -65,7 +71,7 @@ def _parse_request(document):
             raise ValueError("record requires kind and values")
     elif record is not None:
         raise ValueError("records are only used by evaluate requests")
-    return operation, model, targets, candidates, limits, reverse, record
+    return operation, model, targets, candidates, limits, reverse, record, explain
 
 
 def load_target_request(path: str | Path) -> dict:
@@ -79,12 +85,12 @@ def load_target_request(path: str | Path) -> dict:
 
 def run_target_request(document: dict) -> dict:
     """Replay an authored request or the request embedded in an earlier result."""
-    operation, model, targets, candidates, limits, reverse, record = _parse_request(
-        document
+    operation, model, targets, candidates, limits, reverse, record, explain = (
+        _parse_request(document)
     )
     options = {"limits": limits, "reverse_tree_order": reverse}
     if operation == "design":
-        return design_readouts(model, targets, candidates, **options)
+        return design_readouts(model, targets, candidates, explain=explain, **options)
     if operation == "evaluate":
         return evaluate_target(
             model,
@@ -95,7 +101,7 @@ def run_target_request(document: dict) -> dict:
             end=record.get("end"),
             **options,
         )
-    return analyze_target(model, targets, **options)
+    return analyze_target(model, targets, explain=explain, **options)
 
 
 def render_target_text(document: dict) -> str:
@@ -148,9 +154,27 @@ def render_target_text(document: dict) -> str:
         lines.append(
             f"Stopped at {document['limit']['stage']}: {document['limit']['resource']}."
         )
-    lines.append(
-        "Exposure-scale explanation: not requested; no cycle enumeration is used by this task."
-    )
+    lines.append(f"Exposure-scale explanation: {document['explanation_status']}")
+    explanation = document["explanation"]
+    if explanation:
+        lines.append(
+            "Explanation scope: the fixed readouts before any channel additions."
+        )
+        for layer in explanation["layers"]:
+            if layer["layer"] >= 2:
+                lines.append(
+                    f"Layer {layer['layer']}: target rank increment {layer['graded_target_rank']}; critical alpha {layer['critical_alpha']}"
+                )
+        lines.append(
+            f"Target entropy log(t) coefficient: {explanation['target_entropy_log_t_coefficient']}"
+        )
+        if explanation["limit"]:
+            lines.append(
+                f"Explanation stopped: {explanation['limit']['resource']}; established core results are retained."
+            )
+        lines.append(
+            "Exposure scales and asymptotic coefficients are not finite-time prediction probabilities."
+        )
     lines.append(f"Replay request SHA-256: {document['request_sha256']}")
     return "\n".join(lines) + "\n"
 

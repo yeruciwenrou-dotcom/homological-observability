@@ -31,6 +31,7 @@ class TargetLimits:
     max_matrix_entries: int = 100000
     max_integer_bits: int = 4096
     max_seconds: float = 30.0
+    max_explanation_cycles: int = 10000
 
     def __post_init__(self) -> None:
         for name in (
@@ -38,6 +39,7 @@ class TargetLimits:
             "max_solutions",
             "max_matrix_entries",
             "max_integer_bits",
+            "max_explanation_cycles",
         ):
             value = getattr(self, name)
             if type(value) is not int or value < 1:
@@ -116,7 +118,19 @@ def matrix_to_dict(matrix, *, rational=False):
     }
 
 
-def new_document(operation, model, targets, candidates, limits, reverse, record=None):
+def new_document(
+    operation,
+    model,
+    targets,
+    candidates,
+    limits,
+    reverse,
+    record=None,
+    *,
+    explain=False,
+):
+    if type(explain) is not bool:
+        raise TypeError("explain must be boolean")
     request = {
         "schema_version": 1,
         "operation": operation,
@@ -126,6 +140,7 @@ def new_document(operation, model, targets, candidates, limits, reverse, record=
         "limits": asdict(limits),
         "reverse_tree_order": reverse,
         "record": record,
+        "explain": explain,
     }
     encoded = json.dumps(
         request,
@@ -146,6 +161,7 @@ def new_document(operation, model, targets, candidates, limits, reverse, record=
         "basis": None,
         "result": None,
         "explanation_status": "NOT_REQUESTED",
+        "explanation": None,
     }
 
 

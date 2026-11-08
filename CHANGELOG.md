@@ -13,8 +13,14 @@ schemas and replay bundles. Search reports minimum proofs, tied enumeration,
 returned certificates and output truncation separately.
 
 The [DFR development guide](docs/TARGET_TASKS.md) contains runnable inputs and the
-next implementation gates. Scientific-ML data/prediction evaluation, exposure
-explanations, measured scale guidance and release qualification remain in progress.
+next implementation gates. The [Scientific ML application](docs/SCIENTIFIC_ML.md)
+adds source-bound known-Q DFR trajectories, four paired observation schemes,
+separate natural/pressure evaluation and a versioned user-prediction adapter.
+Optional `explain=True` supplies target-image layers and entropy coefficients
+with independent completion status. The [technical source](docs/TARGET_THEORY.md)
+records the derivations. Deadline tests now use a controlled clock so coarse
+Windows clock resolution does not create false failures. Measured scale guidance
+and release qualification remain in progress.
 The existing paper references and published 2.0.0 citation remain unchanged.
 
 ## 2.0.0 — 2026-10-24
