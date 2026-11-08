@@ -34,7 +34,10 @@ def attach_explanation(document, model, budget, basis):
             budget.limits.max_explanation_cycles,
         )
         _, lattices = exposure_filtration(
-            basis, max_layer=requested, max_cycles=cycle_limit
+            basis,
+            max_layer=requested,
+            max_cycles=cycle_limit,
+            _matrix_guard=lambda entries: budget.size("explanation", entries),
         )
         matrices = document["basis"]
         p, f = (

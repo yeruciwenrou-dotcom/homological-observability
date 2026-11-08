@@ -441,6 +441,40 @@ class TargetBoundaryTests(unittest.TestCase):
 
 
 class TargetContractTests(unittest.TestCase):
+    def test_time_budget_range_uses_input_error_contract(self):
+        for value in (10**400, -(10**400), float("inf"), float("nan"), True, 0):
+            with self.subTest(value_type=type(value).__name__):
+                with self.assertRaises(ValueError):
+                    ho.TargetLimits(max_seconds=value)
+        for value in (1, 0.5, 10**300):
+            self.assertEqual(ho.TargetLimits(max_seconds=value).max_seconds, value)
+
+        validator = Draft202012Validator(ho.load_error_schema())
+        for name, command in (
+            ("dfr_target", "target"),
+            ("dfr_design", "design"),
+            ("dfr_evaluate", "target"),
+        ):
+            request = ho.load_target_request(ROOT / "examples" / f"{name}.json")
+            request["limits"] = {"max_seconds": 10**400}
+            Draft202012Validator(ho.load_target_request_schema()).validate(request)
+            with self.assertRaises(ValueError):
+                ho.run_target_request(request)
+            with tempfile.TemporaryDirectory() as temporary:
+                path = Path(temporary) / "request.json"
+                path.write_text(json.dumps(request), encoding="utf-8")
+                stdout, stderr = io.StringIO(), io.StringIO()
+                with (
+                    contextlib.redirect_stdout(stdout),
+                    contextlib.redirect_stderr(stderr),
+                ):
+                    code = cli.main([command, str(path), "--format", "json"])
+                self.assertEqual(code, 2)
+                document = json.loads(stdout.getvalue())
+                validator.validate(document)
+                self.assertEqual(document["status"], "ERROR")
+                self.assertEqual(stderr.getvalue(), "")
+
     def test_schemas_cover_complete_and_each_partial_state(self):
         request_validator = Draft202012Validator(ho.load_target_request_schema())
         validator = Draft202012Validator(ho.load_target_task_schema())

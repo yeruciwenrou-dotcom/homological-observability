@@ -205,6 +205,10 @@ infeasibility by monotonicity and leaves this enumeration count at -1.
 integer numerator/denominator, 10,000 explanation cycles, and a 30-second
 cooperative deadline shared by the core and optional explanation. Prechecks,
 search, legal-image solving, certificates and serialization have checkpoints.
+The explanation also checks the cycle-generator matrix size before constructing
+cycle coordinates. Reaching that limit preserves the completed core result and
+sets `explanation_status` to `LIMIT_REACHED`.
+`max_seconds` accepts positive finite numbers within floating-point range.
 The deadline is checked between exact operations, so a single SymPy operation
 can run past it. Intermediate algebraic growth is checked at those same
 boundaries. Use an externally timed process when a hard deadline is required. The [resource measurements](TARGET_VALIDATION.md#scale-and-budgets)

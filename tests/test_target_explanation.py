@@ -8,13 +8,16 @@ import tempfile
 import unittest
 from dataclasses import replace
 from fractions import Fraction
+from itertools import combinations
 from pathlib import Path
+from unittest import mock
 
 from jsonschema import Draft202012Validator, ValidationError
 
 import homological_observability as ho
 from homological_observability import cli
 from homological_observability.applications._dfr_data import dfr_model
+from homological_observability.filtration import exposure_filtration
 from homological_observability.homology import build_homology_basis
 
 
@@ -122,6 +125,73 @@ class TargetExplanationTests(unittest.TestCase):
         layers = result["explanation"]["layers"]
         self.assertEqual(layers[2]["finite_exposure_scale"], "5/16")
         self.assertIsNone(result["explanation"]["target_entropy_log_t_coefficient"])
+
+    def test_generator_matrix_budget_precedes_allocation(self):
+        vertices = tuple(str(i) for i in range(6))
+        model = ho.GraphModel("K6", vertices, tuple(combinations(vertices, 2)))
+        targets = (ho.IntegerReadout.from_mapping("F", {("0", "1"): 1}),)
+        core = ho.analyze_target(model, targets)
+        validator = Draft202012Validator(ho.load_target_task_schema())
+        for maximum in (400, 1969):
+            with self.subTest(max_matrix_entries=maximum):
+                with mock.patch(
+                    "homological_observability.filtration.cycle_coordinates",
+                    side_effect=AssertionError(
+                        "cycle coordinates allocated over budget"
+                    ),
+                ):
+                    result = ho.analyze_target(
+                        model,
+                        targets,
+                        limits=ho.TargetLimits(max_matrix_entries=maximum),
+                        explain=True,
+                    )
+                self.assertEqual(result["status"], "COMPLETE")
+                self.assertEqual(result["result"], core["result"])
+                self.assertEqual(result["explanation_status"], "LIMIT_REACHED")
+                self.assertEqual(
+                    result["explanation"]["limit"], {"resource": "matrix_entries"}
+                )
+                validator.validate(result)
+
+        baseline = ho.analyze_target(model, targets, explain=True)
+        for maximum in (1970, 2000):
+            result = ho.analyze_target(
+                model,
+                targets,
+                limits=ho.TargetLimits(max_matrix_entries=maximum),
+                explain=True,
+            )
+            self.assertEqual(result["status"], "COMPLETE")
+            self.assertEqual(result["explanation_status"], "COMPLETE")
+            self.assertEqual(result["result"], core["result"])
+            self.assertEqual(result["explanation"], baseline["explanation"])
+
+        cycles, lattices = exposure_filtration(build_homology_basis(model))
+        self.assertEqual(len(cycles), 197)
+        self.assertEqual(lattices[-1].shape, (10, 10))
+
+    def test_matrix_limited_explanation_replays_with_incomplete_cli_exit(self):
+        vertices = tuple(str(i) for i in range(6))
+        model = ho.GraphModel("K6", vertices, tuple(combinations(vertices, 2)))
+        targets = (ho.IntegerReadout.from_mapping("F", {("0", "1"): 1}),)
+        limits = ho.TargetLimits(max_matrix_entries=400)
+        core = ho.design_readouts(model, targets, targets, limits=limits)
+        result = ho.design_readouts(
+            model, targets, targets, limits=limits, explain=True
+        )
+        self.assertEqual(result["status"], "COMPLETE")
+        self.assertEqual(result["result"], core["result"])
+        self.assertEqual(result["explanation_status"], "LIMIT_REACHED")
+        self.assertEqual(ho.run_target_request(result["request"]), result)
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "request.json"
+            path.write_text(json.dumps(result["request"]), encoding="utf-8")
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                code = cli.main(["design", str(path), "--format", "json"])
+            self.assertEqual(code, 1)
+            self.assertEqual(json.loads(stdout.getvalue()), result)
 
     def test_schema_replay_and_cli_partial_exit(self):
         model, targets = dfr_model("w")

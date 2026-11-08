@@ -28,6 +28,9 @@ The quick start demonstrates target diagnosis and readout design, with source
 installation instructions for macOS, Linux and Windows.
 Target and DFR reports explain unresolved targets, illegal records and
 unfinished calculations, and identify saved reports for the next step.
+Time budgets outside floating-point range return structured input errors.
+Optional explanations check cycle-generator matrix sizes before allocation,
+preserving completed core results when the explanation reaches its budget.
 
 The existing network-analysis, comparison, critical-experiment and
 paper-reproduction workflows retain their 2.0.0 interfaces and formats.

@@ -44,13 +44,19 @@ class TargetLimits:
             value = getattr(self, name)
             if type(value) is not int or value < 1:
                 raise ValueError(f"{name} must be a positive integer")
-        if (
-            isinstance(self.max_seconds, bool)
-            or not isinstance(self.max_seconds, (int, float))
-            or not math.isfinite(self.max_seconds)
-            or self.max_seconds <= 0
-        ):
-            raise ValueError("max_seconds must be positive and finite")
+        try:
+            valid_seconds = (
+                not isinstance(self.max_seconds, bool)
+                and isinstance(self.max_seconds, (int, float))
+                and math.isfinite(self.max_seconds)
+                and self.max_seconds > 0
+            )
+        except OverflowError:
+            valid_seconds = False
+        if not valid_seconds:
+            raise ValueError(
+                "max_seconds must be positive and finite in floating-point range"
+            )
 
 
 class TaskLimit(Exception):
