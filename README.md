@@ -2,19 +2,13 @@
 
 [![PyPI v2.1.0](https://img.shields.io/badge/PyPI-v2.1.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.1.0/)
 [![Software DOI: 10.5281/zenodo.24058140](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24058140)
-[![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
-Apply it to your own network to identify hidden cycle information and determine
-the sampling requirements for recovering it, compare counters, and design
-records that determine a chosen trajectory target.
+Use it to identify hidden cycle information in your network, compare recording
+schemes, and determine which counts recover a chosen trajectory target.
 
-> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
-> *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
-> and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
-> [Read and discuss on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
-> · [Archived paper and PDF](https://doi.org/10.5281/zenodo.23424849).
+[Read the paper on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 [Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
 [Physical interpretation](#physical-interpretation) · [Documentation](#documentation-and-feedback)
