@@ -10,7 +10,7 @@ Choose the input format for the question you want to answer:
 | Compare candidate counter configurations | `compare` | [A study with shared conditions and named candidates](#configuration-study) |
 | Construct a rate-dependent critical experiment | `critical` | [Graph, readouts, exact directed rates, and critical settings](#critical-experiment-model) |
 
-`target` and `design` require the [development version](../README.md#install).
+See the [installation instructions](../README.md#install) to set up the commands.
 The [scientific ML guide](SCIENTIFIC_ML.md) describes the separate paired-data
 and prediction-file formats used by the DFR application.
 

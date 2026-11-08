@@ -8,8 +8,7 @@ That finding helps you choose between changing the recording scheme, adding a
 channel, or adapting the prediction target and evaluation to the information
 available.
 
-Available in the unreleased 2.1.0.dev0 source, the example uses the package's
-existing NumPy/SciPy dependencies.
+The example uses the package's existing NumPy/SciPy dependencies.
 
 The example uses a **discrete flashing ratchet (DFR)**: a particle moves among
 three positions while an asymmetric potential switches ON and OFF, giving six
@@ -30,7 +29,7 @@ by this package; the supplied predictor is a training-median baseline.
 
 ## Run the complete case
 
-Follow the [development installation](../README.md#install), then run from the
+Follow the [installation instructions](../README.md#install), then run from the
 repository directory. The examples below use its virtual environment; on
 Windows, replace `.venv/bin/python` with `.venv\Scripts\python.exe`.
 

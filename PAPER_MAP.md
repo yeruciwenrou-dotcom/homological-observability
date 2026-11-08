@@ -76,8 +76,8 @@ an unfinished exposure filtration leaves later layers open.
 
 ## Target diagnosis, design and scientific ML
 
-The development version extends the software from full-history analysis to
-specified integer targets. The [target derivation](docs/TARGET_THEORY.md)
+The software supports full-history analysis and specified integer targets.
+The [target derivation](docs/TARGET_THEORY.md)
 ([PDF](docs/TARGET_THEORY.pdf)) is a software-oriented technical supplement to
 the paper. It derives full-group sufficiency, legal-record decoding and minimum
 readout design, then obtains the target-image entropy law from the paper's

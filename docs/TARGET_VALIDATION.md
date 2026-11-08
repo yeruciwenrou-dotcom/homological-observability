@@ -10,7 +10,7 @@ It accompanies the [task guide](TARGET_TASKS.md),
 
 ## Repeat the assessment
 
-After the [development installation](../CONTRIBUTING.md#development-environment),
+After following the [installation instructions](../CONTRIBUTING.md#development-environment),
 run from the checkout:
 
 ```bash

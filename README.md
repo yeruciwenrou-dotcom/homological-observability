@@ -62,13 +62,10 @@ and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumption
 
 ## Install
 
-This checkout is **2.1.0.dev0**, an unreleased development version. Target
-diagnosis, readout design and the scientific ML case below require this source.
-The latest published version is **2.0.0**; its analysis, comparison, critical
-experiment and reproduction commands remain available in the development version.
+Version: **2.1.0.dev0**.
 
-Use Python 3.11–3.13. To try the new capabilities, clone this development branch
-and install it in a virtual environment. On macOS or Linux:
+Use Python 3.11–3.13. Clone the repository and install it in a virtual
+environment. On macOS or Linux:
 
 ```bash
 git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
@@ -102,7 +99,7 @@ In the linked guides, use
 `.venv/bin/homological-observability` on Windows, and
 `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
 
-For the published release, install `homological-observability==2.0.0` in a
+For version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
 [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
 For upgrades from 1.x, see the
@@ -469,8 +466,8 @@ probability mass covered by the displayed range.
 
 | Your next task | Guide |
 | --- | --- |
-| Audit a target and choose additional counters (unreleased) | [Target tasks](docs/TARGET_TASKS.md) |
-| Evaluate ML predictions on paired DFR observations (unreleased) | [Scientific ML application](docs/SCIENTIFIC_ML.md) |
+| Audit a target and choose additional counters | [Target tasks](docs/TARGET_TASKS.md) |
+| Evaluate ML predictions on paired DFR observations | [Scientific ML application](docs/SCIENTIFIC_ML.md) |
 | Check target derivations and measured scope | [Technical note](docs/TARGET_THEORY.md) · [PDF](docs/TARGET_THEORY.pdf) · [Assessment](docs/TARGET_VALIDATION.md) |
 | Compare counters and understand their differences | [Comparison studies](docs/COMPARISON_GUIDE.md) |
 | Prepare a model or study | [Input fields and physical modeling](docs/MODEL_GUIDE.md) |
@@ -516,9 +513,8 @@ When your work uses both, cite them separately.
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.0.0) [Computer
 > software]. Zenodo. https://doi.org/10.5281/zenodo.23618828
 
-This citation identifies the published 2.0.0 release. For development results,
-record `2.1.0.dev0` and the exact Git commit alongside the software citation;
-the release DOI identifies the archived release, not the development checkout.
+This citation identifies the archived 2.0.0 release. When using this checkout,
+record `2.1.0.dev0` and the exact Git commit alongside the software citation.
 GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 

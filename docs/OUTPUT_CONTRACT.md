@@ -18,8 +18,8 @@ cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas), and
 
 ## Target task document
 
-The [development version](../README.md#install) adds independent v1 request
-and result formats for `analyze_target`, `design_readouts` and `evaluate_target`.
+`analyze_target`, `design_readouts` and `evaluate_target` use independent v1
+request and result formats.
 See [target JSON and replay](TARGET_TASKS.md#json-and-replay) for their fields.
 Existing analysis, comparison and critical formats retain their versions.
 

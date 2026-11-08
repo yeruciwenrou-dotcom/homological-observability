@@ -58,13 +58,10 @@ compute path weights and limiting mark distributions.
 
 ## Install
 
-This checkout is **2.1.0.dev0**, an unreleased development version. Target
-diagnosis, readout design and the scientific ML case below require this source.
-The latest published version is **2.0.0**; its analysis, comparison, critical
-experiment and reproduction commands remain available in the development version.
+Version: **2.1.0.dev0**.
 
-Use Python 3.11–3.13. To try the new capabilities, clone this development branch
-and install it in a virtual environment. On macOS or Linux:
+Use Python 3.11–3.13. Clone the repository and install it in a virtual
+environment. On macOS or Linux:
 
 ```bash
 git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
@@ -95,7 +92,7 @@ In the linked guides, use
 `.venv/bin/homological-observability` on Windows, and
 `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
 
-For the published release, install `homological-observability==2.0.0` in a
+For version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
 [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
 For upgrades from 1.x, see the
@@ -271,8 +268,8 @@ When your work uses both, cite them separately. The
 provides the full paper and software references and a copyable paper BibTeX entry.
 The published 2.0.0 software archive is
 [doi:10.5281/zenodo.23618828](https://doi.org/10.5281/zenodo.23618828).
-For development results, record `2.1.0.dev0` and the exact Git commit; the release
-DOI identifies the archived release.
+When using this checkout, record `2.1.0.dev0` and the exact Git commit alongside
+the software citation.
 
 Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 

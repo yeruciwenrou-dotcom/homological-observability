@@ -7,8 +7,7 @@ target ambiguity to exposure layers; the
 [Scientific ML tutorial](SCIENTIFIC_ML.md) applies these tools to paired data
 and model predictions.
 
-Use the [development installation](../README.md#install) for these interfaces
-in 2.1.0.dev0.
+Follow the [installation instructions](../README.md#install) to run the examples.
 
 ## First task: an existing record and a new research target
 
