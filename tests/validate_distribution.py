@@ -141,6 +141,8 @@ def smoke_artifact(
             ):
                 raise AssertionError("upgrade replay has an inconsistent model digest")
             record["software"].pop("version")
+            # Compare scientific results across revisions of report prose.
+            record["phase"].pop("boundary_note")
         old_analysis_schema = 2 if upgrade_from == "1.2.1" else 3
         old_model_schema = 1 if upgrade_from == "1.2.1" else 2
         if (
