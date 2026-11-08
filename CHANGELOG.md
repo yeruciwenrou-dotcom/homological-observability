@@ -14,11 +14,16 @@ returned certificates and output truncation separately.
 
 The [target task guide](docs/TARGET_TASKS.md) contains runnable examples.
 The [Scientific ML application](docs/SCIENTIFIC_ML.md)
-adds source-bound known-Q DFR trajectories, four paired observation schemes,
+adds DFR trajectories generated with documented rates, four paired observation schemes,
 separate natural/pressure evaluation and a versioned user-prediction adapter.
 Optional `explain=True` supplies target-image layers and entropy coefficients
 with independent completion status. The [technical source](docs/TARGET_THEORY.md)
 records the derivations.
+
+The main guide now starts with target diagnosis and readout design, with
+separate installation instructions for development and published versions.
+Target and DFR reports explain unresolved targets, illegal records and
+unfinished calculations, and identify saved reports for the next step.
 
 ## 2.0.0 — 2026-10-24
 

@@ -53,7 +53,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="homological-observability",
         description=(
-            "Analyze cycle-history observability, compare counter configurations, "
+            "Check target observability, design or compare counter configurations, "
             "and construct critical-limit experiments for finite-state models."
         ),
     )
@@ -86,7 +86,17 @@ def _build_parser() -> argparse.ArgumentParser:
         ("target", "diagnose target sufficiency or decode one exact record"),
         ("design", "find minimum additional scalar readouts for a target"),
     ):
-        target_parser = commands.add_parser(command, help=help_text)
+        target_parser = commands.add_parser(
+            command,
+            help=help_text,
+            description=help_text.capitalize()
+            + ". Uses exact integer edge counters on a known graph.",
+            epilog=(
+                "Guide: docs/TARGET_TASKS.md. "
+                f"From a source checkout: homological-observability {command} "
+                f"examples/dfr_{command}.json --output-dir {command}-results"
+            ),
+        )
         target_parser.add_argument(
             "request", type=Path, help="path to a target-task request JSON"
         )
@@ -276,6 +286,8 @@ def main(argv: list[str] | None = None) -> int:
                 if arguments.format == "json"
                 else render_target_text(document)
             )
+            if arguments.format == "text" and arguments.output_dir is not None:
+                print(f"Report: {arguments.output_dir / 'report.txt'}")
             return (
                 EXIT_SUCCESS
                 if document["status"] == "COMPLETE"

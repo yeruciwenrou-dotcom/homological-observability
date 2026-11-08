@@ -534,5 +534,60 @@ class TargetContractTests(unittest.TestCase):
         self.assertEqual(json.loads(stream.getvalue())["status"], "ERROR")
 
 
+class TargetReportTests(unittest.TestCase):
+    def test_unfinished_decision_is_distinct_from_insufficiency(self):
+        model, targets, pool = dfr()
+        diagnosis = ho.analyze_target(model, targets)
+        text = ho.render_target_text(diagnosis)
+        self.assertIn("do not determine every target", text)
+        self.assertIn("DeltaW changes by 2", text)
+        limited = ho.analyze_target(
+            model, targets, limits=ho.TargetLimits(max_matrix_entries=1)
+        )
+        text = ho.render_target_text(limited)
+        self.assertIn("sufficiency has not been established", text)
+        self.assertNotIn("do not determine", text)
+        for document in (
+            limited,
+            ho.design_readouts(
+                model, targets, pool, limits=ho.TargetLimits(max_matrix_entries=1)
+            ),
+        ):
+            text = ho.render_target_text(document)
+            self.assertIn("LIMIT_REACHED", text)
+            self.assertNotIn("None", text)
+            self.assertNotIn("cannot determine", text)
+
+    def test_illegal_record_has_no_decoded_value_and_cycle_value_is_labeled(self):
+        model, targets = lattice_model([[2]], [[1]])
+        illegal = ho.evaluate_target(model, targets, {"P0": 1}, record_kind="cycle")
+        text = ho.render_target_text(illegal)
+        self.assertIn("outside the legal integer image", text)
+        self.assertNotIn("F0 =", text)
+        legal = ho.evaluate_target(model, targets, {"P0": 2}, record_kind="cycle")
+        text = ho.render_target_text(legal)
+        self.assertIn("Cycle target values", text)
+        self.assertIn("F0 = 1", text)
+        self.assertNotIn("Raw target values", text)
+
+    def test_finite_scale_and_zero_entropy_are_not_missing_values(self):
+        model, targets, _ = dfr()
+        finite = ho.analyze_target(
+            replace(model, observation_time=2.5, sampling_interval=0.05),
+            targets,
+            explain=True,
+        )
+        text = ho.render_target_text(finite)
+        self.assertIn("exposure scale approximately 0.125", text)
+        self.assertNotIn("entropy log(T) coefficient", text)
+        self.assertNotIn("None", text)
+        sparse = ho.analyze_target(replace(model, alpha=2), targets, explain=True)
+        self.assertIn(
+            "Target entropy log(T) coefficient: 0", ho.render_target_text(sparse)
+        )
+        # A zero asymptotic coefficient must not turn insufficiency into recovery.
+        self.assertIn("do not determine every target", ho.render_target_text(sparse))
+
+
 if __name__ == "__main__":
     unittest.main()

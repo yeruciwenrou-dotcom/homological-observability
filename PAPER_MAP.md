@@ -72,6 +72,27 @@ The [comparison guide](docs/COMPARISON_GUIDE.md) shows how to interpret and
 rerun a study. The comparison's evidence concerns the stated computed domain;
 an unfinished exposure filtration leaves later layers open.
 
+## Target diagnosis, design and scientific ML
+
+The development version extends the software from full-history analysis to
+specified integer targets. The [target derivation](docs/TARGET_THEORY.md)
+separates exact full-group sufficiency and legal-record decoding from the
+target-image entropy law obtained using the paper's filtration and assumptions.
+
+| Task | Implementation | Evidence and interpretation |
+| --- | --- | --- |
+| Target sufficiency and reconstruction | [target.py](src/homological_observability/target.py) | Rational-rank criterion, integer ambiguity witnesses, legal-image checks and endpoint corrections |
+| Minimum additional channels | [design.py](src/homological_observability/design.py) | Cardinality search over a supplied pool; minimum, ties and certificate completion reported separately |
+| Target exposure layers | [_target_explanation.py](src/homological_observability/_target_explanation.py) | Integer target images and the difference of two hidden-history entropy coefficients |
+| Paired data and model predictions | [DFR application](src/homological_observability/applications/dfr.py) | Generated known-rate trajectories, exact reconstruction and separate natural/pressure evaluations |
+
+The [ML tutorial](docs/SCIENTIFIC_ML.md#model-and-data-provenance) attributes the
+DFR model and parameter setting to their original sources. Its target task,
+paired observation schemes and prediction adapter are software applications
+developed here. They use newly generated data and do not reproduce a trained
+NeuralMJP model. The frozen paper calculations below remain a separate
+reproduction path.
+
 ## Rate-dependent critical experiment
 
 | Paper object | Computation | Implementation |

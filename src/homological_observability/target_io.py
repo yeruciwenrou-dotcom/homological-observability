@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+from decimal import Decimal, localcontext
+from fractions import Fraction
 from pathlib import Path
 
 from ._integer_io import check_output_integers, parse_json_integer
@@ -109,65 +111,129 @@ def render_target_text(document: dict) -> str:
     result = document["result"]
     lines = [
         f"Target task: {document['operation']} [{document['status']}]",
-        "Scope: exact integer cochains on the full cycle group, with known endpoints.",
+        "Targets: " + ", ".join(t["name"] for t in document["request"]["targets"]),
+        "Scope: exact integer readouts on the full cycle group.",
     ]
     if document["operation"] == "design":
-        lines.extend(
-            [
-                f"Candidate pool feasible: {result['feasible']}",
-                f"Fixed channels: {result['fixed_count']}; candidate channels: {result['candidate_count']}",
-                f"Minimum added channels: {result['minimum_added']} (proved: {result['minimum_proven']})",
-                f"Added-channel bounds: [{result['lower_bound_added']}, {result['upper_bound_added']}]",
-                f"Minimum total channels: {result['minimum_total']}",
-                f"All tied choices returned: {result['ties_complete']}",
-                f"Returned reconstruction certificates complete: {result['certificates_complete']}",
-            ]
+        lines.append(
+            {
+                True: "The candidate pool can determine all targets with the fixed readouts.",
+                False: "Even the entire candidate pool cannot determine all targets with the fixed readouts.",
+                None: "Candidate-pool feasibility has not been established.",
+            }[result["feasible"]]
         )
+        lines.append(
+            f"Fixed channels: {result['fixed_count']}; candidate channels: {result['candidate_count']}"
+        )
+        if result["minimum_proven"]:
+            lines.append(
+                f"Minimum added channels: {result['minimum_added']} (proved); total: {result['minimum_total']}."
+            )
+        elif result["feasible"] is not False:
+            lower = result["lower_bound_added"]
+            upper = result["upper_bound_added"]
+            lines.append("The minimum has not been proved.")
+            lines.append(
+                f"Added-channel bounds: lower {lower if lower is not None else 'unknown'}; "
+                f"upper {upper if upper is not None else 'unknown'}."
+            )
         for solution in result["solutions"]:
             lines.append(
                 "Add: " + (", ".join(solution["added_ids"]) or "no additional channel")
             )
-        lines.append(
-            "Additional channels apply to future collection or replay from available full paths."
-        )
-    else:
-        lines.append(f"Fixed records determine all targets: {result['sufficient']}")
-        if document["operation"] == "evaluate":
-            lines.extend(
-                [
-                    f"Record belongs to the legal integer image: {result['legal_record']}",
-                    f"Target values ({result['value_kind']}): {result['target_values']}",
-                ]
+        if result["feasible"] is True:
+            lines.append(
+                "All minimum choices are shown."
+                if result["ties_complete"]
+                else "Further choices may remain unsearched or unreturned."
             )
-            if result["reason"]:
-                lines.append(f"Reason: {result['reason']}")
+        if not result["certificates_complete"]:
+            lines.append("Some reconstruction certificates remain unfinished.")
+        if any(s["added_count"] for s in result["solutions"]):
+            lines.append(
+                "Additional channels apply to future collection or replay from available full paths."
+            )
+    else:
+        lines.append(
+            {
+                True: "The fixed readouts determine every target for legal records.",
+                False: "The fixed readouts do not determine every target: distinct histories can share a record.",
+                None: "Target sufficiency has not been established.",
+            }[result["sufficient"]]
+        )
+        if document["operation"] == "evaluate":
+            lines.append(
+                {
+                    True: "The supplied record satisfies the integer-image constraints.",
+                    False: "The supplied record is outside the legal integer image; no target value is returned.",
+                    None: "Record legality has not been established; no target value is returned.",
+                }[result["legal_record"]]
+            )
+            if result["target_values"] is not None:
+                lines.append(
+                    "Raw target values (including endpoint corrections):"
+                    if result["value_kind"] == "raw"
+                    else "Cycle target values (in the selected tree convention):"
+                )
+                lines.extend(
+                    f"  {name} = {value}"
+                    for name, value in result["target_values"].items()
+                )
+            elif result["legal_record"] is True:
+                lines.append(
+                    "No unique target value has been established for this record."
+                )
         else:
             certificate = result["certificate"]
-            lines.append(
-                f"Integer/reconstruction certificate complete: {result['certificate_complete']}"
-            )
+            if not result["certificate_complete"]:
+                lines.append(
+                    "The certificate remains unfinished; the conclusion above is retained."
+                )
             if certificate and certificate["kind"] == "ambiguity":
                 lines.append(
-                    "The integer closed-chain witness leaves all fixed records unchanged and changes the target."
+                    "An integer closed-chain witness leaves every fixed readout unchanged:"
                 )
+                lines.extend(
+                    f"  {target['name']} changes by {row[0]}"
+                    for target, row in zip(
+                        document["request"]["targets"],
+                        certificate["target_change"]["data"],
+                    )
+                )
+            elif certificate:
+                lines.append("An exact decoder is included in the structured result.")
     if document["limit"]:
         lines.append(
             f"Stopped at {document['limit']['stage']}: {document['limit']['resource']}."
         )
-    lines.append(f"Exposure-scale explanation: {document['explanation_status']}")
+    if document["explanation_status"] != "NOT_REQUESTED":
+        lines.append(f"Exposure-scale explanation: {document['explanation_status']}")
     explanation = document["explanation"]
     if explanation:
         lines.append(
             "Explanation scope: the fixed readouts before any channel additions."
         )
         for layer in explanation["layers"]:
-            if layer["layer"] >= 2:
-                lines.append(
-                    f"Layer {layer['layer']}: target rank increment {layer['graded_target_rank']}; critical alpha {layer['critical_alpha']}"
-                )
-        lines.append(
-            f"Target entropy log(t) coefficient: {explanation['target_entropy_log_t_coefficient']}"
-        )
+            if layer["layer"] < 2:
+                continue
+            detail = f"Layer {layer['layer']}: target rank increment {layer['graded_target_rank']}"
+            if layer["critical_alpha"] is not None:
+                detail += f"; critical alpha {layer['critical_alpha']}"
+            if layer["finite_exposure_scale"] is not None:
+                scale = Fraction(layer["finite_exposure_scale"])
+                with localcontext() as context:
+                    context.prec = 6
+                    approximate = Decimal(scale.numerator) / Decimal(scale.denominator)
+                detail += f"; exposure scale approximately {approximate}"
+            lines.append(detail)
+        coefficient = explanation["target_entropy_log_t_coefficient"]
+        prefix = explanation["prefix_entropy_log_t_coefficient"]
+        if coefficient is not None:
+            lines.append(f"Target entropy log(T) coefficient: {coefficient}")
+        elif prefix is not None:
+            lines.append(
+                f"Computed-prefix entropy log(T) coefficient: {prefix}; later layers remain open."
+            )
         if explanation["limit"]:
             lines.append(
                 f"Explanation stopped: {explanation['limit']['resource']}; established core results are retained."

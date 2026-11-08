@@ -2,7 +2,8 @@
 
 This technical note supports the target diagnosis and readout design interfaces
 and the Scientific ML application. It extends the software's implementation of
-[Topological History in Stochastic Dynamics](https://doi.org/10.5281/zenodo.23424849).
+[Stochastic Histories at Finite Temporal Resolution: Homological Observability
+and Information Phase Diagrams in Markov Jump Processes](https://doi.org/10.5281/zenodo.23424849).
 The paper supplies the exposure filtration and hidden-history entropy law.
 The target-image, conditional-entropy and measurement-design arguments below
 are derived here for these software interfaces.
@@ -17,12 +18,12 @@ write P:H→Z^k for fixed readouts and F:H→Z^q for the targets.
 
 All targets are determined by P on the full cycle group exactly when
 
-\[
+$$
 \ker_{\mathbb Z}P\subseteq\ker_{\mathbb Z}F
 \quad\Longleftrightarrow\quad
-\operatorname{rank}_{\mathbb Q}P=
-\operatorname{rank}_{\mathbb Q}\begin{bmatrix}P\\F\end{bmatrix}.
-\]
+\mathrm{rank}_{\mathbb Q}P=
+\mathrm{rank}_{\mathbb Q}\begin{bmatrix}P\\F\end{bmatrix}.
+$$
 
 For the forward direction, every rational vector in ker P becomes an integer
 kernel vector after multiplication by a common denominator. Thus F annihilates
@@ -51,9 +52,9 @@ An open walk chain x from s to t is not itself a cycle. Let h(s,t) be the tree
 path with the same boundary. Then x−h=Bc for a unique integer c. For raw cochain
 matrices A and G, the evaluator uses
 
-\[
+$$
 p'=Ax-Ah=Pc,\qquad Gx=D p'+Gh,\qquad P=AB,\ F=GB.
-\]
+$$
 
 Known endpoints therefore retain pure-gradient targets, whose cycle restriction
 is zero. `record_kind="cycle"` already uses corrected coordinates and returns Fc;
@@ -64,9 +65,9 @@ it forbids endpoints so the two meanings are not mixed.
 For a legal p choose c0 in H with Pc0=p. The entire integer solution set is
 c0+K, where K=ker_Z P. Consequently the target set is precisely
 
-\[
+$$
 F(c_0)+M,\qquad M=F(K).
-\]
+$$
 
 Both inclusions follow directly by subtracting c0 or adding a kernel vector.
 The choice of c0 changes the representative but leaves the coset unchanged.
@@ -89,19 +90,19 @@ positive snapshot time; every snapshot, including endpoints, agrees.
 Use the paper's integer exposure filtration L_m. The existing backend constructs
 it from simple cycles of length at most 2m. Define
 
-\[
+$$
 K_P^m=L_m\cap\ker P,\qquad
 K_{P,F}^m=L_m\cap\ker P\cap\ker F,\qquad M_m=F(K_P^m).
-\]
+$$
 
 Restriction of F gives a short exact sequence
 0→K_(P,F)^m→K_P^m→M_m→0. Ranks therefore add at each m. Nested L_m imply
 nested K_P^m and M_m, so the graded target rank
 
-\[
-g_m=\operatorname{rank}M_m-\operatorname{rank}M_{m-1}
+$$
+g_m=\mathrm{rank}M_m-\mathrm{rank}M_{m-1}
 =r_P^m-r_{P,F}^m\geq0
-\]
+$$
 
 is nonnegative. Here r denotes the corresponding hidden graded free rank.
 The implementation constructs the integer images, verifies lattice inclusion,
@@ -111,20 +112,20 @@ represented by a rank alone and does not contribute a log(T) leading coefficient
 Let C be the latent integer cycle history, S the snapshots and PC the observed
 cochain record. Since FC is a function of C, the conditional entropy chain rule is
 
-\[
+$$
 H(FC\mid S,PC)=H(C\mid S,PC)-H(C\mid S,PC,FC)
 =R_P-R_{(P,F)}.
-\]
+$$
 
 Under the original paper's fixed finite connected bidirectional positive-rate
 model, stationary-law and regular long-time sampling assumptions, apply its
 hidden-history asymptotic to both terms on the **same** model and sampling
 sequence. For delta=T^(−alpha), the resulting target coefficient is
 
-\[
+$$
 H(FC\mid S,PC)=
 \frac12\sum_{m\geq2}g_m[1-\alpha(m-1)]_+\log T+O(1).
-\]
+$$
 
 At a layer carrying target rank, the critical alpha is 1/(m−1). A zero leading
 coefficient alone does not establish deterministic reconstruction or a zero

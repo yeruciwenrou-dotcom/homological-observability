@@ -110,11 +110,72 @@ def run_case(dataset):
     }
 
 
+def _render_case_text(result):
+    lines = ["DFR: recover DeltaW and evaluate predictions"]
+    design = result["design"]["result"]
+    if design["minimum_proven"]:
+        count = design["minimum_added"]
+        noun = "channel" if count == 1 else "channels"
+        lines.append(
+            f"With W already recorded, the minimum is {count} additional {noun}."
+        )
+    elif design["feasible"] is False:
+        lines.append(
+            "The candidate pool cannot determine DeltaW with W already recorded."
+        )
+    else:
+        lines.append(
+            "The minimum number of additional channels has not been established."
+        )
+    for solution in design["solutions"]:
+        lines.append(
+            "Add: " + (", ".join(solution["added_ids"]) or "no additional channel")
+        )
+    if not design["ties_complete"]:
+        lines.append("Further choices may remain unsearched or unreturned.")
+    lines.append(
+        f"Design calculation: {result['design']['status']}; exposure explanation: {result['design']['explanation_status']}."
+    )
+    lines.extend(["", "Exact reconstruction from each observation scheme:"])
+    for scheme, record in result["paired_reconstruction"].items():
+        sufficient = result["audits"][scheme]["result"]["sufficient"]
+        if sufficient is True:
+            detail = f"reconstructed {record['count']} paths; mismatches {record['mismatches']}"
+        elif sufficient is False:
+            detail = "DeltaW is not determined; exact reconstruction is unavailable"
+        else:
+            detail = "target sufficiency is unresolved; exact reconstruction was not attempted"
+        lines.append(f"  {scheme}: {detail}")
+    lines.extend(["", "Training-median prediction baseline (W-only inputs):"])
+    for cohort in ("natural", "pressure"):
+        evaluation = result[f"{cohort}_prediction_evaluation"]["raw"]
+        label = (
+            "Natural test split" if cohort == "natural" else "Constructed pressure pair"
+        )
+        lines.append(
+            f"  {label}: {evaluation['count']} paths; MAE {evaluation['mae']:.6g}; "
+            f"exact-match accuracy {evaluation['exact_match_accuracy']:.6g}"
+        )
+    lines.extend(
+        [
+            "The pressure pair has identical visible inputs and distinct targets; its scores describe this constructed pair.",
+            "",
+            "case.json: full results, certificates and evaluation details.",
+            "predictions.json: natural-test prediction template for evaluation replay.",
+            f"Dataset: {result['dataset_id']}",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description="Compare DFR observation schemes, recover DeltaW and evaluate model predictions.",
+        epilog="Tutorial and model sources: docs/SCIENTIFIC_ML.md.",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     generate = sub.add_parser(
-        "generate", help="generate a source-bound known-Q dataset"
+        "generate", help="simulate paired trajectories using the documented DFR rates"
     )
     generate.add_argument("--output-dir", type=Path, required=True)
     generate.add_argument("--trajectories", type=int, default=64)
@@ -151,27 +212,10 @@ def main(argv=None):
             (args.output_dir / "predictions.json").write_bytes(
                 json_bytes(result["prediction_template"])
             )
-            report = [
-                "DFR research case",
-                f"Dataset: {result['dataset_id']}",
-                f"Minimum added channels for DeltaW: {result['design']['result']['minimum_added']}",
-            ]
-            for scheme, record in result["paired_reconstruction"].items():
-                report.append(
-                    f"{scheme}: reconstructed {record['count']}; mismatches {record['mismatches']}"
-                )
-            for cohort in ("natural", "pressure"):
-                evaluation = result[f"{cohort}_prediction_evaluation"]
-                report.append(
-                    f"{cohort}: training-median MAE {evaluation['raw']['mae']}; exact match {evaluation['raw']['exact_match_accuracy']}"
-                )
-            report.append(
-                "Natural sampling and the constructed equal-weight pressure set are separate populations."
-            )
-            (args.output_dir / "report.txt").write_text(
-                "\n".join(report) + "\n", encoding="utf-8"
-            )
-            print("\n".join(report))
+            report = _render_case_text(result)
+            (args.output_dir / "report.txt").write_text(report, encoding="utf-8")
+            print(report, end="")
+            print(f"Report: {args.output_dir / 'report.txt'}")
         else:
             if args.output.exists():
                 raise FileExistsError("evaluation output already exists")

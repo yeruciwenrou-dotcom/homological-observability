@@ -7,8 +7,8 @@ target ambiguity to exposure layers; the
 [Scientific ML tutorial](SCIENTIFIC_ML.md) applies these tools to paired data
 and model predictions.
 
-These interfaces require the unreleased 2.1.0.dev0 source. The published 2.0.0
-package does not yet include them.
+Use the [development installation](../README.md#install) for these interfaces
+(2.1.0.dev0). The published 2.0.0 package does not yet include them.
 
 ## First task: an existing record and a new research target
 
@@ -20,13 +20,13 @@ spanning tree. The cycle rank is four.
 See the [model and data provenance](SCIENTIFIC_ML.md#model-and-data-provenance)
 for the physical model, parameters and references.
 
-From a development source installation, run:
+Run from the repository directory, using the installed environment's command:
 
 ```bash
-homological-observability target examples/dfr_target.json
-homological-observability design examples/dfr_design.json --output-dir dfr-design
-homological-observability target examples/dfr_evaluate.json --format json
-homological-observability design dfr-design/request.json --format json
+.venv/bin/homological-observability target examples/dfr_target.json
+.venv/bin/homological-observability design examples/dfr_design.json --output-dir dfr-design
+.venv/bin/homological-observability target examples/dfr_evaluate.json --format json
+.venv/bin/homological-observability design dfr-design/request.json --format json
 ```
 
 Expected conclusions:
@@ -50,6 +50,47 @@ Existing records can be audited with `target`. Additional channels apply to
 future collection or replay from available complete event logs. When a simulator
 already exposes every event, directly accumulating DeltaW is a valid baseline;
 the design task is useful when records are fixed, restricted or shared by targets.
+
+## Use your own target
+
+Copy `examples/dfr_design.json` and edit the following fields. The same
+[graph and signed-edge conventions](MODEL_GUIDE.md#from-a-physical-model-to-an-input)
+apply to fixed readouts, targets and candidates.
+
+1. Set `model.name`, `model.vertices` and `model.edges` to describe your system.
+2. Put the counters already available in `model.readouts`. Use `[]` when
+   designing from scratch; place removable channels in `candidates`.
+3. Define the quantities you want to recover in `targets`. Several targets
+   are handled jointly, so a channel can serve more than one target.
+4. List admissible additional scalar counters in `candidates`, each with a
+   distinct name. The minimum is over this pool; it does not optimize hardware
+   cost. Include a direct target counter if your recording system permits it.
+5. Run `design` on the saved request. For diagnosis alone, set `operation` to
+   `analyze`, remove `candidates`, and run `target`.
+
+You can also define a model directly in Python. This triangle example asks
+whether a counter that adds two per crossing can determine the unit count:
+
+```python
+import homological_observability as ho
+
+target = ho.IntegerReadout.from_mapping("count", {("c", "a"): 1})
+model = ho.GraphModel.create(
+    name="triangle counter",
+    vertices=["a", "b", "c"],
+    edges=[("a", "b"), ("b", "c"), ("c", "a")],
+    readouts=[("twice", {("c", "a"): 2})],
+)
+diagnosis = ho.analyze_target(model, [target])
+print(ho.render_target_text(diagnosis))
+decoded = ho.evaluate_target(model, [target], {"twice": 2}, start="a", end="a")
+assert decoded["result"]["target_values"] == {"count": 1}
+```
+
+For a closed path the recorded counter must be even. A value of one is rejected
+as an illegal record, even though it can be divided by two numerically. Use
+`write_target_bundle(diagnosis, "triangle-audit")` to save the request, result
+and readable report for replay.
 
 ## Three calculation interfaces
 
@@ -93,9 +134,7 @@ Input validation rejects targets/candidates on unknown edges before algebra.
 The default core calculations do not enumerate simple cycles. Optional
 `explain=True` on analyze/design adds a separately bounded exposure explanation
 after the core result; `max_cycles` and `max_layer` apply to that explanation
-without discarding a target certificate. The source modules are `target.py`, `design.py`,
-`_target_common.py`, and `target_io.py`; existing graph and integer-lattice modules
-remain the common backend.
+without discarding a target certificate.
 
 ## Exactness and guarantees
 

@@ -151,6 +151,11 @@ class DFRDataTests(unittest.TestCase):
             self.assertEqual(result["paired_reconstruction"][scheme]["mismatches"], 0)
             self.assertEqual(result["audits"][scheme]["explanation_status"], "COMPLETE")
         self.assertFalse(result["audits"]["w"]["result"]["sufficient"])
+        report = dfr._render_case_text(result)
+        self.assertIn("w: DeltaW is not determined", report)
+        self.assertNotIn("reconstructed 0", report)
+        self.assertIn("Natural test split: 13 paths", report)
+        self.assertIn("Constructed pressure pair: 2 paths", report)
 
 
 class DFRPredictionTests(unittest.TestCase):

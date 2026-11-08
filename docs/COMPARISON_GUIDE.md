@@ -5,7 +5,7 @@ adds, which channels are redundant, and which histories remain hidden. A
 study holds the graph, sampling parameters, and computation budget fixed so
 that the candidates can be compared directly.
 
-If you ran the [quick start](../README.md#quick-start), continue with
+If you ran the [bridge study](../README.md#compare-counter-configurations), continue with
 [Read the answer](#read-the-answer) using your existing `bridge-results`.
 For a first run, follow the [installation instructions](../README.md#install),
 then run the built-in bridge study in that working directory. The study

@@ -4,10 +4,15 @@
 [![Software DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
-This repository provides **computational tools for homological observability**,
-including exact integer calculations and reproducible finite-model examples.
-Apply it to your own network to identify hidden cycle information and determine
-the sampling requirements for recovering it.
+**Homological Observability** is research software for studying what finite
+observations retain about a system's accumulated cycle history. Give it a
+transition graph, counter rules and a research target to check whether the
+records determine that target, choose additional counters, and reconstruct
+target values from sufficient records.
+
+It also compares observation schemes, computes asymptotic sampling thresholds,
+and reproduces the paper's finite-model calculations. The scientific ML example
+connects these analyses to paired trajectory data and user-supplied predictions.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -26,7 +31,7 @@ create uncertainty in the accumulated history.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
-For finite-state Markov jump processes, **we establish an information phase
+For finite-state Markov jump processes, **the paper establishes an information phase
 diagram and sharp sampling thresholds for recovering accumulated cycle
 histories.** The theory quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
@@ -43,7 +48,11 @@ You can use the software to:
 - **[Analyze your own network](#analyze-your-own-network):** provide a transition graph and
   optional integer counter rules to identify hidden cycle differences and
   asymptotic sampling requirements.
-- **[Compare counter configurations](#quick-start):** determine which choices
+- **[Diagnose and design for a target](#quick-start):** check existing records,
+  find the minimum extra channels within a specified pool, and recover targets.
+- **[Evaluate model predictions](docs/SCIENTIFIC_ML.md):** compare predictions
+  against exact reconstruction and simple baselines on paired observations.
+- **[Compare counter configurations](#compare-counter-configurations):** determine which choices
   reveal different or redundant information, with explanatory reports and
   exact integer evidence.
 - **[Reproduce the paper](#reproduce-the-paper-evidence):** regenerate the included finite-model
@@ -61,24 +70,32 @@ compute path weights and limiting mark distributions.
 
 ## Install
 
-Version **2.0.0** supports exact rational sampling exponents and organizes
-reports around the sampling request. For upgrades from 1.x, see the
-[format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+This checkout is **2.1.0.dev0**, an unreleased development version. Target
+diagnosis, readout design and the scientific ML case below require this source.
+The latest published version is **2.0.0**; its analysis, comparison, critical
+experiment and reproduction commands remain available in the development version.
 
-Use Python 3.11–3.13. In your working directory, create a virtual environment
-and install the package from PyPI. On macOS or Linux:
+Use Python 3.11–3.13. To try the new capabilities, clone this development branch
+and install it in a virtual environment. On macOS or Linux:
 
 ```bash
+git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
 python3 -m venv .venv
-.venv/bin/python -m pip install homological-observability==2.0.0
+.venv/bin/python -m pip install -e .
 ```
+
+If you already have this checkout, start with the virtual-environment step
+from its root directory.
 
 <details>
 <summary>Windows PowerShell</summary>
 
 ```powershell
+git clone --branch feat/target-observability https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
 py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install homological-observability==2.0.0
+.venv\Scripts\python.exe -m pip install -e .
 ```
 
 Python 3.11 or 3.13 can be selected in place of 3.12.
@@ -87,13 +104,72 @@ Python 3.11 or 3.13 can be selected in place of 3.12.
 
 These commands use the virtual environment directly, so activation is optional.
 Installation needs internet access; examples and reference data are included
-in the package.
-The commands below run from this directory. In the linked guides, use
+in the package. Run the commands below from the repository directory.
+In the linked guides, use
 `.venv\Scripts\homological-observability.exe` in place of
 `.venv/bin/homological-observability` on Windows, and
 `.venv\Scripts\python.exe` in place of `.venv/bin/python`.
 
+For the published release, install `homological-observability==2.0.0` in a
+separate environment and follow its
+[versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
+For upgrades from 1.x, see the
+[format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+
 ## Quick start
+
+Suppose your simulator records total signed circulation **W**, and your new
+question concerns the difference **DeltaW** between circulation while a potential
+is ON and OFF. Can the existing data answer that question? If not, what is the
+smallest change to the recording scheme?
+
+The six-state discrete flashing ratchet (DFR) example answers this on a shared
+set of trajectories. Its [model and data sources](docs/SCIENTIFIC_ML.md#model-and-data-provenance)
+are documented in the scientific ML guide. Run the complete CPU case:
+
+```bash
+.venv/bin/python -m homological_observability.applications.dfr run --output-dir dfr-case
+```
+
+Open **`dfr-case/report.txt`**. It reports:
+
+| Recorded information | Can it determine DeltaW? | Next step |
+| --- | --- | --- |
+| Snapshots and W | No: distinct histories can share the same record | Add a counter for W_ON or W_OFF |
+| Snapshots, W and W_ON | Yes: DeltaW = 2 W_ON − W | Reconstruct from the recorded values |
+| Snapshots, W and W_OFF | Yes: DeltaW = W − 2 W_OFF | An equally small alternative |
+
+The search proves that **one extra scalar channel is sufficient and necessary
+within the supplied pool**. On the bundled dataset, each sufficient scheme
+evaluated by the case reconstructs all 64 trajectories with zero mismatch.
+Adding a channel changes future collection; existing full event logs can also
+be replayed to obtain the extra counts.
+
+The case saves `case.json` with the structural evidence and evaluations, plus
+`predictions.json` with training-median predictions for the 13-path natural test
+split. Replay that evaluation with:
+
+```bash
+.venv/bin/python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
+```
+
+Use the [scientific ML guide](docs/SCIENTIFIC_ML.md) to supply your model's
+predictions and compare observation schemes on the same paths. A separate
+constructed ambiguity pair tests what identical visible inputs can leave
+unresolved; its scores are reported separately from naturally sampled data.
+
+To inspect the diagnosis and design without running the dataset case:
+
+```bash
+.venv/bin/homological-observability target examples/dfr_target.json
+.venv/bin/homological-observability design examples/dfr_design.json --output-dir dfr-design
+```
+
+The [target guide](docs/TARGET_TASKS.md#use-your-own-target) shows how to use your
+own graph, fixed records, targets and candidate channels. Each output directory
+must be new so that earlier results remain available for comparison and replay.
+
+## Compare counter configurations
 
 Suppose your model has a four-state ring and a seven-state ring joined by a
 bridge. State snapshots leave some circulation between observations unknown.
@@ -105,7 +181,7 @@ ring $y$. A forward crossing adds one and a reverse crossing subtracts one.
 The built-in study compares these choices with snapshots alone and with
 weighted combinations of the same counters.
 
-### Compare counter configurations
+### Run the bridge study
 
 Create the study input, then run it into a new results directory:
 
@@ -262,7 +338,9 @@ probability mass covered by the displayed range.
 
 Use `analyze` for a single observation scheme, or `compare` for a study of
 several counter configurations. Both take a graph and optional counter rules;
-sampling parameters are optional.
+sampling parameters are optional. For a specific trajectory target, use
+[`target` and `design`](docs/TARGET_TASKS.md#use-your-own-target) with the same
+graph and cochain conventions.
 
 ### Analyze one configuration
 
@@ -426,8 +504,10 @@ When your work uses both, cite them separately.
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.0.0) [Computer
 > software]. Zenodo. https://doi.org/10.5281/zenodo.23618828
 
-Record the software version used and, for a source checkout, the exact Git
-commit. GitHub's citation menu and
+This citation identifies the published 2.0.0 release. For development results,
+record `2.1.0.dev0` and the exact Git commit alongside the software citation;
+the release DOI identifies the archived release, not the development checkout.
+GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
 Software authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.

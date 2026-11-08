@@ -328,6 +328,9 @@ class DocumentationTests(unittest.TestCase):
             ROOT / "docs/END_TO_END_EXAMPLE.md",
             ROOT / "docs/MODEL_GUIDE.md",
             ROOT / "docs/OUTPUT_CONTRACT.md",
+            ROOT / "docs/TARGET_TASKS.md",
+            ROOT / "docs/TARGET_THEORY.md",
+            ROOT / "docs/SCIENTIFIC_ML.md",
         )
         code_styled_mathematics = (
             "`H_1(G; Z)`",

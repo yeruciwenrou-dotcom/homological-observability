@@ -34,6 +34,14 @@ it computes hidden cycle differences, their exposure layers, and asymptotic
 sampling requirements. Exact transition rates are additional inputs for
 constructing the rate-dependent critical experiment.
 
+The [target interfaces](TARGET_TASKS.md) ask a more specific question: do the
+fixed readouts and endpoints determine a chosen integer trajectory quantity?
+They provide an exact decoder or a closed-chain ambiguity witness, and can
+search a supplied pool for the smallest set of additional scalar channels.
+This algebraic decision needs the support and counter rules, without numerical
+rates or cycle enumeration. Optional explanations connect its unresolved
+target directions to the paper's exposure filtration.
+
 ## How local ambiguity accumulates
 
 On a triangle, a direct A → B jump and the route A → C → B differ by one
@@ -80,6 +88,9 @@ Choose a task according to what you want to vary:
 
 | Task | Inputs to vary | Read from the result |
 | --- | --- | --- |
+| Diagnose a target with `target` | Fixed counters and one or more integer target cochains | Sufficiency, an exact decoder or an ambiguity witness; values for legal sufficient records |
+| Design records with `design` | Fixed counters and admissible candidate channels | Minimum extra scalar channels, alternative choices and reconstruction certificates |
+| Evaluate predictions with the [DFR case](SCIENTIFIC_ML.md) | Observation scheme and user-supplied point predictions | Paired reconstruction, test-set errors, baselines and separate ambiguity-pressure results |
 | Compare network structures with `analyze` | Graph edges, with the observation protocol fixed | Exposure layers and hidden directions; adding an edge can change more than the cycle count |
 | Compare counters with `compare` | Named integer readouts on one shared graph | Information equivalence, strict refinement, incomparable directions, and individually redundant channels |
 | Compare sampling scalings with `analyze` | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Which hidden layers are sparse, critical, or dense, and their leading entropy coefficients |
@@ -223,7 +234,10 @@ unknown graph, transition rates, or hidden states from data is a separate
 inference task. Noisy, adaptive, or irregular observations likewise need an
 observation model beyond the noiseless regular snapshots and exact integer
 counters used here. General trajectory simulation and real-valued measurement
-rules require other tools or extensions to that model.
+rules require other tools or extensions to that model. The DFR application
+includes a simulator for its documented known-rate six-state model and an
+adapter for user predictions. It supports observation design and evaluation
+for scientific ML; users train their own models separately.
 
 Dense, critical, and sparse labels describe limits under a specified sampling
 scaling. They do not classify a finite dataset or provide finite-sample risk
@@ -247,6 +261,13 @@ their real spans. The [coordinate conventions](CONVENTIONS.md) describe this
 distinction.
 
 ## Scale and resource behavior
+
+Target diagnosis and record reconstruction use exact linear and integer
+algebra. Readout design adds a subset search that can grow combinatorially
+with the candidate pool. The [target limits](TARGET_TASKS.md#exactness-and-guarantees)
+bound that search and its certificates; a stopped run retains only the
+guarantees established before its stop. Target explanations additionally use
+the exposure calculation described below.
 
 Simple-cycle enumeration can grow exponentially. `max_cycles` bounds the
 work required for a complete catalogue. When the bound is

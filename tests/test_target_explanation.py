@@ -90,6 +90,10 @@ class TargetExplanationTests(unittest.TestCase):
         self.assertIsNone(result["explanation"]["target_entropy_log_t_coefficient"])
         self.assertIsNotNone(result["explanation"]["prefix_entropy_log_t_coefficient"])
         self.assertTrue(result["result"]["certificate_complete"])
+        report = ho.render_target_text(result)
+        self.assertIn("Computed-prefix entropy", report)
+        self.assertIn("later layers remain open", report)
+        self.assertNotIn("Target entropy log(T) coefficient", report)
 
     def test_explanation_limits_preserve_core_certificates(self):
         model, targets = dfr_model("w-on")

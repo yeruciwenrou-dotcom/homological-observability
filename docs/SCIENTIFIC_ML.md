@@ -22,12 +22,13 @@ by this package; the supplied predictor is a training-median baseline.
 
 ## Run the complete case
 
-From the repository, install the development source with `python -m pip install -e .`.
-Then run:
+Follow the [development installation](../README.md#install), then run from the
+repository directory. The examples below use its virtual environment; on
+Windows, replace `.venv/bin/python` with `.venv\Scripts\python.exe`.
 
 ```bash
-python -m homological_observability.applications.dfr run --output-dir dfr-case
-python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
+.venv/bin/python -m homological_observability.applications.dfr run --output-dir dfr-case
+.venv/bin/python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
 ```
 
 Omitting `--dataset` loads the bundled, hashed 64-trajectory fixture.
@@ -138,8 +139,8 @@ bound. This finite check cannot certify that an arbitrary learner is leakage-fre
 ## Generate another reproducible sample
 
 ```bash
-python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
-python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
+.venv/bin/python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
+.venv/bin/python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
 ```
 
 The Python generator additionally accepts `observation_time` and `grid_points`.
@@ -158,10 +159,10 @@ right-continuous; exact snapshot time equality takes the post-jump state.
 The DFR support consists of ON states 0,1,2 and OFF states 3,4,5. At temperature,
 V, b and r all equal to 1, its row-generator has, for distinct i,j in {0,1,2},
 
-\[
+$$
 Q_{ij}=e^{-(j-i)/2},\quad Q_{i+3,j+3}=1,\quad
 Q_{i,i+3}=Q_{i+3,i}=1,\quad Q_{ii}=-\sum_{j\ne i}Q_{ij}.
-\]
+$$
 
 The rates follow Appendix J of [2], with the source implementation pinned in
 [3]. We use its regular-grid setting: 50 noise-free observations over [0, 2.5]

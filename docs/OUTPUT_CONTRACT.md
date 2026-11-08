@@ -5,6 +5,8 @@ for your task:
 
 | Task | Python result | JSON contract |
 | --- | --- | --- |
+| `target` / `design` | Target-task dictionary | [Target task document](#target-task-document) |
+| DFR application | Case or evaluation dictionary | [Dataset and prediction protocol](TARGET_TASKS.md#dataset-and-prediction-protocol-v1) |
 | `analyze` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
 | `compare` | Comparison dictionary | [Configuration comparison document](#configuration-comparison-document) |
 | `critical` | Immutable `CriticalExperimentResult` | [Critical experiment document](#critical-experiment-document) |
@@ -13,6 +15,26 @@ JSON is the format for downstream processing. Terminal text and the topology
 and comparison Markdown reports are intended for reading. Shared references below
 cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas), and
 [renderers](#renderers).
+
+## Target task document
+
+The [development version](../README.md#install) adds independent v1 request
+and result formats for `analyze_target`, `design_readouts` and `evaluate_target`.
+See [target JSON and replay](TARGET_TASKS.md#json-and-replay) for their fields.
+Existing analysis, comparison and critical formats retain their versions.
+
+Read `result` for the scientific conclusion and `status` for computational
+completion. An insufficient target or an illegal record can be a completed
+diagnosis. A stopped search can retain a proved minimum without returning all
+tied choices or finishing all certificates. Optional `explanation_status`
+separately reports exposure-layer completeness; it does not replace the
+full-cycle-group target decision.
+
+Text reports state the established conclusion, any unfinished work and the
+replay identity. `result.json` retains exact matrices, integer witnesses,
+rational decoders and scale values. Decimal exposure scales in text are
+approximations for reading. A saved bundle also includes `request.json` and
+`report.txt`; each bundle is written to a new directory.
 
 ## Analysis document
 
@@ -437,6 +459,7 @@ levels.
 | `analyze` / `example` | `COMPLETE` or `PARTIAL_HORIZON` | `LIMIT_REACHED` |
 | `compare` | Every candidate is `COMPLETE` | Comparison is `INCOMPLETE`: at least one candidate is partial, limited, or in error |
 | `critical` | Requested critical experiment is `COMPLETE` | `LIMIT_REACHED` |
+| `target` / `design` | Core is `COMPLETE`; explanation is `COMPLETE` or `NOT_REQUESTED` | Core or requested explanation is incomplete |
 | `reproduce` | Calculation checks passed; reference comparison is reported separately | Reference evidence mismatched |
 
 Exit `2` reports CLI usage, file, JSON, validation, or controlled execution
@@ -463,6 +486,8 @@ installed package:
 | Controlled error | `load_error_schema()` | [`error.schema.json`](../src/homological_observability/schemas/error.schema.json) |
 | Critical model input | `load_critical_model_schema()` | [`critical-model.schema.json`](../src/homological_observability/schemas/critical-model.schema.json) |
 | Critical experiment result | `load_critical_experiment_schema()` | [`critical-experiment.schema.json`](../src/homological_observability/schemas/critical-experiment.schema.json) |
+| Target request | `load_target_request_schema()` | [`target-request.schema.json`](../src/homological_observability/schemas/target-request.schema.json) |
+| Target result | `load_target_task_schema()` | [`target-task.schema.json`](../src/homological_observability/schemas/target-task.schema.json) |
 
 Each loader returns a fresh dictionary, so callers can construct a validator or
 adapt a local copy without mutating package state.
