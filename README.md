@@ -9,13 +9,13 @@ including exact integer calculations and reproducible finite-model examples.
 Use it to identify hidden cycle information in your network, compare recording
 schemes, and determine which counts recover a chosen trajectory target.
 
-> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
+> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
-> and Information Phase Diagrams in Markov Jump Processes*.
-> [Read the paper on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
+> and Information Phase Diagrams in Markov Jump Processes*.<br>
+> [Read and discuss the paper on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 [Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
-[Physical interpretation](#physical-interpretation) · [Documentation](#documentation-and-feedback)
+[Documentation](#documentation-and-feedback)
 
 ## Choose a task
 
