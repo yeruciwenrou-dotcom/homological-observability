@@ -166,7 +166,7 @@ Q_{ij}=e^{-(j-i)/2},\quad Q_{i+3,j+3}=1,\quad
 Q_{i,i+3}=Q_{i+3,i}=1.
 $$
 
-All other off-diagonal entries are zero. For every state $a\in\{0,\ldots,5\}$,
+All other off-diagonal entries are zero. For every state $a\in\lbrace 0,\ldots,5\rbrace$,
 the diagonal is $Q_{aa}=-\sum_{b\ne a}Q_{ab}$, so each row sums to zero.
 
 The rates follow Appendix J of [2], with the source implementation pinned in

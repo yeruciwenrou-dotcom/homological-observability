@@ -161,7 +161,9 @@ def convert(text):
                 paragraph = paragraph.replace(
                     r"zero. \texttt{record\_kind=", r"zero.\\* \texttt{record\_kind="
                 )
-            if value.startswith("Both inclusions follow"):
+            if value.startswith(
+                ("Both inclusions follow", "The global coefficient is available")
+            ):
                 paragraph = (
                     r"\begingroup\clubpenalties 5 10000 10000 10000 10000 0\relax "
                     + paragraph

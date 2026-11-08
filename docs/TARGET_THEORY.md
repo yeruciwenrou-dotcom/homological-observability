@@ -129,20 +129,29 @@ H(FC\mid S,PC)=H(C\mid S,PC)-H(C\mid S,PC,FC)
 $$
 
 Under the original paper's fixed finite connected bidirectional positive-rate
-model, stationary initial law and regular noiseless snapshots, apply its
-hidden-history asymptotic to both terms on the **same** model and long-time sampling
-sequence. For $\delta=T^{-\alpha}$ with $\alpha\geq0$, the target entropy is
+model, stationary initial law and regular noiseless snapshots, Theorem 5.1 applied
+to both entropies on the **same** model gives, for fixed $\alpha>0$,
+$\delta=T^{-\alpha}$ and $T/\delta\in\mathbb{N}$ as $T\to\infty$,
 
 $$
 H(FC\mid S,PC)=
-\frac12\sum_{m\geq2}g_m[1-\alpha(m-1)]_+\log T+O(1).
+\frac12\sum_{m\geq2}g_m[1-\alpha(m-1)]_+\log T+o(\log T).
 $$
 
-At a layer carrying target rank, the critical exponent is $\alpha=1/(m-1)$. A zero leading
-coefficient alone does not establish deterministic reconstruction or a zero
-finite-time error; critical layers and $O(1)$ terms still matter. Finite inputs
-$T,\delta$ yield exposure scales $T\delta^{m-1}$, not a prediction success probability.
-These are distinct from the exact full-group criterion in section 1.
+For a fixed snapshot interval $\delta_0>0$, Proposition 5.3 applied to the same
+two entropies instead gives, along $T/\delta_0\in\mathbb{N}$,
+
+$$
+H(FC\mid S,PC)=\frac12\mathrm{rank}F(\ker P)\log T+O(1).
+$$
+
+Here $\mathrm{rank}F(\ker P)=\sum_m g_m$, matching the leading coefficient at
+$\alpha=0$. At a layer carrying target rank, the critical exponent is
+$\alpha=1/(m-1)$. Residual uncertainty at critical scales requires separate
+analysis; a zero leading coefficient alone does not establish deterministic
+reconstruction or a zero finite-time error. Finite inputs $T,\delta$ yield exposure
+scales $T\delta^{m-1}$, not a prediction success probability. These are distinct
+from the exact full-group criterion in section 1.
 
 The global coefficient is available once the computed exposure lattice reaches
 $H$; an earlier stop returns a prefix coefficient and `PARTIAL_HORIZON`. The default
