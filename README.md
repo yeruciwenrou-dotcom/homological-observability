@@ -4,6 +4,7 @@
 [![Software DOI: 10.5281/zenodo.24058140](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24058140)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
+State snapshots can miss how a system moved between observations.
 This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Use it to identify hidden cycle information in your network, compare recording
@@ -114,13 +115,16 @@ For upgrades from 1.x, see the
 
 ## Quick start
 
+After installation, choose an example: [analyze a trajectory target](#target-analysis-and-scientific-ml)
+to decide which counts you need, or [compare counter configurations](#compare-counter-configurations)
+to study hidden cycle information and sampling requirements.
+
 ### Target analysis and scientific ML
 
 This example shows how to check whether observations determine an integer
 trajectory target before training a predictor, choose additional counters,
 and evaluate predictions on the same paths. It uses a known finite-state
-model. For network analysis and sampling questions, start with the
-[counter-comparison example](#compare-counter-configurations).
+model.
 
 Suppose your simulator records total signed circulation **W**, and your new
 question concerns the difference **DeltaW** between circulation while a potential
