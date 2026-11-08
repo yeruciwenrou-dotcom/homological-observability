@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "operation": "design",
+  "model": {
+    "schema_version": 2,
+    "name": "DFR target task",
+    "vertices": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "edges": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "2"
+      ],
+      [
+        "2",
+        "0"
+      ],
+      [
+        "3",
+        "4"
+      ],
+      [
+        "4",
+        "5"
+      ],
+      [
+        "5",
+        "3"
+      ],
+      [
+        "0",
+        "3"
+      ],
+      [
+        "1",
+        "4"
+      ],
+      [
+        "2",
+        "5"
+      ]
+    ],
+    "readouts": [
+      {
+        "name": "W",
+        "coefficients": [
+          {
+            "edge": [
+              "2",
+              "0"
+            ],
+            "coefficient": 1
+          },
+          {
+            "edge": [
+              "5",
+              "3"
+            ],
+            "coefficient": 1
+          }
+        ]
+      }
+    ]
+  },
+  "targets": [
+    {
+      "name": "DeltaW",
+      "coefficients": [
+        {
+          "edge": [
+            "2",
+            "0"
+          ],
+          "coefficient": 1
+        },
+        {
+          "edge": [
+            "5",
+            "3"
+          ],
+          "coefficient": -1
+        }
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "name": "W_ON",
+      "coefficients": [
+        {
+          "edge": [
+            "2",
+            "0"
+          ],
+          "coefficient": 1
+        }
+      ]
+    },
+    {
+      "name": "W_OFF",
+      "coefficients": [
+        {
+          "edge": [
+            "5",
+            "3"
+          ],
+          "coefficient": 1
+        }
+      ]
+    },
+    {
+      "name": "S0",
+      "coefficients": [
+        {
+          "edge": [
+            "0",
+            "3"
+          ],
+          "coefficient": 1
+        }
+      ]
+    },
+    {
+      "name": "S1",
+      "coefficients": [
+        {
+          "edge": [
+            "1",
+            "4"
+          ],
+          "coefficient": 1
+        }
+      ]
+    },
+    {
+      "name": "S2",
+      "coefficients": [
+        {
+          "edge": [
+            "2",
+            "5"
+          ],
+          "coefficient": 1
+        }
+      ]
+    }
+  ]
+}

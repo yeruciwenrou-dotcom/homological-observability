@@ -27,12 +27,19 @@ def main() -> int:
         "critical_experiment": ho.load_critical_experiment_schema(),
         "study": ho.load_study_schema(),
         "comparison": ho.load_comparison_schema(),
+        "target_request": ho.load_target_request_schema(),
+        "target_task": ho.load_target_task_schema(),
     }
     for schema in schemas.values():
         Draft202012Validator.check_schema(schema)
     validators = {
         name: Draft202012Validator(schema) for name, schema in schemas.items()
     }
+
+    for name in ("dfr_target", "dfr_design", "dfr_evaluate"):
+        request = ho.load_target_request(ROOT / "examples" / f"{name}.json")
+        validators["target_request"].validate(request)
+        validators["target_task"].validate(ho.run_target_request(request))
 
     model = load_example("wedge-c3-c5")
     validators["model"].validate(ho.model_to_dict(model))

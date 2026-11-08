@@ -1,5 +1,6 @@
 """Public API for exact homological-observability analysis."""
 
+from ._target_common import TargetLimits
 from .analysis import AnalysisLimit, AnalysisStatus, TopologyAnalysis, analyze_model
 from .comparison import compare_configurations, load_study, parse_study
 from .comparison_reporting import (
@@ -36,6 +37,7 @@ from .cycles import (
     residue_probability,
     ring_bridge_probability,
 )
+from .design import design_readouts
 from .examples import (
     ExampleCategory,
     ExampleSpec,
@@ -55,6 +57,8 @@ from .schema import (
     load_model_schema,
     load_reproduction_schema,
     load_study_schema,
+    load_target_request_schema,
+    load_target_task_schema,
 )
 from .serialization import (
     ArtifactRole,
@@ -65,6 +69,13 @@ from .serialization import (
     render_json,
     render_markdown,
     render_text,
+)
+from .target import analyze_target, evaluate_target
+from .target_io import (
+    load_target_request,
+    render_target_text,
+    run_target_request,
+    write_target_bundle,
 )
 from .version import __version__
 
@@ -83,6 +94,16 @@ __all__ = [
     "GraphModel",
     "IntegerReadout",
     "TopologyAnalysis",
+    "TargetLimits",
+    "analyze_target",
+    "design_readouts",
+    "evaluate_target",
+    "load_target_request",
+    "load_target_request_schema",
+    "load_target_task_schema",
+    "render_target_text",
+    "run_target_request",
+    "write_target_bundle",
     "__version__",
     "analysis_to_dict",
     "analyze_critical_model",

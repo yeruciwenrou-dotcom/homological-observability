@@ -4,6 +4,19 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## Unreleased — target tasks (development)
+Existing integer readouts can now be audited against a new target, augmented with
+a minimum number of candidate scalar channels, and used to reconstruct legal
+records with endpoint corrections. Adds `analyze_target`, `design_readouts`,
+`evaluate_target`, the `target` / `design` commands, independent request/result
+schemas and replay bundles. Search reports minimum proofs, tied enumeration,
+returned certificates and output truncation separately.
+
+The [DFR development guide](docs/TARGET_TASKS.md) contains runnable inputs and the
+next implementation gates. Scientific-ML data/prediction evaluation, exposure
+explanations, measured scale guidance and release qualification remain in progress.
+The existing paper references and published 2.0.0 citation remain unchanged.
+
 ## 2.0.0 — 2026-10-24
 
 - Preserve explicit `Fraction` alpha values in Python and accept integer

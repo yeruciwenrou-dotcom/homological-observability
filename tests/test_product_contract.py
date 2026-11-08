@@ -33,8 +33,8 @@ class ProductContractTests(unittest.TestCase):
         if ".dev" in ho.__version__:
             # Development builds have their own runtime identity. The citation
             # continues to identify the actual published, archived release.
-            self.assertEqual(citation_version.group(1), "1.2.1")
-            self.assertIn("10.5281/zenodo.23604825", citation)
+            self.assertEqual(citation_version.group(1), "2.0.0")
+            self.assertIn("10.5281/zenodo.23618828", citation)
         else:
             self.assertEqual(citation_version.group(1), ho.__version__)
 
