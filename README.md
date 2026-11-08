@@ -7,7 +7,14 @@
 This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Apply it to your own network to identify hidden cycle information and determine
-the sampling requirements for recovering it.
+the sampling requirements for recovering it, compare counters, and design
+records that determine a chosen trajectory target.
+
+> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
+> *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
+> and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*.
+> [Read and discuss on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
+> · [Archived paper and PDF](https://doi.org/10.5281/zenodo.23424849).
 
 [Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
 [Physical interpretation](#physical-interpretation) · [Documentation](#documentation-and-feedback)
@@ -25,10 +32,6 @@ the sampling requirements for recovering it.
 | How can I reproduce the paper's finite-model calculations? | [Paper reproduction](#reproduce-the-paper-evidence) |
 
 ## Physical interpretation
-
-> **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
-> *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
-> and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
 
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.** Its physical
