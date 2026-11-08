@@ -94,12 +94,12 @@ integer size. They are reproducible resource probes, separate from the DFR case.
 
 | beta / m / q | Subsets examined | Wall time, seconds | Result |
 | --- | ---: | ---: | --- |
-| 2 / 4 / 1 | 4 | 0.02 | Complete; minimum 1, two ties |
-| 4 / 8 / 2 | 36 | 0.04 | Complete; minimum 2, four ties |
-| 8 / 12 / 2 | 78 | 0.08 | Complete; minimum 2, four ties |
-| 8 / 12 / 4 | 793 | 1.02 | Complete; minimum 4, sixteen ties |
-| 16 / 16 / 4 | 2,516 | 5.74 | Complete; minimum 4, one tie |
-| 16 / 16 / 4, two-second budget | 990 | 2.00 | Search limited; partial result retained |
+| 2 / 4 / 1 | 4 | 0.02 | Complete; minimum 1, 2 ties |
+| 4 / 8 / 2 | 36 | 0.04 | Complete; minimum 2, 4 ties |
+| 8 / 12 / 2 | 78 | 0.08 | Complete; minimum 2, 4 ties |
+| 8 / 12 / 4 | 793 | 0.89 | Complete; minimum 4, 16 ties |
+| 16 / 16 / 4 | 2,516 | 5.93 | Complete; minimum 4, 1 tie |
+| 16 / 16 / 4, two-second budget | 967 | 2.00 | Search limited; partial result retained |
 
 Peak process RSS is about 123–124 MiB in these probes, including Python and
 imports. It is not incremental algorithm memory. The raw record separates

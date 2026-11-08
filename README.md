@@ -456,6 +456,7 @@ results and the reproduced finite-model calculations.
 | --- | --- |
 | Audit a target and choose additional counters (unreleased) | [Target tasks](docs/TARGET_TASKS.md) |
 | Evaluate ML predictions on paired DFR observations (unreleased) | [Scientific ML application](docs/SCIENTIFIC_ML.md) |
+| Check target derivations and measured scope | [Technical note](docs/TARGET_THEORY.md) · [PDF](docs/TARGET_THEORY.pdf) · [Assessment](docs/TARGET_VALIDATION.md) |
 | Compare counters and understand their differences | [Comparison studies](docs/COMPARISON_GUIDE.md) |
 | Prepare a model or study | [Input fields and physical modeling](docs/MODEL_GUIDE.md) |
 | Understand integer layers, parity, and sampling requirements | [Worked two-loop example](docs/END_TO_END_EXAMPLE.md) |
