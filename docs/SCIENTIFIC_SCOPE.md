@@ -101,9 +101,11 @@ changes the hidden directions. The [comparison guide](COMPARISON_GUIDE.md)
 runs several configurations under common conditions and uses exact witnesses
 to distinguish an objective tie from equivalent information. The
 [critical tutorial](CRITICAL_EXPERIMENT.md) separates the effects of rates and
-additional observations. These are model-analysis tasks: their inputs specify
-the graph and measurement rules, with exact rates added for `critical`.
-Measured trajectories are outside these input formats.
+additional observations. The `analyze`, `compare` and `critical` commands take
+model specifications: a graph and measurement rules, with exact rates added
+for `critical`. Target evaluation additionally accepts counter values and
+endpoints from an individual record. The DFR application uses separate dataset
+and prediction formats, described in the [ML tutorial](SCIENTIFIC_ML.md).
 
 The resulting exponents give asymptotic sampling guidance. For example,
 $N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
