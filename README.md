@@ -4,7 +4,9 @@
 [![Software DOI: 10.5281/zenodo.24058140](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24058140)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
-State snapshots can miss how a system moved between observations.
+**Homological observability is the recoverability of a system's accumulated
+cycle history from observations with finite temporal resolution.**
+
 This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Use it to identify hidden cycle information in your network, compare recording
@@ -32,11 +34,11 @@ schemes, and determine which counts recover a chosen trajectory target.
 
 ## Physical interpretation
 
-**Homological observability is the recoverability of a system's accumulated
-cycle history from observations with finite temporal resolution.** Its physical
-origin is finite access to motion: whenever dynamically allowed trajectories
-with different net circulations produce the same record, that record
-necessarily leaves part of the cycle history unresolved.
+Information acquisition is itself a physical process. The recording
+protocol determines which differences between histories become
+differences in the record. With finite temporal resolution, dynamically
+allowed trajectories with different net circulations can produce the same
+state snapshots, even when the transition rates are known exactly.
 
 For example, a system can move from A to B directly or via A → C → B between
 two snapshots. Both routes produce the same endpoints, while their difference
@@ -45,9 +47,13 @@ create uncertainty in the accumulated history.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
-For finite-state Markov jump processes, **we establish an information phase
-diagram and sharp sampling thresholds for recovering accumulated cycle
-histories.** The theory quantifies how uncertainty grows with observation time
+Longer observation yields more data while also extending the history to
+be recovered. The central question is how rapidly temporal resolution must
+improve to keep pace with that growing history.
+
+For finite-state Markov jump processes, **the theory establishes an information
+phase diagram and sharp sampling thresholds for recovering accumulated cycle
+histories.** It quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
 determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
