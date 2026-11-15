@@ -4,11 +4,15 @@
 [![Software DOI: 10.5281/zenodo.24058140](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24058140)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
-State snapshots can miss how a system moved between observations.
-This repository provides **computational tools for homological observability**,
-including exact integer calculations and reproducible finite-model examples.
-Use it to identify hidden cycle information in your network, compare recording
-schemes, and determine which counts recover a chosen trajectory target.
+**Homological Observability** is a computational toolkit for studying the
+recoverability of accumulated cycle histories in finite-state Markov jump
+processes. It connects network topology and observation schemes to the
+sampling resolution needed to recover those histories as observation time grows.
+
+Use its exact integer calculations to identify hidden cycle information,
+compare recording schemes, and determine which counts recover a chosen
+trajectory target. Reproducible finite-model examples explore sampling
+thresholds and information phase diagrams.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -32,22 +36,26 @@ schemes, and determine which counts recover a chosen trajectory target.
 
 ## Physical interpretation
 
-**Homological observability is the recoverability of a system's accumulated
-cycle history from observations with finite temporal resolution.** Its physical
-origin is finite access to motion: whenever dynamically allowed trajectories
-with different net circulations produce the same record, that record
-necessarily leaves part of the cycle history unresolved.
+A cycle history records the net circulation of a system around the cycles
+of its transition network. At finite temporal resolution, dynamically
+allowed paths with different net circulations can produce the same
+observation record, even when the transition rates are known exactly.
+**Homological observability describes which cycle information remains
+recoverable from that record.**
 
 For example, a system can move from A to B directly or via A → C → B between
 two snapshots. Both routes produce the same endpoints, while their difference
-is one circulation around the triangle. Repeated unresolved circulations
-create uncertainty in the accumulated history.
+is one circulation around the triangle.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
-For finite-state Markov jump processes, **we establish an information phase
-diagram and sharp sampling thresholds for recovering accumulated cycle
-histories.** The theory quantifies how uncertainty grows with observation time
+As observation time grows, unresolved cycle differences can accumulate.
+The recovery problem is therefore how rapidly the sampling interval must
+shrink to keep pace with the growing history.
+
+For finite-state Markov jump processes, **the theory establishes an information
+phase diagram and sharp sampling thresholds for recovering accumulated cycle
+histories.** It quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
 determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
