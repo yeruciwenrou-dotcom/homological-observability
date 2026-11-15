@@ -52,8 +52,7 @@ be recovered. The central question is how rapidly temporal resolution must
 improve to keep pace with that growing history.
 
 For finite-state Markov jump processes, **the theory establishes an information
-phase
-diagram and sharp sampling thresholds for recovering accumulated cycle
+phase diagram and sharp sampling thresholds for recovering accumulated cycle
 histories.** It quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
 determines the number of independent hidden cycle directions at each scale
