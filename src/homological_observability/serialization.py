@@ -38,6 +38,21 @@ class EvidenceCategory(str, Enum):
     ASYMPTOTIC_THEOREM = "ASYMPTOTIC_THEOREM"
 
 
+def cochains_to_dict(readouts) -> list[dict]:
+    """Canonical public cochains for models, targets and candidate channels."""
+    return [
+        {
+            "name": readout.name,
+            "coefficients": [
+                {"edge": list(edge), "coefficient": coefficient}
+                for edge, coefficient in readout.coefficients
+                if coefficient
+            ],
+        }
+        for readout in readouts
+    ]
+
+
 def model_to_dict(model: GraphModel) -> dict[str, Any]:
     """Return the normalized public model contract used for stable hashing."""
 
@@ -57,16 +72,7 @@ def model_to_dict(model: GraphModel) -> dict[str, Any]:
         "name": model.name,
         "vertices": list(model.vertices),
         "edges": [list(edge) for edge in model.edges],
-        "readouts": [
-            {
-                "name": readout.name,
-                "coefficients": [
-                    {"edge": list(edge), "coefficient": coefficient}
-                    for edge, coefficient in readout.coefficients
-                ],
-            }
-            for readout in model.readouts
-        ],
+        "readouts": cochains_to_dict(model.readouts),
         "analysis": analysis,
     }
 

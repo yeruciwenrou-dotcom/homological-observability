@@ -7,13 +7,12 @@ import json
 import math
 import time
 from dataclasses import asdict, dataclass
-from typing import Sequence
 
 from sympy import Matrix
 
 from .homology import build_homology_basis, readout_matrix
 from .model import GraphModel, IntegerReadout
-from .serialization import model_to_dict
+from .serialization import cochains_to_dict, model_to_dict
 from .version import __version__
 
 
@@ -97,19 +96,6 @@ def validate_readouts(model, readouts, *, label, nonempty=False):
     if any(set(value.as_mapping()) - set(model.edges) for value in values):
         raise ValueError(f"{label} refers to unknown edges")
     return values
-
-
-def cochains_to_dict(readouts: Sequence[IntegerReadout]) -> list[dict]:
-    return [
-        {
-            "name": value.name,
-            "coefficients": [
-                {"edge": list(edge), "coefficient": coefficient}
-                for edge, coefficient in value.coefficients
-            ],
-        }
-        for value in readouts
-    ]
 
 
 def matrix_to_dict(matrix, *, rational=False):
