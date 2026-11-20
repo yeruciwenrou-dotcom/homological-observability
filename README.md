@@ -8,9 +8,12 @@
 cycle history from observations with finite temporal resolution.**
 
 This repository provides **computational tools for homological observability**,
-including exact integer calculations and reproducible finite-model examples.
-Use it to identify hidden cycle information in your network, compare recording
-schemes, and determine which counts recover a chosen trajectory target.
+in finite-state Markov jump processes. Given a network, state snapshots and
+signed counters, you can find which accumulated currents the observations
+determine exactly. When several values fit a record, known transition rates
+let you estimate their probabilities. You can then compare how a finer
+snapshot grid or an extra counter changes the risk of recovering the wrong
+value.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -25,11 +28,12 @@ schemes, and determine which counts recover a chosen trajectory target.
 | Your research question | Start here |
 | --- | --- |
 | What does finite temporal resolution hide about physical motion? | [Physical interpretation](#physical-interpretation) |
+| Which target values fit my measured record, and how likely is each? | [Infer a target from your own record](docs/FINITE_RECORDS.md#use-your-own-model) |
+| Would more snapshots or an extra counter improve my measurement? | [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) |
 | Which cycle information is hidden, and what are the asymptotic sampling requirements? | [Network analysis](#analyze-your-own-network) |
 | Which counter configurations reveal different or redundant information? | [Counter comparison](#compare-counter-configurations) |
 | Do my counters and known endpoints determine a target? Which extra channels would suffice? | [Target analysis and readout design](docs/TARGET_TASKS.md) |
 | Do my model's inputs determine the trajectory target, and how can I evaluate its predictions? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Guide](docs/SCIENTIFIC_ML.md) |
-| How likely is each target value in my actual record? Would another counter reduce my error? | [Finite-record inference and paired protocol comparison](docs/FINITE_RECORDS.md) |
 | What critical-limit experiment follows from my graph, rates and counters? | [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
 | How can I reproduce the paper's finite-model calculations? | [Paper reproduction](#reproduce-the-paper-evidence) |
 
@@ -63,30 +67,29 @@ under detailed balance.
 The supported graph is finite, connected, and simple, with positive
 transition-rate support in both directions on every edge. The recording
 protocol uses regular noiseless state snapshots and optional exact counters.
-**Network and counter analyses need no rate values.** The
-[critical experiment](docs/CRITICAL_EXPERIMENT.md) uses exact positive rates to
-compute path weights and limiting mark distributions.
+Integer calculations use the graph and the counter definitions. Transition
+rates enter when estimating probabilities for a finite record or computing
+path weights in a [critical experiment](docs/CRITICAL_EXPERIMENT.md).
 
 See [Scope and interpretation](#scope-and-interpretation) for result meanings
 and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumptions.
 
 ## Install
 
-Use Python 3.11–3.13. The published package is available with
-`python -m pip install homological-observability`. For the finite-record
-commands in this checkout, install its source or its matching wheel in a
-virtual environment:
+Use Python 3.11–3.13. To try the finite-record commands on this branch,
+create a virtual environment with `python -m venv .venv`. Activate it with
+`source .venv/bin/activate` on macOS or Linux, or
+`.\.venv\Scripts\Activate.ps1` in Windows PowerShell. Then run
 
 ```sh
-python -m venv .venv
-.venv/bin/python -m pip install .
-.venv/bin/homological-observability posterior --example dfr
+python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/heads/upgrade/finite-time-observability.zip"
+homological-observability --version
 ```
 
-On Windows PowerShell, use `.venv\Scripts\python.exe` and
-`.venv\Scripts\homological-observability.exe`. The DFR data and the
-finite-record examples travel with the installed package. The source checkout
-also includes the example files used by the remaining guides.
+The version should be `2.2.0.dev0`. From a checkout of this branch,
+`python -m pip install .` installs the same source. The examples below use
+the activated environment. The published PyPI release has its own
+[2.1.0 installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install).
 
 To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
@@ -96,22 +99,46 @@ For upgrades from 1.x, see the
 
 ## Quick start
 
-To estimate uncertainty in one observed history or compare acquisition costs,
-run the two examples from the installed package. Each writes a result, a short
-report and an editable request for your own model.
+A flashing ratchet can turn while its potential is ON or OFF. Suppose you
+want the difference between the two signed turn counts, `DeltaW`. A counter
+for total turns gives their sum. How much can you infer from that counter
+and a set of snapshots?
 
 ```sh
-homological-observability posterior --example triangle --output-dir my-record
+homological-observability posterior --example dfr --output-dir my-record
 homological-observability compare-protocols --example dfr --output-dir my-study
 ```
 
-The triangle's most likely net turn is zero with probability 0.8417122.
-The paired study shows how much the same 64 trajectories gain from a second
-observation channel. [Finite-record guide](docs/FINITE_RECORDS.md)
+Open `my-record/report.txt`. For this particular record, only even values of
+`DeltaW` are possible. With the supplied transition rates, zero is the most
+probable value (99.63%).
 
-After installation, choose an example: [analyze a trajectory target](#target-analysis-and-scientific-ml)
-to decide which counts you need, or [compare counter configurations](#compare-counter-configurations)
-to study hidden cycle information and sampling requirements.
+Open `my-study/report.txt` to compare three ways to record the **same 64
+simulated trajectories**, each with eight snapshots. The percentage is the
+mean conditional probability of an incorrect best guess for `DeltaW`.
+
+| Recorded observations | Mean error risk |
+| --- | ---: |
+| Snapshots | 39.95% |
+| Snapshots and total turns | 15.42% |
+| Snapshots, total turns and ON turns | 0% |
+
+The last protocol determines the difference exactly because
+`DeltaW = 2 × ON turns − total turns`. The report also lists the number of
+snapshots, counters and encoded bytes for each protocol.
+
+To use your own network, start with a three-state ring. Edit its
+`request.json` to supply your states, directed rates, target and observations,
+then rerun the saved request. Each run with `--output-dir` needs a new
+directory and also saves a machine-readable `result.json`.
+
+```sh
+homological-observability posterior --example triangle --output-dir my-ring
+homological-observability posterior my-ring/request.json
+```
+
+The [finite-record guide](docs/FINITE_RECORDS.md) explains the input fields,
+numerical precision and how to import event trajectories for a comparison.
 
 ### Target analysis and scientific ML
 
@@ -306,10 +333,14 @@ The [input guide](docs/MODEL_GUIDE.md) explains how to translate a physical
 model into graph and counter fields. The [comparison guide](docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
 walks through editing a study and checking its assumptions.
 
-Cycle enumeration can grow exponentially with the network. Keep a budget
-when trying an unfamiliar graph. A `LIMIT_REACHED` result identifies the
-exhausted limit; `PARTIAL_HORIZON` restricts conclusions to the computed
-layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
+On a dense graph, pass `--backend generators` to `analyze` or `compare` to
+compute each integer layer from shortest-path cycle generators. For the complete
+graph on eight vertices, 56 generators give the same layers as all 8,018
+simple cycles. The default backend lists every simple cycle within the
+requested scope. Use `--max-generators` or `--max-cycles` to set a budget
+for the chosen [integer backend](docs/CONVENTIONS.md#shortest-path-generators).
+`LIMIT_REACHED` identifies the exhausted limit. `PARTIAL_HORIZON` restricts
+conclusions to the computed layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
 explains how to continue each calculation.
 
 ## Python API
@@ -331,6 +362,8 @@ configuration, use `ho.load_model(path)` and `ho.analyze_model(model)`.
 
 | Task | Python entry points and guide |
 | --- | --- |
+| Infer an integer target from one finite record | `ho.infer_target_posterior(request)` · [Inputs and a Python example](docs/FINITE_RECORDS.md#use-your-own-model) |
+| Compare recording protocols on the same event paths | `ho.compare_recording_protocols(request)` · [Risk and resource estimates](docs/FINITE_RECORDS.md#compare-recording-protocols) |
 | Analyze a network | `ho.analyze_model` · [Model inputs](docs/MODEL_GUIDE.md) |
 | Compare counter configurations | `ho.compare_configurations` · [Comparison studies](docs/COMPARISON_GUIDE.md) |
 | Diagnose a target, choose counters or reconstruct a legal record | `ho.analyze_target`, `ho.design_readouts`, `ho.evaluate_target` · [Target interfaces](docs/TARGET_TASKS.md#three-calculation-interfaces) |
@@ -351,10 +384,12 @@ relations on the reported scope.
 
 Sampling thresholds, phase labels, and entropy coefficients apply the
 long-time asymptotic results for a fixed graph, generator, and readout, with
-a stationary initial law. A sampling interval chosen to meet a specified
-finite-run error tolerance needs additional risk analysis. The
-[scientific scope](docs/SCIENTIFIC_SCOPE.md) explains the physical question,
-assumptions, and interpretation of each type of result.
+a stationary initial law. For a finite observation, `posterior` conditions
+on the first recorded state and uses the known rates to estimate the
+distribution of one integer target. The numerical solver supports up to two
+independent integer coordinates across the target and all counters. An exact
+target can also be decoded at higher rank. The [scientific scope](docs/SCIENTIFIC_SCOPE.md)
+gives the assumptions behind each result.
 
 The [paper map](PAPER_MAP.md) connects implemented objects to the theoretical
 results and the reproduced finite-model calculations.
@@ -464,6 +499,7 @@ probability mass covered by the displayed range.
 
 | Your next task | Guide |
 | --- | --- |
+| Interpret a finite record or plan your next observation | [Target probabilities and recording protocols](docs/FINITE_RECORDS.md) |
 | Audit a target and choose additional counters | [Target tasks](docs/TARGET_TASKS.md) |
 | Evaluate ML predictions on paired DFR observations | [Scientific ML application](docs/SCIENTIFIC_ML.md) |
 | Check target derivations and measured scope | [Technical note](docs/TARGET_THEORY.md) · [PDF](docs/TARGET_THEORY.pdf) · [Assessment](docs/TARGET_VALIDATION.md) |
@@ -506,6 +542,10 @@ When your work uses both, cite them separately.
 </details>
 
 ### Software
+
+The following citation identifies the published 2.1.0 release. For a study
+run from this development branch, record the Git commit used and cite the
+software series DOI below.
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.1.0) [Computer

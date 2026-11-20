@@ -6,20 +6,26 @@ separately inside their JSON documents.
 
 ## 2.2.0.dev0
 
-- Infer a scalar integer target from a single finite record of regular state
-  snapshots and exact cumulative counts. Inspect its legal support, point
-  value or numerical distribution, MAP risk, and precision diagnostics.
-- Compare declared recording protocols on identical event paths or a seeded
-  Markov ensemble. Reports retain trajectory IDs, paired risk differences,
-  unresolved records and observation resources.
-- Use a shortest-path generator backend for exact integer filtrations and
-  reuse graph layers across configurations. The exhaustive cycle catalogue
-  remains the default. [Integer backends](docs/CONVENTIONS.md#shortest-path-generators)
-- Normalize zero coefficients across direct Python requests and JSON replay.
-  Embedded version-1 models apply their numeric sampling-exponent format in
-  both the bundled schemas and execution.
+- `posterior` takes a finite record of snapshots and signed counts. It checks
+  which target values are compatible with the observations and recovers an
+  exactly determined value. With known transition rates it can also estimate
+  a distribution, the most likely values and their conditional error risk.
+- `compare-protocols` compares snapshot schedules and counters on the same
+  imported event paths or a seeded simulation. It reports paired risk
+  differences, unresolved records and recording requirements.
+- `analyze` and `compare` accept `--backend generators` for exact integer
+  layers on dense graphs. Configurations in a study reuse the same graph
+  calculation. The default backend retains its full simple-cycle catalogue.
+- Explicit zero coefficients now give the same request hash in Python and
+  on JSON replay. Embedded version-1 models enforce the original numeric
+  sampling-exponent format.
+- Waiting-time simulation preserves trajectories under extreme changes of
+  time unit. Paper reproduction protects frozen reference tables when run
+  from a separate package installation.
 
-[Finite-record examples and public interfaces](docs/FINITE_RECORDS.md)
+The [finite-record guide](docs/FINITE_RECORDS.md) includes editable ratchet,
+ring and kinesin examples. The [integer backend guide](docs/CONVENTIONS.md#shortest-path-generators)
+explains the generator count, budgets and output formats.
 
 ## 2.1.0 — 2026-11-09
 

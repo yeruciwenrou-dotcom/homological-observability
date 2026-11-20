@@ -58,6 +58,11 @@ training-median baseline has MAE 6/13 and exact-match accuracy 7/13. These are
 measurements of this small fixture. The prediction interface below accepts
 outputs from a separately trained model.
 
+For the same ratchet, the [finite-record study](FINITE_RECORDS.md#compare-recording-protocols)
+uses the known rates to compute the optimal conditional error for each observed
+record. Compare those risks across sensor choices. Use held-out prediction
+scores to judge how a trained model performs on its particular test records.
+
 The pressure set is a separate, constructed equal-weight pair. Its inputs agree
 at **every** snapshot time and in W, while DeltaW is 0 and 2. A deterministic
 point prediction from that shared input has MAE at least 1 and exact-match
