@@ -7,7 +7,7 @@
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.**
 
-This repository provides **computational tools for homological observability**,
+This repository provides **computational tools for homological observability**
 in finite-state Markov jump processes. Given a network, state snapshots and
 signed counters, you can find which accumulated currents the observations
 determine exactly. When several values fit a record, known transition rates
