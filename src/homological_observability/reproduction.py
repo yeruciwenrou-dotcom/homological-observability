@@ -89,13 +89,31 @@ def _repository_reference_dir() -> Path | None:
     return candidate if candidate.is_dir() else None
 
 
-def _reference_directories() -> tuple[Path, ...]:
-    """Find writable filesystem locations of both copies of the evidence."""
+def _reference_directories(*locations: Path) -> tuple[Path, ...]:
+    """Find archives belonging to the installed package and the working checkout.
+
+    An installed wheel may be used from or pointed into a different checkout.
+    Its module path alone cannot identify that checkout's frozen evidence.
+    """
 
     directories = []
     repository = _repository_reference_dir()
     if repository is not None:
         directories.append(repository.resolve())
+    roots = set()
+    for location in (Path.cwd(), *locations):
+        anchor = location.resolve()
+        roots.update((anchor, *anchor.parents))
+    for root in roots:
+        source = root / "src" / "homological_observability"
+        if (source / "reproduction.py").is_file() and (
+            root / "pyproject.toml"
+        ).is_file():
+            directories.extend(
+                p.resolve()
+                for p in (root / "results", source / "data" / "reference")
+                if p.is_dir()
+            )
     resource = _reference_resource(REFERENCE_NAMES[0])
     # A zip-backed Traversable has no filesystem output alias. Normal wheels
     # and editable installations expose Path resources and need protection.
@@ -108,7 +126,7 @@ def validate_output_directory(output_dir: Path) -> Path:
     """Resolve output while protecting checkout and installed references."""
 
     resolved = output_dir.resolve()
-    for reference_dir in _reference_directories():
+    for reference_dir in _reference_directories(resolved):
         if resolved == reference_dir or reference_dir in resolved.parents:
             raise ValueError(
                 "output directory must not overwrite the committed reference results"
@@ -121,7 +139,7 @@ def validated_output_path(output_dir: Path, name: str) -> Path:
 
     output = output_dir / name
     resolved = output.resolve()
-    for reference_dir in _reference_directories():
+    for reference_dir in _reference_directories(output_dir, resolved.parent):
         if resolved == reference_dir or reference_dir in resolved.parents:
             raise ValueError(
                 "generated output must not alias the committed reference results"
