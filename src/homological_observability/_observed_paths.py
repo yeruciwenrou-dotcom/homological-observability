@@ -15,11 +15,20 @@ def simulate_path(q, probability, horizon, rng, *, max_events=100000, labels=Non
         rate = float(-q[state, state])
         if rate == 0:
             break
-        next_time = time + float(rng.exponential(1.0 / rate))
+        scale = 1.0 / rate
+        if math.isfinite(scale):
+            wait = float(rng.exponential(scale))
+        else:
+            # The mean wait can overflow while individual waits and the
+            # observation horizon remain representable in the given units.
+            wait = float(rng.standard_exponential()) / rate
+        next_time = time + wait
         if next_time >= horizon:
             break
         if next_time <= time:
-            raise ArithmeticError("event time failed to advance")
+            raise ValueError(
+                "successive event times are unresolved in floating-point time"
+            )
         if len(times) - 1 >= max_events:
             raise ValueError("trajectory exceeds the event budget")
         choices = q[state].copy()

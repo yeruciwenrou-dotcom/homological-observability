@@ -300,6 +300,38 @@ class ProtocolTests(unittest.TestCase):
         Draft202012Validator(ho.load_protocol_request_schema()).validate(req)
         Draft202012Validator(ho.load_protocol_comparison_schema()).validate(d)
 
+    def test_simulated_study_preserves_trajectories_after_extreme_change_of_unit(self):
+        request = recording_example("compare-protocols", "triangle")
+        # Use a single bidirectional edge with a known target, so the test
+        # isolates trajectory generation from Fourier arithmetic.
+        request["model"].update(
+            vertices=["a", "b"],
+            edges=[["a", "b"]],
+            readouts=[
+                {
+                    "name": "turn_counter",
+                    "coefficients": [{"edge": ["a", "b"], "coefficient": 1}],
+                }
+            ],
+        )
+        request["target"] = dict(request["model"]["readouts"][0], name="step")
+        request["source"].update(
+            initial_distribution={"a": 1, "b": 0}, trajectories=128, seed=77
+        )
+        request["rates"] = [
+            {"from": a, "to": b, "rate": 1.0} for a, b in (("a", "b"), ("b", "a"))
+        ]
+        request["horizon"] = 0.1
+        reference = ho.compare_recording_protocols(request)["result"]["rows"]
+        request["horizon"] = 1e308
+        for edge in request["rates"]:
+            edge["rate"] = 1e-309
+        scaled = ho.compare_recording_protocols(request)["result"]["rows"]
+        self.assertTrue(any(r["observation"]["states"][-1] == "b" for r in reference))
+        self.assertEqual(
+            [r["observation"] for r in scaled], [r["observation"] for r in reference]
+        )
+
     def test_seeded_replay_unresolved_rows_and_invalid_paths(self):
         req = recording_example("compare-protocols", "triangle")
         req["limits"] = {"max_grid_points": 2}

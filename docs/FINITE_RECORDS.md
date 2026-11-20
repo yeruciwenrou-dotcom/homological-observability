@@ -64,6 +64,25 @@ An optional `target_sets` array accepts named inclusive integer intervals.
 For example, `[{"name":"nonpositive","max":0}]` gives the probability of a
 nonpositive target. Omit one bound for a one-sided interval.
 
+The same calculation on your own state labels can be run directly in Python.
+
+```python
+from homological_observability import infer_target_posterior
+
+edges = [["free", "bound"], ["bound", "primed"], ["primed", "free"]]
+result = infer_target_posterior({
+    "schema_version": 1, "time_unit": "s", "target_unit": "turn",
+    "model": {"schema_version": 2, "name": "Three-state cycle",
+              "vertices": ["free", "bound", "primed"], "edges": edges},
+    "target": {"name": "net turns",
+               "coefficients": [{"edge": ["primed", "free"], "coefficient": 1}]},
+    "rates": [{"from": u, "to": v, "rate": 1.0}
+              for a, b in edges for u, v in ((a, b), (b, a))],
+    "record": {"times": [0, 1], "states": ["free", "free"], "counts": {}},
+})
+assert result["result"]["map_candidates"] == [0]
+```
+
 ## Interpreting a posterior
 
 | Field | Scientific meaning |
