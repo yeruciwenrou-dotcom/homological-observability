@@ -168,14 +168,25 @@ def _conditions(document: Mapping[str, Any]) -> list[str]:
         "regular noiseless snapshot protocol and the sampling conditions below. "
         "They differ in their exact cumulative integer counter rules."
     ]
+    if "generator_options" in document["shared_conditions"]:
+        option = document["shared_conditions"]["generator_options"]
+        notes.append(
+            f"Integer shortest-path generators, budget: {option['max_generators'] or 'unbounded'}."
+        )
     notes.append(sampling_request(analysis))
     horizon = analysis.get("max_layer")
     budget = analysis.get("max_cycles")
     notes.append(
         "Requested horizon: "
         + (f"through layer {horizon}" if horizon is not None else "natural horizon")
-        + "; cycle enumeration budget: "
-        + (str(budget) if budget is not None else "unbounded")
+        + (
+            (
+                "; cycle enumeration budget: "
+                + (str(budget) if budget is not None else "unbounded")
+            )
+            if "generator_options" not in document["shared_conditions"]
+            else ""
+        )
         + ". Coordinates: "
         + document["shared_conditions"]["coordinates"]
         + "."
@@ -232,9 +243,7 @@ def _row_notes(row: Mapping[str, Any]) -> list[str]:
                 + "."
             )
     elif row["status"] == "LIMIT_REACHED":
-        notes.append(
-            "The cycle enumeration budget was exhausted; metrics are unavailable."
-        )
+        notes.append("The catalogue budget was exhausted; metrics are unavailable.")
     if row.get("error"):
         notes.append("Error: " + _plain(row["error"]))
     if row.get("recovery"):
@@ -565,6 +574,11 @@ def write_comparison_bundle(
     if not isinstance(reverse, bool):
         raise ValueError("comparison reverse_tree_order must be a boolean")
     replay_flag = " --reverse-tree-order" if reverse else ""
+    if "generator_options" in document["shared_conditions"]:
+        replay_flag += " --backend generators"
+        cap = document["shared_conditions"]["generator_options"]["max_generators"]
+        if cap is not None:
+            replay_flag += f" --max-generators {cap}"
     files = {
         "study.json": _json(study),
         "comparison.json": _json(document),

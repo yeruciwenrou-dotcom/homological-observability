@@ -12,6 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
+from .._observed_paths import observe_path, simulate_path
 from .._target_common import cochains_to_dict
 from ..model import GraphModel, IntegerReadout
 from ..serialization import model_to_dict
@@ -101,69 +102,6 @@ def stationary_distribution(q):
     if np.any(probability <= 0) or np.max(np.abs(probability @ q)) > 1e-12:
         raise ArithmeticError("DFR stationary-law numerical check failed")
     return probability
-
-
-def simulate_path(q, probability, horizon, rng, *, max_events=100000):
-    """Direct CTMC simulation; event zero records the initial state."""
-    state = int(rng.choice(len(q), p=probability))
-    times, states = [0.0], [str(state)]
-    time = 0.0
-    while True:
-        rate = -q[state, state]
-        next_time = time + float(rng.exponential(1.0 / rate))
-        if next_time >= horizon:
-            break
-        if next_time <= time:
-            raise ArithmeticError("event time failed to advance")
-        if len(times) - 1 >= max_events:
-            raise ValueError("trajectory exceeds the event budget")
-        choices = q[state].copy()
-        choices[state] = 0
-        state = int(rng.choice(len(q), p=choices / rate))
-        times.append(next_time)
-        states.append(str(state))
-        time = next_time
-    return {"times": times, "states": states}
-
-
-def observe_path(path, grid, model):
-    """Validate the whole path, including zero-jump paths, then expose its view."""
-    times, states = path["times"], path["states"]
-    if (
-        not isinstance(times, list)
-        or not isinstance(states, list)
-        or not times
-        or len(times) != len(states)
-    ):
-        raise ValueError("a trajectory needs aligned nonempty times and states")
-    if any(type(t) not in (int, float) or not math.isfinite(t) for t in times):
-        raise ValueError("event times must be finite numbers")
-    if (
-        times[0] != 0
-        or any(b <= a for a, b in zip(times, times[1:]))
-        or times[-1] >= grid[-1]
-    ):
-        raise ValueError(
-            "event times must start at zero and increase strictly before T"
-        )
-    if any(state not in model.vertices for state in states):
-        raise ValueError(
-            "path state is outside the support, including its initial state"
-        )
-    allowed = set(model.edges) | {edge[::-1] for edge in model.edges}
-    if any((u, v) not in allowed for u, v in zip(states, states[1:])):
-        raise ValueError("path contains a transition outside the support")
-    snapshots = [
-        states[int(index)] for index in np.searchsorted(times, grid, side="right") - 1
-    ]
-    counts = {}
-    for readout in model.readouts:
-        coefficients = readout.as_mapping()
-        counts[readout.name] = sum(
-            coefficients.get((u, v), 0) - coefficients.get((v, u), 0)
-            for u, v in zip(states, states[1:])
-        )
-    return {"snapshots": snapshots, "readouts": counts}
 
 
 def _target_value(path, grid):

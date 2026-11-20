@@ -91,6 +91,51 @@ def integer_kernel(matrix: MatrixBase) -> ImmutableMatrix:
     return _freeze(kernel)
 
 
+class IntegerImage:
+    """Reusable Smith coordinates, legal-image tests and integral preimages."""
+
+    def __init__(self, matrix, budget):
+        self.matrix = matrix
+        budget.check("legal_image", matrix)
+        if matrix.rows and matrix.cols:
+            d, left, right = smith_normal_decomp(matrix, domain=ZZ)
+            budget.check("legal_image", d, left, right)
+            if (
+                d != left * matrix * right
+                or abs(left.det()) != 1
+                or abs(right.det()) != 1
+            ):
+                raise AssertionError(
+                    "invalid Smith decomposition for legal-image decoding"
+                )
+        else:
+            d, left, right = matrix, eye(matrix.rows), eye(matrix.cols)
+        self.diagonal, self.left, self.right = d, left, right
+        rank = sum(d[i, i] != 0 for i in range(min(d.shape)))
+        self.kernel = right[:, rank:]
+
+    def solve(self, value, budget):
+        budget.check("legal_image", value)
+        transformed = self.left * value
+        budget.check("legal_image", transformed)
+        coordinates = Matrix.zeros(self.matrix.cols, 1)
+        for row, raw in enumerate(transformed):
+            divisor = self.diagonal[row, row] if row < self.matrix.cols else 0
+            if (divisor and raw % divisor) or (not divisor and raw):
+                return None, {
+                    "weights": [int(x) for x in self.left[row, :]],
+                    "modulus": abs(int(divisor)),
+                    "observed": int(raw),
+                }
+            if divisor:
+                coordinates[row] = raw // divisor
+        preimage = self.right * coordinates
+        budget.check("legal_image", preimage)
+        if self.matrix * preimage != value:
+            raise AssertionError("integer preimage failed exact verification")
+        return preimage, None
+
+
 def hidden_lattice(lattice: MatrixBase, readout: MatrixBase) -> ImmutableMatrix:
     """Compute ``lattice intersect ker_Z(readout)`` exactly."""
 

@@ -242,7 +242,7 @@ Dense, critical, and sparse labels describe limits under a specified sampling
 scaling. The critical result gives a limiting generative specification and
 conditioning rule, represented by its component laws. Evaluating a posterior
 at finite $(T,\delta)$ or an unconditional critical MAP probability requires
-the corresponding conditional-law calculation.
+the corresponding conditional-law calculation. The [finite-record solver](FINITE_RECORDS.md) evaluates a scalar target at finite time on a known rate model using its actual joint integer image.
 
 For the paper's finite-cycle examples, the checkout includes specialized
 bridge calculations and critical MAP identities. The

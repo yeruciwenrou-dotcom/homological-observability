@@ -585,3 +585,13 @@ Target-task dictionaries use `render_target_text(result)` for terminal output.
 `write_target_bundle(result, "new-results")` saves `request.json`, `result.json`
 and `report.txt` in a new directory. The [target guide](TARGET_TASKS.md)
 describes their fields and replay commands.
+
+
+## Finite recording tasks and generator formats
+
+The [finite-record guide](FINITE_RECORDS.md) specifies the single-record and
+paired-protocol request/result formats, both version 1. It documents evidence
+probability, exact integer decisions, uncertainty, numeric completion states,
+and paired sample accounting. The [integer conventions](CONVENTIONS.md#shortest-path-generators)
+describe opt-in generator analysis v4 and comparison v3 and their separate
+generator counts and budgets.

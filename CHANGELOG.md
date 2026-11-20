@@ -4,6 +4,23 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## 2.2.0.dev0
+
+- Infer a scalar integer target from a single finite record of regular state
+  snapshots and exact cumulative counts. Inspect its legal support, point
+  value or numerical distribution, MAP risk, and precision diagnostics.
+- Compare declared recording protocols on identical event paths or a seeded
+  Markov ensemble. Reports retain trajectory IDs, paired risk differences,
+  unresolved records and observation resources.
+- Use a shortest-path generator backend for exact integer filtrations and
+  reuse graph layers across configurations. The exhaustive cycle catalogue
+  remains the default. [Integer backends](docs/CONVENTIONS.md#shortest-path-generators)
+- Normalize zero coefficients across direct Python requests and JSON replay.
+  Embedded version-1 models apply their numeric sampling-exponent format in
+  both the bundled schemas and execution.
+
+[Finite-record examples and public interfaces](docs/FINITE_RECORDS.md)
+
 ## 2.1.0 — 2026-11-09
 
 Existing integer readouts can now be audited against a new target, augmented with

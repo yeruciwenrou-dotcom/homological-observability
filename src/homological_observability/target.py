@@ -5,8 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 
 import networkx as nx
-from sympy import ZZ, Matrix
-from sympy.matrices.normalforms import smith_normal_decomp
+from sympy import Matrix
 
 from ._integer_io import check_integer_text
 from ._target_common import (
@@ -23,7 +22,7 @@ from ._target_common import (
 )
 from ._target_explanation import attach_explanation
 from .homology import chain_from_walk
-from .integer_lattice import integer_kernel
+from .integer_lattice import IntegerImage, integer_kernel
 from .model import GraphModel, IntegerReadout
 
 
@@ -105,34 +104,6 @@ def analyze_target(
     if explain:
         attach_explanation(document, model, budget, basis)
     return document
-
-
-def _integer_preimage(p, value, budget):
-    """Solve Pz=value over Z, checking every Smith row and divisibility."""
-    budget.check("legal_image", p, value)
-    if p.rows == 0:
-        return Matrix.zeros(p.cols, 1)
-    if p.cols == 0:
-        return Matrix.zeros(0, 1) if not any(value) else None
-    diagonal, left, right = smith_normal_decomp(p, domain=ZZ)
-    budget.check("legal_image", diagonal, left, right)
-    if diagonal != left * p * right or abs(left.det()) != 1 or abs(right.det()) != 1:
-        raise AssertionError("invalid Smith decomposition for legal-image decoding")
-    transformed = left * value
-    coordinates = Matrix.zeros(p.cols, 1)
-    for row in range(p.rows):
-        divisor = diagonal[row, row] if row < p.cols else 0
-        if divisor:
-            if transformed[row] % divisor:
-                return None
-            coordinates[row] = transformed[row] // divisor
-        elif transformed[row]:
-            return None
-    preimage = right * coordinates
-    budget.check("legal_image", preimage)
-    if p * preimage != value:
-        raise AssertionError("integer preimage failed exact verification")
-    return preimage
 
 
 def _record(model, values, kind, start, end):
@@ -228,7 +199,7 @@ def evaluate_target(
             r.name: int(offset[i, 0]) for i, r in enumerate(targets)
         }
         result["sufficient"] = sufficiency(p, f, budget)[0]
-        preimage = _integer_preimage(p, corrected, budget)
+        preimage, _ = IntegerImage(p, budget).solve(corrected, budget)
         result["legal_record"] = preimage is not None
         if preimage is None:
             result["reason"] = "record_outside_integer_image"

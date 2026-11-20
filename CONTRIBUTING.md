@@ -37,7 +37,7 @@ Run the checks relevant to the change:
 .venv/bin/python -W error reproduce_all.py
 .venv/bin/python tests/validate_schema.py
 .venv/bin/python tests/validate_graph_atlas.py
-.venv/bin/python tests/validate_distribution.py --upgrade-from 2.0.0 --evidence-dir install-evidence
+.venv/bin/python tests/validate_distribution.py --upgrade-from 2.1.0 --evidence-dir install-evidence
 .venv/bin/ruff check .
 .venv/bin/ruff format --check .
 ```

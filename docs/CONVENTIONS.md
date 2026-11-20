@@ -345,3 +345,31 @@ deterministic spanning tree. Comparison candidates always share the chosen
 basis. Integer certificate coordinates and the particular witness selected
 can change, while the information relation and the validity of its physical
 edge-chain evidence remain unchanged.
+
+## Shortest-path generators
+
+Select `--backend generators` with `analyze` or `compare`. The equivalent
+Python keyword is `backend="generators"` on `analyze_model` and
+`compare_configurations`. To bound distinct generators, set
+`--max-generators N` or `max_generators=N`. The default `cycles` backend uses
+the model's `max_cycles` budget for all simple cycles. Each budget belongs to
+its named representation.
+
+The generator backend builds a breadth-first tree rooted at each vertex.
+The fundamental circulations along an oriented length-L cycle sum integrally
+to that cycle when the tree root lies on it. Each summand reduces to a
+simple cycle of length at most L. Filtering these candidates by length and
+updating their column Hermite normal form therefore gives the same integer
+lattice at each layer. Full rank over the rationals can still leave a finite
+index. Natural completion tests equality with the full integer lattice.
+
+The opt-in analysis format is version 4. It records `generator_options`,
+`filtration.generators` and `summary.generator_count`. The corresponding
+comparison is version 3. Use `load_analysis_schema(version=4)` and
+`load_comparison_schema(version=3)` for these outputs. The exhaustive format
+continues to record `filtration.cycles` and `summary.cycle_count`.
+Each configuration in one comparison uses the same graph basis and exposure
+lattices, with its own visible images, hidden kernels and inclusion witnesses.
+A generator budget hit returns `LIMIT_REACHED`. A successfully computed short
+horizon with further lattice growth possible returns `PARTIAL_HORIZON`.
+The critical-limit experiment retains its directed, weighted path catalogue.

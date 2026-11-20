@@ -47,6 +47,8 @@ from .examples import (
 )
 from .lattice import reciprocal_lattice_peak_error
 from .model import GraphModel, IntegerReadout, load_model, parse_model
+from .posterior import infer_target_posterior
+from .protocols import compare_recording_protocols
 from .schema import (
     load_analysis_schema,
     load_comparison_schema,
@@ -55,6 +57,10 @@ from .schema import (
     load_error_schema,
     load_examples_schema,
     load_model_schema,
+    load_posterior_request_schema,
+    load_posterior_schema,
+    load_protocol_comparison_schema,
+    load_protocol_request_schema,
     load_reproduction_schema,
     load_study_schema,
     load_target_request_schema,
@@ -80,6 +86,12 @@ from .target_io import (
 from .version import __version__
 
 __all__ = [
+    "load_posterior_request_schema",
+    "load_posterior_schema",
+    "load_protocol_request_schema",
+    "load_protocol_comparison_schema",
+    "infer_target_posterior",
+    "compare_recording_protocols",
     "AnalysisLimit",
     "AnalysisStatus",
     "ArtifactRole",

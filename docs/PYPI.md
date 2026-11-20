@@ -60,44 +60,19 @@ compute path weights and limiting mark distributions.
 
 ## Install
 
-Version: **2.1.0**.
+Install the distribution in a Python 3.11–3.13 environment. The package
+includes the DFR data, a three-state ring and a six-state kinesin example.
+With this build installed, try:
 
-Use Python 3.11–3.13. Clone the versioned repository for its examples and
-install the package in a virtual environment. On macOS or Linux:
-
-```bash
-git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade homological-observability==2.1.0
+```sh
+homological-observability posterior --example triangle --output-dir my-record
+homological-observability compare-protocols --example dfr --output-dir my-study
 ```
 
-If you already have this checkout, start with the virtual-environment step
-from its root directory.
-
-On Windows PowerShell:
-
-```powershell
-git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install --upgrade homological-observability==2.1.0
-```
-
-Python 3.11 or 3.13 can be selected in place of 3.12.
-
-These commands use the virtual environment directly, so activation is optional.
-Installation needs internet access; examples and reference data are included
-in the package. Run the commands below from the repository directory.
-In the linked guides, use
-`.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability` on Windows, and
-`.venv\Scripts\python.exe` in place of `.venv/bin/python`.
-
-Upgrading from 2.0.0 preserves the existing network-analysis, comparison,
-critical-experiment and paper-reproduction workflows, along with their input
-and result formats. Target tasks add separate request and result formats;
-see the [changelog](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/CHANGELOG.md) for the new capabilities.
+The first command estimates target probabilities from a finite record. The
+second compares paired risks and recording resources on fixed event paths.
+Edit the exported `request.json` to use your own labeled states, transition
+rates, snapshots or signed counts.
 
 To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its

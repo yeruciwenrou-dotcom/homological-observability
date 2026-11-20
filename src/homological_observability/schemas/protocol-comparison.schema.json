@@ -1,0 +1,781 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:recording-protocol-comparison:1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_name": {
+      "const": "homological-observability.recording-protocol-comparison"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "homological-observability"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "status": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL"
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "model": {
+          "$ref": "#/$defs/model"
+        },
+        "target": {
+          "$ref": "#/$defs/readout"
+        },
+        "time_unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rate"
+          }
+        },
+        "limits": {
+          "$ref": "#/$defs/limits"
+        },
+        "reverse_tree_order": {
+          "type": "boolean"
+        },
+        "horizon": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "protocols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "snapshots": {
+                "type": "integer",
+                "minimum": 2
+              },
+              "channels": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "name",
+              "snapshots",
+              "channels"
+            ]
+          },
+          "minItems": 2,
+          "maxItems": 64
+        },
+        "source": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "events"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "trajectories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "trajectory_id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "times": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 1
+                      },
+                      "states": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minItems": 1
+                      }
+                    },
+                    "required": [
+                      "trajectory_id",
+                      "times",
+                      "states"
+                    ]
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "kind",
+                "name",
+                "trajectories"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "simulate"
+                },
+                "trajectories": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "initial_distribution": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "seed": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9223372036854775807
+                },
+                "max_events_per_path": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "kind",
+                "trajectories",
+                "initial_distribution",
+                "seed"
+              ]
+            }
+          ]
+        },
+        "risk_threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "schema_version",
+        "model",
+        "target",
+        "time_unit",
+        "horizon",
+        "protocols",
+        "source"
+      ]
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline": {
+          "type": "string",
+          "minLength": 1
+        },
+        "loss": {
+          "const": "zero_one"
+        },
+        "difference": {
+          "const": "protocol_minus_baseline"
+        },
+        "sample_kind": {
+          "enum": [
+            "fixed_event_paths",
+            "independent_simulation"
+          ]
+        },
+        "encoded_bytes": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trajectory_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "event_paths_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "protocols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trajectories": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "resolved": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "coverage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "mean_risk": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "mean_risk_bounds": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "mean_risk_difference": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "paired_difference_bounds": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              },
+              "expected_difference_interval_95": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "snapshots_per_record": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "counters_per_record": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "mean_encoded_bytes": {
+                "type": "number"
+              },
+              "sample_risk_threshold_status": {
+                "enum": [
+                  "MET",
+                  "EXCEEDED",
+                  "UNRESOLVED"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "trajectories",
+              "resolved",
+              "coverage",
+              "mean_risk",
+              "mean_risk_bounds",
+              "mean_risk_difference",
+              "paired_difference_bounds",
+              "expected_difference_interval_95",
+              "snapshots_per_record",
+              "counters_per_record",
+              "mean_encoded_bytes"
+            ]
+          },
+          "minItems": 2
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "trajectory_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "protocol": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "enum": [
+                  "COMPLETE",
+                  "LIMIT_REACHED",
+                  "UNSUPPORTED_RANK",
+                  "RATES_REQUIRED",
+                  "NUMERICALLY_UNRESOLVED"
+                ]
+              },
+              "observation": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "states": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1
+                  },
+                  "counts": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "required": [
+                  "states",
+                  "counts"
+                ]
+              },
+              "encoded_bytes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "map_risk": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "map_candidates": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "diagnostics": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "stage": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "log_snapshot_probability": {
+                    "type": "number"
+                  },
+                  "log_record_probability": {
+                    "type": "number"
+                  },
+                  "count_probability_given_snapshots": {
+                    "type": "number"
+                  },
+                  "transition_row_residual": {
+                    "type": "number"
+                  },
+                  "grid_shape": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "wrap_tail_given_snapshots": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "raw_negative_mass": {
+                    "type": "number"
+                  },
+                  "imaginary_l1": {
+                    "type": "number"
+                  },
+                  "normalization_correction": {
+                    "type": "number"
+                  },
+                  "roundoff_indicator": {
+                    "type": "number"
+                  },
+                  "characteristic_excess": {
+                    "type": "number"
+                  },
+                  "conditional_error_indicator": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": []
+              },
+              "conditional_error_indicator": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "trajectory_id",
+              "protocol",
+              "status",
+              "observation",
+              "encoded_bytes",
+              "map_risk",
+              "map_candidates",
+              "diagnostics",
+              "conditional_error_indicator"
+            ]
+          },
+          "minItems": 2
+        }
+      },
+      "required": [
+        "target",
+        "baseline",
+        "loss",
+        "difference",
+        "sample_kind",
+        "encoded_bytes",
+        "trajectory_ids",
+        "event_paths_sha256",
+        "protocols",
+        "rows"
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "code_sha256",
+        "source_commit",
+        "environment"
+      ],
+      "properties": {
+        "name": {
+          "const": "homological-observability"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_commit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "python",
+            "implementation",
+            "platform",
+            "machine",
+            "dependencies"
+          ],
+          "properties": {
+            "python": {
+              "type": "string",
+              "minLength": 1
+            },
+            "implementation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "platform": {
+              "type": "string",
+              "minLength": 1
+            },
+            "machine": {
+              "type": "string",
+              "minLength": 1
+            },
+            "dependencies": {
+              "type": "object",
+              "required": [
+                "sympy",
+                "networkx",
+                "numpy",
+                "scipy",
+                "mpmath"
+              ],
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_name",
+    "schema_version",
+    "software",
+    "status",
+    "request",
+    "request_sha256",
+    "result",
+    "producer"
+  ],
+  "$defs": {
+    "edge": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coefficient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge",
+        "coefficient"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/edge"
+        },
+        "coefficient": {
+          "type": "integer"
+        }
+      }
+    },
+    "readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "coefficients"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coefficients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coefficient"
+          }
+        }
+      }
+    },
+    "model": {
+      "title": "Homological observability graph model",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "name",
+        "vertices",
+        "edges"
+      ],
+      "properties": {
+        "schema_version": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vertices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "edges": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/edge"
+          }
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/readout"
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    "rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "rate"
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tolerance": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "max_grid_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_matrix_entries": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": []
+    }
+  }
+}

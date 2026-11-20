@@ -176,6 +176,48 @@ def smoke_artifact(
     if str(ROOT) in location:
         raise AssertionError(f"{label} imported from the repository: {location}")
 
+    # Use the installed console script from the consumer's directory. Change a
+    # counter in an exported request and replay through the same public entry.
+    cli = python.parent / (
+        "homological-observability.exe"
+        if os.name == "nt"
+        else "homological-observability"
+    )
+
+    def finite(*args):
+        completed = subprocess.run(
+            [str(cli), *args, "--format", "json"],
+            cwd=run_directory,
+            capture_output=True,
+            text=True,
+            check=True,
+            encoding="utf-8",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+        )
+        return json.loads(completed.stdout)
+
+    triangle = finite("posterior", "--example", "triangle", "--output-dir", "triangle")
+    if abs(triangle["result"]["map_risk"] - 0.1582877982119598) > 1e-11:
+        raise AssertionError("installed posterior failed the analytic triangle")
+    edited = json.loads(
+        (run_directory / "triangle" / "request.json").read_text(encoding="utf-8")
+    )
+    edited["model"]["readouts"] = [{**edited["target"], "name": "turn_counter"}]
+    edited["record"]["counts"] = {"turn_counter": 3}
+    (run_directory / "own-record.json").write_text(json.dumps(edited), encoding="utf-8")
+    if finite("posterior", "own-record.json")["result"]["map_candidates"] != [3]:
+        raise AssertionError("installed posterior failed the edited model")
+    study = finite("compare-protocols", "--example", "dfr")
+    protocols = study["result"]["protocols"]
+    if (
+        study["status"] != "COMPLETE"
+        or protocols[2]["mean_risk"] != 0
+        or abs(protocols[1]["mean_risk_difference"] + 0.24535) > 1e-4
+    ):
+        raise AssertionError("installed paired DFR study failed")
+    if finite("posterior", "--example", "kinesin")["result"]["map_candidates"] != [1]:
+        raise AssertionError("installed kinesin endpoint correction failed")
+
     # The installed application must carry its fixed data and optional target
     # explanation modules. Exercise it outside the checkout for both artifacts.
     dfr_directory = run_directory / "dfr-case"
@@ -488,6 +530,7 @@ def smoke_artifact(
             "resolved_packages": resolved.splitlines(),
             "analysis_comparison_export_replay_reproduction": "PASS",
             "dfr_data_target_design_reconstruction_prediction_replay": "PASS",
+            "posterior_edited_input_kinesin_and_paired_protocols": "PASS",
         }
         (evidence_dir / (name + ".json")).write_text(
             json.dumps(report, indent=2) + "\n", encoding="utf-8"
@@ -509,7 +552,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--upgrade-from",
-        choices=("1.2.1", "2.0.0"),
+        choices=("1.2.1", "2.0.0", "2.1.0"),
         help="also verify an in-place wheel upgrade",
     )
     parser.add_argument(

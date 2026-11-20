@@ -108,6 +108,29 @@ def _build_parser() -> argparse.ArgumentParser:
         )
         _add_format(target_parser)
 
+    for command, help_text in (
+        ("posterior", "infer an integer target from one finite record"),
+        ("compare-protocols", "compare matched recording risks and resource use"),
+    ):
+        task = commands.add_parser(command, help=help_text)
+        source = task.add_mutually_exclusive_group(required=True)
+        source.add_argument(
+            "request", nargs="?", type=Path, help="versioned JSON request"
+        )
+        source.add_argument(
+            "--example",
+            choices=("triangle", "dfr", "kinesin")
+            if command == "posterior"
+            else ("triangle", "dfr"),
+            help="run a bundled editable example",
+        )
+        task.add_argument(
+            "--output-dir",
+            type=Path,
+            help="write request.json, result.json and report.txt to a new directory",
+        )
+        _add_format(task)
+
     study_parser = commands.add_parser(
         "study-example",
         help="print or save an editable configuration study",
@@ -142,6 +165,19 @@ def _build_parser() -> argparse.ArgumentParser:
         help="write report, results and replay inputs into a new directory",
     )
     _add_format(compare_parser)
+
+    for task in (analyze_parser, compare_parser):
+        task.add_argument(
+            "--backend",
+            choices=("cycles", "generators"),
+            default="cycles",
+            help="exact integer exposure algorithm",
+        )
+        task.add_argument(
+            "--max-generators",
+            type=int,
+            help="budget for distinct shortest-path generators",
+        )
 
     critical_parser = commands.add_parser(
         "critical", help="construct a critical-limit experiment from a rate model"
@@ -195,9 +231,20 @@ def _run_examples(output_format: str) -> int:
 
 
 def _run_analysis(
-    model, *, role: ArtifactRole, output_format: str, reverse_tree_order: bool = False
+    model,
+    *,
+    role: ArtifactRole,
+    output_format: str,
+    reverse_tree_order: bool = False,
+    backend="cycles",
+    max_generators=None,
 ) -> int:
-    result = analyze_model(model, reverse_tree_order=reverse_tree_order)
+    result = analyze_model(
+        model,
+        reverse_tree_order=reverse_tree_order,
+        backend=backend,
+        max_generators=max_generators,
+    )
     if output_format == "json":
         sys.stdout.write(render_json(result, artifact_role=role))
     else:
@@ -268,6 +315,39 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if arguments.command == "examples":
             return _run_examples(arguments.format)
+        if arguments.command in ("posterior", "compare-protocols"):
+            from .posterior import infer_target_posterior
+            from .protocols import compare_recording_protocols
+            from .record_io import (
+                load_record_request,
+                recording_example,
+                render_record_result,
+                write_record_bundle,
+            )
+
+            if arguments.output_dir is not None and arguments.output_dir.exists():
+                raise ValueError(
+                    "output directory already exists; choose a new directory"
+                )
+            request = (
+                recording_example(arguments.command, arguments.example)
+                if arguments.example
+                else load_record_request(arguments.request)
+            )
+            run = (
+                infer_target_posterior
+                if arguments.command == "posterior"
+                else compare_recording_protocols
+            )
+            document = run(request)
+            if arguments.output_dir is not None:
+                write_record_bundle(document, arguments.output_dir, arguments.command)
+            sys.stdout.write(
+                target_json(document)
+                if arguments.format == "json"
+                else render_record_result(document)
+            )
+            return EXIT_SUCCESS if document["status"] == "COMPLETE" else EXIT_INCOMPLETE
         if arguments.command in ("target", "design"):
             request = load_target_request(arguments.request)
             is_design = request["operation"] == "design"
@@ -307,6 +387,8 @@ def main(argv: list[str] | None = None) -> int:
                 role=ArtifactRole.FRESH_ANALYSIS,
                 output_format=arguments.format,
                 reverse_tree_order=arguments.reverse_tree_order,
+                backend=arguments.backend,
+                max_generators=arguments.max_generators,
             )
         if arguments.command == "study-example":
             study = load_study_example(arguments.name)
@@ -327,7 +409,10 @@ def main(argv: list[str] | None = None) -> int:
                     "output directory already exists; choose a new directory"
                 )
             document = compare_configurations(
-                study, reverse_tree_order=arguments.reverse_tree_order
+                study,
+                reverse_tree_order=arguments.reverse_tree_order,
+                backend=arguments.backend,
+                max_generators=arguments.max_generators,
             )
             if arguments.output_dir is not None:
                 write_comparison_bundle(document, arguments.output_dir)

@@ -63,8 +63,9 @@ class FiltrationAnalysis:
 
     basis: HomologyBasis
     readout: ImmutableMatrix
-    cycles: tuple[Cycle, ...]
+    cycles: tuple[Cycle, ...] | None
     layers: tuple[FiltrationLayer, ...]
+    generators: tuple[Cycle, ...] | None = None
 
     @property
     def max_layer(self) -> int:
@@ -167,6 +168,11 @@ def analyze_filtration(
         max_layer=max_layer,
         max_cycles=max_cycles,
     )
+    return project_exposure(basis, readout, exposure, cycles=cycles)
+
+
+def project_exposure(basis, readout, exposure, *, cycles=None, generators=None):
+    """Project a graph's prepared integer layers onto one readout configuration."""
     hidden = tuple(
         hidden_lattice(lattice, readout) if readout.rows else lattice
         for lattice in exposure
@@ -205,6 +211,7 @@ def analyze_filtration(
         readout=readout,
         cycles=cycles,
         layers=tuple(layers),
+        generators=generators,
     )
 
 

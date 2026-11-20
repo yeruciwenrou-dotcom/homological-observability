@@ -29,6 +29,7 @@ schemes, and determine which counts recover a chosen trajectory target.
 | Which counter configurations reveal different or redundant information? | [Counter comparison](#compare-counter-configurations) |
 | Do my counters and known endpoints determine a target? Which extra channels would suffice? | [Target analysis and readout design](docs/TARGET_TASKS.md) |
 | Do my model's inputs determine the trajectory target, and how can I evaluate its predictions? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Guide](docs/SCIENTIFIC_ML.md) |
+| How likely is each target value in my actual record? Would another counter reduce my error? | [Finite-record inference and paired protocol comparison](docs/FINITE_RECORDS.md) |
 | What critical-limit experiment follows from my graph, rates and counters? | [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
 | How can I reproduce the paper's finite-model calculations? | [Paper reproduction](#reproduce-the-paper-evidence) |
 
@@ -71,47 +72,21 @@ and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumption
 
 ## Install
 
-Version: **2.1.0**.
+Use Python 3.11–3.13. The published package is available with
+`python -m pip install homological-observability`. For the finite-record
+commands in this checkout, install its source or its matching wheel in a
+virtual environment:
 
-Use Python 3.11–3.13. Clone the versioned repository for its examples and
-install the package in a virtual environment. On macOS or Linux:
-
-```bash
-git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade homological-observability==2.1.0
+```sh
+python -m venv .venv
+.venv/bin/python -m pip install .
+.venv/bin/homological-observability posterior --example dfr
 ```
 
-If you already have this checkout, start with the virtual-environment step
-from its root directory.
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-git clone --branch v2.1.0 https://github.com/yeruciwenrou-dotcom/homological-observability.git
-cd homological-observability
-py -3.12 -m venv .venv
-.venv\Scripts\python.exe -m pip install --upgrade homological-observability==2.1.0
-```
-
-Python 3.11 or 3.13 can be selected in place of 3.12.
-
-</details>
-
-These commands use the virtual environment directly, so activation is optional.
-Installation needs internet access; examples and reference data are included
-in the package. Run the commands below from the repository directory.
-In the linked guides, use
-`.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability` on Windows, and
-`.venv\Scripts\python.exe` in place of `.venv/bin/python`.
-
-Upgrading from 2.0.0 preserves the existing network-analysis, comparison,
-critical-experiment and paper-reproduction workflows, along with their input
-and result formats. Target tasks add separate request and result formats;
-see the [changelog](CHANGELOG.md) for the new capabilities.
+On Windows PowerShell, use `.venv\Scripts\python.exe` and
+`.venv\Scripts\homological-observability.exe`. The DFR data and the
+finite-record examples travel with the installed package. The source checkout
+also includes the example files used by the remaining guides.
 
 To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
@@ -120,6 +95,19 @@ For upgrades from 1.x, see the
 [format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
 
 ## Quick start
+
+To estimate uncertainty in one observed history or compare acquisition costs,
+run the two examples from the installed package. Each writes a result, a short
+report and an editable request for your own model.
+
+```sh
+homological-observability posterior --example triangle --output-dir my-record
+homological-observability compare-protocols --example dfr --output-dir my-study
+```
+
+The triangle's most likely net turn is zero with probability 0.8417122.
+The paired study shows how much the same 64 trajectories gain from a second
+observation channel. [Finite-record guide](docs/FINITE_RECORDS.md)
 
 After installation, choose an example: [analyze a trajectory target](#target-analysis-and-scientific-ml)
 to decide which counts you need, or [compare counter configurations](#compare-counter-configurations)

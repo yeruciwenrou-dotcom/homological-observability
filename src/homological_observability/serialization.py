@@ -188,10 +188,13 @@ def analysis_to_dict(
             }
             for layer in result.filtration.layers
         ]
+        generated = result.filtration.generators is not None
+        catalogue = (
+            result.filtration.generators if generated else result.filtration.cycles
+        )
         filtration_document = {
-            "cycles": [
-                {"vertices": list(cycle), "length": len(cycle)}
-                for cycle in result.filtration.cycles
+            ("generators" if generated else "cycles"): [
+                {"vertices": list(cycle), "length": len(cycle)} for cycle in catalogue
             ],
             "layers": layers,
             "evidence_categories": [
@@ -206,7 +209,7 @@ def analysis_to_dict(
             "computed_max_layer": result.filtration.max_layer,
             "requested_horizon_complete": result.requested_horizon_complete,
             "natural_filtration_complete": result.natural_filtration_complete,
-            "cycle_count": len(result.filtration.cycles),
+            ("generator_count" if generated else "cycle_count"): len(catalogue),
             "first_nonzero_exposure_layer": _first_nonzero_rank(layers, "exposure"),
             "first_nonzero_visible_layer": _first_nonzero_rank(layers, "visible"),
             "first_nonzero_hidden_layer": _first_nonzero_rank(layers, "hidden"),
@@ -276,6 +279,13 @@ def analysis_to_dict(
         "phase": phase_document,
         "limit": limit,
     }
+    if result.backend == "generators":
+        document["schema_version"] = 4
+        document["generator_options"] = {
+            "backend": "generators",
+            "max_generators": result.max_generators,
+            "reverse_tree_order": result.reverse_tree_order,
+        }
     check_output_integers(document)
     return document
 
@@ -350,6 +360,10 @@ def render_text(
         "natural filtration complete: "
         + str(document["summary"]["natural_filtration_complete"]).lower(),
     ]
+    if "generator_options" in document:
+        lines.append(
+            "Exposure backend: shortest-path generators (exact integer lattice)"
+        )
     lines += ["", sampling_request(model["analysis"])]
     if document["status"] == AnalysisStatus.LIMIT_REACHED.value:
         limit = document["limit"]
@@ -415,8 +429,11 @@ def render_text(
     lines.extend(
         [
             "",
-            "Evidence: exact integer lattices and finite cycle enumeration; phase "
-            "labels are paper-derived asymptotic predictions.",
+            (
+                "Evidence: exact integer lattices and shortest-path generators; phase labels are paper-derived asymptotic predictions."
+                if "generator_options" in document
+                else "Evidence: exact integer lattices and finite cycle enumeration; phase labels are paper-derived asymptotic predictions."
+            ),
         ]
     )
     return "\n".join(lines) + "\n"
@@ -446,6 +463,10 @@ def render_markdown(
         f"`{str(document['summary']['natural_filtration_complete']).lower()}`",
         f"- Normalized model SHA-256: `{document['normalized_model_sha256']}`",
     ]
+    if "generator_options" in document:
+        lines.append(
+            "Exposure backend: shortest-path generators (exact integer lattice)"
+        )
     lines += ["", sampling_request(model["analysis"])]
     if document["status"] == AnalysisStatus.LIMIT_REACHED.value:
         limit = document["limit"]
@@ -512,9 +533,12 @@ def render_markdown(
             "",
             "## Evidence boundary",
             "",
-            "The filtration uses exact integer lattice operations and finite cycle "
-            "enumeration. Phase labels apply the paper's asymptotic theorem "
-            "under the stated model and sampling assumptions.",
+            (
+                "The filtration uses integer shortest-path generators. "
+                if "generator_options" in document
+                else "The filtration uses exact integer lattice operations and finite cycle enumeration. "
+            )
+            + "Phase labels apply the paper's asymptotic theorem under the stated model and sampling assumptions.",
         ]
     )
     return "\n".join(lines) + "\n"
