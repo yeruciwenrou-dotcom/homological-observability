@@ -100,15 +100,14 @@ inferring compatibility from field presence.
 
 ### Reading earlier records
 
-| Document | Earlier | Default | Generators |
-| --- | ---: | ---: | ---: |
-| Model input | 1 | 2 | 2 |
-| Study input | 1 | 2 | 2 |
-| Analysis result | 2 | 3 | 4 |
-| Comparison result | 1 | 2 | 3 |
+| Result format | Analysis | Comparison |
+| --- | ---: | ---: |
+| Earlier | 2 | 1 |
+| Default | 3 | 2 |
+| Generators | 4 | 3 |
 
-Model and study parsers accept both input versions and emit the current
-normalized form. In a study, the study and shared model versions must match.
+Both backends accept model and study input versions 1 and 2 and write
+the normalized input as version 2. In a study, the study and shared model versions must match.
 A format-1 numeric input therefore keeps its scientific meaning while its
 normalized model or study digest changes. Earlier software cannot read the
 new format or exact alpha strings. Keep original records with their original
