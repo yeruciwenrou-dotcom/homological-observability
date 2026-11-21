@@ -119,23 +119,23 @@ For upgrades from 1.x, see the
 
 ## Quick start
 
-A flashing ratchet can turn while its potential is ON or OFF. Suppose you
-want the difference between the two signed turn counts, `DeltaW`. A counter
-for total turns gives their sum. How much can you infer from that counter
-and a set of snapshots?
+A flashing ratchet can turn while its potential is ON or OFF. A counter
+records the sum of the two signed turn counts (`W`). How well can you infer
+their difference (`DeltaW`, ON minus OFF) from that total and a set of snapshots?
 
 ```sh
 homological-observability posterior --example dfr --output-dir my-record
 homological-observability compare-protocols --example dfr --output-dir my-study
 ```
 
-Open `my-record/report.txt`. For this particular record, only even values of
-`DeltaW` are possible. With the supplied transition rates, zero is the most
-probable value (99.63%).
+Open `my-record/report.txt` for one trajectory observed at 50 snapshot times.
+Its total-turn count allows only even values of `DeltaW`. With the supplied
+transition rates, the most probable value is zero (99.63%).
 
-Open `my-study/report.txt` to compare three ways to record the **same 64
-simulated trajectories**, each with eight snapshots. The percentage is the
-mean conditional probability of an incorrect best guess for `DeltaW`.
+Open `my-study/report.txt` to compare three ways to observe the **same 64
+simulated trajectories** with eight snapshots per path. For each protocol,
+the table gives the conditional probability of a wrong best guess for `DeltaW`,
+averaged over the 64 records.
 
 | Recorded observations | Mean error risk |
 | --- | ---: |
@@ -143,11 +143,10 @@ mean conditional probability of an incorrect best guess for `DeltaW`.
 | Snapshots and total turns | 15.42% |
 | Snapshots, total turns and ON turns | 0% |
 
-The last protocol determines the difference exactly because
-`DeltaW = 2 × ON turns − total turns`. Here a single additional ON counter
-eliminates the 15.42% mean error that remains with total turns. The report
-also lists the snapshot count, counter count and encoded record size, so you
-can judge the gain against the additional measurement.
+Recording signed ON turns (`W_ON`) gives `DeltaW = 2 W_ON − W` on every
+trajectory. That identity explains the zero risk in the last row. The report
+also gives the snapshot count, counter count and encoded record size for each
+protocol.
 
 To use your own network, start with a three-state ring. Edit its
 `request.json` to supply your states, directed rates, target and observations,
@@ -161,20 +160,20 @@ homological-observability posterior my-ring/request.json
 
 The [finite-record guide](docs/FINITE_RECORDS.md) explains the input fields,
 numerical precision and how to import event trajectories for a comparison.
+Its [six-state kinesin example](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target)
+shows how to recover a molecular motor's net ATP hydrolysis from the observed
+endpoints and counts of mechanical steps and chemical transitions.
 For a network with proposed counters, [compare their hidden cycle directions](#compare-counter-configurations).
-For a prediction task, [test whether the inputs determine the target](#target-analysis-and-scientific-ml).
 
 ### Target analysis and scientific ML
 
-Suppose you plan to train a model to predict `DeltaW` from the same ratchet
-records. Total turns can predict the difference well on some records.
-Can they determine it for every history? Which additional measurement would
-make that possible, and how well does a trained predictor use the information
-it already has?
+Suppose you want to train a model to predict `DeltaW`. On the same 64 ratchet
+trajectories, the ML example uses 50 snapshots per path. Can those snapshots
+and total turns determine the target for every history? How accurately does
+a predictor use that information on held-out paths?
 
-The six-state discrete flashing ratchet (DFR) example answers this on a shared
-set of trajectories. Its [model and data sources](docs/SCIENTIFIC_ML.md#model-and-data-provenance)
-are documented in the scientific ML guide. Run the complete CPU case:
+Run the [six-state discrete flashing ratchet (DFR) example](docs/SCIENTIFIC_ML.md#model-and-data-provenance)
+on a CPU:
 
 ```bash
 python -m homological_observability.applications.dfr run --output-dir dfr-case
@@ -195,9 +194,10 @@ This diagnosis helps choose the next experiment: add the missing count to
 future collection, replay available full event logs to obtain it, or choose a
 prediction target and evaluation suited to the existing records.
 
-The case saves `case.json` with the structural evidence and evaluations, plus
-`predictions.json` with training-median predictions for the 13-path natural test
-split. Replay that evaluation with:
+The case saves the structural results in `case.json`. With snapshots and total
+turns as the available inputs, the baseline predicts the training-set median
+on every path. It matches `DeltaW` on 7 of 13 held-out paths. To replay this
+evaluation from `predictions.json`, run
 
 ```bash
 python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json

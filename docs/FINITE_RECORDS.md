@@ -1,15 +1,17 @@
 # Inferring a target from a finite record
 
-A flashing ratchet can complete turns while its potential is ON or OFF. The
-target `DeltaW` counts ON turns minus OFF turns. The counter `W` measures
-their sum. A record of this sum fixes the parity of the target. The known
-transition rates and the actual snapshots assign probabilities to the
-remaining values. This is a question about a single run. In the bundled record,
-zero has probability 99.63% and other even values still carry positive
-probability. If ON turns are also recorded, the two counts determine the
-difference on every trajectory. These two cases illustrate how a highly
-probable inference and an exact reconstruction can guide different
-recording choices.
+Given [your own record](#use-your-own-model) of state snapshots and optional
+counters, `posterior` finds which values of a trajectory target are possible.
+With known transition rates, it can also estimate their probabilities.
+
+In a flashing ratchet, the target `DeltaW` is the difference between the
+signed turns made while the potential is ON and OFF. The total turn count
+`W` fixes the parity of that difference. In one record with 50 snapshots and
+`W`, only even values are possible and zero has probability 99.63%.
+The [protocol comparison](#compare-recording-protocols) takes eight snapshots
+of each of 64 complete trajectories to compare the risk of a wrong estimate
+with different counters. Recording ON turns as well as total turns determines
+`DeltaW` exactly on every path.
 
 Follow the [installation instructions](../README.md#install), then run these commands
 from any directory in the activated environment.
@@ -191,24 +193,32 @@ scalar counters and bytes for the compact UTF-8 JSON representation of the
 visible state sequence and counts. The shared schedule, model metadata and
 instrument costs are accounted for separately.
 
+The producer record identifies the installed code and numerical environment.
+The request and result schemas are available through
+`load_posterior_request_schema()`, `load_posterior_schema()`,
+`load_protocol_request_schema()` and `load_protocol_comparison_schema()`.
+
 ## A mechanical and chemical target
+
+Which measurements of a kinesin motor determine its net ATP hydrolysis?
+In the [six-state model of Liepelt and Lipowsky](https://doi.org/10.1103/PhysRevLett.98.258102),
+$M$ counts mechanical steps along $2\to5$, while $A$ and $B$ count transitions
+along $6\to1$ and $3\to4$. All three are signed net counts. The target
+$F=A+B$ is the net number of ATP molecules hydrolyzed.
 
 ```sh
 homological-observability posterior --example kinesin --output-dir motor
 ```
 
-In the six-state kinesin model of Liepelt and Lipowsky, let $M$ count
-$2\to5$ mechanical transitions, $A$ count $6\to1$ and $B$ count $3\to4$,
-all as signed net counts. The target $F=A+B$ is net ATP hydrolysis. Set
-$h=0$ in states 1, 2 and 3, and $h=1$ in states 4, 5 and 6. Edge by edge,
-$F=2A-M+\Delta h$. A record starting in 1 and ending in 4 with $M=A=0$
-therefore gives exactly one net hydrolysis. Remove the A channel and its
-count from the exported request. The mechanical count and endpoints now
-leave every odd target value possible. A measured trace can use this model
-when its snapshot labels and counters correspond to the stated chemical and
-mechanical observables. [Six-state kinetic model](https://doi.org/10.1103/PhysRevLett.98.258102)
+The example record starts in state 1, ends in state 4 and has $M=A=0$.
+It determines $F=1$ exactly. To see why, assign $h=0$ to states 1, 2 and 3
+and $h=1$ to states 4, 5 and 6. The counts obey $F=2A-M+\Delta h$,
+and the observed endpoints give $\Delta h=1$.
 
-The producer record identifies the installed code and numerical environment.
-The request and result schemas are available through
-`load_posterior_request_schema()`, `load_posterior_schema()`,
-`load_protocol_request_schema()` and `load_protocol_comparison_schema()`.
+Remove channel `A` and its count from `motor/request.json`, then rerun
+`homological-observability posterior motor/request.json`. With the mechanical
+count and endpoints alone, every odd value of $F$ is possible. The report
+gives this exact support with status `RATES_REQUIRED` because assigning
+probabilities to the odd values requires transition rates. To use a measured
+trace, match its snapshot labels and counters to these chemical states and
+transitions.
