@@ -122,7 +122,7 @@ assert result["result"]["map_candidates"] == [0]
 | `coordinates` | The tree, chords and an integral basis of the joint target and counter image. The chord map and image basis transform numerical coordinates back into the declared observables. |
 | `pmf`, `map_candidates`, `map_risk` | Estimated target probabilities on the retained domain, possible maximizers at the achieved precision and one minus the largest probability. An exact answer has unit point mass and zero risk. |
 | `diagnostics` | Grid sizes, conditional wrap-tail estimate, pre-clipping negative mass, imaginary residual, normalization correction, row-sum drift and the numerical precision indicator. |
-| `log_record_probability` | In numerical results, the log probability of the observed subsequent snapshots and cumulative counts given the first state. The conditioning denominator after the snapshots is recorded separately. |
+| `diagnostics.log_record_probability` | In numerical results, the log probability of the observed subsequent snapshots and cumulative counts given the first state. The conditioning denominator after the snapshots is recorded separately. |
 
 The numerical calculation supports effective joint integer image rank one or
 two. Redundant and scaled counters retain their integer-image constraints.
@@ -205,8 +205,7 @@ bounds leave both possibilities open.
 
 Resource columns count snapshots, declared
 scalar counters and bytes for the compact UTF-8 JSON representation of the
-visible state sequence and counts. The shared schedule, model metadata and
-instrument costs are accounted for separately.
+visible state sequence and counts. Assess instrument costs separately for your setup.
 
 The producer record identifies the installed code and numerical environment.
 The request and result schemas are available through

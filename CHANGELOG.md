@@ -4,7 +4,7 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
-## 2.2.0.dev0
+## 2.2.0 — 2026-11-21
 
 Version 2.1 determines when counters and endpoints fix an accumulated
 target for every legal history. With 2.2 you can also ask how much uncertainty

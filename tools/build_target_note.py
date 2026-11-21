@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LINK_ROOT = (
-    "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/docs/"
+    "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/docs/"
 )
 ESCAPES = {
     "\\": r"\textbackslash{}",
@@ -211,7 +211,7 @@ def main():
     global LINK_ROOT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / "docs/TARGET_THEORY.pdf")
-    parser.add_argument("--ref", default="v2.1.0")
+    parser.add_argument("--ref", default="v2.2.0")
     parser.add_argument("--tex-bin", type=Path)
     parser.add_argument("--build-dir", type=Path, default=ROOT / "build/target-note")
     args = parser.parse_args()

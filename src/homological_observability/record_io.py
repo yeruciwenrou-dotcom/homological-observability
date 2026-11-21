@@ -11,7 +11,7 @@ from .target_io import target_json
 
 FINITE_RECORD_GUIDE = (
     "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/"
-    "b8350a6c9f47ca2b68286defdf2a4b86985cacac/docs/FINITE_RECORDS.md"
+    "v2.2.0/docs/FINITE_RECORDS.md"
 )
 
 
@@ -221,7 +221,7 @@ def write_record_bundle(doc, output, command):
         "request.json": target_json(doc["request"]),
         "result.json": target_json(doc),
         "report.txt": render_record_result(doc)
-        + f"\nReplay: homological-observability {command} request.json\n",
+        + f"\nReplay from this results directory:\nhomological-observability {command} request.json\n",
     }
     directory.mkdir(parents=True, exist_ok=False)
     created = []
