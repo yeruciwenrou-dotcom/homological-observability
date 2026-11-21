@@ -185,7 +185,8 @@ with the packaged reference data, and writes `generated_results/REPORT.md`
 and `generated_results/companion_summary.png`. Successful verification prints
 `PASS: all calculation checks completed` and
 `PASS: generated tables agree with frozen reference results`.
-The output directory also contains the numerical CSV tables.
+The output directory also contains the numerical CSV tables and a
+[scalable version of the summary figure](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/90274ca40863810adc6f8020abc7a18ba1a6d7ab/results/companion_summary.svg).
 For pinned dependencies
 and the reader-side test suite, follow the
 [reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/90274ca40863810adc6f8020abc7a18ba1a6d7ab/README.md#full-verification-from-source).

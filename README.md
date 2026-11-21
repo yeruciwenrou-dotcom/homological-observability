@@ -419,7 +419,7 @@ PASS: generated tables agree with frozen reference results
 | Result in `generated_results/` | What to read |
 | --- | --- |
 | `REPORT.md` | Scientific summary and interpretation of the checks |
-| `companion_summary.png` | Summary figure |
+| `companion_summary.png`, `companion_summary.svg` | Three numerical checks in one figure ([PNG preview](results/companion_summary.png), [scalable SVG](results/companion_summary.svg)) |
 | `selected_appendix_checks.csv`, `critical_kernel_results.csv` | Numerical tables for further inspection |
 
 The calculations

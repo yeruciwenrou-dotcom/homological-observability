@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "homological-observability"
 version = "2.2.0.dev0"
-description = "Determine which cycle histories snapshots and counters can recover in finite-state Markov jump processes"
+description = "Determine which cycle histories snapshots and counters can recover in finite-state Markov jump processes. With known rates, estimate net winding probabilities for a single record."
 readme = "docs/PYPI.md"
 requires-python = ">=3.11,<3.14"
 license = "MIT"
@@ -22,8 +22,11 @@ keywords = [
   "Markov jump processes",
   "homological observability",
   "information theory",
-  "reproducible research",
-  "scientific software",
+  "finite temporal resolution",
+  "posterior inference",
+  "observation design",
+  "stochastic thermodynamics",
+  "scientific machine learning",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",

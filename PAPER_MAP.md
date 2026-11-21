@@ -165,7 +165,7 @@ for paper reproduction.
 | Small-window C3–C6 asymptotics | [reference_appendix.py](src/homological_observability/reference_appendix.py); refinement checks | [Selected appendix checks](results/selected_appendix_checks.csv) |
 | C3/C4 critical count kernels | [critical.py](src/homological_observability/critical.py); independent count laws | [Critical-kernel table](results/critical_kernel_results.csv) |
 | Poisson-averaged binomial MAP identity | [critical.py](src/homological_observability/critical.py); direct mixture and high-precision Bessel comparisons | MAP rows in the appendix table |
-| Reciprocal-lattice peak suppression | [lattice.py](src/homological_observability/lattice.py); positivity, ordering, and refinement checks | Lattice rows in the appendix table and [summary figure](results/companion_summary.png) |
+| Reciprocal-lattice peak suppression | [lattice.py](src/homological_observability/lattice.py); positivity, ordering, and refinement checks | Lattice rows in the appendix table and the right panel of the summary figure ([PNG](results/companion_summary.png), [SVG](results/companion_summary.svg)) |
 | Combined reproduction | [reporting.py](src/homological_observability/reporting.py) and [reproduction.py](src/homological_observability/reproduction.py) | [Report](results/REPORT.md) and PNG/SVG figures |
 
 `python quickstart.py` runs the reader-side tests and regenerates these
