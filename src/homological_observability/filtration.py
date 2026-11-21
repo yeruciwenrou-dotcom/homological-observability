@@ -29,7 +29,7 @@ from .integer_lattice import (
 
 
 class CycleLimitExceeded(RuntimeError):
-    """Raised instead of returning a silently truncated exposure filtration."""
+    """Raised when the number of distinct simple cycles exceeds the configured limit."""
 
     def __init__(self, limit: int) -> None:
         super().__init__(f"more than {limit} simple cycles were encountered")

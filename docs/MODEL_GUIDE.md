@@ -243,8 +243,9 @@ homological-observability analyze examples/wedge_c3_c5.json
 homological-observability analyze examples/wedge_c3_c5.json --format json
 ```
 
-Use JSON when processing results in another program. The terminal layout is
-intended for people and should not be parsed as a data format.
+The first command displays the layers in the terminal. Use `--format json`
+to process the same results in another program. The
+[analysis output guide](OUTPUT_CONTRACT.md#analysis-document) describes the fields.
 
 The Python API equivalent is:
 
