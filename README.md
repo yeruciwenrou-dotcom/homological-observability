@@ -48,11 +48,11 @@ but differ by one circulation around the triangle.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
-Information acquisition is itself a physical process. The recording protocol
-determines which differences between histories leave a trace in the record.
-Known transition rates give the conditional probabilities of the possible
-windings. Several windings can still have positive probability for the same
-noiseless record.
+Information acquisition is itself a physical process. A recorder’s dynamics
+and resources constrain what it can register. Here that constraint enters
+through the interval between snapshots. Knowing the transition rates gives
+the conditional probabilities of the possible windings. Several can retain
+positive probability given the same noiseless record.
 
 A longer observation supplies more snapshots and also lengthens the history
 whose winding we want to recover. A detour that changes the winding may be
@@ -65,9 +65,10 @@ information phase diagram and sharp sampling thresholds for recovering
 accumulated cycle histories.** When hidden cycle directions are present, the
 number of snapshots must grow faster than the observation time for the
 probability of exact recovery to approach one. The theory gives the posterior
-laws at critical sampling scales. Under power-law sampling, changes in the
-slope of the leading residual-entropy coefficient reveal how many independent
-hidden cycle directions emerge at each threshold.
+laws at critical sampling scales. Under power-law sampling, the coefficient
+of logarithmic growth in the residual entropy varies with the sampling
+exponent. Its slope changes reveal how many independent hidden cycle
+directions emerge at each threshold.
 
 These information transitions persist at equilibrium under detailed balance.
 Forward and reverse circulations then balance on average, and the steady-state
