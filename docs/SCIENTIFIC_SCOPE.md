@@ -32,7 +32,10 @@ The software implements calculations for this observation
 problem. Given a support graph and optional cumulative integer counter rules,
 it computes hidden cycle differences, their exposure layers, and asymptotic
 sampling requirements. Exact transition rates are additional inputs for
-constructing the rate-dependent critical experiment.
+constructing the rate-dependent critical experiment. For a measured finite
+record, the [posterior calculation](FINITE_RECORDS.md) uses the known rates to
+weight the target values compatible with the snapshots and counters. It also
+gives the probability of error when reporting the most likely value.
 
 The [target interfaces](TARGET_TASKS.md) ask a more specific question: do the
 fixed readouts and endpoints determine a chosen integer trajectory quantity?

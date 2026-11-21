@@ -6,6 +6,8 @@ Choose the input format for the question you want to answer:
 | --- | --- | --- |
 | Check or reconstruct a specific target | `target` | [Target request, with an optional individual record](TARGET_TASKS.md#use-your-own-target) |
 | Minimize additional counters for one or more targets | `design` | [Fixed readouts, targets and candidate scalar channels](TARGET_TASKS.md#use-your-own-target) |
+| Estimate one integer target from a measured record | `posterior` | [Graph, target, whole-record counts, snapshots and directed rates](FINITE_RECORDS.md#use-your-own-model) |
+| Compare sampling schedules and counters on the same paths | `compare-protocols` | [Recording protocols and complete or simulated event histories](FINITE_RECORDS.md#compare-recording-protocols) |
 | Analyze one observation configuration | `analyze` | [Graph, readouts, and analysis settings](#topology-analysis-model) |
 | Compare candidate counter configurations | `compare` | [A study with shared conditions and named candidates](#configuration-study) |
 | Construct a rate-dependent critical experiment | `critical` | [Graph, readouts, exact directed rates, and critical settings](#critical-experiment-model) |

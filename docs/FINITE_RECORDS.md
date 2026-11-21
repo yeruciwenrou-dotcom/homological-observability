@@ -4,7 +4,12 @@ A flashing ratchet can complete turns while its potential is ON or OFF. The
 target `DeltaW` counts ON turns minus OFF turns. The counter `W` measures
 their sum. A record of this sum fixes the parity of the target. The known
 transition rates and the actual snapshots assign probabilities to the
-remaining values.
+remaining values. This is a question about a single run. In the bundled record,
+zero has probability 99.63% and other even values still carry positive
+probability. If ON turns are also recorded, the two counts determine the
+difference on every trajectory. These two cases illustrate how a highly
+probable inference and an exact reconstruction can guide different
+recording choices.
 
 Run these commands from any directory in an environment containing this build.
 
@@ -142,11 +147,16 @@ The paired DFR example uses the same 64 complete, independently identified
 paths in every row of the comparison. Each path spans 2.5 model time units.
 For 8 snapshots the fixed-sample means are as follows.
 
-| Available observations | Mean conditional 0–1 risk | Difference from snapshots |
-| --- | ---: | ---: |
-| Snapshots | 39.9526% | 0 |
-| Snapshots and total turns W | 15.4173% | −24.535 percentage points |
-| Snapshots, W and ON turns | 0% | −39.953 percentage points |
+| Available observations | Mean conditional 0–1 risk | Difference from snapshots | Mean encoded bytes per path |
+| --- | ---: | ---: | ---: |
+| Snapshots | 39.9526% | 0 | 56.0 |
+| Snapshots and total turns W | 15.4173% | −24.535 percentage points | 61.2 |
+| Snapshots, W and ON turns | 0% | −39.953 percentage points | 70.3 |
+
+On these paths, adding W reduces mean risk by 24.535 percentage points
+at the same sampling frequency. The byte counts measure the package's compact
+encoding of states and counts. The physical cost of a new measurement depends
+on the instrument.
 
 To adapt the study, edit its graph, target, horizon and protocols. Each
 protocol specifies a name, a snapshot count including both endpoints, and

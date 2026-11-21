@@ -7,13 +7,13 @@
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.**
 
-This repository provides **computational tools for homological observability**
-in finite-state Markov jump processes. Given a network, state snapshots and
-signed counters, you can find which accumulated currents the observations
-determine exactly. When several values fit a record, known transition rates
-let you estimate their probabilities. You can then compare how a finer
-snapshot grid or an extra counter changes the risk of recovering the wrong
-value.
+This repository provides **computational tools for homological observability**,
+including exact integer calculations and reproducible finite-model examples.
+Use it to identify hidden cycle information in your network, compare recording
+schemes, and determine which counts recover a chosen trajectory target.
+With an observed record and known transition rates, you can also estimate the
+probability of each possible target value and compare the error from different
+snapshot schedules and counters.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -62,7 +62,8 @@ histories.** It quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
 determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
-under detailed balance.
+under detailed balance. Forward and reverse circulations then balance on
+average, yet a single trajectory can accumulate turns between snapshots.
 
 The supported graph is finite, connected, and simple, with positive
 transition-rate support in both directions on every edge. The recording
@@ -76,20 +77,26 @@ and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumption
 
 ## Install
 
-Use Python 3.11–3.13. To try the finite-record commands on this branch,
-create a virtual environment with `python -m venv .venv`. Activate it with
-`source .venv/bin/activate` on macOS or Linux, or
-`.\.venv\Scripts\Activate.ps1` in Windows PowerShell. Then run
+Use Python 3.11–3.13. Create and activate a virtual environment.
+
+| Shell | Create | Activate |
+| --- | --- | --- |
+| macOS or Linux | `python3 -m venv .venv` | `source .venv/bin/activate` |
+| Windows PowerShell | `py -3.12 -m venv .venv` | `.\.venv\Scripts\Activate.ps1` |
+
+Install this branch to try the finite-record examples. The commands below use
+the activated environment on either platform.
 
 ```sh
 python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/heads/upgrade/finite-time-observability.zip"
 homological-observability --version
 ```
 
-The version should be `2.2.0.dev0`. From a checkout of this branch,
-`python -m pip install .` installs the same source. The examples below use
-the activated environment. The published PyPI release has its own
-[2.1.0 installation and usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install).
+This branch reports `2.2.0.dev0`. To install the published version, use
+`python -m pip install homological-observability==2.1.0` and its
+[2.1.0 usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install).
+Working with files in `examples/` or running the full verification script
+requires a [source checkout](#full-verification-from-source).
 
 To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
 separate environment and follow its
@@ -124,8 +131,10 @@ mean conditional probability of an incorrect best guess for `DeltaW`.
 | Snapshots, total turns and ON turns | 0% |
 
 The last protocol determines the difference exactly because
-`DeltaW = 2 × ON turns − total turns`. The report also lists the number of
-snapshots, counters and encoded bytes for each protocol.
+`DeltaW = 2 × ON turns − total turns`. Here a single additional ON counter
+eliminates the 15.42% mean error that remains with total turns. The report
+also lists the snapshot count, counter count and encoded record size, so you
+can judge the gain against the additional measurement.
 
 To use your own network, start with a three-state ring. Edit its
 `request.json` to supply your states, directed rates, target and observations,
@@ -139,25 +148,23 @@ homological-observability posterior my-ring/request.json
 
 The [finite-record guide](docs/FINITE_RECORDS.md) explains the input fields,
 numerical precision and how to import event trajectories for a comparison.
+For a network with proposed counters, [compare their hidden cycle directions](#compare-counter-configurations).
+For a prediction task, [test whether the inputs determine the target](#target-analysis-and-scientific-ml).
 
 ### Target analysis and scientific ML
 
-This example shows how to check whether observations determine an integer
-trajectory target before training a predictor, choose additional counters,
-and evaluate predictions on the same paths. It uses a known finite-state
-model.
-
-Suppose your simulator records total signed circulation **W**, and your new
-question concerns the difference **DeltaW** between circulation while a potential
-is ON and OFF. Can the existing data answer that question? If not, what is the
-smallest change to the recording scheme?
+Suppose you plan to train a model to predict `DeltaW` from the same ratchet
+records. Total turns can predict the difference well on some records.
+Can they determine it for every history? Which additional measurement would
+make that possible, and how well does a trained predictor use the information
+it already has?
 
 The six-state discrete flashing ratchet (DFR) example answers this on a shared
 set of trajectories. Its [model and data sources](docs/SCIENTIFIC_ML.md#model-and-data-provenance)
 are documented in the scientific ML guide. Run the complete CPU case:
 
 ```bash
-.venv/bin/python -m homological_observability.applications.dfr run --output-dir dfr-case
+python -m homological_observability.applications.dfr run --output-dir dfr-case
 ```
 
 Open **`dfr-case/report.txt`**. It reports:
@@ -180,7 +187,7 @@ The case saves `case.json` with the structural evidence and evaluations, plus
 split. Replay that evaluation with:
 
 ```bash
-.venv/bin/python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
+python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
 ```
 
 Use the [scientific ML guide](docs/SCIENTIFIC_ML.md) to supply your model's
@@ -188,11 +195,12 @@ predictions and compare observation schemes on the same paths. A separate
 constructed ambiguity pair tests what identical visible inputs can leave
 unresolved; its scores are reported separately from naturally sampled data.
 
-To inspect the diagnosis and design without running the dataset case:
+To run just the structural calculations from a [source checkout](#full-verification-from-source),
+use the [target request](examples/dfr_target.json) and [design request](examples/dfr_design.json).
 
 ```bash
-.venv/bin/homological-observability target examples/dfr_target.json
-.venv/bin/homological-observability design examples/dfr_design.json --output-dir dfr-design
+homological-observability target examples/dfr_target.json
+homological-observability design examples/dfr_design.json --output-dir dfr-design
 ```
 
 The [target guide](docs/TARGET_TASKS.md#use-your-own-target) shows how to use your
@@ -216,19 +224,9 @@ weighted combinations of the same counters.
 Create the study input, then run it into a new results directory:
 
 ```bash
-.venv/bin/homological-observability study-example bridge --output bridge-study.json
-.venv/bin/homological-observability compare bridge-study.json --output-dir bridge-results
+homological-observability study-example bridge --output bridge-study.json
+homological-observability compare bridge-study.json --output-dir bridge-results
 ```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe study-example bridge --output bridge-study.json
-.venv\Scripts\homological-observability.exe compare bridge-study.json --output-dir bridge-results
-```
-
-</details>
 
 The terminal output begins:
 
@@ -283,17 +281,8 @@ Prepare `my-model.json` using the [model input guide](docs/MODEL_GUIDE.md),
 then run:
 
 ```bash
-.venv/bin/homological-observability analyze my-model.json
+homological-observability analyze my-model.json
 ```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe analyze my-model.json
-```
-
-</details>
 
 Each exported study also includes a model file for every candidate. For
 example, you can use `bridge-results/models/config-x.json` with the same
@@ -317,17 +306,8 @@ Save a copy of `bridge-study.json` as `my-study.json` and adapt the same study:
 5. Choose an explicit `max_cycles` budget and run into a new directory:
 
 ```bash
-.venv/bin/homological-observability compare my-study.json --output-dir my-results
+homological-observability compare my-study.json --output-dir my-results
 ```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe compare my-study.json --output-dir my-results
-```
-
-</details>
 
 The [input guide](docs/MODEL_GUIDE.md) explains how to translate a physical
 model into graph and counter fields. The [comparison guide](docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
@@ -345,7 +325,7 @@ explains how to continue each calculation.
 
 ## Python API
 
-Run this example with `.venv/bin/python` on macOS/Linux or
+Run this example with `python` on macOS/Linux or
 `.venv\Scripts\python.exe` on Windows. The bridge model is included in the
 installed package:
 
@@ -414,17 +394,8 @@ the models and reference data needed here. Then regenerate the finite-cycle
 calculations and compare them with the packaged references:
 
 ```bash
-.venv/bin/homological-observability reproduce --check --output-dir generated_results
+homological-observability reproduce --check --output-dir generated_results
 ```
-
-<details>
-<summary>Windows PowerShell</summary>
-
-```powershell
-.venv\Scripts\homological-observability.exe reproduce --check --output-dir generated_results
-```
-
-</details>
 
 Successful verification prints:
 
@@ -450,17 +421,17 @@ describes how results and file identities are compared.
 
 ### Full verification from source
 
-From the checkout prepared in [Install](#install), run:
+Clone the branch to get `examples/`, the verification script and the frozen
+reference tables. If you already have this checkout, start in its root.
 
-```bash
-python3 quickstart.py
+```sh
+git clone --branch upgrade/finite-time-observability --single-branch https://github.com/yeruciwenrou-dotcom/homological-observability.git
+cd homological-observability
 ```
 
-On Windows:
-
-```powershell
-py -3.12 quickstart.py
-```
+Run `python3 quickstart.py` on macOS or Linux, or `py -3.12 quickstart.py` on
+Windows. To install the checkout in an existing activated environment for
+interactive use, run `python -m pip install .` from the repository root.
 
 The script installs pinned dependencies, runs the reader-side test suite,
 and reproduces the frozen paper calculations. It manages the repository's

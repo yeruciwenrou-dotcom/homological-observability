@@ -6,6 +6,11 @@ separately inside their JSON documents.
 
 ## 2.2.0.dev0
 
+Version 2.1 determines when counters and endpoints fix an accumulated
+target for every legal history. With 2.2 you can also ask how much uncertainty
+remains in a particular measured record and how a different recording scheme
+would change it.
+
 - `posterior` takes a finite record of snapshots and signed counts. It checks
   which target values are compatible with the observations and recovers an
   exactly determined value. With known transition rates it can also estimate
@@ -25,7 +30,10 @@ separately inside their JSON documents.
 
 The [finite-record guide](docs/FINITE_RECORDS.md) includes editable ratchet,
 ring and kinesin examples. The [integer backend guide](docs/CONVENTIONS.md#shortest-path-generators)
-explains the generator count, budgets and output formats.
+explains the generator count, budgets and output formats. Existing `analyze`
+and `compare` calls keep their default output formats. If you opt into
+generators and parse the JSON, use analysis format 4 or comparison format 3
+as described in the [output guide](docs/OUTPUT_CONTRACT.md).
 
 ## 2.1.0 — 2026-11-09
 
