@@ -7,10 +7,8 @@
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.**
 
-In a Markov jump process, the same sequence of snapshots can fit trajectories
-with different net windings. This software finds sampling thresholds for
-recovering cycle history and uses exact integer calculations to determine
-which counters recover a chosen trajectory target.
+This repository provides Python tools and worked examples for studying
+homological observability in Markov jump processes.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
