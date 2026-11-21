@@ -22,8 +22,8 @@ schemes, and determine which counts recover a chosen trajectory target.
 
 **[New in 2.2 (preview)](CHANGELOG.md#220dev0)**
 
-Given a single record and known transition rates, estimate the probability of
-each possible value of a target such as net winding. Compare sampling schedules
+Given a single record and known transition rates, estimate a probability
+distribution for a target such as net winding. Compare sampling schedules
 and counters on the same event trajectories to see how they affect the risk of
 a wrong estimate.
 
@@ -60,9 +60,9 @@ Longer observation yields more data while also extending the history to
 be recovered. The central question is how rapidly temporal resolution must
 improve to keep pace with that growing history.
 
-For finite-state Markov jump processes, **the theory establishes an information
-phase diagram and sharp sampling thresholds for recovering accumulated cycle
-histories.** It quantifies how uncertainty grows with observation time
+For stationary finite-state Markov jump processes, **the theory establishes an
+information phase diagram and sharp sampling thresholds for recovering
+accumulated cycle histories.** It quantifies how uncertainty grows with observation time
 and resolution, derives the posterior laws at critical sampling scales, and
 determines the number of independent hidden cycle directions at each scale
 from the phase diagram. These information transitions persist at equilibrium
@@ -316,7 +316,8 @@ Save a copy of `bridge-study.json` as `my-study.json` and adapt the same study:
    remove it to compare graph and counter information without a sampling law.
    For a finite-scale request, remove `alpha` and set both `observation_time`
    and `sampling_interval` in the stated reference-rate units.
-5. Choose an explicit `max_cycles` budget and run into a new directory:
+5. Set `analysis.max_cycles` in the study JSON to bound the default cycle
+   enumeration, then run into a new directory:
 
 ```bash
 homological-observability compare my-study.json --output-dir my-results
@@ -326,12 +327,12 @@ The [input guide](docs/MODEL_GUIDE.md) explains how to translate a physical
 model into graph and counter fields. The [comparison guide](docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
 walks through editing a study and checking its assumptions.
 
-On a dense graph, pass `--backend generators` to `analyze` or `compare` to
-compute each integer layer from shortest-path cycle generators. For the complete
-graph on eight vertices, 56 generators give the same layers as all 8,018
-simple cycles. The default backend lists every simple cycle within the
-requested scope. Use `--max-generators` or `--max-cycles` to set a budget
-for the chosen [integer backend](docs/CONVENTIONS.md#shortest-path-generators).
+For dense graphs, both `analyze` and `compare` accept
+`--backend generators --max-generators 1000` to compute each integer layer
+from [shortest-path cycle generators](docs/CONVENTIONS.md#shortest-path-generators)
+within the chosen budget. On the complete graph with eight vertices,
+56 generators give the same layers as all 8,018 simple cycles.
+
 `LIMIT_REACHED` identifies the exhausted limit. `PARTIAL_HORIZON` restricts
 conclusions to the computed layers. The [status guide](docs/COMPARISON_GUIDE.md#check-completeness-and-recover-from-errors)
 explains how to continue each calculation.

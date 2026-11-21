@@ -207,12 +207,12 @@ Machine-readable results distinguish four kinds of support:
 | Category | Meaning |
 | --- | --- |
 | `EXACT_INTEGER` | Exact Hermite/Smith calculations and saturated integer kernels |
-| `EXACT_COMBINATORIAL` | Complete finite simple-cycle or directed-path enumeration within the declared budget |
+| `EXACT_COMBINATORIAL` | Complete finite simple-cycle or directed-path enumeration, or exact construction of each requested exposure lattice from [shortest-path cycle generators](CONVENTIONS.md#shortest-path-generators) |
 | `EXACT_RATIONAL` | Exact stationary probabilities, directed path weights, and critical intensities |
 | `ASYMPTOTIC_THEOREM` | A direct application of the paper's asymptotic phase law |
 
-In a topology analysis, `LIMIT_REACHED` means the requested finite enumeration
-was not completed. The result preserves the validated model, homology basis,
+In a topology analysis, `LIMIT_REACHED` means the simple-cycle or generator
+catalogue exceeded its budget. The result preserves the validated model, homology basis,
 and readout; filtration and phase fields are null.
 
 `PARTIAL_HORIZON` has a different meaning: every requested layer is exact, but

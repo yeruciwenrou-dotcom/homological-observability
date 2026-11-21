@@ -1,8 +1,7 @@
 """Simulation and projection of complete continuous-time Markov event paths."""
 
 import math
-
-import numpy as np
+from bisect import bisect_right
 
 
 def simulate_path(q, probability, horizon, rng, *, max_events=100000, labels=None):
@@ -50,7 +49,10 @@ def observe_path(path, grid, model):
         or len(times) != len(states)
     ):
         raise ValueError("a trajectory needs aligned nonempty times and states")
-    if any(type(t) not in (int, float) or not math.isfinite(t) for t in times):
+    if any(
+        type(t) is not int and (type(t) is not float or not math.isfinite(t))
+        for t in times
+    ):
         raise ValueError("event times must be finite numbers")
     if (
         times[0] != 0
@@ -67,9 +69,8 @@ def observe_path(path, grid, model):
     allowed = set(model.edges) | {edge[::-1] for edge in model.edges}
     if any((u, v) not in allowed for u, v in zip(states, states[1:])):
         raise ValueError("path contains a transition outside the support")
-    snapshots = [
-        states[int(index)] for index in np.searchsorted(times, grid, side="right") - 1
-    ]
+    # Python compares integer ticks directly, even in a path with float times.
+    snapshots = [states[bisect_right(times, t) - 1] for t in grid]
     counts = {}
     for readout in model.readouts:
         coefficients = readout.as_mapping()

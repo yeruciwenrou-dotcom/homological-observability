@@ -465,8 +465,9 @@ calculation and reference calibration are described in [numerical methods](NUMER
 
 - `EXACT_INTEGER` labels integral basis, kernel, image, Hermite, and Smith
   computations.
-- `EXACT_COMBINATORIAL` labels a complete finite simple-cycle or directed-path
-  enumeration.
+- `EXACT_COMBINATORIAL` labels complete finite simple-cycle or directed-path
+  enumeration. In topology analysis it also covers exact construction of each
+  requested exposure lattice from [shortest-path cycle generators](CONVENTIONS.md#shortest-path-generators).
 - `EXACT_RATIONAL` labels exact directed-rate products, stationary
   probabilities, path weights, and limit intensities.
 - `ASYMPTOTIC_THEOREM` labels quantities obtained by applying the paper's

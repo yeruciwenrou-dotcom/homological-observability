@@ -28,8 +28,12 @@ by this package; the supplied predictor is a training-median baseline.
 ## Run the complete case
 
 The case uses the package's existing NumPy/SciPy dependencies.
-After [installation](../README.md#install), activate the environment and run
-the bundled case in a working directory of your choice.
+If you ran the [README example](../README.md#target-analysis-and-scientific-ml),
+open `dfr-case/report.txt` for the case results and, if you evaluated predictions,
+`dfr-evaluation.json` for the scores. To run either step, activate the
+[installed environment](../README.md#install) and choose a fresh path for its
+output. If you rename the case directory, use that directory's `predictions.json`
+in the second command.
 
 ```bash
 python -m homological_observability.applications.dfr run --output-dir dfr-case
@@ -40,7 +44,7 @@ Omitting `--dataset` loads the bundled, hashed 64-trajectory fixture.
 `dfr-case/case.json` contains the four structural audits, minimum-channel design,
 record-by-record exact reconstruction, and separate natural/pressure evaluations.
 `report.txt` is the short report; `predictions.json` is an editable, task-bound
-prediction file. Output paths must be new. Evaluation replay reproduces the
+prediction file. Evaluation replay reproduces the
 natural evaluation in `case.json`.
 
 | Observation scheme | Visible features | DeltaW exactly determined? |

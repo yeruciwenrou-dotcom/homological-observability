@@ -113,7 +113,10 @@ def render_record_result(doc):
             lines.append(f"Integer support: {support['offset']} + {support['step']} Z")
         if r["map_risk"] is not None:
             candidates = ", ".join(str(v) for v in r["map_candidates"])
-            lines.append(f"Most probable target: {candidates} {unit}")
+            label = "Most probable target"
+            if r["outcome"] == "NUMERICAL_POSTERIOR" and len(r["map_candidates"]) > 1:
+                label = "Possible most-probable targets at this precision"
+            lines.append(f"{label}: {candidates} {unit}")
             lines.append(f"Conditional 0-1 error risk: {r['map_risk']:.8g}")
             if r["outcome"] == "NUMERICAL_POSTERIOR":
                 top = sorted(r["pmf"], key=lambda item: -item["probability"])[:5]

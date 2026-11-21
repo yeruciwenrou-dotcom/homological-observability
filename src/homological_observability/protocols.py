@@ -5,11 +5,19 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import replace
+from fractions import Fraction
 
 import numpy as np
 
 from ._observed_paths import observe_path, simulate_path
-from ._record_inputs import common_request, fields, number, result_document, text
+from ._record_inputs import (
+    common_request,
+    fields,
+    number,
+    result_document,
+    text,
+    time_coordinate,
+)
 from .comparison import _sha256
 from .model import _array, _object
 from .posterior import PosteriorSolver
@@ -40,6 +48,25 @@ def _protocols(raw, model):
     return protocols
 
 
+def _snapshot_grid(horizon, count):
+    """Place regular samples without rounding a boundary onto a neighboring tick."""
+    step = Fraction(horizon) / (count - 1)
+    if step.denominator == 1:
+        return range(0, step.numerator * count, step.numerator)
+    grid = np.linspace(0.0, float(horizon), count).tolist()
+    if any(b <= a for a, b in zip(grid, grid[1:])):
+        raise ValueError("the declared grid is unresolvable in the specified time unit")
+    for i, point in enumerate(grid):
+        tick, remainder = divmod(i * step.numerator, step.denominator)
+        if not remainder:
+            grid[i] = tick
+        elif point.is_integer() or math.floor(point) != tick:
+            # A fractional boundary can round onto or past an integer tick.
+            # Other fractional float samples retain their recorded float value.
+            grid[i] = i * step
+    return grid
+
+
 def _paths(raw, model, q, horizon, grid_total, limits):
     if not isinstance(raw, dict):
         raise TypeError("source must be an object")
@@ -64,7 +91,8 @@ def _paths(raw, model, q, horizon, grid_total, limits):
             # Validate all events before any inference, including intermediate
             # jumps that will disappear from a coarser snapshot schedule.
             times = [
-                number(t, "event time") for t in _array(path["times"], label="times")
+                time_coordinate(t, "event time")
+                for t in _array(path["times"], label="times")
             ]
             states = _array(path["states"], label="states")
             if any(not isinstance(s, str) for s in states):
@@ -109,11 +137,13 @@ def _paths(raw, model, q, horizon, grid_total, limits):
         raise ValueError("initial probabilities must be nonnegative and sum to one")
     rng = np.random.Generator(np.random.PCG64(seed))
     law = probs / probs.sum()
+    # Preserve the ensemble IDs of previously representable horizons.
+    float_horizon = float(horizon)
     ensemble = _sha256(
         [
             "PCG64",
             model.vertices,
-            horizon,
+            float_horizon if horizon == float_horizon else horizon,
             [(u, v, rate) for (u, v), rate in q.rates.items()],
             law.tolist(),
             seed,
@@ -157,8 +187,8 @@ def compare_recording_protocols(request: dict) -> dict:
         extra=("protocols", "source", "horizon", "risk_threshold"),
         required=("protocols", "source", "horizon"),
     )
-    horizon = number(request["horizon"], "horizon")
-    if horizon <= 0:
+    horizon = request["horizon"]
+    if number(horizon, "horizon") <= 0:
         raise ValueError("horizon must be positive")
     protocols = _protocols(request["protocols"], model)
     normalized.update(horizon=horizon, protocols=protocols)
@@ -188,12 +218,8 @@ def compare_recording_protocols(request: dict) -> dict:
         selected = replace(
             model, readouts=tuple(by_name[name] for name in protocol["channels"])
         )
-        grid = np.linspace(0.0, horizon, protocol["snapshots"]).tolist()
+        grid = _snapshot_grid(horizon, protocol["snapshots"])
         dt = horizon / (len(grid) - 1)
-        if any(b <= a for a, b in zip(grid, grid[1:])):
-            raise ValueError(
-                "the declared grid is unresolvable in the specified time unit"
-            )
         solver = PosteriorSolver(
             selected, target, q, limits, normalized["reverse_tree_order"]
         )

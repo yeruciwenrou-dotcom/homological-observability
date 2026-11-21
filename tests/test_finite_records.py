@@ -90,6 +90,70 @@ class PosteriorTests(unittest.TestCase):
             r["set_probabilities"]["nonpositive"], (1 + pmf[0]) / 2, places=13
         )
 
+    def test_integer_and_mixed_timestamp_differences_survive_replay(self):
+        req = self.triangle
+        req["time_unit"] = "ns"
+        for edge in req["rates"]:
+            edge["rate"] = 0.001
+        epoch = 1_700_000_000_000_000_000
+        for stamps, elapsed in [
+            ([epoch, epoch + 1000], 1000),
+            ([epoch + 1, float(epoch + 1024)], 1023),
+            ([10**310, 10**310 + 1000], 1000),
+        ]:
+            with self.subTest(stamps=stamps):
+                req["record"]["times"] = [0, elapsed]
+                expected = output(req)
+                req["record"]["times"] = stamps
+                doc = ho.infer_target_posterior(req)
+                self.assertEqual(doc["status"], "COMPLETE")
+                self.assertEqual(doc["result"], expected)
+                saved = json.loads(json.dumps(doc["request"]))
+                self.assertEqual(
+                    json.dumps(saved["record"]["times"]), json.dumps(stamps)
+                )
+                self.assertEqual(ho.infer_target_posterior(saved), doc)
+
+    def test_epoch_grid_tolerance_respects_timestamp_resolution(self):
+        req = self.triangle
+        req["record"].update(states=["a"] * 3, times=[0, 0.1, 0.2])
+        expected = output(req)
+        epoch = 1_700_000_000
+        req["record"]["times"] = [epoch, epoch + 0.1, epoch + 0.2]
+        actual = output(req)
+        self.assertEqual(actual["map_candidates"], expected["map_candidates"])
+        self.assertAlmostEqual(actual["map_risk"], expected["map_risk"], delta=1e-8)
+        for times in [
+            [epoch, epoch + 0.1, epoch + 0.25],
+            [0, 10**12, 2 * 10**12 + 1],
+            [float(2**54), float(2**54 + 1), float(2**54 + 4)],
+        ]:
+            with self.subTest(times=times), self.assertRaises(ValueError):
+                req["record"]["times"] = times
+                output(req)
+
+    def test_timestamp_rounding_cannot_mask_drift_from_a_regular_grid(self):
+        req = self.triangle
+        origin = float(2**30)
+        drifted = [
+            origin + i * 0.125 + min(i, 32 - i) * math.ulp(origin) for i in range(33)
+        ]
+        epoch = 2**60
+        mixed = [
+            epoch,
+            float(epoch + 256),
+            epoch + 612,
+            float(epoch + 768),
+            epoch + 1024,
+        ]
+        for times in (drifted, mixed):
+            with (
+                self.subTest(times=times),
+                self.assertRaisesRegex(ValueError, "regular"),
+            ):
+                req["record"].update(times=times, states=["a"] * len(times))
+                output(req)
+
     def test_positive_reference_open_path_and_whole_record_conditioning(self):
         req = recording_example("posterior", "dfr")
         req["record"] = {
@@ -167,6 +231,13 @@ class PosteriorTests(unittest.TestCase):
         req["target"]["coefficients"] = [{"edge": ["d", "a"], "coefficient": 1}]
         req["record"].update(states=["a", "c"], times=[0, 1])
         self.assertEqual(output(req)["map_candidates"], [-1, 0])
+        req["rates"][0]["rate"] += 1e-12
+        doc = ho.infer_target_posterior(req)
+        self.assertEqual(doc["result"]["map_candidates"], [-1, 0])
+        self.assertIn(
+            "Possible most-probable targets at this precision: -1, 0 turn",
+            render_record_result(doc),
+        )
         req.pop("rates")
         req["target"]["coefficients"] = [
             {"edge": ["c", "b"], "coefficient": 1},
@@ -292,6 +363,72 @@ class PosteriorTests(unittest.TestCase):
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_integer_events_on_regular_sample_boundaries(self):
+        request = recording_example("compare-protocols", "triangle")
+        request["target"]["coefficients"] = []
+        for horizon, intervals, sample in (
+            (2**54, 2, 1),
+            (2**54 + 1, 2, 1),
+            (float(2**54 + 4), 3, 2),
+            (float(2**52), 5, 3),
+            # A rounded noninteger grid point crosses the next integer tick.
+            (4721081826669661, 53, 49),
+        ):
+            with self.subTest(horizon=horizon, intervals=intervals):
+                request["horizon"] = horizon
+                for protocol in request["protocols"]:
+                    protocol["snapshots"] = intervals + 1
+                tick = int(horizon) * sample // intervals
+                paths = [
+                    {"trajectory_id": str(t), "times": [0, t], "states": ["a", "b"]}
+                    for t in (tick - 1, tick, tick + 1)
+                ]
+                request["source"] = {
+                    "kind": "events",
+                    "name": "ticks",
+                    "trajectories": paths,
+                }
+                doc = ho.compare_recording_protocols(request)
+                states = [
+                    r["observation"]["states"][sample] for r in doc["result"]["rows"]
+                ]
+                self.assertEqual(states, ["b", "b", "a"] * len(request["protocols"]))
+                self.assertEqual(doc["request"]["source"]["trajectories"], paths)
+                self.assertEqual(ho.compare_recording_protocols(doc["request"]), doc)
+
+    def test_mixed_event_times_and_fractional_float_samples(self):
+        request = recording_example("compare-protocols", "triangle")
+        request["target"]["coefficients"] = []
+        s = 2**53
+        for horizon, snapshots, sample, times, states, expected_state in (
+            (
+                2 * s + 1,
+                3,
+                1,
+                [0, float(s), s + 1, float(s + 2)],
+                ["a", "b", "c", "a"],
+                "b",
+            ),
+            (1, 11, 1, [0, 0.1], ["a", "b"], "b"),
+            (1.0, 11, 1, [0, 0.1], ["a", "b"], "b"),
+        ):
+            with self.subTest(horizon=horizon):
+                request["horizon"] = horizon
+                for protocol in request["protocols"]:
+                    protocol["snapshots"] = snapshots
+                request["source"] = {
+                    "kind": "events",
+                    "name": "mixed times",
+                    "trajectories": [
+                        {"trajectory_id": "one", "times": times, "states": states}
+                    ],
+                }
+                doc = ho.compare_recording_protocols(request)
+                for row in doc["result"]["rows"]:
+                    self.assertEqual(
+                        row["observation"]["states"][sample], expected_state
+                    )
+
     def test_dfr_sample_membership_risk_and_resource_comparison(self):
         req = recording_example("compare-protocols", "dfr")
         d = ho.compare_recording_protocols(req)
@@ -386,6 +523,10 @@ class ProtocolTests(unittest.TestCase):
         d = ho.compare_recording_protocols(req)
         r = d["result"]
         self.assertEqual(ho.compare_recording_protocols(d["request"]), d)
+        req["horizon"] = int(req["horizon"])
+        integral = ho.compare_recording_protocols(req)["result"]
+        self.assertEqual(integral["trajectory_ids"], r["trajectory_ids"])
+        self.assertEqual(integral["event_paths_sha256"], r["event_paths_sha256"])
         self.assertEqual(d["status"], "PARTIAL")
         self.assertEqual(len(r["rows"]), 6)
         p0, p1 = r["protocols"]

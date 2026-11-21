@@ -53,6 +53,13 @@ states and exact net counters. The posterior conditions on the first state. A
 single snapshot spans zero time, so all counters and the target must be zero
 on that empty path.
 
+If your instrument records integer ticks, keep them as JSON integers, including
+for absolute timestamps in nanoseconds. The solver takes exact differences
+before converting the interval to floating point. For decimal timestamps, grid
+validation allows for rounding at the supplied precision. If successive times
+round to the same value, use the original ticks or compute relative times
+before conversion.
+
 In the bundled ring, `turn` counts net crossings from c to a. Both endpoint
 snapshots show a. Each directed rate is one per second and the elapsed time is
 one second. The most probable result is zero with probability 0.8417122018.

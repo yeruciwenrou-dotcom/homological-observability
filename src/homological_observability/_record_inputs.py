@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import asdict, dataclass
+from itertools import pairwise
 
 import numpy as np
 
@@ -40,6 +41,68 @@ def number(value, label):
     if not math.isfinite(value):
         raise ValueError(f"{label} must be finite")
     return value
+
+
+def time_coordinate(value, label):
+    """Keep integer ticks exact in comparisons and in the replay request."""
+    return value if type(value) is int else number(value, label)
+
+
+# Half the smallest float spacing is an exact unit for both coordinates and
+# their rounding uncertainties, including subnormal timestamps.
+_CLOCK_FRACTION_BITS = math.ulp(0.0).as_integer_ratio()[1].bit_length()
+
+
+def _clock_ticks(value):
+    if type(value) is int:
+        return value << _CLOCK_FRACTION_BITS, 0
+    numerator, denominator = value.as_integer_ratio()
+    ticks = numerator << (_CLOCK_FRACTION_BITS - (denominator.bit_length() - 1))
+    ulp_exponent = math.frexp(math.ulp(value))[1] - 1
+    half_ulp = 1 << (_CLOCK_FRACTION_BITS + ulp_exponent - 1)
+    return ticks, half_ulp
+
+
+def _regular_step(times):
+    if len(times) == 1:
+        return 0.0
+    if any(b <= a for a, b in pairwise(times)):
+        raise ValueError(
+            "snapshot times must increase strictly; use relative times or integer "
+            "ticks if successive timestamps coincide at the input precision"
+        )
+    if all(type(t) is int for t in times):
+        step = times[1] - times[0]
+        if any(b - a != step for a, b in pairwise(times)):
+            raise ValueError("snapshot times must define a regular grid")
+        return number(step, "snapshot interval")
+
+    windows = len(times) - 1
+    first, first_error = _clock_ticks(times[0])
+    last, last_error = _clock_ticks(times[-1])
+    span = last - first
+    previous, previous_error = first, first_error
+    # Multiply deviations and half-ulp bounds by the window count to compare
+    # exact integers. Keep the existing relative interval tolerance of 1e-10.
+    for i in range(1, len(times)):
+        current, error = _clock_ticks(times[i])
+        interval_deviation = abs(windows * (current - previous) - span)
+        interval_bound = windows * (previous_error + error) + first_error + last_error
+        if interval_deviation > interval_bound and interval_deviation * 10**10 > span:
+            raise ValueError("snapshot times must define a regular grid")
+        # A position must also fit the line through the two uncertain endpoints.
+        position_deviation = abs(windows * (current - first) - i * span)
+        position_bound = windows * error + (windows - i) * first_error + i * last_error
+        if (
+            position_deviation > position_bound
+            and position_deviation * 10**10 > min(i, windows - i) * span
+        ):
+            raise ValueError("snapshot times must define a regular grid")
+        previous, previous_error = current, error
+    try:
+        return span / (windows << _CLOCK_FRACTION_BITS)
+    except OverflowError as error:
+        raise ValueError("snapshot interval is outside floating-point range") from error
 
 
 @dataclass(frozen=True)
@@ -155,7 +218,9 @@ def common_request(request, *, extra, required):
 
 def observation(raw, model):
     fields(raw, ("times", "states", "counts"), ("times", "states", "counts"), "record")
-    times = [number(t, "snapshot time") for t in _array(raw["times"], label="times")]
+    times = [
+        time_coordinate(t, "snapshot time") for t in _array(raw["times"], label="times")
+    ]
     states = _array(raw["states"], label="states")
     counts = _object(raw["counts"], label="counts")
     if not times or len(times) != len(states):
@@ -170,21 +235,8 @@ def observation(raw, model):
             "counts must give one signed integer for every declared readout"
         )
     check_output_integers(counts)
-    dt = 0.0
-    if len(times) > 1:
-        dt = (times[-1] - times[0]) / (len(times) - 1)
-        if (
-            not math.isfinite(dt)
-            or dt <= 0
-            or any(
-                b <= a or not math.isclose(b - a, dt, rel_tol=1e-10, abs_tol=0.0)
-                for a, b in zip(times, times[1:])
-            )
-        ):
-            raise ValueError(
-                "snapshot times must define a finite, strictly increasing regular grid"
-            )
-    return {"times": times, "states": list(states), "counts": dict(counts)}, dt
+    record = {"times": times, "states": list(states), "counts": dict(counts)}
+    return record, _regular_step(times)
 
 
 def result_document(name, request, status, result):

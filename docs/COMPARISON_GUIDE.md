@@ -108,8 +108,8 @@ Edit this file in the following order:
 2. Replace `model.vertices` and `model.edges` with your connected simple graph.
 3. Give each configuration a unique `id` and a readable `label`, then define
    its counters through integer coefficients on the graph edges.
-4. Choose the sampling request below and retain an explicit `max_cycles`
-   budget in `analysis`.
+4. Choose the sampling request below. For the default cycle backend, set
+   `analysis.max_cycles` in the study JSON.
 
 Both starting examples include `alpha: 0.375`, which specifies their sampling
 law. Confirm what your study needs before running it:
@@ -214,8 +214,15 @@ The report preserves a separate status for every candidate:
 | --- | --- |
 | `COMPLETE` | The exposure has reached the full integer homology lattice. Interpret the remaining hidden directions and information relations on that full scope. |
 | `PARTIAL_HORIZON` | Conclusions cover only the computed exposure lattice. For a full-network comparison, remove the study's `analysis.max_layer` or raise it, rerun, and check natural completeness. |
-| `LIMIT_REACHED` | The computation exceeded its budget. Read the raw result's `limit` field; decide whether a larger `max_cycles` budget is affordable before rerunning. |
+| `LIMIT_REACHED` | Check `limit.resource` in the candidate's `raw/config-ID.json` and use the matching budget below. |
 | `ERROR` | Follow this candidate's error and recovery message to correct its readouts, then rerun the study. |
+
+To retry a resource-limited comparison, choose a new output directory and
+increase the budget for the reported resource.
+
+- `simple_cycles` — raise `analysis.max_cycles` in the study JSON.
+- `short_cycle_generators` — rerun with `--backend generators --max-generators N`,
+  replacing `N` with a larger positive integer.
 
 The comparison is `COMPLETE` when every candidate is complete. On a partial
 horizon, equivalence, refinement and hidden ranks describe the computed
@@ -232,9 +239,7 @@ omitted, the graph-size horizon covers every simple cycle. The
 The `compare` command exits with `0` for a complete comparison, `1` when any
 candidate is incomplete or has an error, and `2` for invalid shared input or
 an output failure. A global error, such as an invalid graph or duplicate
-configuration ID, must be corrected before running the study. If a cycle
-budget is exhausted, review the graph size and choose an affordable budget;
-cycle enumeration can grow exponentially.
+configuration ID, must be corrected before running the study.
 
 When interpreting a result near a critical threshold, check the
 [sampling parameter rules](MODEL_GUIDE.md#analysis-settings). Phase labels
@@ -277,10 +282,11 @@ the spanning tree, while coordinate matrices can change.
 
 ## Resource use
 
-Choose an explicit `max_cycles` budget when trying an unfamiliar network.
-Simple-cycle enumeration can grow exponentially; its cost depends on the
-cycle catalogue as well as the graph size. A study accepts at most 64
-configurations.
+For an unfamiliar network, bound simple-cycle enumeration with
+`analysis.max_cycles` or bound the generator backend with
+`--backend generators --max-generators 1000`, adjusting the budget to fit the
+study. The number of simple cycles can grow exponentially with graph size.
+A study accepts at most 64 configurations.
 Topology comparison uses cycle filtrations; rate-dependent path catalogues
 are computed by the separate `critical` command.
 

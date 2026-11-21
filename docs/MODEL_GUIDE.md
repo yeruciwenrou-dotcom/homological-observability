@@ -155,7 +155,7 @@ readout in the listed order.
 | Setting | Constraint | Effect |
 | --- | --- | --- |
 | `max_layer` | positive integer | Highest requested filtration layer |
-| `max_cycles` | positive integer | Maximum complete simple-cycle catalogue size |
+| `max_cycles` | positive integer | Maximum simple-cycle catalogue size for the default backend |
 | `alpha` | nonnegative number or integer fraction string such as `"1/3"` | Evaluate asymptotic regimes under $\delta=T^{-\alpha}$ |
 | `observation_time` | finite positive number | Set $T$ for finite-scale $\lambda_m$ values |
 | `sampling_interval` | finite positive number | Set $\delta$ for finite-scale $\lambda_m$ values |
@@ -211,9 +211,12 @@ result to float, so intermediate overflow or underflow does not lose an
 otherwise representable value. A nonzero result outside the float range raises
 `ValueError` in Python and exits with code 2 in either CLI output format.
 
-If `max_layer` is absent, the kernel computes through $\lceil |V|/2\rceil$. If
-`max_cycles` is absent, enumeration is unbounded by the application. Supplying
-an explicit budget is recommended for unfamiliar graphs.
+If `max_layer` is absent, the kernel computes through $\lceil |V|/2\rceil$.
+For the default backend, set `analysis.max_cycles` in the model or study JSON
+to bound simple-cycle enumeration. For the [generator backend](CONVENTIONS.md#shortest-path-generators),
+pass `--backend generators --max-generators 1000` to `analyze` or `compare`,
+adjusting the budget as needed. Omitting the budget leaves the chosen catalogue
+unbounded by the application.
 
 A smaller `max_layer` limits the scientific horizon. The result is
 `PARTIAL_HORIZON` unless the computed exposure lattice already equals all of
@@ -308,9 +311,9 @@ digits, underscores, or hyphens and begin with a letter or digit.
 
 The shared `model` contains topology only: put `readouts` inside each
 configuration and `analysis` at the study's top level. The same horizon,
-sampling parameters, and per-configuration `max_cycles` limit apply to every
-candidate. `question` labels the study; it does not select an optimization
-objective or change the calculation.
+sampling parameters, and chosen backend budget apply to every candidate.
+`question` labels the study; it does not select an optimization objective or
+change the calculation.
 
 In Python, `load_study(path)` reads a JSON study and `parse_study(document)`
 validates and normalizes a dictionary. `compare_configurations(study)` accepts

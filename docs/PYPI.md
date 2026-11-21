@@ -15,8 +15,8 @@ current.
 
 **[New in 2.2 (preview)](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/90274ca40863810adc6f8020abc7a18ba1a6d7ab/CHANGELOG.md#220dev0)**
 
-Given a single record and known transition rates, estimate the probability of
-each possible value of a target such as net winding. Compare sampling schedules
+Given a single record and known transition rates, estimate a probability
+distribution for a target such as net winding. Compare sampling schedules
 and counters on the same event trajectories to see how they affect the risk of
 a wrong estimate.
 
@@ -206,8 +206,8 @@ To compare several counter configurations, adapt the bridge study.
 Save a copy of `bridge-study.json` as `my-study.json`. Update the study and
 model names, research question, graph, and candidate counters. Replace the
 example's `alpha: 0.375` with your own sampling exponent, or remove it for a
-comparison of graph and counter information alone. Keep an explicit cycle
-enumeration budget, then run:
+comparison of graph and counter information alone. Set `analysis.max_cycles`
+in the study JSON to bound the default cycle enumeration, then run:
 
 ```bash
 homological-observability compare my-study.json --output-dir my-results
@@ -216,7 +216,10 @@ homological-observability compare my-study.json --output-dir my-results
 The [study editing guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/90274ca40863810adc6f8020abc7a18ba1a6d7ab/docs/COMPARISON_GUIDE.md#compare-your-own-configurations)
 walks through these choices. The [input guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/90274ca40863810adc6f8020abc7a18ba1a6d7ab/docs/MODEL_GUIDE.md)
 describes signed edge increments, sampling units, validation, and resource
-limits. For dense graphs, `--backend generators` computes the integer layers
+limits.
+
+For dense graphs, both `analyze` and `compare` accept
+`--backend generators --max-generators 1000` to compute the integer layers
 from shortest-path cycle generators. On the complete eight-vertex graph,
 56 generators recover the layers obtained from all 8,018 simple cycles.
 The [integer backend guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/90274ca40863810adc6f8020abc7a18ba1a6d7ab/docs/CONVENTIONS.md#shortest-path-generators)
