@@ -1,7 +1,7 @@
 # Homological Observability
 
-[![PyPI v2.1.0](https://img.shields.io/badge/PyPI-v2.1.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.1.0/)
-[![Software DOI: 10.5281/zenodo.24058140](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24058140)
+[![PyPI v2.2.0](https://img.shields.io/badge/PyPI-v2.2.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.2.0/)
+[![Software series DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 **Homological observability is the recoverability of a system's accumulated
@@ -20,7 +20,7 @@ schemes, and determine which counts recover a chosen trajectory target.
 [Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
 [Documentation](#documentation-and-feedback)
 
-**[New in 2.2 (preview)](CHANGELOG.md#220dev0)**
+**[New in 2.2](CHANGELOG.md)**
 
 Given a single record and known transition rates, estimate a probability
 distribution for a target such as net winding. Compare sampling schedules
@@ -97,16 +97,14 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install the 2.2 preview to try the finite-record examples. Run these commands
-in the activated environment on either platform.
+Install version 2.2.0 in the activated environment on either platform.
 
 ```sh
-python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/pull/47/head.zip"
+python -m pip install homological-observability==2.2.0
 homological-observability --version
 ```
 
-The preview reports `2.2.0.dev0`. To install the published version, use
-`python -m pip install homological-observability==2.1.0` and its
+The command reports `2.2.0`. For an earlier installation, use the
 [2.1.0 usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install).
 Working with files in `examples/` or running the full verification script
 requires a [source checkout](#full-verification-from-source).
@@ -434,22 +432,15 @@ describes how results and file identities are compared.
 
 ### Full verification from source
 
-Start in the directory containing `quickstart.py` if you have a source checkout
-or an unpacked source ZIP. To get the project’s current `main` branch, clone it
-or unpack the [main source ZIP](https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/heads/main.zip).
+To verify version 2.2.0, unpack the [source ZIP](https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/tags/v2.2.0.zip) or clone its tag:
 
 ```sh
-git clone --branch main --single-branch https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch v2.2.0 --single-branch https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
 ```
 
-To verify the same 2.2 preview as the installation above, select its revision
-in the clone, or unpack the [preview source ZIP](https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/pull/47/head.zip).
-
-```sh
-git fetch origin refs/pull/47/head
-git switch --detach FETCH_HEAD
-```
+If you unpacked the ZIP, open the directory containing `quickstart.py`.
+The [main branch](https://github.com/yeruciwenrou-dotcom/homological-observability/tree/main) tracks ongoing development.
 
 Run `python3 quickstart.py` on macOS or Linux, or `py -3.12 quickstart.py` on
 Windows. To install the checkout in an existing activated environment for
@@ -536,17 +527,13 @@ When your work uses both, cite them separately.
 
 ### Software
 
-The following citation identifies the published 2.1.0 release. For a study
-run from a development snapshot, record the Git commit used and cite the
-software series DOI below.
+For computations made with [version 2.2.0](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0), cite:
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
-> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.1.0) [Computer
-> software]. https://doi.org/10.5281/zenodo.24058140
+> Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.2.0) [Computer
+> software]. https://doi.org/10.5281/zenodo.23329442
 
-The software series is archived at
-[doi:10.5281/zenodo.23329442](https://doi.org/10.5281/zenodo.23329442).
-Include the version used in your software citation.
+This DOI identifies the software series. Include the version used in your citation.
 GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
