@@ -7,39 +7,32 @@
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.**
 
-This repository provides **computational tools for homological observability**,
-including exact integer calculations and reproducible finite-model examples.
-Use it to identify hidden cycle information in your network, compare recording
-schemes, and determine which counts recover a chosen trajectory target.
+In a Markov jump process, the same sequence of snapshots can fit trajectories
+with different net windings. This software finds sampling thresholds for
+recovering cycle history and uses exact integer calculations to determine
+which counters recover a chosen trajectory target.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
 > and Information Phase Diagrams in Markov Jump Processes*.<br>
 > [Read and discuss the paper on alphaXiv](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
-[Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
-[Documentation](#documentation-and-feedback)
+[Physical interpretation](#physical-interpretation) · [Install](#install) ·
+[Quick start](#quick-start) · [Python API](#python-api) · [Documentation](#documentation-and-feedback)
 
-**[New in 2.2](CHANGELOG.md)**
+## [New in 2.2](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)
 
-Given a single record and known transition rates, estimate a probability
-distribution for a target such as net winding. Compare sampling schedules
-and counters on the same event trajectories to see how they affect the risk of
-a wrong estimate.
+With known transition rates, [use a single record](docs/FINITE_RECORDS.md#use-your-own-model)
+to estimate the probabilities of different values of a target such as net winding.
+[Compare sampling schedules and counters](docs/FINITE_RECORDS.md#compare-recording-protocols)
+on the same event trajectories to see how each choice changes the risk of a wrong estimate.
 
 ## Choose a task
 
-| Your research question | Start here |
-| --- | --- |
-| What does finite temporal resolution hide about physical motion? | [Physical interpretation](#physical-interpretation) |
-| Which target values fit my measured record, and how likely is each? | [Infer a target from your own record](docs/FINITE_RECORDS.md#use-your-own-model) |
-| Would more snapshots or an extra counter improve my measurement? | [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) |
-| Which cycle information is hidden, and what are the asymptotic sampling requirements? | [Network analysis](#analyze-your-own-network) |
-| Which counter configurations reveal different or redundant information? | [Counter comparison](#compare-counter-configurations) |
-| Do my counters and known endpoints determine a target? Which extra channels would suffice? | [Target analysis and readout design](docs/TARGET_TASKS.md) |
-| Do my model's inputs determine the trajectory target, and how can I evaluate its predictions? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Guide](docs/SCIENTIFIC_ML.md) |
-| What critical-limit experiment follows from my graph, rates and counters? | [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
-| How can I reproduce the paper's finite-model calculations? | [Paper reproduction](#reproduce-the-paper-evidence) |
+- **Analyze a network.** Find [hidden cycles and sampling thresholds](#analyze-your-own-network).
+- **Design a measurement.** [Compare counter configurations](#compare-counter-configurations) or [choose counters that recover a target](docs/TARGET_TASKS.md).
+- **Evaluate a prediction.** Use the [scientific ML example](#target-analysis-and-scientific-ml) to check what the inputs determine, then [test your own predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions).
+- **Work through the theory.** [Reproduce the paper’s calculations](#reproduce-the-paper-evidence) or [construct a critical-limit experiment](docs/CRITICAL_EXPERIMENT.md) for your own model.
 
 ## Physical interpretation
 
