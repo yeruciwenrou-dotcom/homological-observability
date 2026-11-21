@@ -241,8 +241,8 @@ The request and result schemas are available through
 
 ## A mechanical and chemical target
 
-Which measurements of a kinesin motor determine its net ATP hydrolysis?
-We use the six-state network of Liepelt and Lipowsky (2007, Fig. 1c).
+Which measurements determine net ATP hydrolysis in a model of the kinesin motor?
+This worked example uses the six-state network of Liepelt and Lipowsky (2007, Fig. 1c).
 In this model, $2\to5$ is a forward mechanical step. ATP hydrolysis and
 phosphate release are combined in the chemical transitions $6\to1$ and
 $3\to4$ (see [Supplemental Material, Fig. 4](https://www.mpikg.mpg.de/rl/P/archive/257sup.pdf)).

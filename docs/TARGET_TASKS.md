@@ -148,8 +148,8 @@ determined jointly. `candidates` is a sequence of scalar `IntegerReadout` whose
 names are stable physical channel IDs. Candidate names are unique and disjoint
 from fixed-readout names. Equal cochains with different IDs remain distinct
 choices. A direct measurement of the target is an admissible candidate.
-To prune removable channels, put them in the candidate pool with an empty or
-smaller fixed P0; fixed channels are never silently removed.
+Every design retains the fixed channels. To test which channels can be removed,
+put them in the candidate pool and use an empty or smaller fixed P0.
 
 `record` maps every fixed-readout name to exactly one integer. Booleans, unknown
 keys, missing values and floats are rejected. `record_kind="raw"` requires valid

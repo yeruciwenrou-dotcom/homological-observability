@@ -86,8 +86,7 @@ are unnecessary for the exact filtration and therefore are not accepted by
 this model. A one-way or zero-rate edge requires a different,
 dynamics-aware support contract.
 
-The parser rejects unknown fields so a misspelling cannot silently change the
-scientific request.
+The parser reports unknown fields as input errors.
 
 ### Complete structure
 
@@ -368,8 +367,8 @@ Decimals are parsed without converting them through binary floating point, and
 normalized results serialize all exact scalars as reduced rational strings.
 
 Direct Python construction accepts `int`, `Decimal`, `Fraction`, or canonical
-exact strings. It rejects `float`, including apparently simple values such as
-`0.5`, because their exact binary value is not the declared scientific input.
+exact strings. To specify one half, use `Fraction(1, 2)`, `Decimal("0.5")`,
+or `"1/2"`. Passing a Python `float` raises an input error.
 
 ### Critical settings
 

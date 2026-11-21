@@ -103,10 +103,10 @@ displacement `residue + n*winding`. Equivalent representations therefore use
 the same calculation, including very large positive or negative representatives.
 
 The generic floating cycle APIs support `3 <= n <= 1000000` and at most
-100001 winding terms (an effective cutoff of 50000). The effective cutoff
-includes the scale heuristic, so requesting a smaller cutoff cannot bypass
-the budget. An oversized request or an unrepresentable Bessel argument or
-order raises `ValueError` before a long summation. These limits apply to
+100001 winding terms (an effective cutoff of 50000). The limit applies to the
+effective cutoff after the scale heuristic. An oversized request or an
+unrepresentable Bessel argument or order raises `ValueError` before a long
+summation. These limits apply to
 `residue_probability` and `ring_bridge_probability`; exact graph and critical
 analysis use their own documented resource controls. The closed-form C4
 endpoint evaluator remains available at every positive finite window whose
@@ -140,12 +140,11 @@ exact power-of-ten comparisons, without first formatting the integer.
 
 Public exact records also have a decimal representation boundary, separate
 from computational budgets: at most 4300 digits per integer, or the active
-Python integer-string limit when lower. Model construction rejects values
-outside that boundary, and `max_integer_digits` cannot exceed it. Decimal
-inputs are checked before expanding extreme powers of ten; rational strings
-must have bounded numerator and denominator text. Python's global conversion
-limit is never changed. With the default interpreter setting, `theta="1e4100"`
+Python integer-string limit when lower. This boundary applies to model inputs
+and the `max_integer_digits` setting. Decimal inputs are checked before
+expanding extreme powers of ten. Rational strings must have bounded numerator
+and denominator text. With the default interpreter setting, `theta="1e4100"`
 returns a serializable `LIMIT_REACHED` result under the default 4096-digit
-budget; `theta="1e5000"` is an input error (CLI exit 2). This keeps full exact
-model text and its hash available for every accepted input, including limited
-results. No truncated identifier stands in for the original model.
+budget. The CLI rejects `theta="1e5000"` as an input error (exit 2).
+Every accepted input retains its full model text and hash, including runs that
+reach a resource limit.

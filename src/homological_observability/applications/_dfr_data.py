@@ -428,7 +428,7 @@ def selected_rows(dataset, scheme, split, cohort):
 
 
 def feature_view(dataset, scheme="w", *, split="test", cohort="natural"):
-    """Return model features and separate alignment metadata, never truth values."""
+    """Return visible features and the trajectory IDs used to align them with labels."""
     rows = selected_rows(dataset, scheme, split, cohort)
     columns = [f"snapshot_{i}" for i in range(len(dataset["manifest"]["grid"]))] + list(
         SCHEMES[scheme]

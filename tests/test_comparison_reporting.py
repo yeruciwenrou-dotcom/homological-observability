@@ -89,8 +89,8 @@ class ComparisonReportingTests(unittest.TestCase):
         partial_study["analysis"]["max_layer"] = 2
         partial = ho.compare_configurations(partial_study)
         report = readable(ho.render_comparison_markdown(partial))
-        self.assertIn("computed exposure through layer 2 only", report)
-        self.assertIn("uncomputed layers open", report)
+        self.assertIn("the exposure lattice through layer 2", report)
+        self.assertIn("Increase analysis.max_layer to compare later layers", report)
         self.assertNotIn("on the full integer cycle group", report)
         limited_study = copy.deepcopy(self.study)
         limited_study["analysis"]["max_cycles"] = 1
@@ -101,10 +101,25 @@ class ComparisonReportingTests(unittest.TestCase):
             self.assertIn("INCOMPLETE", text)
             self.assertIn("LIMIT_REACHED", text)
             self.assertIn("ERROR", text)
-            self.assertIn("No information conclusion is available", text)
+            self.assertIn("5 configurations reached the cycle enumeration limit", text)
+            self.assertIn("readouts must be a JSON array", text)
+            self.assertNotIn("sampling-phases table", text)
+            self.assertNotIn("Unavailable; unavailable", text)
+            self.assertNotIn("Representative exact evidence", text)
             self.assertNotIn("no hidden integer direction remains for", text)
             self.assertNotIn("Readout changes:", text)
             self.assertIn("Increase analysis.max_cycles", text)
+
+    def test_mixed_comparison_reports_the_computed_pairs(self):
+        study = copy.deepcopy(self.study)
+        study["configurations"][0]["readouts"] = "invalid"
+        result = ho.compare_configurations(study)
+        self.assertEqual(len(result["relations"]), 15)
+        for render in (ho.render_comparison_text, ho.render_comparison_markdown):
+            text = readable(render(result))
+            self.assertIn("Compared 10 of 15 pairs", text)
+            self.assertIn("Representative exact evidence", text)
+            self.assertNotIn("Unavailable; unavailable", text)
 
     def test_terminal_punctuation_is_ascii_including_truncated_counters(self):
         study = copy.deepcopy(self.study)

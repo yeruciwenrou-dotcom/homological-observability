@@ -34,7 +34,7 @@ same trajectories to see how they change the risk of a wrong estimate.
 | Would more snapshots or another counter reduce error? | [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) |
 | Which cycles stay hidden as sampling changes? | [Analyze a network](#analyze-your-own-network) · [Sampling thresholds](docs/SCIENTIFIC_SCOPE.md#how-local-ambiguity-accumulates) |
 | Do two counter schemes reveal the same information? | [Compare counters](#compare-counter-configurations) |
-| Which extra counters would determine my target? | [Design a readout](docs/TARGET_TASKS.md#use-your-own-target) · [ATP hydrolysis in kinesin](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target) |
+| Which extra counters would determine my target? | [Design a readout](docs/TARGET_TASKS.md#use-your-own-target) · [Kinesin model example (net ATP hydrolysis)](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target) |
 | Do my model’s inputs determine the target I want to predict? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Test predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
 | What critical limit follows from my graph and rates? | [Construct a critical experiment](docs/CRITICAL_EXPERIMENT.md) |
 | Can I reproduce the paper’s calculations? | [Run the reproduction checks](#reproduce-the-paper-evidence) |
@@ -207,8 +207,8 @@ Open **`dfr-case/report.txt`**. It reports:
 | Snapshots, W and W_OFF | Yes: DeltaW = W − 2 W_OFF | An equally small alternative |
 
 The search proves that **one extra scalar channel is sufficient and necessary
-within the supplied pool**. On the bundled dataset, each sufficient scheme
-evaluated by the case reconstructs all 64 trajectories with zero mismatch.
+within the supplied pool**. The `w-on` and `all` schemes each recover
+`DeltaW` exactly on all 64 bundled trajectories.
 This diagnosis helps choose the next experiment: add the missing count to
 future collection, replay available full event logs to obtain it, or choose a
 prediction target and evaluation suited to the existing records.

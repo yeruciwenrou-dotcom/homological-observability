@@ -225,13 +225,9 @@ def _summarize(
     row["status"] = result.status.value
     if result.filtration is None:
         row["recovery"] = (
-            "Increase analysis.max_cycles only if the larger enumeration fits "
-            "your available resources, then rerun into a new directory."
+            "Increase analysis.max_cycles to enumerate more cycles, then rerun into a new directory."
         )
-        row["explanations"] = [
-            "The cycle enumeration limit was reached. Hidden directions, "
-            "phase summaries and information relations are unavailable."
-        ]
+        row["explanations"] = ["Cycle enumeration reached the configured limit."]
         if result.backend == "generators":
             row["recovery"] = "Increase max_generators or reduce the requested horizon."
             row["explanations"] = ["The short-cycle generator budget was reached."]
@@ -287,8 +283,7 @@ def _summarize(
         notes.append(f"No hidden integer cycle direction remains in {scope_text}.")
     if not full:
         notes.append(
-            "This is a computed-horizon conclusion; uncomputed layers may "
-            "introduce further hidden directions."
+            f"Longer cycles may introduce further hidden directions beyond layer {last.layer}."
         )
     if redundant:
         notes.append(
@@ -355,8 +350,7 @@ def _pair(
         or right.filtration is None
     ):
         pair["explanations"] = [
-            "An error or resource limit prevents a common complete computed "
-            "scope; no information relation is asserted."
+            "A kernel comparison requires results for both configurations on a common scope."
         ]
         return pair
     ll, rr = left.filtration.layers[-1], right.filtration.layers[-1]
@@ -554,8 +548,7 @@ def compare_configurations(
                 "integer coefficients, then rerun into a new output directory."
             )
             row["explanations"] = [
-                "This configuration could not be analyzed; its original "
-                "readout input is preserved in the study."
+                "The saved study contains the original input for this configuration."
             ]
         else:
             analyses[config["id"]] = result
@@ -602,19 +595,28 @@ def compare_configurations(
         "rows": rows,
         "results": results,
         "relations": relations,
-        "explanations": _overview(rows, relations)
-        + [
-            "Compare the scoped information relations and their witnesses "
-            "alongside the objective summaries to choose a configuration for your target.",
-            "Channel counts describe the supplied cumulative counters; "
-            "physical costs depend on their implementation.",
-            "Entropy coefficients describe leading log(T) growth. Critical "
-            "uncertainty is described by the conditional limit law.",
-            "PARTIAL_HORIZON conclusions cover computed exposure only. "
-            "LIMIT_REACHED and ERROR candidates carry no missing-layer "
-            "or information-relation conclusion.",
-        ],
+        "explanations": _overview(rows, relations),
     }
+    notes = output["explanations"]
+    if any(pair["relation"] != "UNAVAILABLE" for pair in relations):
+        notes.append(
+            "Use the kernel relations and their witnesses to compare "
+            "which histories each configuration distinguishes."
+        )
+    notes.append(
+        "Channel counts describe the declared counters. Physical costs depend on their implementation."
+    )
+    if any(row["entropy_log_t_coefficient"] is not None for row in rows):
+        notes.append(
+            "Entropy coefficients describe leading log(T) growth. "
+            "The conditional limit law describes critical uncertainty."
+        )
+    if any(row["scope"] == "COMPUTED_EXPOSURE" for row in rows):
+        notes.append("Partial-horizon results cover the computed layers.")
+    if any(row["scope"] == "UNAVAILABLE" for row in rows):
+        notes.append(
+            "The configuration notes identify the input errors or limits to resolve before comparison."
+        )
     if backend == "generators":
         output["schema_version"] = 3
         output["shared_conditions"]["generator_options"] = {

@@ -53,9 +53,8 @@ $$
 
 The model represents each component of $\pi$ by an integer 1-cochain on
 oriented graph edges. If an input edge is written opposite to the reference
-orientation, its coefficient is negated during normalization. Real or boolean
-coefficients are rejected; the implementation never rounds a readout to
-manufacture an integer map.
+orientation, its coefficient is negated during normalization. Readout coefficients must be integers.
+The parser rejects floating-point and Boolean values.
 
 After the deterministic homology basis identifies
 $\Lambda\cong\mathbb Z^r$, the same homomorphism has an integer matrix
@@ -96,8 +95,7 @@ sublattice is reported as `PARTIAL_HORIZON`.
 
 Simple cycles are canonicalized up to cyclic rotation and reversal, then
 ordered first by length and then lexicographically. `max_cycles` bounds the
-complete catalogue. Exceeding it stops the filtration rather than returning a
-silent truncation.
+complete catalogue. Exceeding this limit stops the filtration with `LIMIT_REACHED`.
 
 ## Visible and hidden filtrations
 

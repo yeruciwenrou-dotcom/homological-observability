@@ -131,20 +131,28 @@ def render_record_result(doc):
                 )
             for name, value in r["set_probabilities"].items():
                 lines.append(f"P({name}) = {value:.8g}")
-        if "reason" in r["diagnostics"]:
-            reason = r["diagnostics"]["reason"]
-            if reason == "fourier_grid_budget":
-                lines.append(
-                    "The Fourier grid exceeds a size limit. Check limits.max_grid_points "
-                    "and limits.max_matrix_entries in the request."
-                )
-            elif reason == "nonzero_count_at_zero_duration":
-                lines.append(
-                    "A record with zero duration has a nonzero count. "
-                    "Check the observation times and the recorded counts."
-                )
-            else:
-                lines.append(f"Reason: {reason}")
+        reason = r["diagnostics"].get("reason")
+        # Rates and rank have their own instructions below.
+        if reason and doc["status"] not in ("RATES_REQUIRED", "UNSUPPORTED_RANK"):
+            reason_text = {
+                "fourier_grid_budget": "The Fourier grid exceeds a size limit. Check limits.max_grid_points and limits.max_matrix_entries in the request.",
+                "rate_matrix_budget": "The rate matrix exceeds limits.max_matrix_entries.",
+                "nonzero_count_at_zero_duration": "A record with zero duration has a nonzero count. Check the observation times and the recorded counts.",
+                "record_outside_integer_image": "The recorded counts fall outside the integer image of the model's readouts.",
+                "matrix_exponential_failed": "The matrix exponential calculation failed for this sampling interval.",
+                "nonfinite_matrix_exponential": "The matrix exponential produced nonfinite entries.",
+                "stiff_window_exceeds_numerical_range": "The rates and sampling interval place this window outside the solver's numerical range.",
+                "snapshot_endpoint_mass_unresolved": "The probability of the observed endpoint pair is unresolved at this precision.",
+                "tilted_endpoint_mass_unresolved": "The tilted transition calculation could not resolve the endpoint weight.",
+                "snapshot_conditioning_below_precision": "The probability of the observed snapshots falls below the working precision.",
+                "bridge_characteristic_precision": "The conditional Fourier calculation reached its precision limit.",
+                "nonfinite_probability_mass": "The computed probability mass has a nonfinite value.",
+                "cumulative_count_below_precision": "The probability of the recorded counts falls below the working precision.",
+                "cooperative_seconds": "The exact integer calculation reached its time limit.",
+                "integer_bits": "The exact integer calculation reached its bit-length limit.",
+                "matrix_entries": "The exact integer calculation reached its matrix-size limit.",
+            }
+            lines.append(reason_text.get(reason, "Reason: " + reason.replace("_", " ")))
         if doc["status"] in ("RATES_REQUIRED", "UNSUPPORTED_RANK"):
             lines.append(
                 "This record satisfies the integer constraints. "

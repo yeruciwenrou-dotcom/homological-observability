@@ -1426,18 +1426,27 @@ def render_critical_text(result: CriticalExperimentResult) -> str:
         f"artifact role: {document['artifact_role']}",
         f"layer: {summary['layer']}",
         f"theta: {summary['theta']}",
-        f"directed paths: {summary['path_count']}",
     ]
+    if summary["path_count"] is not None:
+        lines.append(f"directed paths: {summary['path_count']}")
     if document["status"] == CriticalStatus.LIMIT_REACHED.value:
         limit = document["limit"]
-        lines.extend(
-            [
-                f"resource limit: {limit['resource']}={limit['limit']}",
-                "observed or estimated: "
-                f"{limit['observed_or_estimated']} ({limit['measurement']})",
-                "No partial catalogue or limit experiment was returned.",
-            ]
+        resource, setting = {
+            "directed_paths": ("directed-path", "max_paths"),
+            "simple_cycles": ("simple-cycle", "max_cycles"),
+            "estimated_integer_digits": (
+                "estimated digit",
+                "max_estimated_integer_digits",
+            ),
+            "integer_digits": ("integer digit", "max_integer_digits"),
+            "output_records": ("output record", "max_output_records"),
+        }[limit["resource"]]
+        lines.append(
+            f"Layer {summary['layer']} exceeds the {resource} limit ({limit['limit']})."
         )
+        if limit["observed_or_estimated"] is not None:
+            lines.append(f"{limit['measurement']}: {limit['observed_or_estimated']}")
+        lines.append(f"Increase critical.limits.{setting} and rerun the experiment.")
         return "\n".join(lines) + "\n"
     lines.extend(
         [

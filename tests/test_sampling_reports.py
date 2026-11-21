@@ -68,7 +68,7 @@ class SamplingReportTests(unittest.TestCase):
         for renderer in (ho.render_comparison_text, ho.render_comparison_markdown):
             text = readable(renderer(result))
             self.assertIn("Z/7", text)
-            self.assertIn("uncomputed layers open", text)
+            self.assertIn("the exposure lattice through layer 2", text)
             self.assertIn("Zero free rank can coexist with finite torsion", text)
 
     def test_all_failed_or_limited_requests_do_not_invent_scales(self):
@@ -84,7 +84,13 @@ class SamplingReportTests(unittest.TestCase):
             for renderer in (ho.render_comparison_text, ho.render_comparison_markdown):
                 text = readable(renderer(result))
                 self.assertIn("Observation time: 100.0", text)
-                self.assertIn("No sampling results were computed", text)
+                self.assertIn(
+                    "6 configurations reached"
+                    if limited
+                    else "6 configurations returned errors",
+                    text,
+                )
+                self.assertNotIn("Sampling scales", text)
                 self.assertNotIn("lambda_m =", text)
                 self.assertNotIn("no hidden integer direction remains", text)
 

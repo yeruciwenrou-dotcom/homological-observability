@@ -74,7 +74,7 @@ def _scope(record: Mapping[str, Any]) -> str:
     if record["scope"] == "FULL_HOMOLOGY":
         return "the full integer cycle group"
     if record["scope"] == "COMPUTED_EXPOSURE":
-        return f"computed exposure through layer {record['computed_max_layer']} only"
+        return f"the exposure lattice through layer {record['computed_max_layer']}"
     return "unavailable"
 
 
@@ -82,16 +82,7 @@ def _summary(document: Mapping[str, Any]) -> list[str]:
     """Select facts from reported metrics without interpreting the free-text question."""
     rows = document["rows"]
     complete = sum(row["status"] == "COMPLETE" for row in rows)
-    mode = sampling_mode(document["study"]["analysis"])
     notes = []
-    if mode == "finite":
-        notes.append(
-            "The sampling-scales table pairs the requested finite exposure with each configuration's hidden graded information."
-        )
-    elif mode == "asymptotic":
-        notes.append(
-            "The sampling-phases table gives layer regimes and entropy contributions for the supplied alpha."
-        )
     groups: dict[tuple[Any, ...], list[Mapping[str, Any]]] = {}
     for row in rows:
         if row["scope"] != "UNAVAILABLE":
@@ -147,15 +138,28 @@ def _summary(document: Mapping[str, Any]) -> list[str]:
                 + "Each distinguishes a history difference that the other leaves hidden."
             )
     if any(row["scope"] == "COMPUTED_EXPOSURE" for row in rows):
-        notes.append("Computed-exposure conclusions leave uncomputed layers open.")
-    unavailable = [row for row in rows if row["scope"] == "UNAVAILABLE"]
-    if unavailable:
-        notes.append(
-            "No information conclusion is available for: "
-            + "; ".join(_name(row) for row in unavailable)
-            + ". See the status and recovery notes."
+        notes.append("Increase analysis.max_layer to compare later layers.")
+    limited = sum(row["status"] == "LIMIT_REACHED" for row in rows)
+    if limited:
+        noun = "configuration" if limited == 1 else "configurations"
+        kind = (
+            "generator"
+            if "generator_options" in document["shared_conditions"]
+            else "cycle"
         )
-    notes.append(f"{complete} of {len(rows)} configurations are naturally complete.")
+        notes.append(f"{limited} {noun} reached the {kind} enumeration limit.")
+    errors = [row for row in rows if row["status"] == "ERROR"]
+    if len(errors) == 1:
+        row = errors[0]
+        notes.append(f"{_name(row)}: {_plain(row['error'])}.")
+    elif errors:
+        notes.append(
+            f"{len(errors)} configurations returned errors. See their configuration notes."
+        )
+    if groups:
+        notes.append(
+            f"{complete} of {len(rows)} configurations reached the natural horizon."
+        )
     return notes
 
 
@@ -242,8 +246,6 @@ def _row_notes(row: Mapping[str, Any]) -> list[str]:
                 )
                 + "."
             )
-    elif row["status"] == "LIMIT_REACHED":
-        notes.append("The catalogue budget was exhausted; metrics are unavailable.")
     if row.get("error"):
         notes.append("Error: " + _plain(row["error"]))
     if row.get("recovery"):
@@ -359,16 +361,59 @@ def _evidence(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
                 "",
             ]
     if not lines:
-        lines = [
-            "No comparable pair has an exact witness to display. Consult the configuration statuses above.",
-            "",
-        ]
+        return []
     lines += [
         "These are representative relations. The complete JSON record retains every "
         "relation, both readout vectors, all containment certificates and hidden-direction bases.",
         "",
     ]
     return lines
+
+
+def _relations_report(document: Mapping[str, Any], *, markdown: bool) -> list[str]:
+    """Show computed pairs and direct readers to the full record for skipped pairs."""
+    relations = document["relations"]
+    pairs = [pair for pair in relations if pair["relation"] != "UNAVAILABLE"]
+    if not pairs:
+        return []
+    rows = {row["id"]: row for row in document["rows"]}
+    if markdown:
+        lines = [
+            "## Information relations",
+            "",
+            "A more informative configuration distinguishes every history difference "
+            "distinguished by the other, and some additional differences. Incomparable "
+            "configurations each reveal differences the other leaves hidden.",
+            "",
+            "| First configuration | Second configuration | Information relation | Scope |",
+            "|---|---|---|---|",
+        ]
+    else:
+        lines = ["Information relations (first / second)"]
+    for pair in pairs:
+        left = _name(rows[pair["left"]])
+        right = _name(rows[pair["right"]])
+        relation = _RELATION_LABELS[pair["relation"]]
+        scope = _scope(pair)
+        if markdown:
+            lines.append(
+                f"| {_markdown(left)} | {_markdown(right)} | {relation} | {scope} |"
+            )
+        else:
+            lines.append(f"  {left} / {right}: {relation} ({scope})")
+    if len(pairs) < len(relations):
+        lines.extend(
+            [
+                "",
+                f"Compared {len(pairs)} of {len(relations)} pairs on a common scope. "
+                "The JSON record gives the status of every pair.",
+            ]
+        )
+    evidence = _evidence(document, markdown=markdown)
+    if evidence:
+        title = "Representative exact evidence"
+        lines += ["", "## " + title if markdown else title, ""] + evidence
+    return lines + [""]
 
 
 def render_comparison_text(document: Mapping[str, Any]) -> str:
@@ -380,9 +425,9 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
     lines += (
         [""] + _summary(document) + ["", "Shared conditions"] + _conditions(document)
     )
+    if any(row["scope"] != "UNAVAILABLE" for row in document["rows"]):
+        lines += ["", _metric_guide(markdown=False)]
     lines += [
-        "",
-        _metric_guide(markdown=False),
         "",
         "Use --output-dir NEW_DIRECTORY to save linked reports and replay inputs, "
         "or --format json to inspect all exact evidence.",
@@ -392,27 +437,22 @@ def render_comparison_text(document: Mapping[str, Any]) -> str:
     )
     lines += ["", "Configurations"]
     for row in document["rows"]:
-        lines += [
-            f"  {_name(row)}: {row['status']}; channels={_cell(row['channels'])}; "
-            f"first hidden={_first_hidden(row)}; hidden rank={_cell(row['computed_hidden_rank'])}"
-            + (
-                f"; entropy log(T) coefficient={_cell(row['entropy_log_t_coefficient'])}"
-                if sampling_mode(study["analysis"]) == "asymptotic"
-                else ""
-            ),
-            "    Counters: "
-            + _counter_definitions(document, row["id"], markdown=False),
-        ] + ["    " + note for note in _row_notes(row)]
-    rows = {row["id"]: row for row in document["rows"]}
-    lines += ["", "Information relations (first / second)"]
-    for pair in document["relations"]:
-        lines.append(
-            f"  {_name(rows[pair['left']])} / {_name(rows[pair['right']])}: "
-            f"{_RELATION_LABELS[pair['relation']]}; {_scope(pair)}"
-        )
-    lines += ["", "Representative exact evidence", ""] + _evidence(
-        document, markdown=False
-    )
+        label = f"  {_name(row)}: {row['status']}"
+        if row["scope"] != "UNAVAILABLE":
+            label += (
+                f"; channels={_cell(row['channels'])}; first hidden={_first_hidden(row)}"
+                f"; hidden rank={_cell(row['computed_hidden_rank'])}"
+            )
+            if sampling_mode(study["analysis"]) == "asymptotic":
+                label += f"; entropy log(T) coefficient={_cell(row['entropy_log_t_coefficient'])}"
+        lines.append(label)
+        if row["channels"] is not None:
+            lines.append(
+                "    Counters: "
+                + _counter_definitions(document, row["id"], markdown=False)
+            )
+        lines.extend("    " + note for note in _row_notes(row))
+    lines += [""] + _relations_report(document, markdown=False)
     lines += [
         "Channel counts describe the declared counters; physical costs depend on their implementation.",
         "",
@@ -438,40 +478,43 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
     lines += [""] + sampling_tables(
         document["results"], study["analysis"], markdown=True, comparison=True
     )
-    asymptotic = sampling_mode(study["analysis"]) == "asymptotic"
-    lines += [
-        "",
-        "Channel counts describe declared counters; physical costs depend on their implementation. "
-        "Metric summaries and information relations answer different questions.",
-        "",
-        "## Configuration comparison",
-        "",
-        _metric_guide(markdown=True),
-        "",
-        "| Configuration | Channels | Status | First hidden layer | Hidden rank |"
-        + (" Entropy log(T) coefficient |" if asymptotic else ""),
-        "|---|---:|---|---|---:|" + ("---:|" if asymptotic else ""),
-    ]
-    for row in document["rows"]:
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    _markdown(_name(row)),
-                    _cell(row["channels"]),
-                    row["status"],
-                    _first_hidden(row),
-                    _cell(row["computed_hidden_rank"]),
-                ]
-                + ([_cell(row["entropy_log_t_coefficient"])] if asymptotic else [])
+    computed = [row for row in document["rows"] if row["scope"] != "UNAVAILABLE"]
+    if computed:
+        asymptotic = sampling_mode(study["analysis"]) == "asymptotic"
+        lines += [
+            "",
+            "Channel counts give the number of declared counters. Their physical cost depends on the implementation.",
+            "",
+            "## Configuration comparison",
+            "",
+            _metric_guide(markdown=True),
+            "",
+            "| Configuration | Channels | Status | First hidden layer | Hidden rank |"
+            + (" Entropy log(T) coefficient |" if asymptotic else ""),
+            "|---|---:|---|---|---:|" + ("---:|" if asymptotic else ""),
+        ]
+        for row in computed:
+            lines.append(
+                "| "
+                + " | ".join(
+                    [
+                        _markdown(_name(row)),
+                        _cell(row["channels"]),
+                        row["status"],
+                        _first_hidden(row),
+                        _cell(row["computed_hidden_rank"]),
+                    ]
+                    + ([_cell(row["entropy_log_t_coefficient"])] if asymptotic else [])
+                )
+                + " |"
             )
-            + " |"
-        )
+        lines += [
+            "",
+            "Hidden rank refers to each candidate's computed horizon. In the first-hidden-layer "
+            "column, 'none' applies to the full cycle group, 'none in computed layers' "
+            "applies only to the computed exposure.",
+        ]
     lines += [
-        "",
-        "Hidden rank refers to each candidate's computed horizon. In the first-hidden-layer "
-        "column, 'none' applies to the full cycle group, 'none in computed layers' "
-        "applies only to the computed exposure, and 'unavailable' records no conclusion.",
         "",
         "## Counters and configuration notes",
         "",
@@ -483,6 +526,8 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
         lines += [
             "### " + _markdown(_name(row)),
             "",
+            "Status: " + row["status"],
+            "",
             _markdown(_counter_definitions(document, row["id"], markdown=True)),
             "",
         ]
@@ -491,33 +536,7 @@ def render_comparison_markdown(document: Mapping[str, Any]) -> str:
         if row["id"] in document["results"]:
             lines[-1] += f" · [Full analysis](raw/config-{row['id']}.json)"
         lines += [""]
-    lines += [
-        "## Information relations",
-        "",
-        "A more informative configuration distinguishes every history difference "
-        "distinguished by the other, and some additional differences. Incomparable "
-        "configurations each reveal differences the other leaves hidden.",
-        "",
-        "| First configuration | Second configuration | Information relation | Scope |",
-        "|---|---|---|---|",
-    ]
-    rows = {row["id"]: row for row in document["rows"]}
-    for pair in document["relations"]:
-        lines.append(
-            "| "
-            + " | ".join(
-                [
-                    _markdown(_name(rows[pair["left"]])),
-                    _markdown(_name(rows[pair["right"]])),
-                    _RELATION_LABELS[pair["relation"]],
-                    _scope(pair),
-                ]
-            )
-            + " |"
-        )
-    lines += ["", "## Representative exact evidence", ""] + _evidence(
-        document, markdown=True
-    )
+    lines += _relations_report(document, markdown=True)
     lines += [
         "## Files and reproducibility",
         "",

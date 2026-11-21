@@ -122,8 +122,8 @@ Read `dfr-case/report.txt`:
 - Snapshots and W leave DeltaW unresolved.
 - Adding W_ON or W_OFF determines DeltaW; one added scalar channel is the
   minimum within the supplied candidate pool.
-- The sufficient schemes evaluated in the case reconstruct all 64 bundled
-  trajectories exactly.
+- The `w-on` and `all` schemes each recover `DeltaW` exactly on all 64 bundled
+  trajectories.
 - With snapshots and W as the available inputs, the training-median baseline
   matches `DeltaW` on 7 of 13 held-out paths. A separate pair of paths tests
   what identical inputs can leave unresolved.
