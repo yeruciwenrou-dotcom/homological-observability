@@ -20,7 +20,7 @@ which counters recover a chosen trajectory target.
 [Physical interpretation](#physical-interpretation) · [Install](#install) ·
 [Quick start](#quick-start) · [Python API](#python-api) · [Documentation](#documentation-and-feedback)
 
-## New in 2.2
+## [New in 2.2](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)
 
 With known transition rates, [use a single record](docs/FINITE_RECORDS.md#use-your-own-model)
 to estimate the probabilities of different values of a target such as net winding.
