@@ -16,6 +16,8 @@ the critical experiment determines their limiting weights and what remains
 after the available observations. For a reader's introduction, start with
 [physical interpretation and scope](docs/SCIENTIFIC_SCOPE.md). This page
 provides the implementation and evidence trail behind those interpretations.
+For a measured trajectory or a choice of recording schedules, see
+[finite records and protocol comparisons](#finite-records-and-protocol-comparisons).
 
 ## Integer homology and filtrations
 
@@ -119,6 +121,24 @@ check exact parsing, serialization, API/CLI agreement, and atomic resource
 limits. The output specifies the critical-limit experiment and its conditioning
 rule. Finite-time posteriors and unconditional MAP probabilities require
 evaluation of the corresponding conditional laws.
+
+## Finite records and protocol comparisons
+
+The paper characterizes history uncertainty as temporal resolution changes.
+Two software applications address finite measurements on a specified rate model:
+
+- [Infer a target from one record](docs/FINITE_RECORDS.md#use-your-own-model).
+  The [posterior solver](src/homological_observability/posterior.py) finds the
+  integer target values compatible with the snapshots and counters, then assigns
+  probabilities when the target remains ambiguous and the numerical calculation resolves.
+- [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols).
+  The [paired comparison](src/homological_observability/protocols.py) applies each
+  schedule and counter choice to the same event paths and compares the conditional
+  risk of a wrong target estimate and the resources used to record each path.
+
+The [finite-record tests](tests/test_finite_records.py) check target probabilities
+against a ring law and an independent positive recursion, and verify the paired
+risk results on the bundled flashing-ratchet paths.
 
 ## Inputs, outputs, and reproducibility
 

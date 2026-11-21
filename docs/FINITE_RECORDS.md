@@ -11,7 +11,8 @@ difference on every trajectory. These two cases illustrate how a highly
 probable inference and an exact reconstruction can guide different
 recording choices.
 
-Run these commands from any directory in an environment containing this build.
+Follow the [installation instructions](../README.md#install), then run these commands
+from any directory in the activated environment.
 
 ```sh
 homological-observability posterior --example dfr --output-dir dfr-record
@@ -26,8 +27,8 @@ The Python functions `infer_target_posterior(request)` and
 
 ## Use your own model
 
-Start with a three-state ring. This input contains only measurements available
-to the observer.
+Start with the three-state ring included in the [installed package](../README.md#install).
+Its record contains only the measurements available to the observer.
 
 ```sh
 homological-observability posterior --example triangle --output-dir ring

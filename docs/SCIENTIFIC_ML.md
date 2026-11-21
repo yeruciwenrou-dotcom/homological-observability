@@ -28,13 +28,12 @@ by this package; the supplied predictor is a training-median baseline.
 ## Run the complete case
 
 The case uses the package's existing NumPy/SciPy dependencies.
-Follow the [installation instructions](../README.md#install), then run from the
-repository directory. The examples below use its virtual environment; on
-Windows, replace `.venv/bin/python` with `.venv\Scripts\python.exe`.
+After [installation](../README.md#install), activate the environment and run
+the bundled case in a working directory of your choice.
 
 ```bash
-.venv/bin/python -m homological_observability.applications.dfr run --output-dir dfr-case
-.venv/bin/python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
+python -m homological_observability.applications.dfr run --output-dir dfr-case
+python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
 ```
 
 Omitting `--dataset` loads the bundled, hashed 64-trajectory fixture.
@@ -153,8 +152,8 @@ inputs provides the broader check for information leakage.
 ## Generate another reproducible sample
 
 ```bash
-.venv/bin/python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
-.venv/bin/python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
+python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
+python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
 ```
 
 The Python generator additionally accepts `observation_time` and `grid_points`.

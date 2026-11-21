@@ -5,6 +5,8 @@ for your task:
 
 | Task | Python result | JSON contract |
 | --- | --- | --- |
+| `posterior` | Finite-record posterior dictionary | [Target support, probabilities and diagnostics](FINITE_RECORDS.md#interpreting-a-posterior) |
+| `compare-protocols` | Paired protocol comparison dictionary | [Risk estimates and recording costs](FINITE_RECORDS.md#compare-recording-protocols) |
 | `target` / `design` | Target-task dictionary | [Target task document](#target-task-document) |
 | DFR application | Case or evaluation dictionary | [Dataset and prediction protocol](TARGET_TASKS.md#dataset-and-prediction-protocol-v1) |
 | `analyze` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
@@ -455,6 +457,8 @@ levels.
 
 | Task | Exit `0` | Exit `1` |
 | --- | --- | --- |
+| `posterior` | `COMPLETE`, including an `IMPOSSIBLE_RECORD` decision | Rates, rank, precision or a resource limit prevent a complete inference |
+| `compare-protocols` | `COMPLETE`: every path has a resolved risk under each protocol | `PARTIAL`: unresolved risks remain in the reported bounds |
 | `analyze` / `example` | `COMPLETE` or `PARTIAL_HORIZON` | `LIMIT_REACHED` |
 | `compare` | Every candidate is `COMPLETE` | Comparison is `INCOMPLETE`: at least one candidate is partial, limited, or in error |
 | `critical` | Requested critical experiment is `COMPLETE` | `LIMIT_REACHED` |
@@ -476,6 +480,10 @@ installed package:
 
 | Document | Loader | Schema file |
 | --- | --- | --- |
+| Finite-record request | `load_posterior_request_schema()` | [`posterior-request.schema.json`](../src/homological_observability/schemas/posterior-request.schema.json) |
+| Finite-record posterior | `load_posterior_schema()` | [`posterior.schema.json`](../src/homological_observability/schemas/posterior.schema.json) |
+| Recording protocol study | `load_protocol_request_schema()` | [`protocol-request.schema.json`](../src/homological_observability/schemas/protocol-request.schema.json) |
+| Paired protocol comparison | `load_protocol_comparison_schema()` | [`protocol-comparison.schema.json`](../src/homological_observability/schemas/protocol-comparison.schema.json) |
 | Model input | `load_model_schema()` | [`model.schema.json`](../src/homological_observability/schemas/model.schema.json) |
 | Analysis result | `load_analysis_schema()` | [`analysis.schema.json`](../src/homological_observability/schemas/analysis.schema.json) |
 | Configuration study input | `load_study_schema()` | [`study.schema.json`](../src/homological_observability/schemas/study.schema.json) |

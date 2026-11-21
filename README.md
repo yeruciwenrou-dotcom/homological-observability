@@ -79,10 +79,19 @@ and the [scientific scope](docs/SCIENTIFIC_SCOPE.md) for the physical assumption
 
 Use Python 3.11–3.13. Create and activate a virtual environment.
 
-| Shell | Create | Activate |
-| --- | --- | --- |
-| macOS or Linux | `python3 -m venv .venv` | `source .venv/bin/activate` |
-| Windows PowerShell | `py -3.12 -m venv .venv` | `.\.venv\Scripts\Activate.ps1` |
+**macOS or Linux**
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows PowerShell**
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
 Install this branch to try the finite-record examples. The commands below use
 the activated environment on either platform.
@@ -350,9 +359,9 @@ configuration, use `ho.load_model(path)` and `ho.analyze_model(model)`.
 | Load paired DFR observations and evaluate predictions | `homological_observability.applications.dfr` · [Prediction example](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
 
 The guides include editable inputs and result handling. The
-[output guide](docs/OUTPUT_CONTRACT.md) describes network, comparison and
-critical-experiment results; the [target guide](docs/TARGET_TASKS.md#json-and-replay)
-covers target requests, results and replay.
+[output guide](docs/OUTPUT_CONTRACT.md) describes the structured results and exit codes.
+The [target guide](docs/TARGET_TASKS.md#json-and-replay) covers target requests,
+results and replay.
 
 ## Scope and interpretation
 

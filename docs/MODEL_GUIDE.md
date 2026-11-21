@@ -224,19 +224,14 @@ parameters does not extend the computed horizon.
 
 ### Run and inspect a model
 
-This example uses `examples/wedge_c3_c5.json` from a source checkout.
-Follow the [installation instructions](../README.md#install), then work from
-the repository root containing `examples/`. For the archived 2.0.0 source,
-use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
+The input file [`examples/wedge_c3_c5.json`](../examples/wedge_c3_c5.json)
+comes with the [source checkout](../README.md#full-verification-from-source).
+After [installation](../README.md#install), activate the environment and run
+these commands from the repository root. For the archived 2.0.0 source, use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
 
-Run the commands below from the same directory. They use the environment
-directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability`. Run Python examples with
-`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
-
-```console
-$ .venv/bin/homological-observability analyze examples/wedge_c3_c5.json
-$ .venv/bin/homological-observability analyze examples/wedge_c3_c5.json --format json
+```sh
+homological-observability analyze examples/wedge_c3_c5.json
+homological-observability analyze examples/wedge_c3_c5.json --format json
 ```
 
 Use JSON when processing results in another program. The terminal layout is
@@ -287,8 +282,8 @@ A study compares counter choices on one graph with the same sampling settings
 and computation limits. Create an editable study and run it with:
 
 ```bash
-.venv/bin/homological-observability study-example minimal --output my-study.json
-.venv/bin/homological-observability compare my-study.json --output-dir my-results
+homological-observability study-example minimal --output my-study.json
+homological-observability compare my-study.json --output-dir my-results
 ```
 
 Both destinations must be new. These commands run the template unchanged.
@@ -406,9 +401,9 @@ walk-level reconstruction is needed.
 Use the [source directory and environment prepared above](#run-and-inspect-a-model).
 The critical input is `examples/biased_c4_critical.json` in the same checkout.
 
-```console
-$ .venv/bin/homological-observability critical examples/biased_c4_critical.json
-$ .venv/bin/homological-observability critical examples/biased_c4_critical.json --format json
+```sh
+homological-observability critical examples/biased_c4_critical.json
+homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
 The Python API equivalent is:

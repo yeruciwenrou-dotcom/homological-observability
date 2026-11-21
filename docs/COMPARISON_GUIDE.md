@@ -7,18 +7,12 @@ that the candidates can be compared directly.
 
 If you ran the [bridge study](../README.md#compare-counter-configurations), continue with
 [Read the answer](#read-the-answer) using your existing `bridge-results`.
-For a first run, follow the [installation instructions](../README.md#install),
-then run the built-in bridge study in that working directory. The study
-template is included in the installed package.
-
-Commands below use the installed environment directly. On Windows, use
-`.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability`. Run the Python examples with
-`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
+The installed package includes the bridge study. After [installation](../README.md#install),
+run it in a working directory of your choice with the environment activated.
 
 ```bash
-.venv/bin/homological-observability study-example bridge --output bridge-study.json
-.venv/bin/homological-observability compare bridge-study.json --output-dir bridge-results
+homological-observability study-example bridge --output bridge-study.json
+homological-observability compare bridge-study.json --output-dir bridge-results
 ```
 
 The output directory must be new. Read `bridge-results/comparison.md` for the
@@ -87,7 +81,7 @@ For a fresh study, you can instead create `my-study.json` with the minimal
 example. The destination file must not already exist.
 
 ```bash
-.venv/bin/homological-observability study-example minimal --output my-study.json
+homological-observability study-example minimal --output my-study.json
 ```
 
 This study has a short loop and a long loop sharing a junction. Its
@@ -145,7 +139,7 @@ Run the edited study into a new directory, then check the report's title,
 **Shared conditions**, and candidate labels against your intended question:
 
 ```bash
-.venv/bin/homological-observability compare my-study.json --output-dir my-results
+homological-observability compare my-study.json --output-dir my-results
 ```
 
 A study takes a known graph and declared exact cumulative counters. Estimating
@@ -208,8 +202,8 @@ states. Several one-channel candidates share the same scalar summary while
 hiding different cycle combinations:
 
 ```bash
-.venv/bin/homological-observability study-example theta --output theta-study.json
-.venv/bin/homological-observability compare theta-study.json --output-dir theta-results
+homological-observability study-example theta --output theta-study.json
+homological-observability compare theta-study.json --output-dir theta-results
 ```
 
 ## Check completeness and recover from errors
@@ -260,7 +254,7 @@ and the recorded software identity.
 For the bridge study above, rerun into a new directory:
 
 ```bash
-.venv/bin/homological-observability compare bridge-results/study.json --output-dir bridge-replay
+homological-observability compare bridge-results/study.json --output-dir bridge-replay
 ```
 
 The bundle also includes `study.json`, each candidate's model and raw analysis,
