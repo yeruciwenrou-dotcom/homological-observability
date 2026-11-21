@@ -7,9 +7,9 @@
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.**
 
-This repository provides Python tools to identify hidden cycle information in
-your own network, find the sampling thresholds for recovering it, and determine
-which counters recover a chosen trajectory target.
+Identify hidden cycle information in your own network, find the sampling
+thresholds for recovering it, and determine which counters recover a chosen
+trajectory target.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
