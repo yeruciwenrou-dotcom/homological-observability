@@ -8,6 +8,9 @@ That finding helps you choose between changing the recording scheme, adding a
 channel, or adapting the prediction target and evaluation to the information
 available.
 
+To start, [run the case](#run-the-complete-case) with the bundled data or
+[supply predictions from your model](#supply-your-models-predictions).
+
 The example uses a **discrete flashing ratchet (DFR)**: a particle moves among
 three positions while an asymmetric potential switches ON and OFF, giving six
 states. This model appears in Roldán and Parrondo's work on dissipation [1] and
@@ -27,16 +30,20 @@ by this package; the supplied predictor is a training-median baseline.
 
 ## Run the complete case
 
-The case uses the package's existing NumPy/SciPy dependencies.
-If you ran the [README example](../README.md#target-analysis-and-scientific-ml),
-open `dfr-case/report.txt` for the case results and, if you evaluated predictions,
-`dfr-evaluation.json` for the scores. To run either step, activate the
-[installed environment](../README.md#install) and choose a fresh path for its
-output. If you rename the case directory, use that directory's `predictions.json`
-in the second command.
+Activate the [installed environment](../README.md#install) and run the case
+in a new directory. If you already ran the
+[README example](../README.md#target-analysis-and-scientific-ml), open
+`dfr-case/report.txt` for your existing result.
 
 ```bash
 python -m homological_observability.applications.dfr run --output-dir dfr-case
+```
+
+To replay the prediction scores separately, evaluate the saved prediction file.
+If you used another directory, substitute its name for `dfr-case`. Choose a
+new output file for the scores.
+
+```bash
 python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
 ```
 
@@ -74,6 +81,11 @@ pressure evaluation assigns weight 1/2 to each path; natural-sample metrics
 use the separately simulated trajectories.
 
 ## Supply your model's predictions
+
+Choose an observation scheme and return one prediction per test trajectory.
+This example uses snapshots and the total turn count (`w`). Replace `y_pred`
+with your model’s predictions to compare its scores with the training-median
+baseline on the same records.
 
 ```python
 import json
@@ -156,11 +168,13 @@ inputs provides the broader check for information leakage.
 ## Generate another reproducible sample
 
 ```bash
-python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
-python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
+python -m homological_observability.applications.dfr generate --output-dir sample --trajectories 256 --seed 42
+python -m homological_observability.applications.dfr run --dataset sample --output-dir sample-case
 ```
 
-The Python generator additionally accepts `observation_time` and `grid_points`.
+The commands generate 256 trajectories with path seed 42, use the default
+split seed 731, and analyze the new sample. Open `sample-case/report.txt`
+for its results. The Python generator also accepts `observation_time` and `grid_points`.
 It writes a manifest and twelve separate JSON files: four visible schemes,
 labels and event logs for each of the natural and pressure populations. The
 manifest records the actual producer environment; the bundled fixture remains
@@ -190,7 +204,7 @@ and a stationary initial law. Our grid includes both endpoints. The pinned
 repository's `configs/data/dfr.yaml` specifies a different default, T=1.25
 with non-equidistant sampling; the manifest records our chosen setting.
 
-The generator solves pi Q=0, sum(pi)=1 numerically and records the residual.
+The generator solves $\pi Q=0$ with $\sum_i \pi_i=1$ numerically and records the residual.
 It simulates paths using exponential holding times and rate-weighted jumps.
 The rate parameters are numerical simulation inputs; the structural certificates
 use integer edge counts. This application's 64-path fixture, trajectory splits,
@@ -201,7 +215,7 @@ evaluate target observability and submitted point predictions.
 Finite positive rates on the fixed, connected bidirectional support make these
 path events admissible. The exact cochain reconstruction is independent of the
 numeric rates. The optional audit reports target-image exposure layers and
-finite scales T delta^(m−1), which describe the accumulation of ambiguity at
+finite scales $T\delta^{m-1}$, which describe the accumulation of ambiguity at
 each layer. The [technical derivation](TARGET_THEORY.md) gives the assumptions
 for asymptotic entropy coefficients. Finite-time recovery probabilities require
 the conditional history law for the chosen dynamics and observations.

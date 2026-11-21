@@ -4,54 +4,64 @@ Given [your own record](#use-your-own-model) of state snapshots and optional
 counters, `posterior` finds which values of a trajectory target are possible.
 With known transition rates, it can also estimate their probabilities.
 
-In a flashing ratchet, the target `DeltaW` is the difference between the
-signed turns made while the potential is ON and OFF. The total turn count
-`W` fixes the parity of that difference. In one record with 50 snapshots and
-`W`, only even values are possible and zero has probability 99.63%.
-The [protocol comparison](#compare-recording-protocols) takes eight snapshots
-of each of 64 complete trajectories to compare the risk of a wrong estimate
-with different counters. Recording ON turns as well as total turns determines
-`DeltaW` exactly on every path.
+The examples use a flashing ratchet. The target `DeltaW` is the difference
+between the signed turns made while the potential is ON and OFF.
 
-Follow the [installation instructions](../README.md#install), then run these commands
-from any directory in the activated environment.
+| Research question | Example result |
+| --- | --- |
+| [What does one record tell me?](#use-your-own-model) | With 50 snapshots and total turns, only even values fit. At the supplied rates, zero has probability 99.63%. |
+| [Would an extra counter help?](#compare-recording-protocols) | With eight snapshots per path, total turns plus ON turns determine `DeltaW` on all 64 trajectories. |
+
+After [installation](../README.md#install), run either example in the activated
+environment. Choose a new output directory for each run.
 
 ```sh
 homological-observability posterior --example dfr --output-dir dfr-record
+```
+
+Open `dfr-record/report.txt` for the probabilities from the single record.
+
+```sh
 homological-observability compare-protocols --example dfr --output-dir dfr-protocols
 ```
 
-Read `report.txt` for the result, `result.json` for the distribution or paired
-rows, and `request.json` for the complete editable input. Each output directory
-is new. To replay one result, run the same command on its `request.json`.
+Open `dfr-protocols/report.txt` for the comparison across the 64 paths.
+
+Each directory includes `result.json` for further analysis and an editable
+`request.json`. To replay the result, pass the saved request to the same command.
 The Python functions `infer_target_posterior(request)` and
 `compare_recording_protocols(request)` accept the same dictionaries as the CLI.
 
 ## Use your own model
 
 Start with the three-state ring included in the [installed package](../README.md#install).
-Its record contains only the measurements available to the observer.
+Save its editable input and report in a new directory named `ring`.
 
 ```sh
 homological-observability posterior --example triangle --output-dir ring
-homological-observability posterior ring/request.json
 ```
 
-Replace the state labels, support edges and directed rates in `request.json`.
+Open `ring/report.txt` to see the example result. In `ring/request.json`,
+replace the state labels and support edges with those of your model.
 The graph follows the existing [model format](MODEL_GUIDE.md). Its `readouts`
 are observed counters. The `target` field is a single integer edge cochain in
 the same format. A coefficient on `["c","a"]` counts forward crossings
 positively and reverse crossings negatively. Use `target_unit` for the
-physical unit. Each rate is labeled by its `from` and `to` states, in inverse
-units of `time_unit`. Supply one positive finite value in each direction of
-every support edge. The diagonal follows from zero row sums.
+physical unit. To estimate probabilities from known rates, supply one positive
+finite rate in each direction of every support edge, labeled by its `from`
+and `to` states in inverse units of `time_unit`. The diagonal follows from
+zero row sums. Omit `rates` to check which target values fit the record.
 
 Give `record.times` and `record.states` on a regular grid and supply one
 whole-record signed integer per channel in `record.counts`. The model assumes
 a time-homogeneous finite-state jump process, fully observed noiseless snapshot
 states and exact net counters. The posterior conditions on the first state. A
 single snapshot spans zero time, so all counters and the target must be zero
-on that empty path.
+on that empty path. After editing the request, run it again:
+
+```sh
+homological-observability posterior ring/request.json
+```
 
 If your instrument records integer ticks, keep them as JSON integers, including
 for absolute timestamps in nanoseconds. The solver takes exact differences
@@ -69,7 +79,7 @@ The optimal conditional error probability under 0–1 loss is 0.1582877982.
 In this example the full reference law is proportional to
 $I_{3|z|}(2)$ for integer $z$.
 
-Try two changes to this same input.
+Starting from the bundled ring, try two changes to the same input.
 
 1. Add a readout named `double` with coefficient 2 on `["c","a"]`, and set
    `record.counts` to `{"double": 6}`. The target is exactly 3. Rates are
@@ -80,6 +90,8 @@ Try two changes to this same input.
 An optional `target_sets` array accepts named inclusive integer intervals.
 For example, `[{"name":"nonpositive","max":0}]` gives the probability of a
 nonpositive target. Omit one bound for a one-sided interval.
+
+### Python example
 
 The same calculation on your own state labels can be run directly in Python.
 
@@ -115,14 +127,27 @@ assert result["result"]["map_candidates"] == [0]
 
 ## Interpreting a posterior
 
-| Field | Scientific meaning |
-| --- | --- |
-| `legal_record`, `target_support` | Exact compatibility with the integer path counts. The support is offset plus step times any integer. Step zero gives a single value. |
-| `endpoint_offset`, `corrected_counts` | The target and counter contributions from the known endpoints, and the measured counts after this correction. Rows are ordered as the target followed by the model's readouts. |
-| `coordinates` | The tree, chords and an integral basis of the joint target and counter image. The chord map and image basis transform numerical coordinates back into the declared observables. |
-| `pmf`, `map_candidates`, `map_risk` | Estimated target probabilities on the retained domain, possible maximizers at the achieved precision and one minus the largest probability. An exact answer has unit point mass and zero risk. |
-| `diagnostics` | Grid sizes, conditional wrap-tail estimate, pre-clipping negative mass, imaginary residual, normalization correction, row-sum drift and the numerical precision indicator. |
-| `diagnostics.log_record_probability` | In numerical results, the log probability of the observed subsequent snapshots and cumulative counts given the first state. The conditioning denominator after the snapshots is recorded separately. |
+Read the `result` object in `result.json` in this order.
+
+- **Compatibility.** `legal_record` says whether the integer path counts are
+  compatible with the record. `target_support` gives the possible target
+  values as an offset plus any integer multiple of a step. Step zero fixes
+  the target exactly.
+- **Probabilities.** `pmf` gives the estimated distribution on the retained
+  domain. `map_candidates` lists possible maximizers at the achieved
+  precision. `map_risk` is one minus the largest probability. An exact
+  answer has probability one and zero risk.
+- **Coordinates.** `endpoint_offset` lists contributions from the known endpoints,
+  first for the target, then for the counters in model order. `corrected_counts`
+  gives the observed counter totals after subtracting those offsets. `coordinates`
+  records the tree, chords and integer image basis for converting back to the
+  declared observables.
+- **Numerical diagnostics.** `diagnostics` records grid sizes, the estimated
+  conditional wrap tail, pre-clipping negative mass, imaginary residual,
+  normalization correction, row-sum drift and the precision indicator. Its
+  `log_record_probability` field gives the log probability of the subsequent
+  snapshots and cumulative counts conditional on the first state. The
+  probability of the counts given the snapshots is recorded separately.
 
 The numerical calculation supports effective joint integer image rank one or
 two. Redundant and scaled counters retain their integer-image constraints.
@@ -133,6 +158,8 @@ legal record with insufficient numerical precision has status
 `LIMIT_REACHED`. The CLI exits with 0 for a completed scientific decision,
 including an incompatible measurement, 1 for incomplete inference, and 2 for
 invalid input. JSON output is available with `--format json`.
+
+### Numerical precision
 
 Each regular window uses matrix exponentials of the row generator tilted by
 the integer chord increments. Its endpoint characteristic function is

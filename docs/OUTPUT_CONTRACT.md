@@ -1,24 +1,29 @@
 # Output contract
 
-The Python API and CLI expose the same structured results. Choose the contract
-for your task:
+The Python API and CLI expose the same structured results. Use the table to find
+the fields that explain your result.
 
 | Task | Python result | JSON contract |
 | --- | --- | --- |
-| `posterior` | Finite-record posterior dictionary | [Completion status and inference outcome](#finite-recording-tasks-and-generator-formats) |
-| `compare-protocols` | Paired protocol comparison dictionary | [Study status and per-path results](#finite-recording-tasks-and-generator-formats) |
+| `posterior` | Finite-record posterior dictionary | [Completion status and inference outcome](#single-record-posterior) |
+| `compare-protocols` | Paired protocol comparison dictionary | [Study status and per-path results](#paired-recording-protocols) |
 | `target` / `design` | Target-task dictionary | [Target task document](#target-task-document) |
 | DFR application | Case or evaluation dictionary | [Dataset and prediction protocol](TARGET_TASKS.md#dataset-and-prediction-protocol-v1) |
-| `analyze` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
+| `analyze` / `example` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
 | `compare` | Comparison dictionary | [Configuration comparison document](#configuration-comparison-document) |
 | `critical` | Immutable `CriticalExperimentResult` | [Critical experiment document](#critical-experiment-document) |
+| `reproduce` | Reproduction result | [Calculation checks and reference agreement](#paper-reproduction) |
 
 JSON is the format for downstream processing. Terminal text and the topology
 and comparison Markdown reports are intended for reading. Shared references below
-cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas), and
-[renderers](#renderers).
+cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas),
+[earlier and generator formats](#reading-earlier-records), and [renderers](#renderers).
 
-## Finite recording tasks and generator formats
+<a name="finite-recording-tasks-and-generator-formats"></a>
+
+## Finite-record results
+
+### Single-record posterior
 
 For a single record, `posterior` writes `homological-observability.posterior`
 (v1). Read `status` for completion and `result.outcome` for the inference.
@@ -29,15 +34,14 @@ the model (`IMPOSSIBLE_RECORD`). For an `UNRESOLVED` outcome,
 See [Interpreting a posterior](FINITE_RECORDS.md#interpreting-a-posterior)
 for target support, probabilities and error estimates.
 
+### Paired recording protocols
+
 For a protocol study, `compare-protocols` writes
 `homological-observability.recording-protocol-comparison` (v1). Its top-level
 `status` is `COMPLETE` when every path has a resolved risk under every protocol.
 With `PARTIAL`, inspect the individual paths in `result.rows`. The
 [protocol summaries](FINITE_RECORDS.md#compare-recording-protocols) in
 `result.protocols` retain all paths in the risk bounds.
-
-For topology analysis and counter comparisons, the
-[version table](#reading-earlier-records) gives the output format for each backend.
 
 ## Target task document
 
@@ -435,6 +439,8 @@ record the normalized study and its digest, the computation's producer, and
 the raw single-configuration analyses. Their [bundle](#comparison-bundles)
 preserves these records for another run.
 
+### Paper reproduction
+
 The reproduction command emits a separate lightweight document with
 `artifact_role: canonical-paper-evidence`. That document describes generated
 files and whether the two tables were checked against frozen references; it is
@@ -498,26 +504,26 @@ to standard error. Expected input errors do not print a traceback.
 
 ### Bundled schemas
 
-The public input and result formats have Draft 2020-12 schemas bundled in the
-installed package:
+The installed package includes [Draft 2020-12 JSON schemas](../src/homological_observability/schemas)
+for its public inputs and results. Open a schema below or load it from Python.
 
-| Document | Loader | Schema file |
-| --- | --- | --- |
-| Finite-record request | `load_posterior_request_schema()` | [`posterior-request.schema.json`](../src/homological_observability/schemas/posterior-request.schema.json) |
-| Finite-record posterior | `load_posterior_schema()` | [`posterior.schema.json`](../src/homological_observability/schemas/posterior.schema.json) |
-| Recording protocol study | `load_protocol_request_schema()` | [`protocol-request.schema.json`](../src/homological_observability/schemas/protocol-request.schema.json) |
-| Paired protocol comparison | `load_protocol_comparison_schema()` | [`protocol-comparison.schema.json`](../src/homological_observability/schemas/protocol-comparison.schema.json) |
-| Model input | `load_model_schema()` | [`model.schema.json`](../src/homological_observability/schemas/model.schema.json) |
-| Analysis result | `load_analysis_schema()` | [`analysis.schema.json`](../src/homological_observability/schemas/analysis.schema.json) |
-| Configuration study input | `load_study_schema()` | [`study.schema.json`](../src/homological_observability/schemas/study.schema.json) |
-| Configuration comparison result | `load_comparison_schema()` | [`comparison.schema.json`](../src/homological_observability/schemas/comparison.schema.json) |
-| Example registry | `load_examples_schema()` | [`examples.schema.json`](../src/homological_observability/schemas/examples.schema.json) |
-| Reproduction result | `load_reproduction_schema()` | [`reproduction.schema.json`](../src/homological_observability/schemas/reproduction.schema.json) |
-| Controlled error | `load_error_schema()` | [`error.schema.json`](../src/homological_observability/schemas/error.schema.json) |
-| Critical model input | `load_critical_model_schema()` | [`critical-model.schema.json`](../src/homological_observability/schemas/critical-model.schema.json) |
-| Critical experiment result | `load_critical_experiment_schema()` | [`critical-experiment.schema.json`](../src/homological_observability/schemas/critical-experiment.schema.json) |
-| Target request | `load_target_request_schema()` | [`target-request.schema.json`](../src/homological_observability/schemas/target-request.schema.json) |
-| Target result | `load_target_task_schema()` | [`target-task.schema.json`](../src/homological_observability/schemas/target-task.schema.json) |
+| JSON schema | Python loader |
+| --- | --- |
+| [Finite-record request](../src/homological_observability/schemas/posterior-request.schema.json) | `load_posterior_request_schema()` |
+| [Finite-record posterior](../src/homological_observability/schemas/posterior.schema.json) | `load_posterior_schema()` |
+| [Recording protocol study](../src/homological_observability/schemas/protocol-request.schema.json) | `load_protocol_request_schema()` |
+| [Paired protocol comparison](../src/homological_observability/schemas/protocol-comparison.schema.json) | `load_protocol_comparison_schema()` |
+| [Model input](../src/homological_observability/schemas/model.schema.json) | `load_model_schema()` |
+| [Analysis result](../src/homological_observability/schemas/analysis.schema.json) | `load_analysis_schema()` |
+| [Configuration study input](../src/homological_observability/schemas/study.schema.json) | `load_study_schema()` |
+| [Configuration comparison result](../src/homological_observability/schemas/comparison.schema.json) | `load_comparison_schema()` |
+| [Example registry](../src/homological_observability/schemas/examples.schema.json) | `load_examples_schema()` |
+| [Reproduction result](../src/homological_observability/schemas/reproduction.schema.json) | `load_reproduction_schema()` |
+| [Controlled error](../src/homological_observability/schemas/error.schema.json) | `load_error_schema()` |
+| [Critical model input](../src/homological_observability/schemas/critical-model.schema.json) | `load_critical_model_schema()` |
+| [Critical experiment result](../src/homological_observability/schemas/critical-experiment.schema.json) | `load_critical_experiment_schema()` |
+| [Target request](../src/homological_observability/schemas/target-request.schema.json) | `load_target_request_schema()` |
+| [Target result](../src/homological_observability/schemas/target-task.schema.json) | `load_target_task_schema()` |
 
 Each loader returns a fresh dictionary, so callers can construct a validator or
 adapt a local copy without mutating package state.

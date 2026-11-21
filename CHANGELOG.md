@@ -2,7 +2,8 @@
 
 All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
-separately inside their JSON documents.
+separately inside their JSON documents. Source archives are available from
+[GitHub Releases](https://github.com/yeruciwenrou-dotcom/homological-observability/releases).
 
 ## 2.2.0 — 2026-11-21
 

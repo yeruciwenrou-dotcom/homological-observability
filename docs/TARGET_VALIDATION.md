@@ -10,11 +10,11 @@ It accompanies the [task guide](TARGET_TASKS.md),
 
 ## Repeat the assessment
 
-After following the [installation instructions](../CONTRIBUTING.md#development-environment),
-run from the checkout:
+With the [development environment](../CONTRIBUTING.md#development-environment)
+activated, run from the repository root:
 
 ```bash
-.venv/bin/python tools/assess_target_tasks.py --output-dir target-assessment
+python tools/assess_target_tasks.py --output-dir target-assessment
 ```
 
 Use a new output directory. The script saves correctness, baseline and record
@@ -61,8 +61,10 @@ times describe each workflow with its own outputs.
 
 The same 64 bundled natural trajectories, snapshots and split IDs are used for
 each scheme. Both sufficient schemes reconstruct all 64 targets without error.
+Storage totals cover all 64 trajectories. The compact JSON also includes
+snapshots and trajectory IDs.
 
-| Scheme | Counters per trajectory | Signed int64 counter bytes | Compact JSON bytes, including snapshots and IDs |
+| Scheme | Counters per trajectory | Counter bytes (signed int64) | Compact JSON bytes |
 | --- | ---: | ---: | ---: |
 | W | 1 | 512 | 18,885 |
 | W + W_ON | 2 | 1,024 | 19,466 |

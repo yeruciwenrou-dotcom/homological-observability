@@ -43,7 +43,9 @@ these normalized units need no further conversion.
 
 For a critical model, divide each physical transition rate by the same $q_0$
 and specify $\theta$ as the limit of $T\delta^{m-1}$ in these normalized units.
-The program has no units field and performs no automatic unit conversion.
+For topology and critical-experiment requests, enter the normalized values
+directly. A [finite-record request](FINITE_RECORDS.md#use-your-own-model) uses
+its own `time_unit` for snapshot times and inverse-time rates.
 The graph-only filtration needs rate support, whereas the critical path
 weights also need the rate magnitudes.
 
@@ -69,6 +71,10 @@ The `analyze` command reads a UTF-8 JSON document with
   "edges": [["a", "b"], ["b", "c"], ["a", "c"]]
 }
 ```
+
+Save this example as `triangle.json` and run
+`homological-observability analyze triangle.json` from the same directory.
+The report shows which cycle directions are hidden with state snapshots alone.
 
 The graph must be finite, connected, undirected, and simple. Vertices are
 nonempty unique strings. Every edge contains exactly two known, distinct
