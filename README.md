@@ -41,13 +41,12 @@ same trajectories to see how they change the risk of a wrong estimate.
 
 ## Physical interpretation
 
-The problem of homological observability arises from the tension between a
-record’s finite temporal resolution and the cycle history a system accumulates
-in continuous time.
+What is the physical origin of the homological observability problem?
+It lies in the tension between a record’s finite temporal resolution and the
+cycle history a system accumulates in continuous time.
 
-Consider a detector that records the state of the three-state ring below at
-regular intervals. It reads A, then B. What do those readings tell us about
-the motion in between?
+On the three-state ring below, a detector reads A at one sampling time and B
+at the next. Compare the direct jump with the route through C.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
