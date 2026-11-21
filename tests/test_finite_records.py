@@ -279,6 +279,10 @@ class PosteriorTests(unittest.TestCase):
         doc = ho.infer_target_posterior(small)
         self.assertEqual(doc["status"], "LIMIT_REACHED")
         self.assertTrue(doc["result"]["legal_record"])
+        self.assertEqual(doc["result"]["diagnostics"]["reason"], "fourier_grid_budget")
+        report = render_record_result(doc)
+        self.assertIn("limits.max_grid_points", report)
+        self.assertIn("limits.max_matrix_entries", report)
         no_rates = dict(req)
         del no_rates["rates"]
         no_rates["time_unit"] = "ms"
@@ -341,7 +345,9 @@ class PosteriorTests(unittest.TestCase):
 
     def test_kinesin_endpoint_correction_and_odd_support(self):
         req = recording_example("posterior", "kinesin")
-        self.assertEqual(output(req)["map_candidates"], [1])
+        doc = ho.infer_target_posterior(req)
+        self.assertEqual(doc["result"]["map_candidates"], [1])
+        self.assertIn("Exact target: 1 ATP", render_record_result(doc))
         req["model"]["readouts"].pop()
         del req["record"]["counts"]["A"]
         result = output(req)

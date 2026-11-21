@@ -60,7 +60,7 @@ python -m unittest tests.test_numerical_boundaries -v
 The four TV columns in
 [`critical_kernel_results.csv`](../results/critical_kernel_results.csv)
 and its packaged copy use the rounding-aware intervals above. For the default
-C3 sequence, the distances at $N=1600$ and $6400$ are approximately
+C3 sequence, the distances at $N=1600$ and $N=6400$ are approximately
 0.01827715650931175 and 0.00916800996239429.
 
 Earlier evaluations omitted arithmetic error from the interval. This matters
@@ -89,7 +89,7 @@ the positive result rounds to zero; the corresponding bridge can still exist.
 For $\delta>1$, evaluation retains the exponentially scaled general-order
 Bessel functions. This branch requires a resolvable nonzero endpoint sum.
 For example, the diametric 1000-ring bridge is supported at $\delta=1$
-and rejected just above it because the Bessel endpoint sum is unresolved. The 1000-ring values at $\delta=1/4$, $0.3$, and $1$ agree with
+and rejected just above it because the Bessel endpoint sum is unresolved. The 1000-ring values at $\delta=1/4$, $\delta=0.3$, and $\delta=1$ agree with
 independent high-precision ratios.
 A conditional result outside the nonzero float range raises `ValueError`.
 The winding sum retains the supplied cutoff (expanded by the existing

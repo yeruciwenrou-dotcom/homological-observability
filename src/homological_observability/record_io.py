@@ -113,9 +113,12 @@ def render_record_result(doc):
             lines.append(f"Integer support: {support['offset']} + {support['step']} Z")
         if r["map_risk"] is not None:
             candidates = ", ".join(str(v) for v in r["map_candidates"])
-            label = "Most probable target"
-            if r["outcome"] == "NUMERICAL_POSTERIOR" and len(r["map_candidates"]) > 1:
+            if r["outcome"] == "EXACT":
+                label = "Exact target"
+            elif len(r["map_candidates"]) > 1:
                 label = "Possible most-probable targets at this precision"
+            else:
+                label = "Most probable target"
             lines.append(f"{label}: {candidates} {unit}")
             lines.append(f"Conditional 0-1 error risk: {r['map_risk']:.8g}")
             if r["outcome"] == "NUMERICAL_POSTERIOR":
@@ -129,7 +132,19 @@ def render_record_result(doc):
             for name, value in r["set_probabilities"].items():
                 lines.append(f"P({name}) = {value:.8g}")
         if "reason" in r["diagnostics"]:
-            lines.append(f"Reason: {r['diagnostics']['reason']}")
+            reason = r["diagnostics"]["reason"]
+            if reason == "fourier_grid_budget":
+                lines.append(
+                    "The Fourier grid exceeds a size limit. Check limits.max_grid_points "
+                    "and limits.max_matrix_entries in the request."
+                )
+            elif reason == "nonzero_count_at_zero_duration":
+                lines.append(
+                    "A record with zero duration has a nonzero count. "
+                    "Check the observation times and the recorded counts."
+                )
+            else:
+                lines.append(f"Reason: {reason}")
         if doc["status"] in ("RATES_REQUIRED", "UNSUPPORTED_RANK"):
             lines.append(
                 "This record satisfies the integer constraints. "
