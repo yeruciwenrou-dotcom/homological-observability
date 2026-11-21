@@ -87,7 +87,7 @@ class SamplingReportTests(unittest.TestCase):
                 self.assertIn(
                     "6 configurations reached"
                     if limited
-                    else "6 configurations returned input errors",
+                    else "6 configurations returned errors",
                     text,
                 )
                 self.assertNotIn("Sampling scales", text)
