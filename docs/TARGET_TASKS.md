@@ -21,9 +21,12 @@ for the physical model, parameters and references.
 
 ![DFR support, counter orientations and two target reconstruction formulas](dfr-readouts.svg)
 
-The colored arrows set the positive signs of the two cycle counters. The
-switching counters record crossings between ON and OFF states. With W fixed,
-the two minimum choices for DeltaW are W_ON and W_OFF, as the search below shows.
+In the [full-size diagram](dfr-readouts.svg), the colored arrows mark the
+positive counting directions. The switching counters record crossings between
+ON and OFF states. If the total $W$ is known, one additional counter suffices:
+
+- Count turns while ON to recover $\Delta W = 2W_{\mathrm{ON}} - W$.
+- Count turns while OFF to recover $\Delta W = W - 2W_{\mathrm{OFF}}$.
 
 With the environment activated, run the requests in `examples/` from the root
 of a [source checkout](../README.md#full-verification-from-source).
@@ -48,7 +51,6 @@ from `model.readouts` into `candidates`, and set `model.readouts` to `[]`.
 Running `design` on that request gives a minimum of two channels, with three
 tied choices: (W, W_ON), (W, W_OFF), and (W_ON, W_OFF).
 
-The two reconstruction formulas are DeltaW=2W_ON−W and DeltaW=W−2W_OFF.
 Even the insufficient W-only record retains parity: DeltaW≡W (mod 2).
 For a single observation interval the paths `[0,3]` and
 `[0,1,2,0,3,5,4,3,0,3]` share endpoints and W=0, but have targets 0 and 2.
