@@ -101,8 +101,8 @@ then run `homological-observability posterior my-ring/request.json`.
 The [finite-record guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/docs/FINITE_RECORDS.md) also gives a Python
 example and explains the numerical precision reported with each result. A
 [molecular-motor example](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target)
-uses mechanical and chemical counts to infer net ATP hydrolysis in a six-state
-kinesin model.
+uses mechanical and chemical counts to infer net ATP hydrolysis in the
+six-state kinesin model of [Liepelt and Lipowsky (2007)](https://doi.org/10.1103/PhysRevLett.98.258102).
 
 ## Try target diagnosis and observation design
 
