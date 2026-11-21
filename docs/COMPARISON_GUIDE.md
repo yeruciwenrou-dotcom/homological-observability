@@ -3,7 +3,9 @@
 Compare candidate counters on the same network to find what information each
 adds, which channels are redundant, and which histories remain hidden. A
 study holds the graph, sampling parameters, and computation budget fixed so
-that the candidates can be compared directly.
+that the candidates can be compared directly. To estimate how a different
+schedule or counter changes the error risk on a set of event paths, use the
+[finite-record protocol comparison](FINITE_RECORDS.md#compare-recording-protocols).
 
 If you ran the [bridge study](../README.md#compare-counter-configurations), continue with
 [Read the answer](#read-the-answer) using your existing `bridge-results`.
@@ -93,11 +95,11 @@ counter.
 For a counter coefficient of `1` on `["a0", "a1"]`, a jump in that
 direction adds one and the reverse jump subtracts one. Omitted edges have
 coefficient zero. Weighted counters use other integer coefficients. The
-[model guide](MODEL_GUIDE.md) gives the full graph and readout rules.
+[readout reference](MODEL_GUIDE.md#readouts) gives the signed-edge rules.
 
 Place readouts only inside the configurations and analysis settings only in
 the study's `analysis` field. The shared `model` holds the topology. An empty
-readout list is the snapshots-only candidate. The [input reference](MODEL_GUIDE.md)
+readout list is the snapshots-only candidate. The [study input reference](MODEL_GUIDE.md#configuration-study)
 describes study fields, identifiers, validation, and the 64-candidate limit.
 
 Edit this file in the following order:
@@ -290,9 +292,9 @@ A study accepts at most 64 configurations.
 Topology comparison uses cycle filtrations; rate-dependent path catalogues
 are computed by the separate `critical` command.
 
-The following measurements give a baseline for the built-in studies. Each
-includes a fresh CLI process, analysis, serialization, and complete bundle
-export.
+On the measured host, the three built-in studies took 1.32–1.89 seconds
+and used 167–170 MiB of peak resident memory. Each run included a fresh
+CLI process, analysis, serialization and a complete bundle export.
 
 | Study | Vertices / edges | Simple cycles | Configurations | Largest counter coefficient | Wall time | Peak resident memory |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |

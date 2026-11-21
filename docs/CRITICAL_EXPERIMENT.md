@@ -83,35 +83,20 @@ $$
 W(\gamma)=\frac{1}{m!}\prod_{j=0}^{m-1}q_{x_jx_{j+1}}.
 $$
 
-At $m=2$, the ordered endpoints $(v0,v2)$ have two shortest paths. The
-lexicographically selected reference path is $v0\to v1\to v2$; it has mark
-$0$ and weight
+At $m=2$, two shortest paths connect the ordered endpoints $(v0,v2)$. The
+catalogue selects the clockwise path as its lexicographic reference. The table shows marks
+in the reported Smith coordinates and probabilities conditional on those
+endpoints in the critical limit.
 
-$$
-\frac{2\cdot2}{2!}=2.
-$$
+| Route | Mark | Leading weight | Conditional probability |
+| --- | ---: | ---: | ---: |
+| $v0 \to v1 \to v2$ (clockwise) | $0$ | $2 \cdot 2 / 2! = 2$ | $4/5$ |
+| $v0 \to v3 \to v2$ (counterclockwise) | $-1$ | $1 \cdot 1 / 2! = 1/2$ | $1/5$ |
 
-The alternative $v0\to v3\to v2$ differs by one cycle direction. In the
-reported Smith coordinates its mark and visible mark are both $-1$, and its
-weight is
-
-$$
-\frac{1\cdot1}{2!}=\frac12.
-$$
-
-In the critical limit, conditioning on this ordered endpoint gives the exact
-mark law
-
-$$
-\Pr(0\mid v0,v2)=\frac45,
-\qquad
-\Pr(-1\mid v0,v2)=\frac15.
-$$
-
-The factor of four comes from two clockwise rate factors, each twice its
-counterclockwise counterpart. Equal rates would instead give equal route
-weights. These conditional path-mark probabilities describe the information
-available from the endpoints before the extra readout is applied.
+Here the visible mark equals the mark on both routes. Normalizing the two
+weights gives the endpoint-only probabilities in the last column. The
+clockwise route is four times as likely because each of its jumps has twice
+the reverse rate. With equal rates the two routes are equally likely.
 
 The associated Poisson intensity is
 

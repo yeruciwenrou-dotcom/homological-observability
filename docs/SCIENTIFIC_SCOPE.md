@@ -87,30 +87,22 @@ additional finite information such as parity.
 
 ## Research uses
 
-Choose a task according to what you want to vary:
+Choose the row that matches the inputs you have or the measurements you can change.
 
-| Task | Inputs to vary | Read from the result |
+| Research task | Inputs to vary | What the result tells you |
 | --- | --- | --- |
-| Infer a target from a [finite record](FINITE_RECORDS.md) | Snapshot times and states, signed counts and known rates | Integer support, target probabilities and the conditional error of the best point prediction |
-| [Compare recording protocols](FINITE_RECORDS.md#compare-recording-protocols) | Snapshot spacing and counter channels on the same event histories | Paired changes in error, snapshot count and number of counters |
-| Diagnose a target with `target` | Fixed counters and one or more integer target cochains | Sufficiency, an exact decoder or an ambiguity witness; values for legal sufficient records |
-| Design records with `design` | Fixed counters and admissible candidate channels | Minimum extra scalar channels, alternative choices and reconstruction certificates |
-| Evaluate predictions with the [DFR case](SCIENTIFIC_ML.md) | Observation scheme and user-supplied point predictions | Paired reconstruction, test-set errors, baselines and separate ambiguity-pressure results |
-| Compare network structures with `analyze` | Graph edges, with the observation protocol fixed | Exposure layers and hidden directions; adding an edge can change more than the cycle count |
-| Compare counters with `compare` | Named integer readouts on one shared graph | Information equivalence, strict refinement, incomparable directions, and individually redundant channels |
-| Compare sampling scalings with `analyze` | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Which hidden layers are sparse, critical, or dense, and their leading entropy coefficients |
-| Compare dynamics with `critical` | Exact positive directed rates at a selected threshold | Path weights, visible opportunity counts, and the limiting conditional mark laws |
+| [Infer a target from one record](FINITE_RECORDS.md#use-your-own-model) | Measured snapshots, signed counts and known rates | Compatible integer values, their probabilities and the error risk of the most likely value |
+| [Compare recording protocols](FINITE_RECORDS.md#compare-recording-protocols) | Snapshot spacing and counters on the same complete event paths | Paired changes in error risk, snapshot count and number of counters |
+| [Test whether a target is determined](TARGET_TASKS.md#use-your-own-target) | Fixed counters and integer targets | An exact decoder or an ambiguity witness, and target values for legal sufficient records |
+| [Choose additional counters](TARGET_TASKS.md#three-calculation-interfaces) | Candidate channels alongside the existing counters | Minimum additions, alternative choices and reconstruction certificates |
+| [Evaluate ML predictions](SCIENTIFIC_ML.md#supply-your-models-predictions) | Observation scheme and model predictions | Held-out errors, baselines and a separate test on records with identical inputs |
+| [Analyze a network](MODEL_GUIDE.md#from-a-physical-model-to-an-input) | Graph edges at fixed recording rules | Exposure layers and hidden cycle directions |
+| [Compare counters](COMPARISON_GUIDE.md#compare-your-own-configurations) | Named integer readouts on one graph | Which schemes distinguish more histories, which retain different information and which channels are redundant |
+| [Compare sampling laws](MODEL_GUIDE.md#analysis-settings) | Exponent $\alpha>0$ in $\delta=T^{-\alpha}$ | Sparse, critical and dense layers and their leading entropy coefficients |
+| [Construct a critical experiment](CRITICAL_EXPERIMENT.md#use-your-own-rates-and-counters) | Exact positive directed rates at a selected threshold | Path weights, visible opportunity counts and limiting conditional mark laws |
 
-The [wedge tutorial](END_TO_END_EXAMPLE.md) explains how a weighted counter
-changes the hidden directions. The [comparison guide](COMPARISON_GUIDE.md)
-runs several configurations under common conditions and uses exact witnesses
-to distinguish an objective tie from equivalent information. The
-[critical tutorial](CRITICAL_EXPERIMENT.md) separates the effects of rates and
-additional observations. The `analyze`, `compare` and `critical` commands take
-model specifications: a graph and measurement rules, with exact rates added
-for `critical`. Target evaluation additionally accepts counter values and
-endpoints from an individual record. The DFR application uses separate dataset
-and prediction formats, described in the [ML tutorial](SCIENTIFIC_ML.md).
+The [worked two-loop example](END_TO_END_EXAMPLE.md) shows how a weighted
+counter changes the hidden directions and the resulting sampling requirements.
 
 The resulting exponents give asymptotic sampling guidance. For example,
 $N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
@@ -127,7 +119,7 @@ theorems and proofs remain in the paper.
 
 ## Supported problem
 
-The supported input is:
+For a topology analysis, provide:
 
 - a connected, finite, undirected simple graph $G$;
 - bidirectional positive-rate support on every graph edge when applying the
@@ -151,6 +143,13 @@ while varying the declared counter configurations. Each counter is an exact
 cumulative integer measurement. The study compares the information supplied by
 those candidates. The researcher supplies the candidate instruments and
 assesses their physical costs.
+
+A [finite record](FINITE_RECORDS.md#use-your-own-model) supplies the observed
+states on a regular grid and any whole-record signed counts. The posterior
+conditions on the first observed state. Known rates are needed to assign
+probabilities to unresolved target values. The numerical calculation supports
+one scalar target with at most two independent integer coordinates across
+the target and counters. Exact reconstruction can also succeed at higher rank.
 
 The separate `critical` input adds:
 
@@ -202,7 +201,7 @@ that follows its allowed transition directions.
 
 ## Evidence classes
 
-Machine-readable results distinguish four kinds of support:
+Topology and critical-limit results distinguish four kinds of support:
 
 | Category | Meaning |
 | --- | --- |

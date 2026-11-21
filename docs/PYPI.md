@@ -13,23 +13,24 @@ current.
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
 > and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
 
-**[New in 2.2](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/CHANGELOG.md)**
+## [New in 2.2](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)
 
 Given a [single record](#try-a-finite-record) and known transition rates, estimate a probability
-distribution for a target such as net winding. Compare sampling schedules
-and counters on the same event trajectories to see how they affect the risk of
-a wrong estimate.
+distribution for a target such as net winding. [Compare sampling schedules and counters](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/docs/FINITE_RECORDS.md#compare-recording-protocols)
+on the same event trajectories to see how they affect the risk of a wrong estimate.
 
-The recording process determines which differences between histories appear in
-the data. Even with known transition rates, a detector that records only the
-state at each snapshot can miss an entire turn.
+## Physical interpretation
 
-For example, a system can move from A to B directly or via A → C → B between
-two snapshots. Both routes produce the same endpoints, while their difference
-is one circulation around the triangle. Repeated unresolved circulations
-create uncertainty in the accumulated history.
+A system can move from A to B directly or via A → C → B between two
+snapshots. Both routes give the same endpoints, yet they differ by one
+circulation around the triangle.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](https://raw.githubusercontent.com/yeruciwenrou-dotcom/homological-observability/v2.2.0/docs/snapshot_ambiguity.svg)
+
+The recording process determines which differences between histories appear
+in the data. Even with known transition rates, a detector that records only
+the state at each snapshot can miss an entire turn. Repeated unresolved turns
+create uncertainty in the accumulated history.
 
 Longer observation gives you more snapshots, but it also extends the history
 you want to recover. How fast must the sampling interval shrink to keep up?
@@ -285,8 +286,9 @@ Cite the paper for theoretical results and the software for computations.
 When your work uses both, cite them separately. The
 [citation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/README.md#citation-and-license)
 provides the full paper and software references and a copyable paper BibTeX entry.
-For computations made with [version 2.2.0](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0), include the version number and the
-[software series DOI](https://doi.org/10.5281/zenodo.23329442) in your citation.
+For computations made with version 2.2.0, cite its
+[version DOI](https://doi.org/10.5281/zenodo.24422331). The
+[software series DOI](https://doi.org/10.5281/zenodo.23329442) identifies all releases.
 
 Authors: HongZheng Liu, YiNuo Tian, Zhiyue Wu, and Jianqun Cheng.
 

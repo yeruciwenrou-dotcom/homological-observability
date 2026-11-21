@@ -30,7 +30,9 @@ below, Windows users can replace `.venv/bin/python` with
 `.venv\Scripts\python.exe` and `.venv/bin/ruff` with
 `.venv\Scripts\ruff.exe`.
 
-Run the checks relevant to the change:
+## Verification
+
+Run the checks relevant to the change.
 
 ```bash
 .venv/bin/python -W error -m unittest discover -s tests -v
@@ -50,18 +52,6 @@ each pull request.
 The [target-task assessment](docs/TARGET_VALIDATION.md) can be repeated with
 `.venv/bin/python tools/assess_target_tasks.py --output-dir target-assessment` in this
 environment. Use a new output directory for each run.
-
-The technical PDF is generated from `docs/TARGET_THEORY.md` using
-`docs/note-style.sty`. To rebuild it, install XeLaTeX from TeX Live or MacTeX
-with the Latin Modern fonts, then run
-`.venv/bin/python tools/build_target_note.py`. The script uses the Python
-standard library and runs XeLaTeX twice for references and bookmarks.
-Use `--tex-bin /path/to/texlive/bin` if XeLaTeX is not on PATH, and
-`--ref <commit-or-tag>` to select the destination of relative documentation
-links. TeX sources and logs are written to `build/target-note/`.
-The repository and source archive include the finished PDF. Ordinary package
-installation requires no TeX tools. Check the rendered pages after changes to
-content, fonts or the TeX environment.
 
 ## Scientific changes
 
@@ -86,8 +76,25 @@ examples requires the corresponding 1.1.0 environment. For a new model or
 comparison study, save fresh results in a new directory and include the input,
 software version, and checks that establish the expected result.
 
+## Rebuild the technical PDF
+
+The [technical PDF](docs/TARGET_THEORY.pdf) is generated from its
+[Markdown source](docs/TARGET_THEORY.md) using
+`docs/note-style.sty`. To rebuild it, install XeLaTeX from TeX Live or MacTeX
+with the Latin Modern fonts, then run
+`.venv/bin/python tools/build_target_note.py`. The script uses the Python
+standard library and runs XeLaTeX twice for references and bookmarks.
+Use `--tex-bin /path/to/texlive/bin` if XeLaTeX is not on PATH, and
+`--ref <commit-or-tag>` to select the destination of relative documentation
+links. TeX sources and logs are written to `build/target-note/`.
+The repository and source archive include the finished PDF. Ordinary package
+installation requires no TeX tools. Check the rendered pages after changes to
+content, fonts or the TeX environment.
+
+## Pull requests
+
 Keep commit messages, pull-request titles and optional descriptions to one short
 line each. For documentation changes, use `Update docs`. Add at most one detail
 when it helps identify the change, for example `Update installation docs`.
 
-Contributions use the repository's MIT License.
+Contributions use the repository's [MIT License](LICENSE).

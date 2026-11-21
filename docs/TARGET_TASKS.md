@@ -1,11 +1,14 @@
 # Target diagnosis and readout design
 
-Audit whether existing records determine a research target, find the minimum
-additional scalar channels, and reconstruct targets from individual records.
-Requests and results can be saved for replay. Optional explanations connect
-target ambiguity to exposure layers; the
-[Scientific ML tutorial](SCIENTIFIC_ML.md) applies these tools to paired data
-and model predictions.
+Check whether the counters you already record determine a target, choose the
+fewest additional counters from a supplied pool, or reconstruct that target
+from a legal record. The outputs include exact certificates and a replayable
+request. For a target with several possible values, the
+[finite-record guide](FINITE_RECORDS.md#use-your-own-model) shows how to use
+known rates to estimate their probabilities.
+
+To adapt the calculations, [supply your own target](#use-your-own-target)
+or [evaluate predictions on paired observations](SCIENTIFIC_ML.md).
 
 Follow the [installation instructions](../README.md#install) to run the examples.
 
@@ -35,10 +38,10 @@ of a [source checkout](../README.md#full-verification-from-source).
 homological-observability target examples/dfr_target.json
 homological-observability design examples/dfr_design.json --output-dir dfr-design
 homological-observability target examples/dfr_evaluate.json --format json
-homological-observability design dfr-design/request.json --format json
 ```
 
-Expected conclusions:
+Open `dfr-design/report.txt` to compare the minimum choices. The three
+calculations give these results:
 
 | Input | Established result |
 | --- | --- |
@@ -164,26 +167,36 @@ without discarding a target certificate.
 
 ## Exactness and guarantees
 
-Write H=Z^b for full fundamental-cycle coordinates, P for fixed readouts and F
-for targets. Sufficiency is ker_Z P ⊆ ker_Z F, equivalently
-rank_Q P=rank_Q [P;F]. A sufficient certificate records a rational matrix D with
-DP=F, valid on the integer image P(H). An insufficient certificate records an
-integer cycle z, its oriented edge chain, and Fz≠0 with Pz=0.
+Let $H=\mathbb{Z}^b$ denote the full cycle lattice in fundamental-cycle
+coordinates, $P$ the fixed readouts, and $F$ the targets. The readouts
+determine the targets exactly when every cycle invisible to $P$ is also
+invisible to $F$:
+
+$$
+\ker_{\mathbb{Z}} P \subseteq \ker_{\mathbb{Z}} F.
+$$
+
+Equivalently, stacking the rows of $F$ below $P$ leaves its rational rank
+unchanged. A sufficient certificate records a rational matrix $D$ with
+$DP=F$, valid on the integer image $P(H)$. An insufficient certificate gives
+an integer cycle $z$ and its oriented edge chain with $Pz=0$ and $Fz\ne 0$.
 
 Decoding checks every integer-image constraint using a verified Smith
-decomposition. P(x)=2x, F(x)=x permits decoding x=p/2 only for even p.
-P=2I2, F=(1,1), p=(1,1)
-is illegal even though the rational formula gives the integer 1. P(x)=(2x,4x),
-p=(2,5) is inconsistent and is also rejected. Illegal records yield
-`legal_record=false`, `target_values=null`; insufficient legal records also yield
-no target value. In both cases, the completed diagnosis reports the record's
-legality and the readout's sufficiency separately.
+decomposition. For $P(x)=2x$ and $F(x)=x$, the decoder $x=p/2$ applies to
+even $p$. With $P=2I_2$ and $F=(1,1)$, the record $p=(1,1)$ is illegal even
+though the rational formula gives the integer 1. For $P(x)=(2x,4x)$, the
+record $p=(2,5)$ is inconsistent. Illegal records yield
+`legal_record=false`, `target_values=null`. An insufficient readout also
+leaves the target value unset for a legal record. The result reports record
+legality and readout sufficiency separately.
 
-For legal p, any integer preimage c0 gives the target ambiguity set
-F(c0)+F(ker_Z P). The exact ambiguity image requires a saturated integer kernel;
-clearing denominators of rational-nullspace columns separately can miss lattice
-points. For P=(2,1,1), F=(0,1,0), the true image is Z, not 2Z. The result format
-provides ambiguity witnesses and target-image layers. The DFR example illustrates the retained parity.
+For a legal record $p$, any integer preimage $c_0$ gives the set of possible
+target values $F(c_0)+F(\ker_{\mathbb{Z}} P)$. Computing the full ambiguity
+image requires a saturated integer kernel. Clearing denominators of
+rational-nullspace columns separately can miss lattice points. For
+$P=(2,1,1)$ and $F=(0,1,0)$, this shortcut misses the odd values in the true
+image $\mathbb{Z}$. The result provides ambiguity witnesses and target-image
+layers. The DFR example illustrates the retained parity.
 Target-image exposure layers and their entropy interpretation are available
 with `explain=True`. The [technical source](TARGET_THEORY.md) derives them using
 the original paper's assumptions separately from this algebra.
@@ -226,6 +239,12 @@ retain their versions and semantics. Requests contain `schema_version`,
 `candidates`, `limits`, `reverse_tree_order`, `record`, `explain`. The `target` CLI handles
 analyze/evaluate; `design` handles design. Unknown fields and command/task
 mismatches are errors. JSON uses the existing model's cochain convention.
+
+To replay the design in the worked example, pass its saved request to the CLI:
+
+```bash
+homological-observability design dfr-design/request.json --format json
+```
 
 Results embed the normalized request and its SHA-256, producer version, explicit
 matrix dimensions (including empty matrices), coordinate basis, calculation

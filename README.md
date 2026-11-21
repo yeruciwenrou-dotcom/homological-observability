@@ -29,25 +29,30 @@ on the same event trajectories to see how each choice changes the risk of a wron
 
 ## Choose a task
 
-- **Analyze a network.** Find [hidden cycles and sampling thresholds](#analyze-your-own-network).
-- **Design a measurement.** [Compare counter configurations](#compare-counter-configurations) or [choose counters that recover a target](docs/TARGET_TASKS.md).
-- **Evaluate a prediction.** Use the [scientific ML example](#target-analysis-and-scientific-ml) to check what the inputs determine, then [test your own predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions).
-- **Work through the theory.** [Reproduce the paper’s calculations](#reproduce-the-paper-evidence) or [construct a critical-limit experiment](docs/CRITICAL_EXPERIMENT.md) for your own model.
+| Research question | Start here |
+| --- | --- |
+| What can snapshots hide about a trajectory? | [Physical interpretation](#physical-interpretation) |
+| Which target values fit my record, and how likely is each? | [Use your own record](docs/FINITE_RECORDS.md#use-your-own-model) |
+| Would more snapshots or another counter reduce error? | [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) |
+| Which cycles stay hidden as sampling changes? | [Analyze a network](#analyze-your-own-network) · [Sampling thresholds](docs/SCIENTIFIC_SCOPE.md#how-local-ambiguity-accumulates) |
+| Do two counter schemes reveal the same information? | [Compare counters](#compare-counter-configurations) |
+| Which extra counters would determine my target? | [Design a readout](docs/TARGET_TASKS.md#use-your-own-target) |
+| Do my model’s inputs determine the target I want to predict? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Test predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
+| What critical limit follows from my graph and rates? | [Construct a critical experiment](docs/CRITICAL_EXPERIMENT.md) |
+| Can I reproduce the paper’s calculations? | [Run the reproduction checks](#reproduce-the-paper-evidence) |
 
 ## Physical interpretation
 
-Information acquisition is itself a physical process. The recording
-protocol determines which differences between histories become
-differences in the record. With finite temporal resolution, dynamically
-allowed trajectories with different net circulations can produce the same
-state snapshots, even when the transition rates are known exactly.
-
-For example, a system can move from A to B directly or via A → C → B between
-two snapshots. Both routes produce the same endpoints, while their difference
-is one circulation around the triangle. Repeated unresolved circulations
-create uncertainty in the accumulated history.
+Two snapshots show a system at A and then at B. It could have moved directly
+from A to B or followed A → C → B. The two paths produce identical snapshots
+but differ by one circulation around the triangle.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
+
+Information acquisition is itself a physical process. The recording protocol
+determines which differences between histories become visible. Even with
+exactly known transition rates, repeated unresolved circulations create
+uncertainty in the accumulated history.
 
 Longer observation yields more data while also extending the history to
 be recovered. The central question is how rapidly temporal resolution must
@@ -97,16 +102,20 @@ python -m pip install homological-observability==2.2.0
 homological-observability --version
 ```
 
-The command reports `2.2.0`. For an earlier installation, use the
-[2.1.0 usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install).
-Working with files in `examples/` or running the full verification script
-requires a [source checkout](#full-verification-from-source).
+The command reports `2.2.0`. You can run the [quick start](#quick-start) from any
+working directory. Examples that refer to files in `examples/` and the full
+verification script require a [source checkout](#full-verification-from-source).
 
-To reproduce work with version 2.0.0, install `homological-observability==2.0.0` in a
-separate environment and follow its
+<details>
+<summary>Using an earlier version</summary>
+
+Follow the [2.1.0 usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install)
+for an existing 2.1.0 installation. To reproduce work with version 2.0.0, install
+`homological-observability==2.0.0` in a separate environment and follow its
 [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md).
-For upgrades from 1.x, see the
-[format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+For upgrades from 1.x, see the [format and API changes](docs/OUTPUT_CONTRACT.md#reading-earlier-records).
+
+</details>
 
 ## Quick start
 
@@ -139,13 +148,20 @@ trajectory. That identity explains the zero risk in the last row. The report
 also gives the snapshot count, counter count and encoded record size for each
 protocol.
 
-To use your own network, start with a three-state ring. Edit its
-`request.json` to supply your states, directed rates, target and observations,
-then rerun the saved request. Each run with `--output-dir` needs a new
-directory and also saves a machine-readable `result.json`.
+### Use your own measurements
+
+Start with an editable record from a three-state ring. Each run with
+`--output-dir` needs a new directory and saves the input, a human-readable
+report, and a machine-readable `result.json`.
 
 ```sh
 homological-observability posterior --example triangle --output-dir my-ring
+```
+
+Edit `my-ring/request.json` to supply your states, directed rates, target
+and observations. Run the saved request to see the result for your record.
+
+```sh
 homological-observability posterior my-ring/request.json
 ```
 
@@ -187,15 +203,11 @@ prediction target and evaluation suited to the existing records.
 
 The case saves the structural results in `case.json`. With snapshots and total
 turns as the available inputs, the baseline predicts the training-set median
-on every path. It matches `DeltaW` on 7 of 13 held-out paths. To replay this
-evaluation from `predictions.json`, run
-
-```bash
-python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
-```
-
-Use the [scientific ML guide](docs/SCIENTIFIC_ML.md) to supply your model's
-predictions and compare observation schemes on the same paths. A separate
+on every path. It matches `DeltaW` on 7 of 13 held-out paths. The
+[scientific ML guide](docs/SCIENTIFIC_ML.md#run-the-complete-case) shows
+how to replay the scores from `dfr-case/predictions.json` or
+[evaluate your own predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions)
+on the same paths. A separate
 constructed ambiguity pair tests what identical visible inputs can leave
 unresolved; its scores are reported separately from naturally sampled data.
 
@@ -341,18 +353,25 @@ comparison = ho.compare_configurations(study)
 print(ho.render_comparison_text(comparison))
 ```
 
-Use `ho.load_study("my-study.json")` for a saved study. To work with one
-configuration, use `ho.load_model(path)` and `ho.analyze_model(model)`.
+In the report, counting the short ring moves the first hidden layer from 2
+to 4. Counting the long ring leaves it at 2. The [bridge study](#compare-counter-configurations)
+explains why two counters with the same remaining hidden rank give different results.
 
-| Task | Python entry points and guide |
+For your own study, use `ho.load_study("my-study.json")`. To analyze one
+configuration, load it with `ho.load_model(path)`. The following functions
+are available in the imported module `ho`.
+
+| Task and guide | Python functions |
 | --- | --- |
-| Infer an integer target from one finite record | `ho.infer_target_posterior(request)` · [Inputs and a Python example](docs/FINITE_RECORDS.md#use-your-own-model) |
-| Compare recording protocols on the same event paths | `ho.compare_recording_protocols(request)` · [Risk and resource estimates](docs/FINITE_RECORDS.md#compare-recording-protocols) |
-| Analyze a network | `ho.analyze_model` · [Model inputs](docs/MODEL_GUIDE.md) |
-| Compare counter configurations | `ho.compare_configurations` · [Comparison studies](docs/COMPARISON_GUIDE.md) |
-| Diagnose a target, choose counters or reconstruct a legal record | `ho.analyze_target`, `ho.design_readouts`, `ho.evaluate_target` · [Target interfaces](docs/TARGET_TASKS.md#three-calculation-interfaces) |
-| Construct a critical-limit experiment with known rates | `ho.analyze_critical_model` · [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
-| Load paired DFR observations and evaluate predictions | `homological_observability.applications.dfr` · [Prediction example](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
+| [Single record](docs/FINITE_RECORDS.md#use-your-own-model) | `infer_target_posterior` |
+| [Recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) | `compare_recording_protocols` |
+| [Network analysis](docs/MODEL_GUIDE.md) | `analyze_model` |
+| [Counter comparison](docs/COMPARISON_GUIDE.md) | `compare_configurations` |
+| [Target and readout design](docs/TARGET_TASKS.md#three-calculation-interfaces) | `analyze_target`, `design_readouts`, `evaluate_target` |
+| [Critical experiment](docs/CRITICAL_EXPERIMENT.md) | `analyze_critical_model` |
+
+For paired trajectory data and `dfr.evaluate_predictions`, see the
+[scientific ML example in Python](docs/SCIENTIFIC_ML.md#supply-your-models-predictions).
 
 The guides include editable inputs and result handling. The
 [output guide](docs/OUTPUT_CONTRACT.md) describes the structured results and exit codes.
@@ -408,14 +427,15 @@ PASS: all calculation checks completed
 PASS: generated tables agree with frozen reference results
 ```
 
-| Result in `generated_results/` | What to read |
-| --- | --- |
-| `REPORT.md` | Scientific summary and interpretation of the checks |
-| `companion_summary.png`, `companion_summary.svg` | Three numerical checks in one figure ([PNG preview](results/companion_summary.png), [scalable SVG](results/companion_summary.svg)) |
-| `selected_appendix_checks.csv`, `critical_kernel_results.csv` | Numerical tables for further inspection |
+The same files are available in `generated_results/` and in the repository.
 
-The calculations
-cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
+| What to inspect | Reference files |
+| --- | --- |
+| Interpretation of the checks | [Computational report](results/REPORT.md) |
+| Three numerical checks in one figure | [PNG preview](results/companion_summary.png) · [Scalable SVG](results/companion_summary.svg) |
+| Numerical values | [Appendix checks](results/selected_appendix_checks.csv) · [Critical kernels](results/critical_kernel_results.csv) |
+
+The calculations cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
 identity, and reciprocal-lattice peak suppression. Reference acceptance uses
 documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
 describes how results and file identities are compared.
@@ -474,21 +494,17 @@ probability mass covered by the displayed range.
 
 ## Documentation and feedback
 
-| Your next task | Guide |
+| What you need | Guides and references |
 | --- | --- |
-| Interpret a finite record or plan your next observation | [Target probabilities and recording protocols](docs/FINITE_RECORDS.md) |
-| Audit a target and choose additional counters | [Target tasks](docs/TARGET_TASKS.md) |
-| Evaluate ML predictions on paired DFR observations | [Scientific ML application](docs/SCIENTIFIC_ML.md) |
-| Check target derivations and measured scope | [Technical note](docs/TARGET_THEORY.md) · [PDF](docs/TARGET_THEORY.pdf) · [Assessment](docs/TARGET_VALIDATION.md) |
-| Compare counters and understand their differences | [Comparison studies](docs/COMPARISON_GUIDE.md) |
-| Prepare a model or study | [Input fields and physical modeling](docs/MODEL_GUIDE.md) |
-| Understand integer layers, parity, and sampling requirements | [Worked two-loop example](docs/END_TO_END_EXAMPLE.md) |
-| Add known rates and construct a critical-limit experiment | [Rate-dependent critical experiment](docs/CRITICAL_EXPERIMENT.md) |
-| Interpret structured results or handle incomplete calculations | [Output fields, statuses, and formats](docs/OUTPUT_CONTRACT.md) |
-| Check mathematical or numerical details | [Conventions](docs/CONVENTIONS.md) · [Numerical methods](docs/NUMERICS.md) |
-| Reproduce the paper's finite-model calculations | [Reproduction commands](#reproduce-the-paper-evidence) · [Computational report](results/REPORT.md) |
-| Inspect changes or contribute | [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) |
+| Prepare inputs and compare measurements | [Model inputs](docs/MODEL_GUIDE.md) · [Counter comparisons](docs/COMPARISON_GUIDE.md) · [Worked two-loop example](docs/END_TO_END_EXAMPLE.md) |
+| Analyze observations or predictions | [Finite records and protocols](docs/FINITE_RECORDS.md) · [Target and readout design](docs/TARGET_TASKS.md) · [Scientific ML](docs/SCIENTIFIC_ML.md) |
+| Connect a calculation to the theory | [Paper map](PAPER_MAP.md) · [Scientific scope](docs/SCIENTIFIC_SCOPE.md) · [Critical experiments](docs/CRITICAL_EXPERIMENT.md) |
+| Check a target derivation | [Technical note](docs/TARGET_THEORY.md) · [Printable PDF](docs/TARGET_THEORY.pdf) · [Validation results](docs/TARGET_VALIDATION.md) |
+| Interpret an output or check a method | [Output fields and status codes](docs/OUTPUT_CONTRACT.md) · [Conventions](docs/CONVENTIONS.md) · [Numerical methods](docs/NUMERICS.md) |
+| Verify paper results | [Reproduction commands](#reproduce-the-paper-evidence) · [Computational report](results/REPORT.md) |
 
+For version history, see the [changelog](CHANGELOG.md). The
+[contributing guide](CONTRIBUTING.md) explains how to propose changes.
 Use [Issues](https://github.com/yeruciwenrou-dotcom/homological-observability/issues/new/choose)
 to report a problem or discuss a research use.
 
