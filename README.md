@@ -325,9 +325,8 @@ explains how to continue each calculation.
 
 ## Python API
 
-Run this example with `python` on macOS/Linux or
-`.venv\Scripts\python.exe` on Windows. The bridge model is included in the
-installed package:
+Run this example with `python` in the activated environment. The installed
+package includes the bridge model.
 
 ```python
 import homological_observability as ho

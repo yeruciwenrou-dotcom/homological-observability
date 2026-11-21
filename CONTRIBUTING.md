@@ -86,5 +86,8 @@ examples requires the corresponding 1.1.0 environment. For a new model or
 comparison study, save fresh results in a new directory and include the input,
 software version, and checks that establish the expected result.
 
-Submit focused pull requests with the user-visible effect and verification
-results. Contributions use the repository's MIT License.
+Keep commit messages, pull-request titles and optional descriptions to one short
+line each. For documentation changes, use `Update docs`. Add at most one detail
+when it helps identify the change, for example `Update installation docs`.
+
+Contributions use the repository's MIT License.
