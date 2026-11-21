@@ -41,9 +41,9 @@ same trajectories to see how they change the risk of a wrong estimate.
 
 ## Physical interpretation
 
-What is the physical origin of the homological observability problem?
-It lies in the tension between a record’s finite temporal resolution and the
-cycle history a system accumulates in continuous time.
+The physical origin of homological observability lies in the tension between
+a record’s finite temporal resolution and the cycle history a system accumulates
+in continuous time.
 
 On the three-state ring below, a detector reads A at one sampling time and B
 at the next. Compare the direct jump with the route through C.
