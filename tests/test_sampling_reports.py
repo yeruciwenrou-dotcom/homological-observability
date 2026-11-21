@@ -68,7 +68,7 @@ class SamplingReportTests(unittest.TestCase):
         for renderer in (ho.render_comparison_text, ho.render_comparison_markdown):
             text = readable(renderer(result))
             self.assertIn("Z/7", text)
-            self.assertIn("uncomputed layers open", text)
+            self.assertIn("the exposure lattice through layer 2", text)
             self.assertIn("Zero free rank can coexist with finite torsion", text)
 
     def test_all_failed_or_limited_requests_do_not_invent_scales(self):

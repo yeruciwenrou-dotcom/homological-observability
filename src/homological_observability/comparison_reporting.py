@@ -74,7 +74,7 @@ def _scope(record: Mapping[str, Any]) -> str:
     if record["scope"] == "FULL_HOMOLOGY":
         return "the full integer cycle group"
     if record["scope"] == "COMPUTED_EXPOSURE":
-        return f"computed exposure through layer {record['computed_max_layer']} only"
+        return f"the exposure lattice through layer {record['computed_max_layer']}"
     return "unavailable"
 
 
@@ -138,7 +138,7 @@ def _summary(document: Mapping[str, Any]) -> list[str]:
                 + "Each distinguishes a history difference that the other leaves hidden."
             )
     if any(row["scope"] == "COMPUTED_EXPOSURE" for row in rows):
-        notes.append("Computed-exposure conclusions leave uncomputed layers open.")
+        notes.append("Increase analysis.max_layer to compare later layers.")
     limited = sum(row["status"] == "LIMIT_REACHED" for row in rows)
     if limited:
         noun = "configuration" if limited == 1 else "configurations"
@@ -158,7 +158,7 @@ def _summary(document: Mapping[str, Any]) -> list[str]:
         )
     if groups:
         notes.append(
-            f"{complete} of {len(rows)} configurations are naturally complete."
+            f"{complete} of {len(rows)} configurations reached the natural horizon."
         )
     return notes
 

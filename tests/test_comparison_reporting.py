@@ -89,8 +89,8 @@ class ComparisonReportingTests(unittest.TestCase):
         partial_study["analysis"]["max_layer"] = 2
         partial = ho.compare_configurations(partial_study)
         report = readable(ho.render_comparison_markdown(partial))
-        self.assertIn("computed exposure through layer 2 only", report)
-        self.assertIn("uncomputed layers open", report)
+        self.assertIn("the exposure lattice through layer 2", report)
+        self.assertIn("Increase analysis.max_layer to compare later layers", report)
         self.assertNotIn("on the full integer cycle group", report)
         limited_study = copy.deepcopy(self.study)
         limited_study["analysis"]["max_cycles"] = 1

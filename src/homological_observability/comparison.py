@@ -283,8 +283,7 @@ def _summarize(
         notes.append(f"No hidden integer cycle direction remains in {scope_text}.")
     if not full:
         notes.append(
-            "This is a computed-horizon conclusion; uncomputed layers may "
-            "introduce further hidden directions."
+            f"Longer cycles may introduce further hidden directions beyond layer {last.layer}."
         )
     if redundant:
         notes.append(
