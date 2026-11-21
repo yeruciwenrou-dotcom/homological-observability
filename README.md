@@ -20,12 +20,10 @@ schemes, and determine which counts recover a chosen trajectory target.
 [Physical interpretation](#physical-interpretation) · [Install](#install) ·
 [Quick start](#quick-start) · [Python API](#python-api) · [Documentation](#documentation-and-feedback)
 
-## [New in 2.2](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)
-
-With known transition rates, [use a single record](docs/FINITE_RECORDS.md#use-your-own-model)
-to estimate the probabilities of different values of a target such as net winding.
-[Compare sampling schedules and counters](docs/FINITE_RECORDS.md#compare-recording-protocols)
-on the same event trajectories to see how each choice changes the risk of a wrong estimate.
+<a id="new-in-22"></a>**Software update** · [v2.2.0](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)<br>
+With known transition rates, estimate the distribution of a target such as net
+winding from a single record. Compare sampling schedules and counters on the
+same trajectories to see how they change the risk of a wrong estimate.
 
 ## Choose a task
 
@@ -36,24 +34,27 @@ on the same event trajectories to see how each choice changes the risk of a wron
 | Would more snapshots or another counter reduce error? | [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) |
 | Which cycles stay hidden as sampling changes? | [Analyze a network](#analyze-your-own-network) · [Sampling thresholds](docs/SCIENTIFIC_SCOPE.md#how-local-ambiguity-accumulates) |
 | Do two counter schemes reveal the same information? | [Compare counters](#compare-counter-configurations) |
-| Which extra counters would determine my target? | [Design a readout](docs/TARGET_TASKS.md#use-your-own-target) |
+| Which extra counters would determine my target? | [Design a readout](docs/TARGET_TASKS.md#use-your-own-target) · [ATP hydrolysis in kinesin](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target) |
 | Do my model’s inputs determine the target I want to predict? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Test predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
 | What critical limit follows from my graph and rates? | [Construct a critical experiment](docs/CRITICAL_EXPERIMENT.md) |
 | Can I reproduce the paper’s calculations? | [Run the reproduction checks](#reproduce-the-paper-evidence) |
 
 ## Physical interpretation
 
-Two snapshots show a system at A and then at B. It could have moved directly
-from A to B or followed A → C → B. The two paths produce identical snapshots
-but differ by one circulation around the triangle.
+The problem of homological observability arises from the tension between a
+record’s finite temporal resolution and the cycle history a system accumulates
+in continuous time.
+
+Consider a detector that records the state of the three-state ring below at
+regular intervals. It reads A, then B. What do those readings tell us about
+the motion in between?
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
-Information acquisition is itself a physical process. A recorder’s dynamics
-and resources constrain what it can register. Here that constraint enters
-through the interval between snapshots. Knowing the transition rates gives
-the conditional probabilities of the possible windings. Several can retain
-positive probability given the same noiseless record.
+Follow one path from A to B and return along the other. The resulting loop
+is the difference in cycle history that the two readings leave unresolved.
+Even when the transition rates are known exactly, both routes have positive
+probability given the same noiseless readings.
 
 A longer observation supplies more snapshots and also lengthens the history
 whose winding we want to recover. A detour that changes the winding may be
@@ -65,11 +66,13 @@ For stationary finite-state Markov jump processes, **the theory establishes an
 information phase diagram and sharp sampling thresholds for recovering
 accumulated cycle histories.** When hidden cycle directions are present, the
 number of snapshots must grow faster than the observation time for the
-probability of exact recovery to approach one. The theory gives the posterior
-laws at critical sampling scales. Under power-law sampling, the coefficient
-of logarithmic growth in the residual entropy varies with the sampling
-exponent. Its slope changes reveal how many independent hidden cycle
-directions emerge at each threshold.
+probability of exact recovery to approach one.
+
+The phase diagram also reveals the network’s hidden cycle structure. Under
+power-law sampling, plot the coefficient of logarithmic growth in the residual
+entropy against the sampling exponent. Its changes of slope tell us how many
+independent hidden cycle directions enter at each level. At a critical sampling
+scale, the limiting posterior law describes the uncertainty that remains.
 
 These information transitions persist at equilibrium under detailed balance.
 Forward and reverse circulations then balance on average, and the steady-state

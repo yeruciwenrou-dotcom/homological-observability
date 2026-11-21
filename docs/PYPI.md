@@ -13,24 +13,18 @@ trajectory target.
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
 > and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
 
-## [New in 2.2](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)
-
-Given a [single record](#try-a-finite-record) and known transition rates, estimate a probability
-distribution for a target such as net winding. [Compare sampling schedules and counters](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.2.0/docs/FINITE_RECORDS.md#compare-recording-protocols)
-on the same event trajectories to see how they affect the risk of a wrong estimate.
-
 ## Physical interpretation
 
-A system can move from A to B directly or via A → C → B between two
-snapshots. Both routes give the same endpoints, yet they differ by one
-circulation around the triangle.
+The problem of homological observability arises from the tension between a
+record’s finite temporal resolution and the cycle history a system accumulates
+in continuous time. On the three-state ring below, two successive snapshots
+show A and then B. What do those readings tell us about the motion in between?
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](https://raw.githubusercontent.com/yeruciwenrou-dotcom/homological-observability/v2.2.0/docs/snapshot_ambiguity.svg)
 
-The recording process determines which differences between histories appear
-in the data. Even with known transition rates, a detector that records only
-the state at each snapshot can miss an entire turn. Repeated unresolved turns
-create uncertainty in the accumulated history.
+Follow one path from A to B and return along the other. The loop shows how
+the two possible histories differ by a whole turn. Even at exactly known
+transition rates, both routes have positive probability given the same readings.
 
 Longer observation gives you more snapshots, but it also extends the history
 you want to recover. How fast must the sampling interval shrink to keep up?
@@ -41,6 +35,11 @@ laws at critical sampling scales and counts independent hidden cycle directions
 at each scale. These transitions persist at equilibrium. Under detailed balance,
 forward and reverse circulations cancel on average, while the winding of an
 individual trajectory can remain uncertain.
+
+**Software update** · [v2.2.0](https://github.com/yeruciwenrou-dotcom/homological-observability/releases/tag/v2.2.0)<br>
+With known transition rates, estimate the distribution of a target such as net
+winding from a [single record](#try-a-finite-record). Compare sampling schedules
+and counters on the same trajectories to see how they change the risk of a wrong estimate.
 
 ## Research tasks
 
