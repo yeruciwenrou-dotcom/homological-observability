@@ -210,9 +210,9 @@ growth, the observed digits in exact public values, the observed
 public record count, and topology cycle enumeration. The preflight estimate has
 its own `max_estimated_integer_digits` budget; `max_integer_digits` and
 `max_output_records` are exact ceilings and do not inherit the preflight
-estimate. If a ceiling is exceeded, the task returns `LIMIT_REACHED` atomically:
-no partial groups, catalogue, stationary law, or marked-Poisson object is
-presented as complete. Set `audit_paths` to `true` only when individual records
+estimate. At a resource limit, the result reports `LIMIT_REACHED` and identifies
+the resource in `limit`. The `groups`, `catalogue`, `stationary_law`, and
+`limit_experiment` fields are `null`. Set `audit_paths` to `true` only when individual records
 for walks of length $m$ are needed; the default aggregated catalogue is the
 more compact result. This option reduces public output, while the
 internal construction still enumerates all requested paths.

@@ -63,7 +63,7 @@ def _parse_request(document):
     if type(explain) is not bool:
         raise TypeError("explain must be boolean")
     if operation == "evaluate" and explain:
-        raise ValueError("evaluate does not compute exposure explanations; use analyze")
+        raise ValueError("Use analyze to request an exposure explanation.")
     if operation == "evaluate":
         record = _object(record, label="record")
         _reject_unknown_fields(
@@ -106,69 +106,109 @@ def run_target_request(document: dict) -> dict:
     return analyze_target(model, targets, explain=explain, **options)
 
 
+def _target_limit_note(limit: dict) -> str:
+    """Name the stopped calculation and the request setting that controls it."""
+    resource = limit["resource"]
+    if resource == "solutions":
+        return "Increase limits.max_solutions to return more minimum designs."
+    rule = {
+        "matrix_entries": ("matrix-size", "max_matrix_entries"),
+        "integer_bits": ("integer bit-length", "max_integer_bits"),
+        "cooperative_seconds": ("time", "max_seconds"),
+        "subsets": ("subset search", "max_subsets"),
+    }.get(resource)
+    stage = {
+        "precheck": "initial checks",
+        "legal_image": "integer-image check",
+        "evaluation": "target evaluation",
+        "certificate": "certificate construction",
+        "serialization": "output preparation",
+        "search": "candidate search",
+    }.get(limit["stage"], limit["stage"].replace("_", " "))
+    if rule is None:
+        return f"The run reached the {resource.replace('_', ' ')} limit during {stage}."
+    label, setting = rule
+    return (
+        f"The {label} limit stopped the run during {stage}. "
+        f"Increase limits.{setting} and rerun."
+    )
+
+
 def render_target_text(document: dict) -> str:
-    """Explain established conclusions and remaining work in a compact report."""
+    """Summarize the computed target values, designs and certificates."""
     result = document["result"]
+    operation = document["operation"]
+    targets = [t["name"] for t in document["request"]["targets"]]
     lines = [
-        f"Target task: {document['operation']} [{document['status']}]",
-        "Targets: " + ", ".join(t["name"] for t in document["request"]["targets"]),
-        "Scope: exact integer cochains on the full cycle group; raw path records use known endpoints.",
+        f"Target task: {operation} [{document['status']}]",
+        "Targets: " + ", ".join(targets),
+        "Scope: exact integer cochains on the full cycle group. Raw path records use known endpoints.",
     ]
-    if document["operation"] == "design":
-        lines.append(
-            {
-                True: "The candidate pool can determine all targets with the fixed readouts.",
-                False: "Even the entire candidate pool cannot determine all targets with the fixed readouts.",
-                None: "Candidate-pool feasibility has not been established.",
-            }[result["feasible"]]
-        )
+    if document["limit"]:
+        lines.append(_target_limit_note(document["limit"]))
+    if operation == "design":
         lines.append(
             f"Fixed channels: {result['fixed_count']}; candidate channels: {result['candidate_count']}"
         )
+        if result["feasible"] is True:
+            lines.append(
+                "The candidate pool and fixed readouts together determine all targets."
+            )
+        elif result["feasible"] is False:
+            lines.append(
+                "Different target values fit the same readings even with every candidate channel."
+            )
         if result["minimum_proven"]:
             lines.append(
                 f"Minimum added channels: {result['minimum_added']} (proved); total: {result['minimum_total']}."
             )
-        elif result["feasible"] is not False:
-            lower = result["lower_bound_added"]
-            upper = result["upper_bound_added"]
-            lines.append("The minimum has not been proved.")
-            lines.append(
-                f"Added-channel bounds: lower {lower if lower is not None else 'unknown'}; "
-                f"upper {upper if upper is not None else 'unknown'}."
-            )
+        else:
+            bounds = []
+            if result["lower_bound_added"] is not None:
+                bounds.append(f"at least {result['lower_bound_added']}")
+            if result["upper_bound_added"] is not None:
+                bounds.append(f"at most {result['upper_bound_added']}")
+            if bounds:
+                lines.append(
+                    "Bounds on the minimum added channels: " + ", ".join(bounds) + "."
+                )
         for solution in result["solutions"]:
             lines.append(
                 "Add: " + (", ".join(solution["added_ids"]) or "no additional channel")
             )
-        if result["feasible"] is True:
-            lines.append(
-                "All minimum choices are shown."
-                if result["ties_complete"]
-                else "Further choices may remain unsearched or unreturned."
-            )
-        if not result["certificates_complete"]:
-            lines.append("Some reconstruction certificates remain unfinished.")
+        if result["solutions"]:
+            if result["ties_complete"]:
+                lines.append("All minimum choices are shown.")
+            elif result["enumeration_complete"]:
+                lines.append(
+                    f"Showing {len(result['solutions'])} of {result['ties_found']} minimum choices."
+                )
+            else:
+                lines.append("Further minimum choices may remain.")
+            if not result["certificates_complete"]:
+                lines.append(
+                    "Certificate construction is incomplete for the listed designs."
+                )
         if any(s["added_count"] for s in result["solutions"]):
             lines.append(
                 "Additional channels apply to future collection or replay from available full paths."
             )
     else:
-        lines.append(
-            {
-                True: "The fixed readouts determine every target for legal records.",
-                False: "The fixed readouts do not determine every target: distinct histories can share a record.",
-                None: "Target sufficiency has not been established.",
-            }[result["sufficient"]]
-        )
-        if document["operation"] == "evaluate":
+        if result["sufficient"] is True:
+            lines.append("The fixed readouts determine every target for legal records.")
+        elif result["sufficient"] is False and (
+            operation == "analyze" or result["legal_record"] is not True
+        ):
             lines.append(
-                {
-                    True: "The supplied record satisfies the integer-image constraints.",
-                    False: "The supplied record is outside the legal integer image; no target value is returned.",
-                    None: "Record legality has not been established; no target value is returned.",
-                }[result["legal_record"]]
+                "Different histories can share the fixed readouts and have different target values."
             )
+        if operation == "evaluate":
+            if result["legal_record"] is True:
+                lines.append(
+                    "The supplied record satisfies the integer-image constraints."
+                )
+            elif result["legal_record"] is False:
+                lines.append("The supplied record is outside the legal integer image.")
             if result["target_values"] is not None:
                 lines.append(
                     "Raw target values (including endpoint corrections):"
@@ -179,33 +219,28 @@ def render_target_text(document: dict) -> str:
                     f"  {name} = {value}"
                     for name, value in result["target_values"].items()
                 )
-            elif result["legal_record"] is True:
+            elif result["legal_record"] is True and result["sufficient"] is False:
                 lines.append(
-                    "No unique target value has been established for this record."
+                    f"Several values of {targets[0]} fit this record."
+                    if len(targets) == 1
+                    else "Several combinations of target values fit this record."
                 )
         else:
             certificate = result["certificate"]
-            if not result["certificate_complete"]:
+            if result["sufficient"] is not None and not result["certificate_complete"]:
                 lines.append(
-                    "The certificate remains unfinished; the conclusion above is retained."
+                    "The rank test finished. Certificate construction is incomplete."
                 )
             if certificate and certificate["kind"] == "ambiguity":
                 lines.append(
                     "An integer closed-chain witness leaves every fixed readout unchanged:"
                 )
                 lines.extend(
-                    f"  {target['name']} changes by {row[0]}"
-                    for target, row in zip(
-                        document["request"]["targets"],
-                        certificate["target_change"]["data"],
-                    )
+                    f"  {name} changes by {row[0]}"
+                    for name, row in zip(targets, certificate["target_change"]["data"])
                 )
             elif certificate:
                 lines.append("An exact decoder is included in the structured result.")
-    if document["limit"]:
-        lines.append(
-            f"Stopped at {document['limit']['stage']}: {document['limit']['resource']}."
-        )
     if document["explanation_status"] != "NOT_REQUESTED":
         lines.append(f"Exposure-scale explanation: {document['explanation_status']}")
     explanation = document["explanation"]

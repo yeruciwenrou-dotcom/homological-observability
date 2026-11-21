@@ -62,8 +62,8 @@ natural evaluation in `case.json`.
 | `all` | Same snapshots, W, W_ON, W_OFF, S0, S1, S2 | Yes |
 
 The existing W-only scheme needs **one additional channel**. Both W_ON and W_OFF
-are minimum choices. In the fixed fixture, each sufficient scheme reconstructs
-all 64 paths with zero mismatch. The natural test set has 13 paths; the
+are minimum choices. In the bundled dataset, `w-on` and `all` each recover
+`DeltaW` exactly on all 64 paths. The natural test set has 13 paths; the
 training-median baseline has MAE 6/13 and exact-match accuracy 7/13. These are
 measurements of this small fixture. The prediction interface below accepts
 outputs from a separately trained model.
@@ -115,10 +115,10 @@ result = dfr.evaluate_predictions(data, request)
 print(result["raw"], result["training_median_baseline"])
 ```
 
-Use `dfr.feature_view(..., split="validation")` for model selection. Snapshot
-values 0 through 5 are **categorical state IDs**, not spatial coordinates. Choose
-an appropriate encoding for the learner; learn preprocessing parameters from
-training data. Each row is one complete trajectory. All schemes share those
+Use `dfr.feature_view(..., split="validation")` for model selection. The
+snapshot values 0 through 5 label the six states. Encode them as **categorical
+state IDs** and fit preprocessing parameters on the training data. Each row
+is one complete trajectory. All schemes share those
 trajectory IDs and splits. `X` contains only the snapshot sequence and the
 selected integer counter totals. IDs and column names are separate metadata.
 

@@ -174,16 +174,12 @@ For both `COMPLETE` and `PARTIAL_HORIZON`, `filtration` and `phase` are objects
 and `limit` is `null`.
 
 `LIMIT_REACHED` means the selected backend exceeded its catalogue budget
-(`max_cycles` for simple cycles or `max_generators` for generators). In that state:
+(`max_cycles` for simple cycles or `max_generators` for generators). The result retains the homology and readout matrix.
+The `filtration` and `phase` fields are `null`. The `limit` fields identify the
+resource and its ceiling, and `complete_components` and `incomplete_components`
+list which parts of the calculation finished.
 
-- `homology` and the readout matrix remain valid;
-- `filtration` and `phase` are `null`;
-- `limit.resource`, `limit.limit`, `complete_components`, and
-  `incomplete_components` explain the boundary;
-- no truncated lattice is presented as a completed scientific result.
-
-Invalid input is not an analysis state. It produces a controlled error rather
-than a result document.
+An invalid request produces an input error.
 
 Computed integers must also fit the decimal representation boundary: at most
 4,300 digits, or the interpreter's smaller active limit. This covers readout
@@ -191,7 +187,7 @@ matrices, lattice bases, quotient invariants, finite group orders, and all other
 integer fields in the output document. If any field exceeds that boundary,
 `analyze_model` raises `ValueError` before returning a result. The renderers
 apply the same check to supplied results and documents. The CLI reports
-`ERROR` with exit code `2` in either format; no integer is rounded or truncated.
+`ERROR` with exit code `2` in either format.
 
 The `summary` object distinguishes the two notions of completeness:
 
@@ -553,8 +549,7 @@ Reading surfaces adapt to the effective request. Structure-only reports show
 integer filtrations and counter relations. Alpha reports add per-layer
 regimes and entropy contributions. Finite time/interval reports show the
 computed exposure scales and hidden graded quotients, including torsion.
-Partial and unavailable results keep their completion boundaries; a renderer
-does not compute missing scientific results.
+For partial or limited runs, the reports identify which layers were computed.
 
 Topology analysis renderers accept the immutable analysis result:
 

@@ -12,6 +12,7 @@ from pathlib import Path
 
 from ..design import design_readouts
 from ..target import analyze_target, evaluate_target
+from ..target_io import _target_limit_note
 from ._dfr_data import (
     SCHEMES,
     dfr_model,
@@ -123,28 +124,36 @@ def _render_case_text(result):
         lines.append(
             "Histories with identical W and candidate readouts can still have different DeltaW values."
         )
-    else:
-        lines.append(
-            "The minimum number of additional channels has not been established."
-        )
+    if result["design"]["limit"]:
+        lines.append(_target_limit_note(result["design"]["limit"]))
     for solution in design["solutions"]:
         lines.append(
             "Add: " + (", ".join(solution["added_ids"]) or "no additional channel")
         )
-    if not design["ties_complete"]:
-        lines.append("Further choices may remain unsearched or unreturned.")
+    if design["solutions"] and not design["ties_complete"]:
+        if design["enumeration_complete"]:
+            lines.append(
+                f"Showing {len(design['solutions'])} of {design['ties_found']} minimum choices."
+            )
+        else:
+            lines.append("Further minimum choices may remain.")
     lines.append(
         f"Design calculation: {result['design']['status']}; exposure explanation: {result['design']['explanation_status']}."
     )
     lines.extend(["", "Exact reconstruction from each observation scheme:"])
     for scheme, record in result["paired_reconstruction"].items():
-        sufficient = result["audits"][scheme]["result"]["sufficient"]
+        audit = result["audits"][scheme]
+        sufficient = audit["result"]["sufficient"]
         if sufficient is True:
-            detail = f"reconstructed {record['count']} paths; mismatches {record['mismatches']}"
+            detail = f"Recovered DeltaW on {record['count']} paths ({record['mismatches']} mismatches)."
+        elif sufficient is False and scheme == "w":
+            detail = "DeltaW has the same parity as W. Several values fit the record."
         elif sufficient is False:
-            detail = "DeltaW is not determined; exact reconstruction is unavailable"
+            detail = (
+                "Paths with the same snapshots can have different values of DeltaW."
+            )
         else:
-            detail = "target sufficiency is unresolved; exact reconstruction was not attempted"
+            detail = _target_limit_note(audit["limit"])
         lines.append(f"  {scheme}: {detail}")
     lines.extend(["", "Training-median prediction baseline (W-only inputs):"])
     for cohort in ("natural", "pressure"):

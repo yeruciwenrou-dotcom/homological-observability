@@ -113,7 +113,7 @@ def check_certificate(model, targets, document):
 
 
 def synthetic(beta, candidate_count, target_count=1, *, bits=1):
-    """Labeled constructed triangles; these are not physical sensor models."""
+    """Construct labeled triangle networks for the resource profiles."""
     vertices = ["o"] + [f"v{i}-{j}" for i in range(beta) for j in (0, 1)]
     edges = [
         e
@@ -333,7 +333,7 @@ def baselines():
             "timing": target_timing,
             "sufficient": diagnosis["result"]["sufficient"],
         },
-        "timing_scope": "Fraction scripts return ranks/IDs; product design also builds coordinates, certificates, replay metadata and statuses. Timings do not imply equal output responsibilities.",
+        "timing_scope": "The Fraction scripts return ranks and channel IDs. The design run also constructs coordinates and certificates and records replay metadata and completion status.",
     }
 
 
@@ -419,7 +419,7 @@ def records():
         },
         "application_seconds": duration,
         "application": case,
-        "scope": "Fixed 64 natural trajectories; identical snapshots and IDs. int64 is a declared representation, JSON sizes are measured. Event accumulation excludes simulation and snapshots. No physical acquisition cost or training improvement is inferred.",
+        "scope": "Storage and counter accumulation are compared on 64 fixed trajectories with the same snapshots and IDs. Counter bytes assume signed int64 values. JSON sizes are measured. The timer covers counter accumulation from existing event logs.",
     }
 
 
@@ -592,7 +592,7 @@ def main():
     results = {
         "protocol": 1,
         "environment": source_identity(),
-        "measurement": "Individual resource profiles run in fresh subprocesses. Peak RSS uses Linux VmHWM or resource.ru_maxrss elsewhere, measured before replay and including interpreter/imports. Stages partition coordinate, rank, certificate and optional explanation work; JSON encoding is additional. Each scale point is one run, not a latency guarantee.",
+        "measurement": "Individual resource profiles run in fresh subprocesses. Peak RSS uses Linux VmHWM or resource.ru_maxrss elsewhere, measured before replay and including interpreter/imports. Stages partition coordinate, rank, certificate and optional explanation work; JSON encoding is additional. Each scale point reports one timed run.",
     }
     for name, function in (
         ("correctness", correctness),

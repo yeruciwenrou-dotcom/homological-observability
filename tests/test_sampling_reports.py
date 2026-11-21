@@ -84,7 +84,13 @@ class SamplingReportTests(unittest.TestCase):
             for renderer in (ho.render_comparison_text, ho.render_comparison_markdown):
                 text = readable(renderer(result))
                 self.assertIn("Observation time: 100.0", text)
-                self.assertIn("No sampling results were computed", text)
+                self.assertIn(
+                    "6 configurations reached"
+                    if limited
+                    else "6 configurations returned input errors",
+                    text,
+                )
+                self.assertNotIn("Sampling scales", text)
                 self.assertNotIn("lambda_m =", text)
                 self.assertNotIn("no hidden integer direction remains", text)
 

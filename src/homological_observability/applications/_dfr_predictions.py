@@ -159,7 +159,7 @@ def _metrics(predictions, labels, *, exact_match=True):
 
 
 def evaluate_predictions(dataset, document):
-    """Evaluate original and declared postprocessed values without silently rounding."""
+    """Score the original predictions and, when requested, the rounded values."""
     values = _validated_values(dataset, document)
     scheme, split, cohort = (document[k] for k in ("scheme_id", "split", "cohort"))
     rows = selected_rows(dataset, scheme, split, cohort)

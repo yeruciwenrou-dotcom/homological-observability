@@ -50,7 +50,7 @@ def sampling_tables(
     markdown: bool,
     comparison: bool,
 ) -> list[str]:
-    """Read phase values directly; never derive scales or classifications here."""
+    """Display the phase and scale values recorded for the request."""
     mode = sampling_mode(settings)
     if mode == "structure":
         return []
@@ -61,14 +61,21 @@ def sampling_tables(
     heading = "## " if markdown else ""
     lines = [heading + title, ""]
     if not available:
+        if comparison:
+            return []
         return lines + [
-            "No sampling results were computed. The requested conditions are recorded above; consult the completion states and recovery notes.",
+            "The calculation stopped before reaching the sampling layers.",
             "",
         ]
     shared = {}
     for result in available.values():
         for layer in result["phase"]["layers"]:
             shared.setdefault(layer["layer"], layer)
+    if not shared:
+        return lines + [
+            "The computed horizon contains no sampling layers at m >= 2.",
+            "",
+        ]
     if mode == "finite":
         headers = [
             "Layer $m$" if markdown else "Layer m",
@@ -96,8 +103,6 @@ def sampling_tables(
             "",
         ]
     lines += _table(headers, rows, markdown=markdown) + [""]
-    if not rows:
-        lines += ["There are no computed sampling layers m >= 2.", ""]
     headers = (["Configuration ID"] if comparison else []) + [
         "Layer m",
         "Hidden graded free rank",

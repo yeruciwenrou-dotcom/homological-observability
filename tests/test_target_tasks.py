@@ -573,14 +573,14 @@ class TargetReportTests(unittest.TestCase):
         model, targets, pool = dfr()
         diagnosis = ho.analyze_target(model, targets)
         text = ho.render_target_text(diagnosis)
-        self.assertIn("do not determine every target", text)
+        self.assertIn("Different histories can share the fixed readouts", text)
         self.assertIn("DeltaW changes by 2", text)
         limited = ho.analyze_target(
             model, targets, limits=ho.TargetLimits(max_matrix_entries=1)
         )
         text = ho.render_target_text(limited)
-        self.assertIn("sufficiency has not been established", text)
-        self.assertNotIn("do not determine", text)
+        self.assertIn("Increase limits.max_matrix_entries", text)
+        self.assertNotIn("Different histories can share", text)
         for document in (
             limited,
             ho.design_readouts(
@@ -590,7 +590,8 @@ class TargetReportTests(unittest.TestCase):
             text = ho.render_target_text(document)
             self.assertIn("LIMIT_REACHED", text)
             self.assertNotIn("None", text)
-            self.assertNotIn("cannot determine", text)
+            self.assertNotIn("different target values", text)
+            self.assertNotIn("unknown", text)
 
     def test_illegal_record_has_no_decoded_value_and_cycle_value_is_labeled(self):
         model, targets = lattice_model([[2]], [[1]])
@@ -603,6 +604,35 @@ class TargetReportTests(unittest.TestCase):
         self.assertIn("Cycle target values", text)
         self.assertIn("F0 = 1", text)
         self.assertNotIn("Raw target values", text)
+
+    def test_ambiguity_is_reported_only_when_proved_for_a_legal_record(self):
+        model, targets = lattice_model([[1, 0]], [[0, 1]])
+        record = {"P0": 0}
+        ambiguous = ho.evaluate_target(model, targets, record, record_kind="cycle")
+        self.assertIn(
+            "Several values of F0 fit this record.", ho.render_target_text(ambiguous)
+        )
+
+        model, targets = lattice_model([[1, 0]], [[0, 1], [1, 0]])
+        mixed = ho.evaluate_target(model, targets, record, record_kind="cycle")
+        self.assertIn(
+            "Several combinations of target values", ho.render_target_text(mixed)
+        )
+
+        model, targets = lattice_model([[1]], [[4]])
+        limited = ho.evaluate_target(
+            model,
+            targets,
+            {"P0": 4},
+            record_kind="cycle",
+            limits=ho.TargetLimits(max_integer_bits=3),
+        )
+        self.assertIs(limited["result"]["legal_record"], True)
+        self.assertIs(limited["result"]["sufficient"], True)
+        self.assertIsNone(limited["result"]["target_values"])
+        text = ho.render_target_text(limited)
+        self.assertIn("Increase limits.max_integer_bits", text)
+        self.assertNotIn("Several values", text)
 
     def test_finite_scale_and_zero_entropy_are_not_missing_values(self):
         model, targets, _ = dfr()
@@ -620,7 +650,10 @@ class TargetReportTests(unittest.TestCase):
             "Target entropy log(T) coefficient: 0", ho.render_target_text(sparse)
         )
         # A zero asymptotic coefficient must not turn insufficiency into recovery.
-        self.assertIn("do not determine every target", ho.render_target_text(sparse))
+        self.assertIn(
+            "Different histories can share the fixed readouts",
+            ho.render_target_text(sparse),
+        )
 
 
 if __name__ == "__main__":

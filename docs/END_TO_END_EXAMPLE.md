@@ -66,10 +66,10 @@ homological-observability example wedge-c3-c5 --format json
 ```
 
 The first command gives a compact table. The second emits a structured result
-that records the software version used for this run. Reference
+that records the software version used for this run. The archived 1.1.0
 [JSON](../examples/wedge_c3_c5_result.json) and
 [Markdown](../examples/wedge_c3_c5_result.md) reports show the same scientific
-calculation; their producer version identifies the run that created them.
+calculation.
 
 ## Layer two: triangle exposure
 
