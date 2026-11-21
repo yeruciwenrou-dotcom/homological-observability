@@ -167,9 +167,10 @@ homological-observability posterior my-ring/request.json
 
 The [finite-record guide](docs/FINITE_RECORDS.md) explains the input fields,
 numerical precision and how to import event trajectories for a comparison.
-Its [six-state kinesin example](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target)
-shows how to recover a molecular motor's net ATP hydrolysis from the observed
-endpoints and counts of mechanical steps and chemical transitions.
+The [kinesin example](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target)
+uses the six-state molecular motor model of [Liepelt and Lipowsky (2007)](https://doi.org/10.1103/PhysRevLett.98.258102).
+In the example record, the endpoints and net mechanical step count establish
+that net ATP hydrolysis is odd. One additional chemical count fixes it at one ATP molecule.
 For a network with proposed counters, [compare their hidden cycle directions](#compare-counter-configurations).
 
 ### Target analysis and scientific ML

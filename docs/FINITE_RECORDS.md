@@ -242,16 +242,19 @@ The request and result schemas are available through
 ## A mechanical and chemical target
 
 Which measurements of a kinesin motor determine its net ATP hydrolysis?
-In the [six-state model of Liepelt and Lipowsky](https://doi.org/10.1103/PhysRevLett.98.258102),
-$M$ counts mechanical steps along $2\to5$, while $A$ and $B$ count transitions
-along $6\to1$ and $3\to4$. All three are signed net counts. The target
-$F=A+B$ is the net number of ATP molecules hydrolyzed.
+We use the six-state network of Liepelt and Lipowsky (2007, Fig. 1c).
+In this model, $2\to5$ is a forward mechanical step. ATP hydrolysis and
+phosphate release are combined in the chemical transitions $6\to1$ and
+$3\to4$ (see [Supplemental Material, Fig. 4](https://www.mpikg.mpg.de/rl/P/archive/257sup.pdf)).
+In our example, $M$ counts net forward steps, while $A$ and $B$ count net
+transitions along those two chemical edges. The target $F=A+B$ is the net
+number of ATP molecules hydrolyzed.
 
 ```sh
 homological-observability posterior --example kinesin --output-dir motor
 ```
 
-The example record starts in state 1, ends in state 4 and has $M=A=0$.
+The record constructed for this example starts in state 1, ends in state 4 and has $M=A=0$.
 It determines $F=1$ exactly. To see why, assign $h=0$ to states 1, 2 and 3
 and $h=1$ to states 4, 5 and 6. The counts obey $F=2A-M+\Delta h$,
 and the observed endpoints give $\Delta h=1$.
@@ -263,3 +266,7 @@ gives this exact support with status `RATES_REQUIRED` because assigning
 probabilities to the odd values requires transition rates. To use a measured
 trace, match its snapshot labels and counters to these chemical states and
 transitions.
+
+**Model reference.** Steffen Liepelt and Reinhard Lipowsky,
+[*Kinesin’s Network of Chemomechanical Motor Cycles*](https://doi.org/10.1103/PhysRevLett.98.258102),
+*Physical Review Letters* **98**, 258102 (2007).
