@@ -85,7 +85,7 @@ K_2=L_2\cap\ker\pi=0.
 $$
 
 Relative to the zero previous layer, the exposure and visible quotients each
-have free rank one. The visible generator is $2$, not $1$. Retaining that
+have free rank one. The visible image consists of the even integers, with generator 2. Retaining that
 integer scale is necessary for detecting what changes at the next layer.
 
 ## Layer three: five-cycle exposure
@@ -152,7 +152,7 @@ With the requested $\alpha=1/2$:
 | Layer $m$ | Hidden graded free rank $d_m$ | Scaling exponent $1-\alpha(m-1)$ | Regime |
 | ---: | ---: | ---: | --- |
 | 2 | 0 | $1/2$ | `DENSE` |
-| 3 | 1 | $0$ | `CRITICAL` |
+| 3 | 1 | 0 | `CRITICAL` |
 
 The triangle layer is dense, but its hidden rank is zero: the counter resolves
 that direction. The surviving combination $-e_3+2e_5$ enters at layer three,

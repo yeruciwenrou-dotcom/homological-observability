@@ -127,7 +127,7 @@ $$
 $$
 
 Each quotient is summarized by its free rank and nontrivial Smith torsion
-factors. A factor $2$, for example, denotes a
+factors. A factor of 2, for example, denotes a
 $\mathbb Z/2\mathbb Z$ component. For a finite quotient, `finite_order` is the
 product of the torsion factors; it is `null` when the quotient has positive
 free rank.

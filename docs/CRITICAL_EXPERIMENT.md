@@ -58,7 +58,7 @@ $$
 v0\longrightarrow v1\longrightarrow v2\longrightarrow v3\longrightarrow v0
 $$
 
-with rate $2$ in the displayed direction and rate $1$ in the reverse
+with rate 2 in the displayed direction and rate 1 in the reverse
 direction. Both directed rates are present on every undirected edge, so the
 chain is irreducible. Translation symmetry gives the exact stationary law
 
@@ -67,7 +67,7 @@ p(v0)=p(v1)=p(v2)=p(v3)=\frac14,
 $$
 
 even though the dynamics is not reversible. The integer readout has
-coefficient $1$ on the oriented edge $v0\to v1$ and coefficient $0$ on the
+coefficient 1 on the oriented edge $v0\to v1$ and coefficient 0 on the
 other edges in their reference orientations.
 
 The full input is
@@ -90,8 +90,8 @@ endpoints in the critical limit.
 
 | Route | Mark | Leading weight | Conditional probability |
 | --- | ---: | ---: | ---: |
-| $v0 \to v1 \to v2$ (clockwise) | $0$ | $2 \cdot 2 / 2! = 2$ | $4/5$ |
-| $v0 \to v3 \to v2$ (counterclockwise) | $-1$ | $1 \cdot 1 / 2! = 1/2$ | $1/5$ |
+| $v0 \to v1 \to v2$ (clockwise) | 0 | $2 \cdot 2 / 2! = 2$ | $4/5$ |
+| $v0 \to v3 \to v2$ (counterclockwise) | −1 | $1 \cdot 1 / 2! = 1/2$ | $1/5$ |
 
 Here the visible mark equals the mark on both routes. Normalizing the two
 weights gives the endpoint-only probabilities in the last column. The
