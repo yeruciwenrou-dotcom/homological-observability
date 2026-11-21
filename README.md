@@ -49,22 +49,30 @@ but differ by one circulation around the triangle.
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
 Information acquisition is itself a physical process. The recording protocol
-determines which differences between histories become visible. Even with
-exactly known transition rates, repeated unresolved circulations create
-uncertainty in the accumulated history.
+determines which differences between histories leave a trace in the record.
+Known transition rates give the conditional probabilities of the possible
+windings. Several windings can still have positive probability for the same
+noiseless record.
 
-Longer observation yields more data while also extending the history to
-be recovered. The central question is how rapidly temporal resolution must
-improve to keep pace with that growing history.
+A longer observation supplies more snapshots and also lengthens the history
+whose winding we want to recover. A detour that changes the winding may be
+very unlikely in one short interval, yet a long run offers many opportunities
+for such detours to accumulate. How fast must the sampling interval shrink
+for the record to determine the accumulated winding of that single run?
 
 For stationary finite-state Markov jump processes, **the theory establishes an
 information phase diagram and sharp sampling thresholds for recovering
-accumulated cycle histories.** It quantifies how uncertainty grows with observation time
-and resolution, derives the posterior laws at critical sampling scales, and
-determines the number of independent hidden cycle directions at each scale
-from the phase diagram. These information transitions persist at equilibrium
-under detailed balance. Forward and reverse circulations then balance on
-average, yet a single trajectory can accumulate turns between snapshots.
+accumulated cycle histories.** When hidden cycle directions are present, the
+number of snapshots must grow faster than the observation time for the
+probability of exact recovery to approach one. The theory gives the posterior
+laws at critical sampling scales. Under power-law sampling, changes in the
+slope of the leading residual-entropy coefficient reveal how many independent
+hidden cycle directions emerge at each threshold.
+
+These information transitions persist at equilibrium under detailed balance.
+Forward and reverse circulations then balance on average, and the steady-state
+entropy production rate is zero. An individual trajectory can still accumulate
+net turns between snapshots.
 
 The supported graph is finite, connected, and simple, with positive
 transition-rate support in both directions on every edge. The recording
