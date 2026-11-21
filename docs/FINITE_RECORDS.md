@@ -7,18 +7,25 @@ With known transition rates, it can also estimate their probabilities.
 The examples use a flashing ratchet. The target `DeltaW` is the difference
 between the signed turns made while the potential is ON and OFF.
 
-| Research question | Example result | Open after running |
-| --- | --- | --- |
-| [What does one record tell me?](#use-your-own-model) | With 50 snapshots and total turns, only even values fit. At the supplied rates, zero has probability 99.63%. | `dfr-record/report.txt` |
-| [Would an extra counter help?](#compare-recording-protocols) | With eight snapshots per path, total turns plus ON turns determine `DeltaW` on all 64 trajectories. | `dfr-protocols/report.txt` |
+| Research question | Example result |
+| --- | --- |
+| [What does one record tell me?](#use-your-own-model) | With 50 snapshots and total turns, only even values fit. At the supplied rates, zero has probability 99.63%. |
+| [Would an extra counter help?](#compare-recording-protocols) | With eight snapshots per path, total turns plus ON turns determine `DeltaW` on all 64 trajectories. |
 
 After [installation](../README.md#install), run either example in the activated
 environment. Choose a new output directory for each run.
 
 ```sh
 homological-observability posterior --example dfr --output-dir dfr-record
+```
+
+Open `dfr-record/report.txt` for the probabilities from the single record.
+
+```sh
 homological-observability compare-protocols --example dfr --output-dir dfr-protocols
 ```
+
+Open `dfr-protocols/report.txt` for the comparison across the 64 paths.
 
 Each directory includes `result.json` for further analysis and an editable
 `request.json`. To replay the result, pass the saved request to the same command.

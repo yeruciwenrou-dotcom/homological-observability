@@ -357,18 +357,21 @@ In the report, counting the short ring moves the first hidden layer from 2
 to 4. Counting the long ring leaves it at 2. The [bridge study](#compare-counter-configurations)
 explains why two counters with the same remaining hidden rank give different results.
 
-For your own study, use `ho.load_study("my-study.json")`. To analyze one
-configuration, load it with `ho.load_model(path)`. The following functions
-are available in the imported module `ho`.
+For your own structural study, use `ho.load_study("my-study.json")`. For
+one configuration, load the graph and readouts with `ho.load_model(path)`.
+These functions are available in the imported module `ho`.
 
-| Task and guide | Python functions |
+| Structural task | Python functions |
 | --- | --- |
-| [Single record](docs/FINITE_RECORDS.md#use-your-own-model) | `infer_target_posterior` |
-| [Recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) | `compare_recording_protocols` |
-| [Network analysis](docs/MODEL_GUIDE.md) | `analyze_model` |
-| [Counter comparison](docs/COMPARISON_GUIDE.md) | `compare_configurations` |
-| [Target and readout design](docs/TARGET_TASKS.md#three-calculation-interfaces) | `analyze_target`, `design_readouts`, `evaluate_target` |
-| [Critical experiment](docs/CRITICAL_EXPERIMENT.md) | `analyze_critical_model` |
+| [Analyze a model](docs/MODEL_GUIDE.md) | `analyze_model` |
+| [Compare counters](docs/COMPARISON_GUIDE.md) | `compare_configurations` |
+| [Design a readout](docs/TARGET_TASKS.md#three-calculation-interfaces) | `analyze_target`, `design_readouts`, `evaluate_target` |
+| [Critical limit](docs/CRITICAL_EXPERIMENT.md) | `analyze_critical_model` |
+
+For **finite observations**, choose the input that matches your study.
+
+- With [one measured record](docs/FINITE_RECORDS.md#use-your-own-model), call `ho.infer_target_posterior(request)`.
+- To [compare protocols](docs/FINITE_RECORDS.md#compare-recording-protocols) on complete or simulated event paths, use `ho.compare_recording_protocols`.
 
 For paired trajectory data and `dfr.evaluate_predictions`, see the
 [scientific ML example in Python](docs/SCIENTIFIC_ML.md#supply-your-models-predictions).
