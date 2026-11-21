@@ -24,6 +24,7 @@ from .critical_experiment import (
 )
 from .examples import examples_to_dict, load_example
 from .model import load_model
+from .record_io import FINITE_RECORD_GUIDE
 from .reproduction import ReproductionMismatch, run_reproduction
 from .serialization import ArtifactRole, render_json, render_text
 from .target_io import (
@@ -112,7 +113,18 @@ def _build_parser() -> argparse.ArgumentParser:
         ("posterior", "infer an integer target from one finite record"),
         ("compare-protocols", "compare matched recording risks and resource use"),
     ):
-        task = commands.add_parser(command, help=help_text)
+        task = commands.add_parser(
+            command,
+            help=help_text,
+            epilog=(
+                "Try the three-state ring:\n"
+                "  homological-observability posterior --example triangle\n"
+                f"Finite-record guide: {FINITE_RECORD_GUIDE}#use-your-own-model"
+                if command == "posterior"
+                else None
+            ),
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+        )
         source = task.add_mutually_exclusive_group(required=True)
         source.add_argument(
             "request", nargs="?", type=Path, help="versioned JSON request"

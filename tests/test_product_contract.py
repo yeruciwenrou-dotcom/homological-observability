@@ -173,6 +173,21 @@ class ProductContractTests(unittest.TestCase):
             with package.joinpath("data", "reference", name).open("rb") as handle:
                 self.assertEqual(handle.read(), (ROOT / "results" / name).read_bytes())
 
+    def test_posterior_help_links_to_guide_and_has_a_runnable_example(self) -> None:
+        stdout = io.StringIO()
+        with (
+            contextlib.redirect_stdout(stdout),
+            self.assertRaises(SystemExit) as exited,
+        ):
+            cli.main(["posterior", "--help"])
+        self.assertEqual(exited.exception.code, 0)
+        help_text = stdout.getvalue()
+        self.assertIn("FINITE_RECORDS.md#use-your-own-model", help_text)
+        command = "homological-observability posterior --example triangle"
+        self.assertIn(command, [line.strip() for line in help_text.splitlines()])
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.main(command.split()[1:]), 0)
+
     def test_cli_json_is_the_public_api_document(self) -> None:
         completed = subprocess.run(
             [

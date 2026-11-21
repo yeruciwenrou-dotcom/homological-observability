@@ -187,8 +187,13 @@ Fixed imported sets report descriptive paired differences. Numerical
 precision is accounted for through the diagnostics of each resolved record.
 
 Every path retains its ID and remains in the denominator. Unresolved risks
-occupy the full 0–1 range in the sample bounds. An optional `risk_threshold`
-classifies the sample bounds. Resource columns count snapshots, declared
+occupy the full 0–1 range in the sample bounds. To compare protocols against
+a 20% mean risk limit, add `"risk_threshold": 0.2` to the request. In the
+text report, `MET` means the upper sample bound is at or below the limit,
+`EXCEEDED` means the lower bound is above it, and `UNRESOLVED` means the
+bounds leave both possibilities open.
+
+Resource columns count snapshots, declared
 scalar counters and bytes for the compact UTF-8 JSON representation of the
 visible state sequence and counts. The shared schedule, model metadata and
 instrument costs are accounted for separately.

@@ -1,6 +1,7 @@
 """Independent path-space and analytic checks of finite-record inference."""
 
 import copy
+import json
 import math
 import unittest
 from collections import defaultdict
@@ -10,7 +11,7 @@ from jsonschema import Draft202012Validator
 from scipy.special import iv
 
 import homological_observability as ho
-from homological_observability.record_io import recording_example
+from homological_observability.record_io import recording_example, render_record_result
 
 
 def uniformization_reference(request, jump_limit):
@@ -193,6 +194,13 @@ class PosteriorTests(unittest.TestCase):
         d = ho.infer_target_posterior(r)
         self.assertEqual(d["status"], "UNSUPPORTED_RANK")
         self.assertTrue(d["result"]["legal_record"])
+        report = render_record_result(d)
+        self.assertIn(
+            "target and all observed counters have effective joint rank 4", report
+        )
+        self.assertIn("supports rank up to 2", report)
+        self.assertIn("Integer support: 0 + 1 Z", report)
+        self.assertIn("FINITE_RECORDS.md#interpreting-a-posterior", report)
 
     def test_unresolved_and_input_errors(self):
         req = self.triangle
@@ -202,9 +210,16 @@ class PosteriorTests(unittest.TestCase):
         self.assertTrue(doc["result"]["legal_record"])
         no_rates = dict(req)
         del no_rates["rates"]
-        self.assertEqual(
-            ho.infer_target_posterior(no_rates)["status"], "RATES_REQUIRED"
-        )
+        no_rates["time_unit"] = "ms"
+        doc = ho.infer_target_posterior(no_rates)
+        self.assertEqual(doc["status"], "RATES_REQUIRED")
+        report = render_record_result(doc)
+        self.assertIn("satisfies the integer constraints", report)
+        self.assertIn("Integer support: 0 + 1 Z", report)
+        self.assertIn("each direction of every support edge", report)
+        self.assertIn("state labels for 'from' and 'to'", report)
+        self.assertIn("inverse units of 'ms'", report)
+        self.assertIn("FINITE_RECORDS.md#use-your-own-model", report)
         rare = recording_example("posterior", "dfr")
         rare["record"]["counts"]["W"] = 123457
         r = output(rare)
@@ -291,6 +306,10 @@ class ProtocolTests(unittest.TestCase):
         self.assertTrue(
             all(row["expected_difference_interval_95"] is None for row in rows)
         )
+        report = render_record_result(d)
+        self.assertIn("this fixed set of event paths", report)
+        self.assertNotIn("Hoeffding", report)
+        self.assertNotIn("Threshold", report)
         self.assertTrue(rows[0]["mean_encoded_bytes"] < rows[1]["mean_encoded_bytes"])
         self.assertAlmostEqual(
             rows[1]["mean_risk_difference"],
@@ -299,6 +318,33 @@ class ProtocolTests(unittest.TestCase):
         )
         Draft202012Validator(ho.load_protocol_request_schema()).validate(req)
         Draft202012Validator(ho.load_protocol_comparison_schema()).validate(d)
+
+    def test_simulated_report_gives_paired_intervals_and_threshold_status(self):
+        req = recording_example("compare-protocols", "triangle")
+        req["risk_threshold"] = 0.2
+        doc = ho.compare_recording_protocols(req)
+        report = render_record_result(doc)
+        self.assertIn("protocol minus baseline (endpoints)", report)
+        self.assertIn(
+            "per comparison, conditional on the numerical risk estimates", report
+        )
+        self.assertIn("Threshold for the sample mean risk: 0.2", report)
+        baseline, counted = doc["result"]["protocols"]
+        baseline_text, counted_text = report.split("\ncounted: ")
+        for row, status, detail in [
+            (baseline, "EXCEEDED", baseline_text),
+            (counted, "MET", counted_text),
+        ]:
+            self.assertEqual(row["sample_risk_threshold_status"], status)
+            self.assertIn(
+                "95% Hoeffding sampling interval for the expected risk difference "
+                f"(risk units): {json.dumps(row['expected_difference_interval_95'])}",
+                detail,
+            )
+            self.assertIn(
+                f"Sample mean risk bounds {json.dumps(row['mean_risk_bounds'])}: {status}",
+                detail,
+            )
 
     def test_simulated_study_preserves_trajectories_after_extreme_change_of_unit(self):
         request = recording_example("compare-protocols", "triangle")
@@ -334,6 +380,7 @@ class ProtocolTests(unittest.TestCase):
 
     def test_seeded_replay_unresolved_rows_and_invalid_paths(self):
         req = recording_example("compare-protocols", "triangle")
+        req["risk_threshold"] = 0.2
         req["limits"] = {"max_grid_points": 2}
         req["source"]["trajectories"] = 3
         d = ho.compare_recording_protocols(req)
@@ -346,6 +393,14 @@ class ProtocolTests(unittest.TestCase):
         self.assertEqual(p1["paired_difference_bounds"], [-1, 0])
         self.assertEqual(p1["mean_risk"], 0)
         self.assertIsNotNone(p1["expected_difference_interval_95"])
+        report = render_record_result(d)
+        self.assertIn(
+            "include all trajectories, with [0, 1] for each unresolved risk", report
+        )
+        self.assertIn(
+            f"Sample mean risk bounds {json.dumps(p0['mean_risk_bounds'])}: UNRESOLVED",
+            report,
+        )
         event = {"trajectory_id": "a", "states": ["a"], "times": [0]}
         req["source"] = {
             "kind": "events",
