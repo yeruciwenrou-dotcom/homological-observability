@@ -61,7 +61,30 @@
         "analysis": {
           "$ref": "#/$defs/analysis"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "schema_version": {
+                "const": 1
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "analysis": {
+                "properties": {
+                  "alpha": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "targets": {
       "type": "array",

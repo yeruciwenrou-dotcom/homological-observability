@@ -8,6 +8,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import chdir
 from pathlib import Path
 from unittest import mock
 
@@ -101,7 +102,14 @@ class ScientificCheckTests(unittest.TestCase):
         before = reference.read_bytes()
         for output in (reference.parent, reference.parent / "nested"):
             with self.subTest(output=output):
-                with self.assertRaisesRegex(ValueError, "must not overwrite"):
+                with (
+                    mock.patch.object(
+                        Path,
+                        "mkdir",
+                        side_effect=AssertionError("reached output creation"),
+                    ),
+                    self.assertRaisesRegex(ValueError, "must not overwrite"),
+                ):
                     reproduction.run_reproduction(output, check=True)
         self.assertEqual(reference.read_bytes(), before)
         self.assertFalse((reference.parent / "nested").exists())
@@ -126,10 +134,49 @@ class ScientificCheckTests(unittest.TestCase):
                         except OSError:
                             continue  # Some supported Windows setups disallow links.
                         before = source.read_bytes()
-                        with self.assertRaisesRegex(ValueError, "must not alias"):
+                        # If a guard regresses, fail before a write can follow
+                        # the test link into a real paper reference.
+                        with (
+                            mock.patch.object(
+                                Path,
+                                "mkdir",
+                                side_effect=AssertionError("reached output creation"),
+                            ),
+                            self.assertRaisesRegex(ValueError, "must not alias"),
+                        ):
                             reproduction.run_reproduction(output_dir, check=False)
                         self.assertEqual(source.read_bytes(), before)
                         self.assertEqual(set(output_dir.iterdir()), {output})
+
+    def test_foreign_checkout_is_protected_from_an_installed_copy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            checkout = base / "other-checkout"
+            package = checkout / "src" / "homological_observability"
+            package.mkdir(parents=True)
+            (package / "reproduction.py").touch()
+            (checkout / "pyproject.toml").touch()
+            reference = checkout / "results"
+            reference.mkdir()
+            table = reference / "critical_kernel_results.csv"
+            table.write_text("archived data", encoding="utf-8")
+            workspace = checkout / "fresh-output"
+            workspace.mkdir()
+            alias = workspace / "REPORT.md"
+            try:
+                alias.hardlink_to(table)
+            except OSError as error:
+                self.skipTest(f"hard links unavailable: {error}")
+            with chdir(base):
+                with self.assertRaisesRegex(ValueError, "must not overwrite"):
+                    reproduction.validate_output_directory(reference / "new-output")
+                with self.assertRaisesRegex(ValueError, "must not alias"):
+                    reproduction.validated_output_path(workspace, "REPORT.md")
+                self.assertEqual(
+                    reproduction.validate_output_directory(base / "results"),
+                    (base / "results").resolve(),
+                )
+            self.assertEqual(table.read_text(encoding="utf-8"), "archived data")
 
     def test_invalid_refinement_is_rejected(self) -> None:
         results = critical_kernel_checks.build_results()

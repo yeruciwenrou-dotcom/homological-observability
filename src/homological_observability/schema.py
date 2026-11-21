@@ -29,6 +29,8 @@ def _versioned_schema(
 def load_analysis_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load a fresh copy of the bundled analysis-result JSON Schema."""
 
+    if type(version) is int and version == 4:
+        return _load_schema("analysis-generators.schema.json")
     return _versioned_schema("analysis", version, latest=3, previous=2)
 
 
@@ -77,6 +79,8 @@ def load_study_schema(*, version: int | None = None) -> dict[str, Any]:
 def load_comparison_schema(*, version: int | None = None) -> dict[str, Any]:
     """Load the configuration-comparison result JSON Schema."""
 
+    if type(version) is int and version == 3:
+        return _load_schema("comparison-generators.schema.json")
     return _versioned_schema("comparison", version, latest=2, previous=1)
 
 
@@ -88,3 +92,23 @@ def load_target_request_schema() -> dict[str, Any]:
 def load_target_task_schema() -> dict[str, Any]:
     """Load the target-task result v1 schema."""
     return _load_schema("target-task.schema.json")
+
+
+def load_posterior_request_schema() -> dict[str, Any]:
+    """Load the standalone posterior-request v1 JSON Schema."""
+    return _load_schema("posterior-request.schema.json")
+
+
+def load_posterior_schema() -> dict[str, Any]:
+    """Load the standalone posterior v1 JSON Schema."""
+    return _load_schema("posterior.schema.json")
+
+
+def load_protocol_request_schema() -> dict[str, Any]:
+    """Load the standalone protocol-request v1 JSON Schema."""
+    return _load_schema("protocol-request.schema.json")
+
+
+def load_protocol_comparison_schema() -> dict[str, Any]:
+    """Load the standalone protocol-comparison v1 JSON Schema."""
+    return _load_schema("protocol-comparison.schema.json")

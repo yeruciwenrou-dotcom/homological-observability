@@ -32,7 +32,10 @@ The software implements calculations for this observation
 problem. Given a support graph and optional cumulative integer counter rules,
 it computes hidden cycle differences, their exposure layers, and asymptotic
 sampling requirements. Exact transition rates are additional inputs for
-constructing the rate-dependent critical experiment.
+constructing the rate-dependent critical experiment. For a measured finite
+record, the [posterior calculation](FINITE_RECORDS.md) uses the known rates to
+weight the target values compatible with the snapshots and counters. It also
+gives the probability of error when reporting the most likely value.
 
 The [target interfaces](TARGET_TASKS.md) ask a more specific question: do the
 fixed readouts and endpoints determine a chosen integer trajectory quantity?
@@ -88,6 +91,8 @@ Choose a task according to what you want to vary:
 
 | Task | Inputs to vary | Read from the result |
 | --- | --- | --- |
+| Infer a target from a [finite record](FINITE_RECORDS.md) | Snapshot times and states, signed counts and known rates | Integer support, target probabilities and the conditional error of the best point prediction |
+| [Compare recording protocols](FINITE_RECORDS.md#compare-recording-protocols) | Snapshot spacing and counter channels on the same event histories | Paired changes in error, snapshot count and number of counters |
 | Diagnose a target with `target` | Fixed counters and one or more integer target cochains | Sufficiency, an exact decoder or an ambiguity witness; values for legal sufficient records |
 | Design records with `design` | Fixed counters and admissible candidate channels | Minimum extra scalar channels, alternative choices and reconstruction certificates |
 | Evaluate predictions with the [DFR case](SCIENTIFIC_ML.md) | Observation scheme and user-supplied point predictions | Paired reconstruction, test-set errors, baselines and separate ambiguity-pressure results |
@@ -110,9 +115,11 @@ and prediction formats, described in the [ML tutorial](SCIENTIFIC_ML.md).
 The resulting exponents give asymptotic sampling guidance. For example,
 $N_T=T/\delta$ windows satisfy $\lambda_m\to0$ if
 $N_T/T^{m/(m-1)}\to\infty$ in the stated units. This helps compare how recording
-requirements grow with observation time. Choosing a sampling interval for a
-specified finite-run error tolerance requires additional risk analysis;
-counter cost and recording energy are separate inputs to an instrument model.
+requirements grow with observation time. For a finite run with known rates,
+[compare candidate protocols](FINITE_RECORDS.md#compare-recording-protocols)
+on the same paths to estimate how much an extra snapshot or counter reduces
+mean error. The report gives the recording resources for each choice.
+An instrument model can assign a monetary or energy cost to those resources.
 
 The package also supplies a reference implementation of the paper's integer
 and path constructions and reproducible finite-cycle calculations. General
@@ -200,12 +207,12 @@ Machine-readable results distinguish four kinds of support:
 | Category | Meaning |
 | --- | --- |
 | `EXACT_INTEGER` | Exact Hermite/Smith calculations and saturated integer kernels |
-| `EXACT_COMBINATORIAL` | Complete finite simple-cycle or directed-path enumeration within the declared budget |
+| `EXACT_COMBINATORIAL` | Complete finite simple-cycle or directed-path enumeration, or exact construction of each requested exposure lattice from [shortest-path cycle generators](CONVENTIONS.md#shortest-path-generators) |
 | `EXACT_RATIONAL` | Exact stationary probabilities, directed path weights, and critical intensities |
 | `ASYMPTOTIC_THEOREM` | A direct application of the paper's asymptotic phase law |
 
-In a topology analysis, `LIMIT_REACHED` means the requested finite enumeration
-was not completed. The result preserves the validated model, homology basis,
+In a topology analysis, `LIMIT_REACHED` means the simple-cycle or generator
+catalogue exceeded its budget. The result preserves the validated model, homology basis,
 and readout; filtration and phase fields are null.
 
 `PARTIAL_HORIZON` has a different meaning: every requested layer is exact, but
@@ -232,17 +239,16 @@ The inputs specify a support graph and exact measurement rules. Estimating an
 unknown graph, transition rates, or hidden states from data is a separate
 inference task. Noisy, adaptive, or irregular observations likewise need an
 observation model beyond the noiseless regular snapshots and exact integer
-counters used here. General trajectory simulation and real-valued measurement
-rules require other tools or extensions to that model. The DFR application
-includes a simulator for its documented known-rate six-state model and an
-adapter for user predictions. It supports observation design and evaluation
-for scientific ML; users train their own models separately.
+counters used here. For protocol comparisons, supply complete event histories
+or simulate paths on your own supported graph from known rates and an initial
+distribution. The DFR application also accepts externally trained predictors
+and scores them against the recorded experimental targets.
 
 Dense, critical, and sparse labels describe limits under a specified sampling
 scaling. The critical result gives a limiting generative specification and
 conditioning rule, represented by its component laws. Evaluating a posterior
 at finite $(T,\delta)$ or an unconditional critical MAP probability requires
-the corresponding conditional-law calculation.
+the corresponding conditional-law calculation. The [finite-record solver](FINITE_RECORDS.md) evaluates a scalar target at finite time on a known rate model using its actual joint integer image.
 
 For the paper's finite-cycle examples, the checkout includes specialized
 bridge calculations and critical MAP identities. The
@@ -266,6 +272,9 @@ bound that search and its certificates; a stopped run retains only the
 guarantees established before its stop. Target explanations additionally use
 the exposure calculation described below.
 
+For layer calculations on dense graphs, the [shortest-path generator method](CONVENTIONS.md#shortest-path-generators)
+recovers the same integer filtration and accepts its own generator budget.
+Use enumeration when the list of individual simple cycles is part of the result.
 Simple-cycle enumeration can grow exponentially. `max_cycles` bounds the
 work required for a complete catalogue. When the bound is
 exceeded, the software returns `LIMIT_REACHED` and identifies complete and

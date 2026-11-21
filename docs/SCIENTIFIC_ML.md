@@ -28,20 +28,23 @@ by this package; the supplied predictor is a training-median baseline.
 ## Run the complete case
 
 The case uses the package's existing NumPy/SciPy dependencies.
-Follow the [installation instructions](../README.md#install), then run from the
-repository directory. The examples below use its virtual environment; on
-Windows, replace `.venv/bin/python` with `.venv\Scripts\python.exe`.
+If you ran the [README example](../README.md#target-analysis-and-scientific-ml),
+open `dfr-case/report.txt` for the case results and, if you evaluated predictions,
+`dfr-evaluation.json` for the scores. To run either step, activate the
+[installed environment](../README.md#install) and choose a fresh path for its
+output. If you rename the case directory, use that directory's `predictions.json`
+in the second command.
 
 ```bash
-.venv/bin/python -m homological_observability.applications.dfr run --output-dir dfr-case
-.venv/bin/python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
+python -m homological_observability.applications.dfr run --output-dir dfr-case
+python -m homological_observability.applications.dfr evaluate dfr-case/predictions.json --output dfr-evaluation.json
 ```
 
 Omitting `--dataset` loads the bundled, hashed 64-trajectory fixture.
 `dfr-case/case.json` contains the four structural audits, minimum-channel design,
 record-by-record exact reconstruction, and separate natural/pressure evaluations.
 `report.txt` is the short report; `predictions.json` is an editable, task-bound
-prediction file. Output paths must be new. Evaluation replay reproduces the
+prediction file. Evaluation replay reproduces the
 natural evaluation in `case.json`.
 
 | Observation scheme | Visible features | DeltaW exactly determined? |
@@ -57,6 +60,11 @@ all 64 paths with zero mismatch. The natural test set has 13 paths; the
 training-median baseline has MAE 6/13 and exact-match accuracy 7/13. These are
 measurements of this small fixture. The prediction interface below accepts
 outputs from a separately trained model.
+
+For the same ratchet, the [finite-record study](FINITE_RECORDS.md#compare-recording-protocols)
+uses the known rates to compute the optimal conditional error for each observed
+record. Compare those risks across sensor choices. Use held-out prediction
+scores to judge how a trained model performs on its particular test records.
 
 The pressure set is a separate, constructed equal-weight pair. Its inputs agree
 at **every** snapshot time and in W, while DeltaW is 0 and 2. A deterministic
@@ -148,8 +156,8 @@ inputs provides the broader check for information leakage.
 ## Generate another reproducible sample
 
 ```bash
-.venv/bin/python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
-.venv/bin/python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
+python -m homological_observability.applications.dfr generate --output-dir my-dfr-data --trajectories 256 --seed 42 --split-seed 731
+python -m homological_observability.applications.dfr run --dataset my-dfr-data --output-dir my-dfr-case
 ```
 
 The Python generator additionally accepts `observation_time` and `grid_points`.

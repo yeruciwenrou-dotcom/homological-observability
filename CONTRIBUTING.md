@@ -37,7 +37,7 @@ Run the checks relevant to the change:
 .venv/bin/python -W error reproduce_all.py
 .venv/bin/python tests/validate_schema.py
 .venv/bin/python tests/validate_graph_atlas.py
-.venv/bin/python tests/validate_distribution.py --upgrade-from 2.0.0 --evidence-dir install-evidence
+.venv/bin/python tests/validate_distribution.py --upgrade-from 2.1.0 --evidence-dir install-evidence
 .venv/bin/ruff check .
 .venv/bin/ruff format --check .
 ```
@@ -86,5 +86,8 @@ examples requires the corresponding 1.1.0 environment. For a new model or
 comparison study, save fresh results in a new directory and include the input,
 software version, and checks that establish the expected result.
 
-Submit focused pull requests with the user-visible effect and verification
-results. Contributions use the repository's MIT License.
+Keep commit messages, pull-request titles and optional descriptions to one short
+line each. For documentation changes, use `Update docs`. Add at most one detail
+when it helps identify the change, for example `Update installation docs`.
+
+Contributions use the repository's MIT License.

@@ -20,7 +20,7 @@ from sympy import Matrix
 from sympy.matrices.matrixbase import MatrixBase
 
 from ._integer_io import check_output_integers, parse_json_integer
-from .analysis import TopologyAnalysis, analyze_model
+from .analysis import TopologyAnalysis, _analyze_topology, _shared_exposure
 from .integer_lattice import hidden_lattice, inclusion_coordinates
 from .model import parse_model
 from .serialization import analysis_to_dict, model_to_dict
@@ -232,6 +232,9 @@ def _summarize(
             "The cycle enumeration limit was reached. Hidden directions, "
             "phase summaries and information relations are unavailable."
         ]
+        if result.backend == "generators":
+            row["recovery"] = "Increase max_generators or reduce the requested horizon."
+            row["explanations"] = ["The short-cycle generator budget was reached."]
         return row
     layers = result.filtration.layers
     last = layers[-1]
@@ -507,6 +510,8 @@ def compare_configurations(
     study: Mapping[str, Any],
     *,
     reverse_tree_order: bool = False,
+    backend: str = "cycles",
+    max_generators: int | None = None,
 ) -> dict[str, Any]:
     """Analyze, compare and explain counters under shared exact conditions.
 
@@ -517,6 +522,12 @@ def compare_configurations(
     if not isinstance(reverse_tree_order, bool):
         raise TypeError("reverse_tree_order must be a boolean")
     normalized = parse_study(study)
+    shared = _shared_exposure(
+        parse_model({**normalized["model"], "analysis": normalized["analysis"]}),
+        reverse_tree_order,
+        backend,
+        max_generators,
+    )
     rows: list[dict[str, Any]] = []
     results: dict[str, Any] = {}
     analyses: dict[str, TopologyAnalysis] = {}
@@ -526,8 +537,12 @@ def compare_configurations(
         raw["analysis"] = copy.deepcopy(normalized["analysis"])
         raw["readouts"] = copy.deepcopy(config["readouts"])
         try:
-            result = analyze_model(
-                parse_model(raw), reverse_tree_order=reverse_tree_order
+            result = _analyze_topology(
+                parse_model(raw),
+                reverse_tree_order=reverse_tree_order,
+                backend=backend,
+                max_generators=max_generators,
+                shared=shared,
             )
             payload = analysis_to_dict(result)
             row = _summarize(config, result, payload)
@@ -600,5 +615,12 @@ def compare_configurations(
             "or information-relation conclusion.",
         ],
     }
+    if backend == "generators":
+        output["schema_version"] = 3
+        output["shared_conditions"]["generator_options"] = {
+            "backend": backend,
+            "max_generators": max_generators,
+            "reverse_tree_order": reverse_tree_order,
+        }
     check_output_integers(output)
     return output

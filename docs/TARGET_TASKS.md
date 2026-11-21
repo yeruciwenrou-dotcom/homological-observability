@@ -25,17 +25,15 @@ The colored arrows set the positive signs of the two cycle counters. The
 switching counters record crossings between ON and OFF states. With W fixed,
 the two minimum choices for DeltaW are W_ON and W_OFF, as the search below shows.
 
-Run from the repository directory, using the installed environment's command:
+With the environment activated, run the requests in `examples/` from the root
+of a [source checkout](../README.md#full-verification-from-source).
 
 ```bash
-.venv/bin/homological-observability target examples/dfr_target.json
-.venv/bin/homological-observability design examples/dfr_design.json --output-dir dfr-design
-.venv/bin/homological-observability target examples/dfr_evaluate.json --format json
-.venv/bin/homological-observability design dfr-design/request.json --format json
+homological-observability target examples/dfr_target.json
+homological-observability design examples/dfr_design.json --output-dir dfr-design
+homological-observability target examples/dfr_evaluate.json --format json
+homological-observability design dfr-design/request.json --format json
 ```
-
-On Windows, replace `.venv/bin/homological-observability` with
-`.venv\Scripts\homological-observability.exe`.
 
 Expected conclusions:
 

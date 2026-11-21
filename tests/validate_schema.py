@@ -19,6 +19,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> int:
     schemas = {
         "analysis": ho.load_analysis_schema(),
+        "generator_analysis": ho.load_analysis_schema(version=4),
+        "generator_comparison": ho.load_comparison_schema(version=3),
+        "posterior": ho.load_posterior_schema(),
+        "posterior_request": ho.load_posterior_request_schema(),
+        "protocol_request": ho.load_protocol_request_schema(),
+        "protocol_comparison": ho.load_protocol_comparison_schema(),
         "model": ho.load_model_schema(),
         "examples": ho.load_examples_schema(),
         "reproduction": ho.load_reproduction_schema(),
@@ -184,6 +190,25 @@ def main() -> int:
         false_complete["status"] = "COMPLETE"
         if validators["comparison"].is_valid(false_complete):
             raise AssertionError("the comparison schema accepted false completeness")
+
+    from homological_observability.record_io import recording_example
+
+    triangle = recording_example("posterior", "triangle")
+    protocols = recording_example("compare-protocols", "triangle")
+    validators["posterior_request"].validate(triangle)
+    validators["posterior"].validate(ho.infer_target_posterior(triangle))
+    validators["protocol_request"].validate(protocols)
+    validators["protocol_comparison"].validate(
+        ho.compare_recording_protocols(protocols)
+    )
+    validators["generator_analysis"].validate(
+        ho.analysis_to_dict(
+            ho.analyze_model(ho.load_example("wedge-c3-c5"), backend="generators")
+        )
+    )
+    validators["generator_comparison"].validate(
+        ho.compare_configurations(ho.load_study_example("bridge"), backend="generators")
+    )
 
     print("PASS: all public JSON documents satisfy their bundled schemas")
     return 0

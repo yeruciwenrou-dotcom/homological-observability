@@ -10,7 +10,13 @@ from typing import cast
 from sympy import ImmutableMatrix, eye
 
 from ._sampling import Alpha
-from .filtration import CycleLimitExceeded, FiltrationAnalysis, analyze_filtration
+from ._short_generators import GeneratorLimitExceeded, generator_exposure
+from .filtration import (
+    CycleLimitExceeded,
+    FiltrationAnalysis,
+    exposure_filtration,
+    project_exposure,
+)
 from .homology import HomologyBasis, build_homology_basis, readout_matrix
 from .model import GraphModel, validate_sampling_parameters
 from .phase import PhasePrediction, predict_phase
@@ -50,6 +56,10 @@ class TopologyAnalysis:
     phase: PhasePrediction | None
     limit: AnalysisLimit | None
 
+    backend: str = "cycles"
+    max_generators: int | None = None
+    reverse_tree_order: bool = False
+
     @property
     def is_complete(self) -> bool:
         """Whether the natural filtration, not only the request, is complete."""
@@ -60,10 +70,51 @@ class TopologyAnalysis:
 _UNSET = object()
 
 
+@dataclass(frozen=True)
+class _Exposure:
+    basis: HomologyBasis
+    catalogue: tuple
+    layers: tuple
+    limit: AnalysisLimit | None
+
+
+def _shared_exposure(model, reverse, backend, max_generators):
+    if backend not in ("cycles", "generators"):
+        raise ValueError("backend must be cycles or generators")
+    if max_generators is not None and (
+        backend != "generators" or type(max_generators) is not int or max_generators < 1
+    ):
+        raise ValueError(
+            "max_generators requires the generators backend and a positive integer"
+        )
+    horizon = model.max_layer or ceil(len(model.vertices) / 2)
+    basis = build_homology_basis(model, reverse_tree_order=reverse)
+    try:
+        if backend == "generators":
+            catalogue, layers = generator_exposure(basis, horizon, max_generators)
+        else:
+            catalogue, layers = exposure_filtration(
+                basis, max_layer=horizon, max_cycles=model.max_cycles
+            )
+    except (CycleLimitExceeded, GeneratorLimitExceeded) as error:
+        limit = AnalysisLimit(
+            resource="simple_cycles"
+            if backend == "cycles"
+            else "short_cycle_generators",
+            limit=error.limit,
+            complete_components=("model", "homology_basis", "readout"),
+            incomplete_components=("filtration", "phase"),
+        )
+        return _Exposure(basis, (), (), limit)
+    return _Exposure(basis, catalogue, layers, None)
+
+
 def analyze_model(
     model: GraphModel,
     *,
     reverse_tree_order: bool = False,
+    backend: str = "cycles",
+    max_generators: int | None = None,
     alpha: Alpha | None | object = _UNSET,
     observation_time: float | None | object = _UNSET,
     sampling_interval: float | None | object = _UNSET,
@@ -73,6 +124,8 @@ def analyze_model(
 
     result = _analyze_topology(
         model,
+        backend=backend,
+        max_generators=max_generators,
         reverse_tree_order=reverse_tree_order,
         alpha=alpha,
         observation_time=observation_time,
@@ -86,6 +139,9 @@ def _analyze_topology(
     model: GraphModel,
     *,
     reverse_tree_order: bool = False,
+    shared: _Exposure | None = None,
+    backend: str = "cycles",
+    max_generators: int | None = None,
     alpha: Alpha | None | object = _UNSET,
     observation_time: float | None | object = _UNSET,
     sampling_interval: float | None | object = _UNSET,
@@ -127,21 +183,14 @@ def _analyze_topology(
             sampling_interval=effective_sampling_interval,
         )
 
-    basis = build_homology_basis(
-        model,
-        reverse_tree_order=reverse_tree_order,
+    shared = shared or _shared_exposure(
+        model, reverse_tree_order, backend, max_generators
     )
+    basis = shared.basis
     readout = readout_matrix(basis, model.readouts)
     natural_max_layer = ceil(len(model.vertices) / 2)
     requested_max_layer = model.max_layer or natural_max_layer
-    try:
-        filtration = analyze_filtration(
-            basis,
-            readout=readout,
-            max_layer=requested_max_layer,
-            max_cycles=model.max_cycles,
-        )
-    except CycleLimitExceeded as error:
+    if shared.limit is not None:
         return TopologyAnalysis(
             status=AnalysisStatus.LIMIT_REACHED,
             model=model,
@@ -153,13 +202,18 @@ def _analyze_topology(
             natural_filtration_complete=False,
             filtration=None,
             phase=None,
-            limit=AnalysisLimit(
-                resource="simple_cycles",
-                limit=error.limit,
-                complete_components=("model", "homology_basis", "readout"),
-                incomplete_components=("filtration", "phase"),
-            ),
+            limit=shared.limit,
+            backend=backend,
+            max_generators=max_generators,
+            reverse_tree_order=reverse_tree_order,
         )
+    filtration = project_exposure(
+        basis,
+        readout,
+        shared.layers,
+        cycles=shared.catalogue if backend == "cycles" else None,
+        generators=shared.catalogue if backend == "generators" else None,
+    )
 
     natural_filtration_complete = filtration.layers[-1].exposure == ImmutableMatrix(
         eye(basis.rank)
@@ -191,4 +245,7 @@ def _analyze_topology(
         filtration=filtration,
         phase=phase,
         limit=None,
+        backend=backend,
+        max_generators=max_generators,
+        reverse_tree_order=reverse_tree_order,
     )
