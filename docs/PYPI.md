@@ -7,12 +7,18 @@ This package provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Use your own network to identify hidden cycle information, determine the
 sampling requirements for recovery, and find which counters reveal a chosen
-current. For a finite record, you can also use known transition rates to
-estimate the probabilities of the target values that remain possible.
+current.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability
 > and Information Phase Diagrams in Markov Jump Processes](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)*
+
+**[New in 2.2 (preview)](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/0a7525340c673711ae4088232e6b5c5fe229d6c6/CHANGELOG.md#220dev0)**
+
+Given a single record and known transition rates, estimate the probability of
+each possible value of a target such as net winding. Compare sampling schedules
+and counters on the same event trajectories to see how they affect the risk of
+a wrong estimate.
 
 The recording process determines which differences between histories appear in
 the data. Even with known transition rates, a detector that records only the

@@ -11,9 +11,6 @@ This repository provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Use it to identify hidden cycle information in your network, compare recording
 schemes, and determine which counts recover a chosen trajectory target.
-With an observed record and known transition rates, you can also estimate the
-probability of each possible target value and compare the error from different
-snapshot schedules and counters.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -22,6 +19,13 @@ snapshot schedules and counters.
 
 [Install](#install) · [Quick start](#quick-start) · [Python API](#python-api) ·
 [Documentation](#documentation-and-feedback)
+
+**[New in 2.2 (preview)](CHANGELOG.md#220dev0)**
+
+Given a single record and known transition rates, estimate the probability of
+each possible value of a target such as net winding. Compare sampling schedules
+and counters on the same event trajectories to see how they affect the risk of
+a wrong estimate.
 
 ## Choose a task
 
