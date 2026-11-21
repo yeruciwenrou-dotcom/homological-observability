@@ -11,7 +11,7 @@ from .target_io import target_json
 
 FINITE_RECORD_GUIDE = (
     "https://github.com/yeruciwenrou-dotcom/homological-observability/blob/"
-    "90274ca40863810adc6f8020abc7a18ba1a6d7ab/docs/FINITE_RECORDS.md"
+    "b8350a6c9f47ca2b68286defdf2a4b86985cacac/docs/FINITE_RECORDS.md"
 )
 
 
