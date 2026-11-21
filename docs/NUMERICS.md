@@ -5,6 +5,12 @@ the exact integer and rational calculations used for graph and critical-limit
 analysis. This note explains their count-TV intervals, small-window bridge
 evaluation, and reference-table correction.
 
+For a single observed trajectory, the [finite-record guide](FINITE_RECORDS.md#interpreting-a-posterior)
+explains the tilted-generator Fourier calculation, its conditional error
+indicator and precision limits. For a choice of recording schedules, the
+[protocol comparison](FINITE_RECORDS.md#compare-recording-protocols) explains
+how per-record risks enter the paired estimates and sampling intervals.
+
 ## Count-TV intervals
 
 For the C3 leading counts $(A,B)$, the finite law is multinomial with

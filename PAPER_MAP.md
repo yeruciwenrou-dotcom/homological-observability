@@ -16,6 +16,8 @@ the critical experiment determines their limiting weights and what remains
 after the available observations. For a reader's introduction, start with
 [physical interpretation and scope](docs/SCIENTIFIC_SCOPE.md). This page
 provides the implementation and evidence trail behind those interpretations.
+For a measured trajectory or a choice of recording schedules, see
+[finite records and protocol comparisons](#finite-records-and-protocol-comparisons).
 
 ## Integer homology and filtrations
 
@@ -120,6 +122,24 @@ limits. The output specifies the critical-limit experiment and its conditioning
 rule. Finite-time posteriors and unconditional MAP probabilities require
 evaluation of the corresponding conditional laws.
 
+## Finite records and protocol comparisons
+
+The paper characterizes history uncertainty as temporal resolution changes.
+Two software applications address finite measurements on a specified rate model:
+
+- [Infer a target from one record](docs/FINITE_RECORDS.md#use-your-own-model).
+  The [posterior solver](src/homological_observability/posterior.py) finds the
+  integer target values compatible with the snapshots and counters, then assigns
+  probabilities when the target remains ambiguous and the numerical calculation resolves.
+- [Compare recording protocols](docs/FINITE_RECORDS.md#compare-recording-protocols).
+  The [paired comparison](src/homological_observability/protocols.py) applies each
+  schedule and counter choice to the same event paths and compares the conditional
+  risk of a wrong target estimate and the resources used to record each path.
+
+The [finite-record tests](tests/test_finite_records.py) check target probabilities
+against a ring law and an independent positive recursion, and verify the paired
+risk results on the bundled flashing-ratchet paths.
+
 ## Inputs, outputs, and reproducibility
 
 | Interface | Definition | Checks |
@@ -145,7 +165,7 @@ for paper reproduction.
 | Small-window C3–C6 asymptotics | [reference_appendix.py](src/homological_observability/reference_appendix.py); refinement checks | [Selected appendix checks](results/selected_appendix_checks.csv) |
 | C3/C4 critical count kernels | [critical.py](src/homological_observability/critical.py); independent count laws | [Critical-kernel table](results/critical_kernel_results.csv) |
 | Poisson-averaged binomial MAP identity | [critical.py](src/homological_observability/critical.py); direct mixture and high-precision Bessel comparisons | MAP rows in the appendix table |
-| Reciprocal-lattice peak suppression | [lattice.py](src/homological_observability/lattice.py); positivity, ordering, and refinement checks | Lattice rows in the appendix table and [summary figure](results/companion_summary.png) |
+| Reciprocal-lattice peak suppression | [lattice.py](src/homological_observability/lattice.py); positivity, ordering, and refinement checks | Lattice rows in the appendix table and the right panel of the summary figure ([PNG](results/companion_summary.png), [SVG](results/companion_summary.svg)) |
 | Combined reproduction | [reporting.py](src/homological_observability/reporting.py) and [reproduction.py](src/homological_observability/reproduction.py) | [Report](results/REPORT.md) and PNG/SVG figures |
 
 `python quickstart.py` runs the reader-side tests and regenerates these

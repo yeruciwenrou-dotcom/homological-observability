@@ -1,0 +1,839 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:posterior:1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_name": {
+      "const": "homological-observability.posterior"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "software": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "homological-observability"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ]
+    },
+    "status": {
+      "enum": [
+        "COMPLETE",
+        "LIMIT_REACHED",
+        "UNSUPPORTED_RANK",
+        "RATES_REQUIRED",
+        "NUMERICALLY_UNRESOLVED"
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "model": {
+          "$ref": "#/$defs/model"
+        },
+        "target": {
+          "$ref": "#/$defs/readout"
+        },
+        "time_unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rate"
+          }
+        },
+        "limits": {
+          "$ref": "#/$defs/limits"
+        },
+        "reverse_tree_order": {
+          "type": "boolean"
+        },
+        "record": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "times": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 1
+            },
+            "states": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minItems": 1
+            },
+            "counts": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "integer"
+              }
+            }
+          },
+          "required": [
+            "times",
+            "states",
+            "counts"
+          ]
+        },
+        "target_sets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "min": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "max": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        }
+      },
+      "required": [
+        "schema_version",
+        "model",
+        "target",
+        "time_unit",
+        "record"
+      ]
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "legal_record": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_support": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "offset": {
+                  "type": "integer"
+                },
+                "step": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "offset",
+                "step"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "UNRESOLVED",
+            "IMPOSSIBLE_RECORD",
+            "EXACT",
+            "NUMERICAL_POSTERIOR"
+          ]
+        },
+        "pmf": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "value": {
+                    "type": "integer"
+                  },
+                  "probability": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "value",
+                  "probability"
+                ]
+              },
+              "minItems": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "map_candidates": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "map_risk": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "set_probabilities": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostics": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "stage": {
+              "type": "string",
+              "minLength": 1
+            },
+            "log_snapshot_probability": {
+              "type": "number"
+            },
+            "log_record_probability": {
+              "type": "number"
+            },
+            "count_probability_given_snapshots": {
+              "type": "number"
+            },
+            "transition_row_residual": {
+              "type": "number"
+            },
+            "grid_shape": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "wrap_tail_given_snapshots": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "raw_negative_mass": {
+              "type": "number"
+            },
+            "imaginary_l1": {
+              "type": "number"
+            },
+            "normalization_correction": {
+              "type": "number"
+            },
+            "roundoff_indicator": {
+              "type": "number"
+            },
+            "characteristic_excess": {
+              "type": "number"
+            },
+            "conditional_error_indicator": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": []
+        },
+        "coordinates": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tree_edges": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/edge"
+              }
+            },
+            "chord_edges": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/edge"
+              }
+            },
+            "joint_image_basis": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "rows",
+                "columns",
+                "data"
+              ],
+              "properties": {
+                "rows": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "columns": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "chord_to_image_coordinates": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "rows",
+                    "columns",
+                    "data"
+                  ],
+                  "properties": {
+                    "rows": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "columns": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "tree_edges",
+            "chord_edges",
+            "joint_image_basis",
+            "chord_to_image_coordinates"
+          ]
+        },
+        "endpoint_offset": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "corrected_counts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "joint_rank": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_count_constraint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "weights",
+            "modulus",
+            "observed"
+          ],
+          "properties": {
+            "weights": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "modulus": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "observed": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "required": [
+        "target",
+        "legal_record",
+        "target_support",
+        "outcome",
+        "pmf",
+        "map_candidates",
+        "map_risk",
+        "set_probabilities",
+        "diagnostics"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "EXACT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "legal_record": {
+                "const": true
+              },
+              "map_risk": {
+                "const": 0
+              },
+              "pmf": {
+                "type": "array",
+                "maxItems": 1
+              },
+              "map_candidates": {
+                "type": "array",
+                "maxItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "NUMERICAL_POSTERIOR"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "legal_record": {
+                "const": true
+              },
+              "map_risk": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "pmf": {
+                "type": "array"
+              },
+              "map_candidates": {
+                "type": "array"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "IMPOSSIBLE_RECORD"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "legal_record": {
+                "const": false
+              },
+              "map_risk": {
+                "type": "null"
+              },
+              "pmf": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "UNRESOLVED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "pmf": {
+                "type": "null"
+              },
+              "map_risk": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "code_sha256",
+        "source_commit",
+        "environment"
+      ],
+      "properties": {
+        "name": {
+          "const": "homological-observability"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "code_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_commit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "python",
+            "implementation",
+            "platform",
+            "machine",
+            "dependencies"
+          ],
+          "properties": {
+            "python": {
+              "type": "string",
+              "minLength": 1
+            },
+            "implementation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "platform": {
+              "type": "string",
+              "minLength": 1
+            },
+            "machine": {
+              "type": "string",
+              "minLength": 1
+            },
+            "dependencies": {
+              "type": "object",
+              "required": [
+                "sympy",
+                "networkx",
+                "numpy",
+                "scipy",
+                "mpmath"
+              ],
+              "additionalProperties": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schema_name",
+    "schema_version",
+    "software",
+    "status",
+    "request",
+    "request_sha256",
+    "result",
+    "producer"
+  ],
+  "$defs": {
+    "edge": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coefficient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge",
+        "coefficient"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/edge"
+        },
+        "coefficient": {
+          "type": "integer"
+        }
+      }
+    },
+    "readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "coefficients"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coefficients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coefficient"
+          }
+        }
+      }
+    },
+    "model": {
+      "title": "Homological observability graph model",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "name",
+        "vertices",
+        "edges"
+      ],
+      "properties": {
+        "schema_version": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vertices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "edges": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/edge"
+          }
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/readout"
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    "rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "rate"
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tolerance": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "max_grid_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_matrix_entries": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": []
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "EXACT",
+                  "NUMERICAL_POSTERIOR",
+                  "IMPOSSIBLE_RECORD"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "result": {
+            "properties": {
+              "outcome": {
+                "const": "UNRESOLVED"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

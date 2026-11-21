@@ -57,16 +57,12 @@ certified `COMPLETE`.
 
 ## Run the example
 
-Follow the [installation instructions](../README.md#install), then run the
-commands below in that working directory. They use the environment directly.
-On Windows, use `.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability`. Run Python examples with
-`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`). The model is included
-in the package.
+The installed package includes the model. After [installation](../README.md#install),
+run the example from any directory with the environment activated.
 
-```console
-$ .venv/bin/homological-observability example wedge-c3-c5
-$ .venv/bin/homological-observability example wedge-c3-c5 --format json
+```sh
+homological-observability example wedge-c3-c5
+homological-observability example wedge-c3-c5 --format json
 ```
 
 The first command gives a compact table. The second emits a structured result
@@ -250,7 +246,7 @@ The bundle contains a readable report, the shared study, and the individual
 analyses. Its saved input can be run directly from the command line:
 
 ```bash
-.venv/bin/homological-observability compare wedge-comparison/study.json --output-dir wedge-replay
+homological-observability compare wedge-comparison/study.json --output-dir wedge-replay
 ```
 
 The [comparison guide](COMPARISON_GUIDE.md) develops this workflow with

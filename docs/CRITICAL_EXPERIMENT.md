@@ -16,24 +16,19 @@ $$
 
 The topology-only `analyze` task locates the exposure layers; `critical` adds
 the path weights and the rule for conditioning on the available readout.
-The result specifies a limit experiment. An exact posterior at finite $(T,\delta)$
-requires a separate calculation.
+To estimate the target posterior at finite $(T,\delta)$, pass the measured record
+and directed rates to the [finite-record solver](FINITE_RECORDS.md#use-your-own-model).
 
 ## Run the example
 
-This example uses `examples/biased_c4_critical.json` from a source checkout.
-Follow the [installation instructions](../README.md#install), then work from
-the repository root containing `examples/`. For the archived 2.0.0 source,
-use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
+The input file [`examples/biased_c4_critical.json`](../examples/biased_c4_critical.json)
+comes with the [source checkout](../README.md#full-verification-from-source).
+After [installation](../README.md#install), activate the environment and run
+these commands from the repository root. For the archived 2.0.0 source, use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
 
-Run the commands below from the same directory. They use the environment
-directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability`. Run Python examples with
-`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
-
-```console
-$ .venv/bin/homological-observability critical examples/biased_c4_critical.json
-$ .venv/bin/homological-observability critical examples/biased_c4_critical.json --format json
+```sh
+homological-observability critical examples/biased_c4_critical.json
+homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
 The compact view reports:

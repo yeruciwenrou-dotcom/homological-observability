@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "model": {
+    "schema_version": 2,
+    "name": "Six-state kinesin topology",
+    "vertices": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "edges": [
+      [
+        "1",
+        "2"
+      ],
+      [
+        "2",
+        "3"
+      ],
+      [
+        "3",
+        "4"
+      ],
+      [
+        "4",
+        "5"
+      ],
+      [
+        "5",
+        "6"
+      ],
+      [
+        "6",
+        "1"
+      ],
+      [
+        "2",
+        "5"
+      ]
+    ],
+    "readouts": [
+      {
+        "name": "M",
+        "coefficients": [
+          {
+            "edge": [
+              "2",
+              "5"
+            ],
+            "coefficient": 1
+          }
+        ]
+      },
+      {
+        "name": "A",
+        "coefficients": [
+          {
+            "edge": [
+              "6",
+              "1"
+            ],
+            "coefficient": 1
+          }
+        ]
+      }
+    ]
+  },
+  "target": {
+    "name": "net ATP hydrolysis",
+    "coefficients": [
+      {
+        "edge": [
+          "6",
+          "1"
+        ],
+        "coefficient": 1
+      },
+      {
+        "edge": [
+          "3",
+          "4"
+        ],
+        "coefficient": 1
+      }
+    ]
+  },
+  "target_unit": "ATP",
+  "time_unit": "s",
+  "record": {
+    "times": [
+      0,
+      1
+    ],
+    "states": [
+      "1",
+      "4"
+    ],
+    "counts": {
+      "M": 0,
+      "A": 0
+    }
+  }
+}

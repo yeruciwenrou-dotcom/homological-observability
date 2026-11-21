@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:homological-observability:schema:posterior-request:1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "model": {
+      "$ref": "#/$defs/model"
+    },
+    "target": {
+      "$ref": "#/$defs/readout"
+    },
+    "time_unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rate"
+      }
+    },
+    "limits": {
+      "$ref": "#/$defs/limits"
+    },
+    "reverse_tree_order": {
+      "type": "boolean"
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "times": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "times",
+        "states",
+        "counts"
+      ]
+    },
+    "target_sets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "min": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "model",
+    "target",
+    "time_unit",
+    "record"
+  ],
+  "$defs": {
+    "edge": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "coefficient": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edge",
+        "coefficient"
+      ],
+      "properties": {
+        "edge": {
+          "$ref": "#/$defs/edge"
+        },
+        "coefficient": {
+          "type": "integer"
+        }
+      }
+    },
+    "readout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "coefficients"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "coefficients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coefficient"
+          }
+        }
+      }
+    },
+    "model": {
+      "title": "Homological observability graph model",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "name",
+        "vertices",
+        "edges"
+      ],
+      "properties": {
+        "schema_version": {
+          "enum": [
+            1,
+            2
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vertices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "edges": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/edge"
+          }
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/readout"
+          }
+        },
+        "analysis": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      }
+    },
+    "rate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rate": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "rate"
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tolerance": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "max_grid_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_matrix_entries": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": []
+    }
+  }
+}

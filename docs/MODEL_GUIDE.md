@@ -6,6 +6,8 @@ Choose the input format for the question you want to answer:
 | --- | --- | --- |
 | Check or reconstruct a specific target | `target` | [Target request, with an optional individual record](TARGET_TASKS.md#use-your-own-target) |
 | Minimize additional counters for one or more targets | `design` | [Fixed readouts, targets and candidate scalar channels](TARGET_TASKS.md#use-your-own-target) |
+| Estimate one integer target from a measured record | `posterior` | [Graph, target, whole-record counts, snapshots and directed rates](FINITE_RECORDS.md#use-your-own-model) |
+| Compare sampling schedules and counters on the same paths | `compare-protocols` | [Recording protocols and complete or simulated event histories](FINITE_RECORDS.md#compare-recording-protocols) |
 | Analyze one observation configuration | `analyze` | [Graph, readouts, and analysis settings](#topology-analysis-model) |
 | Compare candidate counter configurations | `compare` | [A study with shared conditions and named candidates](#configuration-study) |
 | Construct a rate-dependent critical experiment | `critical` | [Graph, readouts, exact directed rates, and critical settings](#critical-experiment-model) |
@@ -153,7 +155,7 @@ readout in the listed order.
 | Setting | Constraint | Effect |
 | --- | --- | --- |
 | `max_layer` | positive integer | Highest requested filtration layer |
-| `max_cycles` | positive integer | Maximum complete simple-cycle catalogue size |
+| `max_cycles` | positive integer | Maximum simple-cycle catalogue size for the default backend |
 | `alpha` | nonnegative number or integer fraction string such as `"1/3"` | Evaluate asymptotic regimes under $\delta=T^{-\alpha}$ |
 | `observation_time` | finite positive number | Set $T$ for finite-scale $\lambda_m$ values |
 | `sampling_interval` | finite positive number | Set $\delta$ for finite-scale $\lambda_m$ values |
@@ -209,9 +211,12 @@ result to float, so intermediate overflow or underflow does not lose an
 otherwise representable value. A nonzero result outside the float range raises
 `ValueError` in Python and exits with code 2 in either CLI output format.
 
-If `max_layer` is absent, the kernel computes through $\lceil |V|/2\rceil$. If
-`max_cycles` is absent, enumeration is unbounded by the application. Supplying
-an explicit budget is recommended for unfamiliar graphs.
+If `max_layer` is absent, the kernel computes through $\lceil |V|/2\rceil$.
+For the default backend, set `analysis.max_cycles` in the model or study JSON
+to bound simple-cycle enumeration. For the [generator backend](CONVENTIONS.md#shortest-path-generators),
+pass `--backend generators --max-generators 1000` to `analyze` or `compare`,
+adjusting the budget as needed. Omitting the budget leaves the chosen catalogue
+unbounded by the application.
 
 A smaller `max_layer` limits the scientific horizon. The result is
 `PARTIAL_HORIZON` unless the computed exposure lattice already equals all of
@@ -222,19 +227,14 @@ parameters does not extend the computed horizon.
 
 ### Run and inspect a model
 
-This example uses `examples/wedge_c3_c5.json` from a source checkout.
-Follow the [installation instructions](../README.md#install), then work from
-the repository root containing `examples/`. For the archived 2.0.0 source,
-use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
+The input file [`examples/wedge_c3_c5.json`](../examples/wedge_c3_c5.json)
+comes with the [source checkout](../README.md#full-verification-from-source).
+After [installation](../README.md#install), activate the environment and run
+these commands from the repository root. For the archived 2.0.0 source, use its [versioned installation guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md#install).
 
-Run the commands below from the same directory. They use the environment
-directly. On Windows, use `.venv\Scripts\homological-observability.exe` in place of
-`.venv/bin/homological-observability`. Run Python examples with
-`.venv/bin/python` (Windows: `.venv\Scripts\python.exe`).
-
-```console
-$ .venv/bin/homological-observability analyze examples/wedge_c3_c5.json
-$ .venv/bin/homological-observability analyze examples/wedge_c3_c5.json --format json
+```sh
+homological-observability analyze examples/wedge_c3_c5.json
+homological-observability analyze examples/wedge_c3_c5.json --format json
 ```
 
 Use JSON when processing results in another program. The terminal layout is
@@ -285,8 +285,8 @@ A study compares counter choices on one graph with the same sampling settings
 and computation limits. Create an editable study and run it with:
 
 ```bash
-.venv/bin/homological-observability study-example minimal --output my-study.json
-.venv/bin/homological-observability compare my-study.json --output-dir my-results
+homological-observability study-example minimal --output my-study.json
+homological-observability compare my-study.json --output-dir my-results
 ```
 
 Both destinations must be new. These commands run the template unchanged.
@@ -311,9 +311,9 @@ digits, underscores, or hyphens and begin with a letter or digit.
 
 The shared `model` contains topology only: put `readouts` inside each
 configuration and `analysis` at the study's top level. The same horizon,
-sampling parameters, and per-configuration `max_cycles` limit apply to every
-candidate. `question` labels the study; it does not select an optimization
-objective or change the calculation.
+sampling parameters, and chosen backend budget apply to every candidate.
+`question` labels the study; it does not select an optimization objective or
+change the calculation.
 
 In Python, `load_study(path)` reads a JSON study and `parse_study(document)`
 validates and normalizes a dictionary. `compare_configurations(study)` accepts
@@ -404,9 +404,9 @@ walk-level reconstruction is needed.
 Use the [source directory and environment prepared above](#run-and-inspect-a-model).
 The critical input is `examples/biased_c4_critical.json` in the same checkout.
 
-```console
-$ .venv/bin/homological-observability critical examples/biased_c4_critical.json
-$ .venv/bin/homological-observability critical examples/biased_c4_critical.json --format json
+```sh
+homological-observability critical examples/biased_c4_critical.json
+homological-observability critical examples/biased_c4_critical.json --format json
 ```
 
 The Python API equivalent is:

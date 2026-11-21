@@ -5,6 +5,8 @@ for your task:
 
 | Task | Python result | JSON contract |
 | --- | --- | --- |
+| `posterior` | Finite-record posterior dictionary | [Completion status and inference outcome](#finite-recording-tasks-and-generator-formats) |
+| `compare-protocols` | Paired protocol comparison dictionary | [Study status and per-path results](#finite-recording-tasks-and-generator-formats) |
 | `target` / `design` | Target-task dictionary | [Target task document](#target-task-document) |
 | DFR application | Case or evaluation dictionary | [Dataset and prediction protocol](TARGET_TASKS.md#dataset-and-prediction-protocol-v1) |
 | `analyze` | Immutable `TopologyAnalysis` | [Analysis document](#analysis-document-identity) |
@@ -15,6 +17,27 @@ JSON is the format for downstream processing. Terminal text and the topology
 and comparison Markdown reports are intended for reading. Shared references below
 cover [exit codes](#process-exit-codes), [schemas](#bundled-schemas), and
 [renderers](#renderers).
+
+## Finite recording tasks and generator formats
+
+For a single record, `posterior` writes `homological-observability.posterior`
+(v1). Read `status` for completion and `result.outcome` for the inference.
+A `COMPLETE` run can determine the target exactly (`EXACT`), return a
+`NUMERICAL_POSTERIOR`, or prove that the observations are incompatible with
+the model (`IMPOSSIBLE_RECORD`). For an `UNRESOLVED` outcome,
+`result.diagnostics.reason` explains what prevented inference.
+See [Interpreting a posterior](FINITE_RECORDS.md#interpreting-a-posterior)
+for target support, probabilities and error estimates.
+
+For a protocol study, `compare-protocols` writes
+`homological-observability.recording-protocol-comparison` (v1). Its top-level
+`status` is `COMPLETE` when every path has a resolved risk under every protocol.
+With `PARTIAL`, inspect the individual paths in `result.rows`. The
+[protocol summaries](FINITE_RECORDS.md#compare-recording-protocols) in
+`result.protocols` retain all paths in the risk bounds.
+
+For topology analysis and counter comparisons, the
+[version table](#reading-earlier-records) gives the output format for each backend.
 
 ## Target task document
 
@@ -77,24 +100,25 @@ inferring compatibility from field presence.
 
 ### Reading earlier records
 
-| Document | Earlier format | Current normalized format |
+| Result format | Analysis | Comparison |
 | --- | ---: | ---: |
-| Model | 1 | 2 |
-| Study | 1 | 2 |
-| Analysis | 2 | 3 |
-| Comparison | 1 | 2 |
+| Earlier | 2 | 1 |
+| Default | 3 | 2 |
+| Generators | 4 | 3 |
 
-Model and study parsers accept both input versions and emit the current
-normalized form. In a study, the study and shared model versions must match.
+Both backends accept model and study input versions 1 and 2 and write
+the normalized input as version 2. In a study, the study and shared model versions must match.
 A format-1 numeric input therefore keeps its scientific meaning while its
 normalized model or study digest changes. Earlier software cannot read the
 new format or exact alpha strings. Keep original records with their original
 producer version; rerunning them creates a new record.
 
-Schema loaders default to the current format. Pass `version=1` to
-`load_model_schema`, `load_study_schema` or `load_comparison_schema` for an
-earlier record; pass `version=2` to `load_analysis_schema` for archived
-analyses. The packaged earlier schemas retain their original definitions.
+For an analysis or comparison result, pass its `schema_version` to the
+corresponding loader. With `--backend generators`, use
+`load_analysis_schema(version=4)` or `load_comparison_schema(version=3)` for the
+[generator outputs](CONVENTIONS.md#shortest-path-generators). Calling either
+loader without a version selects the default cycle format. Use `version=1`
+with `load_model_schema` or `load_study_schema` for earlier inputs.
 Critical input, critical experiment and bundle-manifest formats remain at
 version 1. The critical experiment's baseline reference still identifies the
 analysis-2 topology fields used by that independent contract.
@@ -145,8 +169,8 @@ higher layers may add cycle directions. This status is not a resource failure.
 For both `COMPLETE` and `PARTIAL_HORIZON`, `filtration` and `phase` are objects
 and `limit` is `null`.
 
-`LIMIT_REACHED` means simple-cycle enumeration exceeded `max_cycles`. In that
-state:
+`LIMIT_REACHED` means the selected backend exceeded its catalogue budget
+(`max_cycles` for simple cycles or `max_generators` for generators). In that state:
 
 - `homology` and the readout matrix remain valid;
 - `filtration` and `phase` are `null`;
@@ -441,8 +465,9 @@ calculation and reference calibration are described in [numerical methods](NUMER
 
 - `EXACT_INTEGER` labels integral basis, kernel, image, Hermite, and Smith
   computations.
-- `EXACT_COMBINATORIAL` labels a complete finite simple-cycle or directed-path
-  enumeration.
+- `EXACT_COMBINATORIAL` labels complete finite simple-cycle or directed-path
+  enumeration. In topology analysis it also covers exact construction of each
+  requested exposure lattice from [shortest-path cycle generators](CONVENTIONS.md#shortest-path-generators).
 - `EXACT_RATIONAL` labels exact directed-rate products, stationary
   probabilities, path weights, and limit intensities.
 - `ASYMPTOTIC_THEOREM` labels quantities obtained by applying the paper's
@@ -455,6 +480,8 @@ levels.
 
 | Task | Exit `0` | Exit `1` |
 | --- | --- | --- |
+| `posterior` | `COMPLETE`, including an `IMPOSSIBLE_RECORD` decision | Rates, rank, precision or a resource limit prevent a complete inference |
+| `compare-protocols` | `COMPLETE`: every path has a resolved risk under each protocol | `PARTIAL`: unresolved risks remain in the reported bounds |
 | `analyze` / `example` | `COMPLETE` or `PARTIAL_HORIZON` | `LIMIT_REACHED` |
 | `compare` | Every candidate is `COMPLETE` | Comparison is `INCOMPLETE`: at least one candidate is partial, limited, or in error |
 | `critical` | Requested critical experiment is `COMPLETE` | `LIMIT_REACHED` |
@@ -476,6 +503,10 @@ installed package:
 
 | Document | Loader | Schema file |
 | --- | --- | --- |
+| Finite-record request | `load_posterior_request_schema()` | [`posterior-request.schema.json`](../src/homological_observability/schemas/posterior-request.schema.json) |
+| Finite-record posterior | `load_posterior_schema()` | [`posterior.schema.json`](../src/homological_observability/schemas/posterior.schema.json) |
+| Recording protocol study | `load_protocol_request_schema()` | [`protocol-request.schema.json`](../src/homological_observability/schemas/protocol-request.schema.json) |
+| Paired protocol comparison | `load_protocol_comparison_schema()` | [`protocol-comparison.schema.json`](../src/homological_observability/schemas/protocol-comparison.schema.json) |
 | Model input | `load_model_schema()` | [`model.schema.json`](../src/homological_observability/schemas/model.schema.json) |
 | Analysis result | `load_analysis_schema()` | [`analysis.schema.json`](../src/homological_observability/schemas/analysis.schema.json) |
 | Configuration study input | `load_study_schema()` | [`study.schema.json`](../src/homological_observability/schemas/study.schema.json) |

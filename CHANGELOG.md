@@ -4,6 +4,37 @@ All user-visible software changes are recorded here. The project follows
 semantic versioning for packaged interfaces; schema versions are tracked
 separately inside their JSON documents.
 
+## 2.2.0.dev0
+
+Version 2.1 determines when counters and endpoints fix an accumulated
+target for every legal history. With 2.2 you can also ask how much uncertainty
+remains in a particular measured record and how a different recording scheme
+would change it.
+
+- `posterior` takes a finite record of snapshots and signed counts. It checks
+  which target values are compatible with the observations and recovers an
+  exactly determined value. With known transition rates it can also estimate
+  a distribution, the most likely values and their conditional error risk.
+- `compare-protocols` compares snapshot schedules and counters on the same
+  imported event paths or a seeded simulation. It reports paired risk
+  differences, unresolved records and recording requirements.
+- `analyze` and `compare` accept `--backend generators` for exact integer
+  layers on dense graphs. Configurations in a study reuse the same graph
+  calculation. The default backend retains its full simple-cycle catalogue.
+- Explicit zero coefficients now give the same request hash in Python and
+  on JSON replay. Embedded version-1 models enforce the original numeric
+  sampling-exponent format.
+- Waiting-time simulation preserves trajectories under extreme changes of
+  time unit. Paper reproduction protects frozen reference tables when run
+  from a separate package installation.
+
+The [finite-record guide](docs/FINITE_RECORDS.md) includes editable ratchet,
+ring and kinesin examples. The [integer backend guide](docs/CONVENTIONS.md#shortest-path-generators)
+explains the generator count, budgets and output formats. Existing `analyze`
+and `compare` calls keep their default output formats. If you opt into
+generators and parse the JSON, use analysis format 4 or comparison format 3
+as described in the [output guide](docs/OUTPUT_CONTRACT.md).
+
 ## 2.1.0 — 2026-11-09
 
 Existing integer readouts can now be audited against a new target, augmented with

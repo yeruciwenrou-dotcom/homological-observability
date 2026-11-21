@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import subprocess
 import sys
@@ -23,6 +24,75 @@ def environment_python(environment: Path) -> Path:
     if os.name == "nt":
         return environment / "Scripts" / "python.exe"
     return environment / "bin" / "python"
+
+
+def check_biased_ring(finite, run_directory: Path) -> None:
+    """Check an installed CLI on a user-defined ring against independent Poisson counts."""
+    states = ["rest", "load", "turn", "release", "reset"]
+    edges = list(zip(states, states[1:] + states[:1]))
+    forward, backward, duration = 3.0, 1.0, 1.25
+    request = {
+        "schema_version": 1,
+        "time_unit": "s",
+        "target_unit": "turn",
+        "model": {
+            "schema_version": 2,
+            "name": "Biased five-state ring",
+            "vertices": states,
+            "edges": edges,
+        },
+        "rates": [
+            {"from": u, "to": v, "rate": rate}
+            for a, b in edges
+            for u, v, rate in ((a, b, forward), (b, a, backward))
+        ],
+        "target": {
+            "name": "net turns",
+            "coefficients": [{"edge": [states[-1], states[0]], "coefficient": 1}],
+        },
+        "record": {
+            "times": [0, duration],
+            "states": [states[3], states[1]],
+            "counts": {},
+        },
+    }
+    path = run_directory / "biased-ring.json"
+    path.write_text(json.dumps(request), encoding="utf-8")
+    result = finite("posterior", path.name)["result"]
+
+    def poisson_masses(mean):
+        # At the larger mean (3.75), the omitted upper tail is below 1e-35.
+        return [math.exp(-mean) * mean**k / math.factorial(k) for k in range(48)]
+
+    # The net displacement joining these endpoints is -2 + 5 * seam crossings.
+    counts = {}
+    plus = poisson_masses(forward * duration)
+    minus = poisson_masses(backward * duration)
+    for f, p in enumerate(plus):
+        for b, q in enumerate(minus):
+            wraps, remainder = divmod(f - b + 2, len(states))
+            if remainder == 0:
+                counts[wraps] = counts.get(wraps, 0.0) + p * q
+    endpoint_probability = math.fsum(counts.values())
+    reference = {z: p / endpoint_probability for z, p in counts.items()}
+    observed = {row["value"]: row["probability"] for row in result["pmf"]}
+    error = math.fsum(
+        abs(observed.get(z, 0.0) - reference.get(z, 0.0))
+        for z in observed.keys() | reference.keys()
+    )
+    if error > 1e-9 or result["map_candidates"] != [1]:
+        raise AssertionError(
+            "installed posterior disagrees with the biased-ring winding law"
+        )
+    if abs(result["map_risk"] - (1 - reference[1])) > 1e-9:
+        raise AssertionError(
+            "installed biased-ring MAP risk differs from the Poisson reference"
+        )
+    record_probability = math.exp(result["diagnostics"]["log_record_probability"])
+    if abs(record_probability - endpoint_probability) > 1e-10:
+        raise AssertionError(
+            "installed biased-ring endpoint probability differs from the reference"
+        )
 
 
 def smoke_artifact(
@@ -175,6 +245,49 @@ def smoke_artifact(
     ).stdout.strip()
     if str(ROOT) in location:
         raise AssertionError(f"{label} imported from the repository: {location}")
+
+    # Use the installed console script from the consumer's directory. Change a
+    # counter in an exported request and replay through the same public entry.
+    cli = python.parent / (
+        "homological-observability.exe"
+        if os.name == "nt"
+        else "homological-observability"
+    )
+
+    def finite(*args):
+        completed = subprocess.run(
+            [str(cli), *args, "--format", "json"],
+            cwd=run_directory,
+            capture_output=True,
+            text=True,
+            check=True,
+            encoding="utf-8",
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+        )
+        return json.loads(completed.stdout)
+
+    triangle = finite("posterior", "--example", "triangle", "--output-dir", "triangle")
+    if abs(triangle["result"]["map_risk"] - 0.1582877982119598) > 1e-11:
+        raise AssertionError("installed posterior failed the analytic triangle")
+    edited = json.loads(
+        (run_directory / "triangle" / "request.json").read_text(encoding="utf-8")
+    )
+    edited["model"]["readouts"] = [{**edited["target"], "name": "turn_counter"}]
+    edited["record"]["counts"] = {"turn_counter": 3}
+    (run_directory / "own-record.json").write_text(json.dumps(edited), encoding="utf-8")
+    if finite("posterior", "own-record.json")["result"]["map_candidates"] != [3]:
+        raise AssertionError("installed posterior failed the edited model")
+    check_biased_ring(finite, run_directory)
+    study = finite("compare-protocols", "--example", "dfr")
+    protocols = study["result"]["protocols"]
+    if (
+        study["status"] != "COMPLETE"
+        or protocols[2]["mean_risk"] != 0
+        or abs(protocols[1]["mean_risk_difference"] + 0.24535) > 1e-4
+    ):
+        raise AssertionError("installed paired DFR study failed")
+    if finite("posterior", "--example", "kinesin")["result"]["map_candidates"] != [1]:
+        raise AssertionError("installed kinesin endpoint correction failed")
 
     # The installed application must carry its fixed data and optional target
     # explanation modules. Exercise it outside the checkout for both artifacts.
@@ -488,6 +601,8 @@ def smoke_artifact(
             "resolved_packages": resolved.splitlines(),
             "analysis_comparison_export_replay_reproduction": "PASS",
             "dfr_data_target_design_reconstruction_prediction_replay": "PASS",
+            "posterior_edited_input_kinesin_and_paired_protocols": "PASS",
+            "biased_ring_user_model_against_poisson_walk": "PASS",
         }
         (evidence_dir / (name + ".json")).write_text(
             json.dumps(report, indent=2) + "\n", encoding="utf-8"
@@ -509,7 +624,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--upgrade-from",
-        choices=("1.2.1", "2.0.0"),
+        choices=("1.2.1", "2.0.0", "2.1.0"),
         help="also verify an in-place wheel upgrade",
     )
     parser.add_argument(

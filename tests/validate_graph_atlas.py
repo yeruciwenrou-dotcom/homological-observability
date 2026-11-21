@@ -54,6 +54,9 @@ def main() -> None:
 
         first = analyze_model(model)
         second = analyze_model(model, reverse_tree_order=True)
+        generated = analyze_model(model, backend="generators")
+        if first.filtration.layers != generated.filtration.layers:
+            raise AssertionError(("short-cycle integer layers", vertices, edges))
         if not (
             first.is_complete
             and first.requested_horizon_complete
@@ -103,7 +106,7 @@ def main() -> None:
 
     elapsed = perf_counter() - started
     print("PASS: connected NetworkX graph atlas validation")
-    print(f"graphs: {graph_count}")
+    print(f"graphs and exact generator-layer comparisons: {graph_count}")
     print(f"tree/orientation/stability checks: {invariance_checks}")
     print(f"independent path-pair layer checks: {oracle_checks}")
     print(f"integer-readout invariance checks: {readout_checks}")

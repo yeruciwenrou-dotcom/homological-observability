@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "model": {
+    "schema_version": 2,
+    "name": "Three-state ring",
+    "vertices": [
+      "a",
+      "b",
+      "c"
+    ],
+    "edges": [
+      [
+        "a",
+        "b"
+      ],
+      [
+        "b",
+        "c"
+      ],
+      [
+        "c",
+        "a"
+      ]
+    ],
+    "readouts": []
+  },
+  "target": {
+    "name": "turn",
+    "coefficients": [
+      {
+        "edge": [
+          "c",
+          "a"
+        ],
+        "coefficient": 1
+      }
+    ]
+  },
+  "time_unit": "s",
+  "target_unit": "turn",
+  "rates": [
+    {
+      "from": "a",
+      "to": "b",
+      "rate": 1.0
+    },
+    {
+      "from": "b",
+      "to": "a",
+      "rate": 1.0
+    },
+    {
+      "from": "b",
+      "to": "c",
+      "rate": 1.0
+    },
+    {
+      "from": "c",
+      "to": "b",
+      "rate": 1.0
+    },
+    {
+      "from": "c",
+      "to": "a",
+      "rate": 1.0
+    },
+    {
+      "from": "a",
+      "to": "c",
+      "rate": 1.0
+    }
+  ],
+  "record": {
+    "states": [
+      "a",
+      "a"
+    ],
+    "times": [
+      0.0,
+      1.0
+    ],
+    "counts": {}
+  }
+}

@@ -21,6 +21,8 @@ body:
       options:
         - Python API
         - analyze CLI
+        - posterior CLI
+        - compare-protocols CLI
         - target or design CLI
         - DFR data or prediction evaluation
         - compare or study-example CLI
