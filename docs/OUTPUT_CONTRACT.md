@@ -441,10 +441,10 @@ preserves these records for another run.
 
 ### Paper reproduction
 
-The reproduction command emits a separate lightweight document with
-`artifact_role: canonical-paper-evidence`. That document describes generated
-files and whether the two tables were checked against frozen references; it is
-not an analysis result and does not claim the analysis schema name.
+`reproduce --format json` prints a manifest with
+`schema_name: homological-observability.reproduction` and
+`artifact_role: canonical-paper-evidence`. On success, `files` lists the
+generated tables, figures and Markdown report.
 
 `status: PASS` means that the calculation checks completed. Read it together
 with `checked_against_frozen_reference`: `true` additionally confirms that
@@ -455,11 +455,10 @@ The Markdown report displays calculation and reference-comparison status
 separately. A new run invalidates any previous success report before computing;
 a failed or interrupted run leaves a `FAIL` or `INCOMPLETE` report.
 
-Each `files[].sha256` value identifies the exact bytes produced by that run.
-Platform-dependent
-floating-point serialization can change trailing digits and therefore file
-hashes without changing the accepted numerical result. These digests are
-provenance identifiers, not cross-platform acceptance criteria.
+Use `files[].sha256` to identify the exact file produced by a run.
+Two platforms can write slightly different trailing digits in a CSV file.
+The checksums then differ even when the values from each platform match
+the reference within tolerance.
 
 Both the checkout's `results/` tree and the installed package's reference
 directory are protected from reproduction writes, including file aliases with

@@ -440,7 +440,8 @@ PASS: all calculation checks completed
 PASS: generated tables agree with frozen reference results
 ```
 
-The same files are available in `generated_results/` and in the repository.
+Open `generated_results/REPORT.md` to read the results of your run. The table
+below links to the repository’s reference copies.
 
 | What to inspect | Reference files |
 | --- | --- |
@@ -449,9 +450,9 @@ The same files are available in `generated_results/` and in the repository.
 | Numerical values | [Appendix checks](results/selected_appendix_checks.csv) · [Critical kernels](results/critical_kernel_results.csv) |
 
 The calculations cover finite-cycle bridge posteriors, critical kernels, a Poisson-averaged MAP
-identity, and reciprocal-lattice peak suppression. Reference acceptance uses
-documented numerical tolerances; the [output guide](docs/OUTPUT_CONTRACT.md#artifact-roles)
-describes how results and file identities are compared.
+identity, and reciprocal-lattice peak suppression. The
+[reproduction output guide](docs/OUTPUT_CONTRACT.md#paper-reproduction)
+explains the numerical tolerances and how to read the file checksums.
 
 <details>
 <summary>Verify a source checkout or explore finite-ring bridges</summary>

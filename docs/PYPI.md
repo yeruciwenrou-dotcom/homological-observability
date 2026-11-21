@@ -6,8 +6,8 @@ cycle history from observations with finite temporal resolution.**
 This package provides **computational tools for homological observability**,
 including exact integer calculations and reproducible finite-model examples.
 Use your own network to identify hidden cycle information, determine the
-sampling requirements for recovery, and find which counters reveal a chosen
-current.
+sampling requirements for recovery, and find which counters recover a chosen
+trajectory target.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).
 > *[Stochastic Histories at Finite Temporal Resolution: Homological Observability

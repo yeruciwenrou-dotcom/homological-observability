@@ -197,9 +197,14 @@ class DocumentationTests(unittest.TestCase):
         )
         self.assertIn("rtol=1e-12", contract)
         self.assertIn("atol=1e-14", contract)
+        normalized_contract = " ".join(contract.split())
         self.assertIn(
-            "provenance identifiers, not cross-platform acceptance criteria",
-            " ".join(contract.split()),
+            "`files[].sha256` to identify the exact file", normalized_contract
+        )
+        self.assertIn(
+            "checksums then differ even when the values from each platform "
+            "match the reference within tolerance",
+            normalized_contract,
         )
 
     def test_frozen_example_artifacts_are_current(self) -> None:
