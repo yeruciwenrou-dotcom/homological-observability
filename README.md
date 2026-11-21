@@ -97,15 +97,15 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install this branch to try the finite-record examples. The commands below use
-the activated environment on either platform.
+Install the 2.2 preview to try the finite-record examples. Run these commands
+in the activated environment on either platform.
 
 ```sh
-python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/heads/upgrade/finite-time-observability.zip"
+python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/pull/47/head.zip"
 homological-observability --version
 ```
 
-This branch reports `2.2.0.dev0`. To install the published version, use
+The preview reports `2.2.0.dev0`. To install the published version, use
 `python -m pip install homological-observability==2.1.0` and its
 [2.1.0 usage guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install).
 Working with files in `examples/` or running the full verification script
@@ -434,12 +434,21 @@ describes how results and file identities are compared.
 
 ### Full verification from source
 
-Clone the branch to get `examples/`, the verification script and the frozen
-reference tables. If you already have this checkout, start in its root.
+Start in the directory containing `quickstart.py` if you have a source checkout
+or an unpacked source ZIP. To get the project’s current `main` branch, clone it
+or unpack the [main source ZIP](https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/heads/main.zip).
 
 ```sh
-git clone --branch upgrade/finite-time-observability --single-branch https://github.com/yeruciwenrou-dotcom/homological-observability.git
+git clone --branch main --single-branch https://github.com/yeruciwenrou-dotcom/homological-observability.git
 cd homological-observability
+```
+
+To verify the same 2.2 preview as the installation above, select its revision
+in the clone, or unpack the [preview source ZIP](https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/pull/47/head.zip).
+
+```sh
+git fetch origin refs/pull/47/head
+git switch --detach FETCH_HEAD
 ```
 
 Run `python3 quickstart.py` on macOS or Linux, or `py -3.12 quickstart.py` on
@@ -528,7 +537,7 @@ When your work uses both, cite them separately.
 ### Software
 
 The following citation identifies the published 2.1.0 release. For a study
-run from this development branch, record the Git commit used and cite the
+run from a development snapshot, record the Git commit used and cite the
 software series DOI below.
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:

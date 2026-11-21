@@ -49,21 +49,24 @@ def _protocols(raw, model):
 
 
 def _snapshot_grid(horizon, count):
-    """Place regular samples without rounding a boundary onto a neighboring tick."""
+    """Round each exact sample once, so shared times agree across protocols."""
     step = Fraction(horizon) / (count - 1)
     if step.denominator == 1:
         return range(0, step.numerator * count, step.numerator)
-    grid = np.linspace(0.0, float(horizon), count).tolist()
-    if any(b <= a for a, b in zip(grid, grid[1:])):
+    if horizon < (count - 1) * math.ulp(0.0):
         raise ValueError("the declared grid is unresolvable in the specified time unit")
-    for i, point in enumerate(grid):
-        tick, remainder = divmod(i * step.numerator, step.denominator)
-        if not remainder:
-            grid[i] = tick
-        elif point.is_integer() or math.floor(point) != tick:
-            # A fractional boundary can round onto or past an integer tick.
-            # Other fractional float samples retain their recorded float value.
-            grid[i] = i * step
+    grid = []
+    for i in range(count):
+        numerator = i * step.numerator
+        tick, remainder = divmod(numerator, step.denominator)
+        if remainder == 0:
+            grid.append(tick)
+        else:
+            point = numerator / step.denominator
+            # Retain which side of an integer event this sample lies on.
+            if point.is_integer():
+                point = Fraction(numerator, step.denominator)
+            grid.append(point)
     return grid
 
 

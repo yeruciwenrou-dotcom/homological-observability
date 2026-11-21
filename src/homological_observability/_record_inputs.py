@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import sys
 from dataclasses import asdict, dataclass
 from itertools import pairwise
 
@@ -55,12 +56,49 @@ _CLOCK_FRACTION_BITS = math.ulp(0.0).as_integer_ratio()[1].bit_length()
 
 def _clock_ticks(value):
     if type(value) is int:
-        return value << _CLOCK_FRACTION_BITS, 0
+        return value << _CLOCK_FRACTION_BITS, 0, 0
     numerator, denominator = value.as_integer_ratio()
     ticks = numerator << (_CLOCK_FRACTION_BITS - (denominator.bit_length() - 1))
-    ulp_exponent = math.frexp(math.ulp(value))[1] - 1
-    half_ulp = 1 << (_CLOCK_FRACTION_BITS + ulp_exponent - 1)
-    return ticks, half_ulp
+    mantissa, exponent = math.frexp(abs(value))
+    half_ulp = 1 << max(0, _CLOCK_FRACTION_BITS + exponent - 54) if value else 1
+    # On the side toward zero, a normal power of two borders a finer bin.
+    if mantissa == 0.5 and abs(value) > sys.float_info.min:
+        if value > 0:
+            return ticks, half_ulp // 2, half_ulp
+        return ticks, half_ulp, half_ulp // 2
+    return ticks, half_ulp, half_ulp
+
+
+def _steepest_clock_slope(bands):
+    """Largest (low[j] - high[i]) / (j - i) for all i < j."""
+    hull = []
+    best_num, best_den = 0, 0
+    for j, (low, high) in enumerate(bands):
+        if hull:
+            # The steepest line to (j, low) touches the lower convex hull of
+            # earlier upper endpoints. Its edge slopes are increasing.
+            left, right = 0, len(hull) - 1
+            while left < right:
+                mid = (left + right) // 2
+                i, y = hull[mid]
+                k, z = hull[mid + 1]
+                if (low - y) * (k - i) >= (z - y) * (j - i):
+                    left = mid + 1
+                else:
+                    right = mid
+            i, y = hull[left]
+            num, den = low - y, j - i
+            if not best_den or num * best_den > best_num * den:
+                best_num, best_den = num, den
+
+        while len(hull) >= 2:
+            i, y = hull[-2]
+            k, z = hull[-1]
+            if (z - y) * (j - k) < (high - z) * (k - i):
+                break
+            hull.pop()
+        hull.append((j, high))
+    return best_num, best_den
 
 
 def _regular_step(times):
@@ -78,29 +116,48 @@ def _regular_step(times):
         return number(step, "snapshot interval")
 
     windows = len(times) - 1
-    first, first_error = _clock_ticks(times[0])
-    last, last_error = _clock_ticks(times[-1])
-    span = last - first
-    previous, previous_error = first, first_error
-    # Multiply deviations and half-ulp bounds by the window count to compare
-    # exact integers. Keep the existing relative interval tolerance of 1e-10.
-    for i in range(1, len(times)):
-        current, error = _clock_ticks(times[i])
-        interval_deviation = abs(windows * (current - previous) - span)
-        interval_bound = windows * (previous_error + error) + first_error + last_error
-        if interval_deviation > interval_bound and interval_deviation * 10**10 > span:
-            raise ValueError("snapshot times must define a regular grid")
-        # A position must also fit the line through the two uncertain endpoints.
-        position_deviation = abs(windows * (current - first) - i * span)
-        position_bound = windows * error + (windows - i) * first_error + i * last_error
-        if (
-            position_deviation > position_bound
-            and position_deviation * 10**10 > min(i, windows - i) * span
-        ):
-            raise ValueError("snapshot times must define a regular grid")
-        previous, previous_error = current, error
+    first = _clock_ticks(times[0])[0]
+    span = _clock_ticks(times[-1])[0] - first
+    # Measure coordinates relative to the first timestamp. The extra scale
+    # represents half the existing 1e-10 interval tolerance exactly.
+    scale = 2 * 10**10 * windows
+
+    def bands():
+        for t in times:
+            ticks, below, above = _clock_ticks(t)
+            center = (ticks - first) * scale
+            if type(t) is int:
+                yield center, center
+            else:
+                yield (
+                    center - max(below * scale, span),
+                    center + max(above * scale, span),
+                )
+
+    num, den = span * scale, windows
+    # At a fixed step, all bands must allow a common origin. This single pass
+    # handles ordinary records without storing a hull.
+    origin_lo = origin_hi = None
+    for i, (low, high) in enumerate(bands()):
+        lo, hi = den * low - i * num, den * high - i * num
+        origin_lo = lo if origin_lo is None else max(origin_lo, lo)
+        origin_hi = hi if origin_hi is None else min(origin_hi, hi)
+        if origin_lo > origin_hi:
+            # A free origin and slope exist exactly when all pairwise lower
+            # slope bounds fit below all upper bounds. Reflecting the bands
+            # gives the upper bound with the same O(n log n) hull algorithm.
+            lower, lower_den = _steepest_clock_slope(bands())
+            reflected, upper_den = _steepest_clock_slope((-b, -a) for a, b in bands())
+            upper = -reflected
+            if lower * upper_den > upper * lower_den:
+                raise ValueError("snapshot times must define a regular grid")
+            # Use the middle of the feasible interval when rounding prevents
+            # the endpoint estimate from fitting the complete record.
+            num = lower * upper_den + upper * lower_den
+            den = 2 * lower_den * upper_den
+            break
     try:
-        return span / (windows << _CLOCK_FRACTION_BITS)
+        return num / ((den * scale) << _CLOCK_FRACTION_BITS)
     except OverflowError as error:
         raise ValueError("snapshot interval is outside floating-point range") from error
 

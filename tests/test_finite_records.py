@@ -363,6 +363,50 @@ class PosteriorTests(unittest.TestCase):
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_nested_protocols_agree_at_event_boundaries(self):
+        request = recording_example("compare-protocols", "triangle")
+        request["protocols"] = [
+            {"name": "coarse", "snapshots": 3, "channels": []},
+            {"name": "fine", "snapshots": 99, "channels": []},
+        ]
+        for unit, scale in (("s", 1), ("ms", 1000)):
+            with self.subTest(unit=unit):
+                request.update(horizon=scale, time_unit=unit)
+                for rate in request["rates"]:
+                    rate["rate"] = 1 / scale
+                midpoint = scale / 2
+                events = {
+                    "before": math.nextafter(midpoint, 0),
+                    "on": midpoint,
+                    "after": math.nextafter(midpoint, math.inf),
+                }
+                request["source"] = {
+                    "kind": "events",
+                    "name": "observed",
+                    "trajectories": [
+                        {
+                            "trajectory_id": timing,
+                            "times": [0, event, 0.505 * scale],
+                            "states": ["a", "b", "c"],
+                        }
+                        for timing, event in events.items()
+                    ],
+                }
+                doc = ho.compare_recording_protocols(request)
+                self.assertEqual(doc["status"], "COMPLETE")
+                for row in doc["result"]["rows"]:
+                    timing = row["trajectory_id"]
+                    states = row["observation"]["states"]
+                    self.assertEqual(
+                        states[len(states) // 2], "a" if timing == "after" else "b"
+                    )
+                    if timing == "on" and row["protocol"] == "fine":
+                        self.assertEqual(states[48:51], ["a", "b", "c"])
+                        self.assertEqual(row["map_candidates"], [0])
+                        self.assertAlmostEqual(
+                            row["map_risk"], 0.010159909547, places=9
+                        )
+
     def test_integer_events_on_regular_sample_boundaries(self):
         request = recording_example("compare-protocols", "triangle")
         request["target"]["coefficients"] = []

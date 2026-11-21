@@ -60,14 +60,14 @@ compute path weights and limiting mark distributions.
 ## Install
 
 Use Python 3.11–3.13. In an activated virtual environment, install the
-2.2 development branch and check its version.
+2.2 preview and check its version.
 
 ```sh
-python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/heads/upgrade/finite-time-observability.zip"
+python -m pip install "https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/pull/47/head.zip"
 homological-observability --version
 ```
 
-This branch reports `2.2.0.dev0`. For the published 2.1.0 distribution,
+The preview reports `2.2.0.dev0`. For the published 2.1.0 distribution,
 use `python -m pip install homological-observability==2.1.0` and follow its
 [versioned guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.1.0/README.md#install). Earlier results have their
 [2.0.0 reproduction guide](https://github.com/yeruciwenrou-dotcom/homological-observability/blob/v2.0.0/README.md) and an

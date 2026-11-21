@@ -55,10 +55,12 @@ on that empty path.
 
 If your instrument records integer ticks, keep them as JSON integers, including
 for absolute timestamps in nanoseconds. The solver takes exact differences
-before converting the interval to floating point. For decimal timestamps, grid
-validation allows for rounding at the supplied precision. If successive times
-round to the same value, use the original ticks or compute relative times
-before conversion.
+before converting the interval to floating point. All snapshots must fit one
+start time and one sampling interval. Integer timestamps fix their coordinates
+exactly. A floating timestamp allows half the spacing to its neighbor on each
+side, or $5\times10^{-11}$ of the mean interval if larger, to accommodate
+rounding when constructing a grid. If successive times round to the same
+value, use the original ticks or compute relative times before conversion.
 
 In the bundled ring, `turn` counts net crossings from c to a. Both endpoint
 snapshots show a. Each directed rate is one per second and the elapsed time is
@@ -172,15 +174,16 @@ To adapt the study, edit its graph, target, horizon and protocols. Each
 protocol specifies a name, a snapshot count including both endpoints, and
 a list of channel names taken from the model readouts. The first protocol is
 the baseline. To compare nested grids with $n$ and $m$ snapshot points,
-choose $m-1$ divisible by $n-1$. Additional information reduces risk in
-expectation. A particular realized record can have higher conditional risk.
+choose $m-1$ divisible by $n-1$. Both protocols read the same state at every
+shared time. If a jump occurs at that time, both read the new state.
+Additional information reduces risk in expectation. A particular realized
+record can have higher conditional risk.
 
 Use `source.kind = "events"` to import complete trajectories. Give the source
 a name and supply an array of `trajectory_id`, `times` and `states` records.
 The time-zero entry names the initial state. Later times increase strictly
-and lie below the horizon. At a jump time the snapshot takes the new state.
-Importing already observed snapshots for single-record inference requires
-only the snapshot record. Reprojecting to a new schedule requires the full
+and lie below the horizon. For single-record inference, supply the observed
+snapshots and net counters. Reprojecting to a new schedule requires the full
 event history.
 
 Use `source.kind = "simulate"` with rates, an explicitly labeled
