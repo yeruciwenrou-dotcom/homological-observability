@@ -1,7 +1,7 @@
 # Homological Observability
 
 [![PyPI v2.2.0](https://img.shields.io/badge/PyPI-v2.2.0-007ec6?logo=pypi)](https://pypi.org/project/homological-observability/2.2.0/)
-[![Software series DOI: 10.5281/zenodo.23329442](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.23329442)
+[![Software DOI: 10.5281/zenodo.24422331](docs/zenodo-doi.svg)](https://doi.org/10.5281/zenodo.24422331)
 [![alphaXiv Paper](docs/alphaxiv-badge.svg)](https://www.alphaxiv.org/abs/2610.homological-observability-markov-jump-processes)
 
 **Homological observability is the recoverability of a system's accumulated
@@ -531,9 +531,10 @@ For computations made with [version 2.2.0](https://github.com/yeruciwenrou-dotco
 
 > Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026). *Homological Observability:
 > Cycle Histories and Sampling Thresholds in Markov Jump Processes* (Version 2.2.0) [Computer
-> software]. https://doi.org/10.5281/zenodo.23329442
+> software]. https://doi.org/10.5281/zenodo.24422331
 
-This DOI identifies the software series. Include the version used in your citation.
+The software series is archived at
+[doi:10.5281/zenodo.23329442](https://doi.org/10.5281/zenodo.23329442).
 GitHub's citation menu and
 [`CITATION.cff`](CITATION.cff) provide the software citation.
 
