@@ -7,10 +7,10 @@
 **Homological observability is the recoverability of a system's accumulated
 cycle history from observations with finite temporal resolution.**
 
-This repository provides **computational tools for homological observability**,
-including exact integer calculations and reproducible finite-model examples.
-Use it to identify hidden cycle information in your network, compare recording
-schemes, and determine which counts recover a chosen trajectory target.
+This is a **general-purpose research toolkit for homological observability**.
+On [your own network](docs/MODEL_GUIDE.md#from-a-physical-model-to-an-input),
+you can identify hidden cycle directions, compare recording schemes, and use
+exact integer calculations to find which counters recover a chosen trajectory target.
 
 > **Paper:** Liu, H., Tian, Y., Wu, Z., & Cheng, J. (2026).<br>
 > *Stochastic Histories at Finite Temporal Resolution: Homological Observability
@@ -25,7 +25,9 @@ With known transition rates, estimate the distribution of a target such as net
 winding from a single record. Compare sampling schedules and counters on the
 same trajectories to see how they change the risk of a wrong estimate.
 
-## Choose a task
+<a id="choose-a-task"></a>
+
+## Research tasks
 
 | Research question | Start here |
 | --- | --- |
@@ -130,9 +132,10 @@ For upgrades from 1.x, see the [format and API changes](docs/OUTPUT_CONTRACT.md#
 
 ## Quick start
 
-A flashing ratchet can turn while its potential is ON or OFF. A counter
-records the sum of the two signed turn counts (`W`). How well can you infer
-their difference (`DeltaW`, ON minus OFF) from that total and a set of snapshots?
+In the flashing ratchet example, a particle can turn while the potential is
+ON or OFF. A counter records the sum of the two signed turn counts (`W`).
+How well can you infer their difference (`DeltaW`, ON minus OFF) from that
+total and a set of snapshots?
 
 ```sh
 homological-observability posterior --example dfr --output-dir my-record
@@ -456,9 +459,6 @@ identity, and reciprocal-lattice peak suppression. The
 [reproduction output guide](docs/OUTPUT_CONTRACT.md#paper-reproduction)
 explains the numerical tolerances and how to read the file checksums.
 
-<details>
-<summary>Verify a source checkout or explore finite-ring bridges</summary>
-
 ### Full verification from source
 
 To verify version 2.2.0, unpack the [source ZIP](https://github.com/yeruciwenrou-dotcom/homological-observability/archive/refs/tags/v2.2.0.zip) or clone its tag:
@@ -475,11 +475,15 @@ Run `python3 quickstart.py` on macOS or Linux, or `py -3.12 quickstart.py` on
 Windows. To install the checkout in an existing activated environment for
 interactive use, run `python -m pip install .` from the repository root.
 
-The script installs pinned dependencies, runs the reader-side test suite,
-and reproduces the frozen paper calculations. It manages the repository's
-`.venv`, reusing it for the same Python version and recreating it when the
-interpreter's major or minor version changes. Keep any separately managed
-environment in another directory. Installation needs internet access.
+The script installs pinned dependencies in the repository's `.venv`, runs
+the reader-side test suite, and reproduces the frozen paper calculations.
+
+<details>
+<summary>Verification environment and earlier releases</summary>
+
+`quickstart.py` reuses `.venv` for the same Python version and recreates it
+when the interpreter's major or minor version changes. Keep any separately
+managed environment in another directory. Installation needs internet access.
 Fresh outputs are kept separate from the reference files in `results/`.
 
 For historical reproduction, the
@@ -487,6 +491,8 @@ For historical reproduction, the
 release's code, documentation, tests, dependency pins and reference results.
 Unpack `homological-observability-2.0.0-source.zip` into a separate directory
 and run the same script from its root.
+
+</details>
 
 ### Finite-ring bridges
 
@@ -505,8 +511,6 @@ On Windows:
 
 The two shortest routes have equal weight. The table also reports the
 probability mass covered by the displayed range.
-
-</details>
 
 ## Documentation and feedback
 
