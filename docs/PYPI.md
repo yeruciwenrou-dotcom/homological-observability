@@ -19,8 +19,9 @@ The physical origin of homological observability lies in the tension between
 a record’s finite temporal resolution and the cycle history a system accumulates
 in continuous time.
 
-On the three-state ring below, a detector reads A at one sampling time and B
-at the next. Compare the direct jump with the route through C.
+Different paths can produce the same pair of snapshots. For example, a detector
+on the three-state ring below records A and then B. Compare the direct jump
+with the route through C.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](https://raw.githubusercontent.com/yeruciwenrou-dotcom/homological-observability/v2.2.0/docs/snapshot_ambiguity.svg)
 

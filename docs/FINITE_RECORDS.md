@@ -34,8 +34,9 @@ The Python functions `infer_target_posterior(request)` and
 
 ## Use your own model
 
-Start with the three-state ring included in the [installed package](../README.md#install).
-Save its editable input and report in a new directory named `ring`.
+The [installed package](../README.md#install) includes a three-state ring example.
+To use it as a template for your own model, save its input and report in a new
+directory named `ring`.
 
 ```sh
 homological-observability posterior --example triangle --output-dir ring
