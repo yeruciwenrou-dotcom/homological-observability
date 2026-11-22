@@ -47,8 +47,9 @@ The physical origin of homological observability lies in the tension between
 a record’s finite temporal resolution and the cycle history a system accumulates
 in continuous time.
 
-On the three-state ring below, a detector reads A at one sampling time and B
-at the next. Compare the direct jump with the route through C.
+Different paths can produce the same pair of snapshots. For example, a detector
+on the three-state ring below records A and then B. Compare the direct jump
+with the route through C.
 
 ![Three-state ring: the blue direct A-to-B path and orange A-to-C-to-B path give the same snapshots but differ by one circulation.](docs/snapshot_ambiguity.svg)
 
@@ -164,8 +165,8 @@ protocol.
 
 ### Use your own measurements
 
-Start with an editable record from a three-state ring. Each run with
-`--output-dir` needs a new directory and saves the input, a human-readable
+Use the three-state ring example as a template for your own record. Each run
+with `--output-dir` needs a new directory and saves the input, a human-readable
 report, and a machine-readable `result.json`.
 
 ```sh
