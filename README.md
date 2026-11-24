@@ -38,7 +38,7 @@ same trajectories to see how they change the risk of a wrong estimate.
 | Do two counter schemes reveal the same information? | [Compare counters](#compare-counter-configurations) |
 | Which extra counters would determine my target? | [Design a readout](docs/TARGET_TASKS.md#use-your-own-target) · [Kinesin model example (net ATP hydrolysis)](docs/FINITE_RECORDS.md#a-mechanical-and-chemical-target) |
 | Do my model’s inputs determine the target I want to predict? | [Scientific ML example](#target-analysis-and-scientific-ml) · [Test predictions](docs/SCIENTIFIC_ML.md#supply-your-models-predictions) |
-| What critical limit follows from my graph and rates? | [Construct a critical experiment](docs/CRITICAL_EXPERIMENT.md) |
+| At a critical sampling scale, which paths can give the same pair of snapshots, and how do their probabilities compare? | [Compute critical path weights](docs/CRITICAL_EXPERIMENT.md) |
 | Can I reproduce the paper’s calculations? | [Run the reproduction checks](#reproduce-the-paper-evidence) |
 
 ## Physical interpretation
